@@ -2,9 +2,11 @@
 
 <menu>
 
-  <cascade name="Fibu">
-    <item name="Einstellungen"       class="de.willuhn.jameica.fibu.views.Settings" />
-    <item name="Finanzämter"         class="de.willuhn.jameica.fibu.views.FinanzamtListe" />
+  <cascade name="F&amp;ibu">
+    <item name="Neue &amp;Buchung"        shortcut="CTRL+B" class="de.willuhn.jameica.fibu.views.BuchungNeu" />
+    <item name="-" />
+    <item name="&amp;Einstellungen"       class="de.willuhn.jameica.fibu.views.Settings" />
+    <item name="&amp;Finanzämter"         class="de.willuhn.jameica.fibu.views.FinanzamtListe" />
   </cascade>
 
 </menu>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/25 01:23:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ public class Fibu implements Plugin
 {
 
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
+  public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
   
   static {
@@ -79,6 +80,9 @@ public class Fibu implements Plugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.6  2003/11/25 01:23:19  willuhn
+ * @N added Menu shortcuts
+ *
  * Revision 1.5  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

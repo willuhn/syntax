@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/25 01:23:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -153,8 +153,15 @@ public class BuchungControl extends Controller
       }
       catch (ParseException e)
       {
-        GUI.setActionText(I18N.tr("Datum ungültig."));
-        return;
+        // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
+        try {
+          buchung.setDatum(Fibu.FASTDATEFORMAT.parse(getField("datum").getValue()));
+        }
+        catch (ParseException e2)
+        {
+          GUI.setActionText(I18N.tr("Datum ungültig."));
+          return;
+        }
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -237,6 +244,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.5  2003/11/25 01:23:19  willuhn
+ * @N added Menu shortcuts
+ *
  * Revision 1.4  2003/11/24 23:02:11  willuhn
  * @N added settings
  *
