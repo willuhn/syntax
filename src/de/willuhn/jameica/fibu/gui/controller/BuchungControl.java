@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2003/12/12 01:28:07 $
+ * $Revision: 1.12 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,7 @@ public class BuchungControl extends Controller
   public void handleDelete(String id)
   {
     try {
-      this.object = Application.getDefaultDatabase().createObject(Buchung.class,id);
+      this.object = Settings.getDatabase().createObject(Buchung.class,id);
       handleDelete();
     }
     catch (RemoteException e)
@@ -209,7 +209,7 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Konto checken
       
-      DBIterator konten = Application.getDefaultDatabase().createList(Konto.class);
+      DBIterator konten = Settings.getDatabase().createList(Konto.class);
       konten.addFilter("kontonummer = '"+getField("konto").getValue()+"'");
       if (!konten.hasNext())
       {
@@ -223,7 +223,7 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // GeldKonto checken
       
-      DBIterator geldkonten = Application.getDefaultDatabase().createList(GeldKonto.class);
+      DBIterator geldkonten = Settings.getDatabase().createList(GeldKonto.class);
       geldkonten.addFilter("kontonummer = '"+getField("geldkonto").getValue()+"'");
       if (!geldkonten.hasNext())
       {
@@ -268,7 +268,7 @@ public class BuchungControl extends Controller
   public void handleLoad(String id)
   {
     try {
-      Buchung buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,id);
+      Buchung buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,id);
       GUI.startView(BuchungNeu.class.getName(),buchung);
     }
     catch (RemoteException e)
@@ -291,6 +291,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.12  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2003/12/12 01:28:07  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.GUI;
@@ -44,10 +45,10 @@ public class BuchungListe extends AbstractView
     new Headline(getParent(),I18N.tr("Buchungsliste."));
 
     try {
-      Buchung buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,null);
+      Buchung buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
       BuchungControl controller = new BuchungControl(buchung);
 
-      DBIterator list = Application.getDefaultDatabase().createList(buchung.getClass());
+      DBIterator list = Settings.getDatabase().createList(buchung.getClass());
       list.setOrder("order by id desc");
 
       Table table = new Table(list,controller);
@@ -83,6 +84,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.11  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

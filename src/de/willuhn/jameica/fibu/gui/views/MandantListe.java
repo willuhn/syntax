@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/15 19:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
@@ -40,10 +41,10 @@ public class MandantListe extends AbstractView
     new Headline(getParent(),I18N.tr("Liste der Mandanten."));
 
     try {
-      Mandant mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,null);
+      Mandant mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,null);
       MandantControl controller = new MandantControl(mandant);
 
-      DBIterator list = Application.getDefaultDatabase().createList(mandant.getClass());
+      DBIterator list = Settings.getDatabase().createList(mandant.getClass());
       list.setOrder("order by firma desc");
 
       Table table = new Table(list,controller);
@@ -79,6 +80,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.6  2003/12/15 19:08:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

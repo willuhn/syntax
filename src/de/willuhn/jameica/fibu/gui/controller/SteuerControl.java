@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/12 01:28:07 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.*;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.SteuerListe;
 import de.willuhn.jameica.fibu.gui.views.SteuerNeu;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -52,7 +53,7 @@ public class SteuerControl extends Controller
   public void handleDelete(String id)
   {
     try {
-      this.object = Application.getDefaultDatabase().createObject(Steuer.class,id);
+      this.object = Settings.getDatabase().createObject(Steuer.class,id);
       handleDelete();
     }
     catch (RemoteException e)
@@ -144,7 +145,7 @@ public class SteuerControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Steuerkonto checken
       
-      DBIterator steuerkonten = Application.getDefaultDatabase().createList(SteuerKonto.class);
+      DBIterator steuerkonten = Settings.getDatabase().createList(SteuerKonto.class);
       steuerkonten.addFilter("kontonummer="+getField("steuerkonto").getValue());
       if (!steuerkonten.hasNext())
       {
@@ -179,7 +180,7 @@ public class SteuerControl extends Controller
   public void handleLoad(String id)
   {
     try {
-      Steuer steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,id);
+      Steuer steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,id);
       GUI.startView(SteuerNeu.class.getName(),steuer);
     }
     catch (RemoteException e)
@@ -202,6 +203,9 @@ public class SteuerControl extends Controller
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/12 01:28:07  willuhn
  * *** empty log message ***
  *

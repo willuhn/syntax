@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/15 19:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
@@ -44,7 +45,7 @@ public class FinanzamtNeu extends AbstractView
     if (fa == null)
     {
       try {
-        fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
+        fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
       }
       catch (RemoteException e)
       {
@@ -112,6 +113,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.4  2003/12/15 19:08:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.GUI;
@@ -40,10 +41,10 @@ public class SteuerListe extends AbstractView
     new Headline(getParent(),I18N.tr("Liste der Steuersätze."));
 
     try {
-      Steuer steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,null);
+      Steuer steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
       SteuerControl controller = new SteuerControl(steuer);
 
-      DBIterator list = Application.getDefaultDatabase().createList(steuer.getClass());
+      DBIterator list = Settings.getDatabase().createList(steuer.getClass());
       list.setOrder("order by name desc");
 
       Table table = new Table(list,controller);
@@ -76,6 +77,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Settings.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class Settings extends AbstractView
       Input mandantInput = null;
       Mandant mandant = de.willuhn.jameica.fibu.Settings.getActiveMandant();
       if (mandant == null) // noch keiner ausgewahlt. Dann jetzt bitte tun.
-        mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,null);
+        mandant = (Mandant) de.willuhn.jameica.fibu.Settings.getDatabase().createObject(Mandant.class,null);
       
 
       DBIterator list = mandant.getList();
@@ -110,6 +110,9 @@ public class Settings extends AbstractView
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.4  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

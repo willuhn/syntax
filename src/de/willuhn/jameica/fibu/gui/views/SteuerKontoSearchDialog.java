@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerKontoSearchDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/15 19:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.SearchDialog;
@@ -33,7 +34,7 @@ public class SteuerKontoSearchDialog extends SearchDialog
   {
     // wir setzten die Liste, die der Dialog anzeigen soll.
     try {
-      setList(Application.getDefaultDatabase().createList(SteuerKonto.class));
+      setList(Settings.getDatabase().createList(SteuerKonto.class));
     }
     catch (RemoteException e)
     {
@@ -59,7 +60,7 @@ public class SteuerKontoSearchDialog extends SearchDialog
     if (id == null || "".equals(id))
       return "";
     try {
-      SteuerKonto k = (SteuerKonto) Application.getDefaultDatabase().createObject(SteuerKonto.class,id);
+      SteuerKonto k = (SteuerKonto) Settings.getDatabase().createObject(SteuerKonto.class,id);
       return k.getKontonummer();
     }
     catch (RemoteException e)
@@ -75,6 +76,9 @@ public class SteuerKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: SteuerKontoSearchDialog.java,v $
+ * Revision 1.3  2003/12/15 19:08:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

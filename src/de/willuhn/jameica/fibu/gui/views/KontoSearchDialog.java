@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/KontoSearchDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.SearchDialog;
@@ -33,7 +34,7 @@ public class KontoSearchDialog extends SearchDialog
   {
     // wir setzten die Liste, die der Dialog anzeigen soll.
     try {
-      setList(Application.getDefaultDatabase().createList(Konto.class));
+      setList(Settings.getDatabase().createList(Konto.class));
     }
     catch (RemoteException e)
     {
@@ -61,7 +62,7 @@ public class KontoSearchDialog extends SearchDialog
     if (id == null || "".equals(id))
       return "";
     try {
-      Konto gk = (Konto) Application.getDefaultDatabase().createObject(Konto.class,id);
+      Konto gk = (Konto) Settings.getDatabase().createObject(Konto.class,id);
       return gk.getKontonummer();
     }
     catch (RemoteException e)
@@ -77,6 +78,9 @@ public class KontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: KontoSearchDialog.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

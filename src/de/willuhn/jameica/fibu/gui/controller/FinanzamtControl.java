@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/12 01:28:07 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.*;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtListe;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtNeu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
@@ -48,7 +49,7 @@ public class FinanzamtControl extends Controller
   public void handleDelete(String id)
   {
     try {
-      this.object = Application.getDefaultDatabase().createObject(Finanzamt.class,id);
+      this.object = Settings.getDatabase().createObject(Finanzamt.class,id);
       handleDelete();
     }
     catch (RemoteException e)
@@ -154,7 +155,7 @@ public class FinanzamtControl extends Controller
   public void handleLoad(String id)
   {
     try {
-      Finanzamt fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,id);
+      Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,id);
       GUI.startView(FinanzamtNeu.class.getName(),fa);
     }
     catch (RemoteException e)
@@ -177,6 +178,9 @@ public class FinanzamtControl extends Controller
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/12 01:28:07  willuhn
  * *** empty log message ***
  *

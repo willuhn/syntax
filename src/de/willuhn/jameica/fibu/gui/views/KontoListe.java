@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
@@ -41,10 +42,10 @@ public class KontoListe extends AbstractView
     new Headline(getParent(),I18N.tr("Liste der Konten des aktiven Mandanten."));
 
     try {
-      Konto konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+      Konto konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
       KontoControl controller = new KontoControl(konto);
 
-      DBIterator list = Application.getDefaultDatabase().createList(konto.getClass());
+      DBIterator list = Settings.getDatabase().createList(konto.getClass());
 
       Table table = new Table(list,controller);
       table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
@@ -73,6 +74,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.4  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

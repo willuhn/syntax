@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/12 01:28:07 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.*;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.KontoListe;
 import de.willuhn.jameica.fibu.gui.views.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -90,7 +91,7 @@ public class KontoControl extends Controller
       String s = getField("steuer").getValue();
       Steuer steuer = null;
       if (s != null)
-        steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,s);
+        steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,s);
 
       konto.setSteuer(steuer);
       //
@@ -120,7 +121,7 @@ public class KontoControl extends Controller
   public void handleLoad(String id)
   {
     try {
-      Konto konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,id);
+      Konto konto = (Konto) Settings.getDatabase().createObject(Konto.class,id);
       GUI.startView(KontoNeu.class.getName(),konto);
     }
     catch (RemoteException e)
@@ -147,6 +148,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/12 01:28:07  willuhn
  * *** empty log message ***
  *

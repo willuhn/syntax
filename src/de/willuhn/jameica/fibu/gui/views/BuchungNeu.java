@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.16 $
+ * $Date: 2003/12/15 19:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,7 @@ public class BuchungNeu extends AbstractView
     if (buchung == null)
     {
       try {
-        buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,null);
+        buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
       }
       catch (RemoteException e)
       {
@@ -79,11 +79,11 @@ public class BuchungNeu extends AbstractView
       
       // Saldo: Summe aller Netto-Buchungen auf diesem Konto
       Konto konto     = buchung.getKonto();
-      if (konto == null) konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+      if (konto == null) konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 
       // besser Eingabefeld mit Knopf zur Suche dahinter
       GeldKonto geldKonto = buchung.getGeldKonto();
-      if (geldKonto == null) geldKonto = (GeldKonto) Application.getDefaultDatabase().createObject(GeldKonto.class,null);
+      if (geldKonto == null) geldKonto = (GeldKonto) Settings.getDatabase().createObject(GeldKonto.class,null);
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
@@ -241,7 +241,7 @@ public class BuchungNeu extends AbstractView
           return; // Kontonummer fehlt oder ist leer -> keine Saldenermittlung moeglich
         }
 
-        DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
+        DBIterator list = Settings.getDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
         if (!list.hasNext())
         {
@@ -271,6 +271,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.16  2003/12/15 19:08:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

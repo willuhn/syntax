@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
@@ -40,10 +41,10 @@ public class FinanzamtListe extends AbstractView
     new Headline(getParent(),I18N.tr("Liste der Finanzämter."));
 
     try {
-      Finanzamt fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
+      Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
       FinanzamtControl controller = new FinanzamtControl(fa);
 
-      DBIterator list = Application.getDefaultDatabase().createList(fa.getClass());
+      DBIterator list = Settings.getDatabase().createList(fa.getClass());
       list.setOrder("order by name desc");
 
       Table table = new Table(list,controller);
@@ -78,6 +79,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.5  2003/12/15 19:08:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/12/12 01:28:07 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.*;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.MandantListe;
 import de.willuhn.jameica.fibu.gui.views.MandantNeu;
 import de.willuhn.jameica.fibu.rmi.*;
@@ -50,7 +51,7 @@ public class MandantControl extends Controller
   public void handleDelete(String id)
   {
     try {
-      this.object = Application.getDefaultDatabase().createObject(Mandant.class,id);
+      this.object = Settings.getDatabase().createObject(Mandant.class,id);
       handleDelete();
     }
     catch (RemoteException e)
@@ -122,8 +123,7 @@ public class MandantControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
       
-      Kontenrahmen kr = (Kontenrahmen) Application.getDefaultDatabase().
-                                         createObject(Kontenrahmen.class,getField("kontenrahmen").getValue());
+      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,getField("kontenrahmen").getValue());
       mandant.setKontenrahmen(kr);
       //
       //////////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ public class MandantControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Finanzamt checken
       
-      DBIterator finanzaemter = Application.getDefaultDatabase().createList(Finanzamt.class);
+      DBIterator finanzaemter = Settings.getDatabase().createList(Finanzamt.class);
       finanzaemter.addFilter("name = '"+getField("finanzamt").getValue()+"'");
       if (!finanzaemter.hasNext())
       {
@@ -192,7 +192,7 @@ public class MandantControl extends Controller
   public void handleLoad(String id)
   {
     try {
-      Mandant mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,id);
+      Mandant mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,id);
       GUI.startView(MandantNeu.class.getName(),mandant);
     }
     catch (RemoteException e)
@@ -215,6 +215,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.8  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/12/12 01:28:07  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
@@ -46,7 +47,7 @@ public class SteuerNeu extends AbstractView
     if (steuer == null)
     {
       try {
-        steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,null);
+        steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
       }
       catch (RemoteException e)
       {
@@ -73,7 +74,7 @@ public class SteuerNeu extends AbstractView
         satz.addComment("%",null);
 
       SteuerKonto konto = steuer.getSteuerKonto();
-      if (konto == null) konto = (SteuerKonto) Application.getDefaultDatabase().createObject(SteuerKonto.class,null);
+      if (konto == null) konto = (SteuerKonto) Settings.getDatabase().createObject(SteuerKonto.class,null);
       SearchInput kontoInput = new SearchInput(konto.getKontonummer(), new SteuerKontoSearchDialog());
 
       steuerGroup.addLabelPair(I18N.tr("Name")      , name);
@@ -109,6 +110,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.5  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

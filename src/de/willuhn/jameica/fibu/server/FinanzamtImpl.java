@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/12/12 21:11:27 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.rmi.DBIterator;
@@ -147,7 +147,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   {
     // Wir checken ob das Finanzamt einem Mandanten zugewiesen ist.
     try {
-      DBIterator list = Application.getDefaultDatabase().createList(Mandant.class);
+      DBIterator list = Settings.getDatabase().createList(Mandant.class);
       list.addFilter("finanzamt_id='" + getID() + "'");
       if (list.hasNext())
         throw new ApplicationException("Das Finanzamt ist einem Mandanten zugewiesen.\n" +
@@ -206,6 +206,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.7  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2003/12/12 21:11:27  willuhn
  * @N ObjectMetaCache
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/15 19:08:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.fibu.rmi.*;
 import de.willuhn.jameica.gui.GUI;
@@ -45,7 +46,7 @@ public class MandantNeu extends AbstractView
     if (mandant == null)
     {
       try {
-        mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,null);
+        mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,null);
       }
       catch (RemoteException e)
       {
@@ -88,7 +89,7 @@ public class MandantNeu extends AbstractView
       LabelGroup finanzGroup = new LabelGroup(getParent(),I18N.tr("Buchhalterische Daten"));
 
       Kontenrahmen kr = mandant.getKontenrahmen();
-      if (kr == null) kr = (Kontenrahmen) Application.getDefaultDatabase().createObject(Kontenrahmen.class,null);
+      if (kr == null) kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,null);
       SelectInput kontenrahmen = new SelectInput(kr);
 
 
@@ -97,7 +98,7 @@ public class MandantNeu extends AbstractView
       Input finanzamt = null;
       Finanzamt fa = mandant.getFinanzamt();
       if (fa == null) // noch keins ausgewaehlt, dann bitte jetzt tun.
-        fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
+        fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
 
       DBIterator list = fa.getList();
       if (list.hasNext())
@@ -158,6 +159,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.6  2003/12/15 19:08:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *
