@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/22 20:43:07 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/24 14:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,6 +103,8 @@ public class BuchungControl extends Controller
 
     try {
 
+      //////////////////////////////////////////////////////////////////////////
+      // Belegnummer checken
       try {
         buchung.setBelegnummer(Integer.parseInt(getField("belegnummer").getValue()));
       }
@@ -111,7 +113,11 @@ public class BuchungControl extends Controller
         GUI.setActionText(I18N.tr("Belegnummer ungültig."));
         return;
       }
+      //
+      //////////////////////////////////////////////////////////////////////////
       
+      //////////////////////////////////////////////////////////////////////////
+      // Betrag checken
       try {
         String b = getField("betrag").getValue();
         b = b.replaceAll(",",".");
@@ -123,6 +129,11 @@ public class BuchungControl extends Controller
         GUI.setActionText(I18N.tr("Betrag ungültig."));
         return;
       }
+      //
+      //////////////////////////////////////////////////////////////////////////
+      
+      //////////////////////////////////////////////////////////////////////////
+      // Datum checken
       
       try {
         buchung.setDatum(Fibu.DATEFORMAT.parse(getField("datum").getValue()));
@@ -132,8 +143,12 @@ public class BuchungControl extends Controller
         GUI.setActionText(I18N.tr("Datum ungültig."));
         return;
       }
+      //
+      //////////////////////////////////////////////////////////////////////////
       
-      // Bevor wir das Konto speichern, schauen wir erstmal, ob's das ueberhaupt gibt.
+      //////////////////////////////////////////////////////////////////////////
+      // Konto checken
+      
       DBIterator konten = Application.getDefaultDatabase().createList(Konto.class);
       konten.addFilter("kontonummer = '"+getField("konto").getValue()+"'");
       if (!konten.hasNext())
@@ -142,12 +157,32 @@ public class BuchungControl extends Controller
         return;
       }
       buchung.setKonto((Konto) konten.next());
+      //
+      //////////////////////////////////////////////////////////////////////////
+      
+      //////////////////////////////////////////////////////////////////////////
+      // GeldKonto checken
+      
+      DBIterator geldkonten = Application.getDefaultDatabase().createList(Konto.class);
+      geldkonten.addFilter("kontonummer = '"+getField("geldkonto").getValue()+"'");
+      if (!geldkonten.hasNext())
+      {
+        GUI.setActionText(I18N.tr("Ausgewähltes Geld-Konto existiert nicht."));
+        return;
+      }
+      buchung.setGeldKonto((Konto) geldkonten.next());
+      //
+      //////////////////////////////////////////////////////////////////////////
 
       buchung.setText(getField("text").getValue());
 
       // und jetzt speichern wir.
       buchung.store();
       GUI.setActionText(I18N.tr("Buchung Nr. " + buchung.getBelegnummer() + " gespeichert."));
+      // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
+      // auf Speichern als neue Buchung gespeichert wird.
+      buchung.clear();
+      GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",buchung);
 
     }
     catch (Exception e)
@@ -189,6 +224,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.2  2003/11/24 14:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/11/22 20:43:07  willuhn
  * *** empty log message ***
  *

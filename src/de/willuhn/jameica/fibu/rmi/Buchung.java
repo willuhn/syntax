@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/21 02:10:56 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/24 14:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,13 @@ public interface Buchung extends DBObject
    */
   public Konto getKonto() throws RemoteException;
 
+  /**
+   * Liefert das Geld-Konto zu dieser Buchung oder ein leeres Konto bei einer neuen Buchung.
+   * @return Geldkonto der Buchung.
+   * @throws RemoteException
+   */
+  public Konto getGeldKonto() throws RemoteException;
+  
   /**
    * Liefert den Text der Buchung.
    * @return Text der Buchung.
@@ -83,6 +90,12 @@ public interface Buchung extends DBObject
   public void setKonto(Konto k) throws RemoteException;
 
   /**
+   * Setzt das Geld-Konto zu dieser Buchung .
+   * @throws RemoteException
+   */
+  public void setGeldKonto(Konto k) throws RemoteException;
+
+  /**
    * Setzt den Text der Buchung.
    * @throws RemoteException
    */
@@ -104,6 +117,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.3  2003/11/24 14:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/21 02:10:56  willuhn
  * @N buchung dialog works now
  *

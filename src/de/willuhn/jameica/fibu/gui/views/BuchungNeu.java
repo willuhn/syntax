@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/23 19:26:25 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/24 14:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.fibu.views;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -78,30 +80,40 @@ public class BuchungNeu extends AbstractView
 
     try {
       
-      Konto konto = buchung.getKonto();
+      Konto konto     = buchung.getKonto();
+      Konto geldKonto = buchung.getGeldKonto();
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput datum        = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
-      SelectInput kontoInput = new SelectInput(konto);
-      TextInput text         = new TextInput(buchung.getText());
-      TextInput belegnummer  = new TextInput(""+buchung.getBelegnummer());
-      CurrencyInput betrag   = new CurrencyInput(buchung.getBetrag(),"EUR");
+      TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
+      SelectInput kontoInput      = new SelectInput(konto);
+      SelectInput geldKontoInput  = new SelectInput(geldKonto);
 
-      kontoInput.addComment(I18N.tr("Saldo") + ": " + konto.getSaldo() + " EUR", new SaldoListener(kontoInput));
+      TextInput text              = new TextInput(buchung.getText());
+      TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
+      CurrencyInput betrag        = new CurrencyInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()),
+                                                 Fibu.CURRENCY);
+      // Fuer fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
+      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Fibu.CURRENCY, new SaldoListener(kontoInput));
+      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Fibu.CURRENCY, new SaldoListener(geldKontoInput));
 
       // Fuegen sie zur Gruppe Konto hinzu
-      kontoGroup.addLabelPair(I18N.tr("Datum"),     datum);
-      kontoGroup.addLabelPair(I18N.tr("Konto"),     kontoInput);
-      kontoGroup.addLabelPair(I18N.tr("Text"),      text);
-      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."), belegnummer);
-      kontoGroup.addLabelPair(I18N.tr("Betrag"),    betrag);
+      kontoGroup.addLabelPair(I18N.tr("Datum"),       datum);
+      kontoGroup.addLabelPair(I18N.tr("Konto"),       kontoInput);
+      kontoGroup.addLabelPair(I18N.tr("Geld-Konto"),  geldKontoInput);
+      kontoGroup.addLabelPair(I18N.tr("Text"),        text);
+      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."),   belegnummer);
+      kontoGroup.addLabelPair(I18N.tr("Betrag"),      betrag);
 
       // und registrieren sie im Controller.
       control.register("datum",        datum);
       control.register("konto",        kontoInput);
+      control.register("geldkonto",    geldKontoInput);
       control.register("text",         text);
       control.register("belegnummer",  belegnummer);
       control.register("betrag",       betrag);
+
+      // wir machen das Datums-Feld zu dem mit dem Focus.
+      datum.focus();
 
     }
     catch (RemoteException e)
@@ -127,31 +139,67 @@ public class BuchungNeu extends AbstractView
   {
   }
 
-  class SaldoListener implements Listener
+  /**
+   * Listener, der an die Auswahlbox des Kontos angehaengt wurden und
+   * den Saldo von dem gerade ausgewaehlten Konto als Kommentar anzeigt.
+   * @author willuhn
+   * 24.11.2003
+   */
+  class SaldoListener implements FocusListener,Listener
   {
 
     private SelectInput select;
+
+
+    /**
+     * Kosntruktor.
+     * @param s SelectInput-Feld, an dem der Listener haengt.
+     */
     SaldoListener(SelectInput s)
     {
       this.select = s;
     }
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
+
+    private void handle(Combo c)
     {
       try {
-        Combo c = (Combo) event.widget;
         String kontonummer = (String) c.getText();
         DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
+        if (!list.hasNext()) return;
         Konto konto = (Konto) list.next();
-        select.updateComment(I18N.tr("Saldo") + ": " + konto.getSaldo() + " EUR");
+        select.updateComment(I18N.tr("Saldo") + ": " +
+                             Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
+                             " " + Fibu.CURRENCY);
       }
       catch (RemoteException es)
       {
         GUI.setActionText(I18N.tr("Fehler bei der Saldenermittlung des Kontos."));
       }
+    }
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      handle((Combo) event.widget);
+    }
+
+    /**
+     * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
+     */
+    public void focusGained(FocusEvent event)
+    {
+      handle((Combo) event.widget);
+    }
+
+    /**
+     * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
+     */
+    public void focusLost(FocusEvent event)
+    {
+      handle((Combo) event.widget);
     }
     
   }
@@ -159,6 +207,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.5  2003/11/24 14:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/11/23 19:26:25  willuhn
  * *** empty log message ***
  *

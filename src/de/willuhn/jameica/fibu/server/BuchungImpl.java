@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/22 20:43:07 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/24 14:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,6 +73,15 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getGeldKonto()
+   */
+  public Konto getGeldKonto() throws RemoteException
+  {
+    Integer kontoId = (Integer) getField("geldkonto_id");
+    return (Konto) Application.getDefaultDatabase().createObject(Konto.class,kontoId == null ? null : kontoId.toString());
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#getText()
    */
   public String getText() throws RemoteException
@@ -121,6 +130,14 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setGeldKonto(de.willuhn.jameica.fibu.objects.Konto)
+   */
+  public void setGeldKonto(Konto k) throws RemoteException
+  {
+    setField("geldkonto_id",new Integer(k.getID()));
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#setText(java.lang.String)
    */
   public void setText(String text) throws RemoteException
@@ -160,6 +177,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.4  2003/11/24 14:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/11/22 20:43:07  willuhn
  * *** empty log message ***
  *
