@@ -4,6 +4,7 @@
 
   <cascade name="Fibu">
     <item name="Einstellungen"       class="de.willuhn.jameica.fibu.views.Settings" />
+    <item name="Finanzämter"         class="de.willuhn.jameica.fibu.views.FinanzamtListe" />
   </cascade>
 
 </menu>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/25 00:22:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.objects.Finanzamt;
 import de.willuhn.jameica.fibu.objects.Kontenrahmen;
 import de.willuhn.jameica.fibu.objects.Mandant;
 import de.willuhn.jameica.rmi.DBIterator;
@@ -95,7 +96,7 @@ public class MandantControl extends Controller
     box.setMessage(I18N.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
     if (box.open() == SWT.YES)
     {
-      // ok, wir loeschen das Objekt und wechseln zurueck zur Mandantenliste
+      // ok, wir loeschen das Objekt
       try {
         mandant.delete();
         GUI.setActionText(I18N.tr("Mandant gelöscht."));
@@ -134,10 +135,17 @@ public class MandantControl extends Controller
       }
 
       String steuernummer = getField("steuernummer").getValue();
-      if (firma == null || "".equals(firma)) {
+      if (steuernummer == null || "".equals(steuernummer)) {
         GUI.setActionText(I18N.tr("Bitte geben Sie die Steuernummer ein."));
         return;
       }
+
+      String finanzamt = getField("finanzamt").getValue();
+      if (finanzamt == null || "".equals(finanzamt)) {
+        GUI.setActionText(I18N.tr("Bitte wählen Sie ein Finanzamt aus."));
+        return;
+      }
+
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -152,6 +160,20 @@ public class MandantControl extends Controller
         return;
       }
       mandant.setKontenrahmen((Kontenrahmen) kontenrahmen.next());
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      //////////////////////////////////////////////////////////////////////////
+      // Finanzamt checken
+      
+      DBIterator finanzaemter = Application.getDefaultDatabase().createList(Finanzamt.class);
+      finanzaemter.addFilter("name = '"+getField("finanzamt").getValue()+"'");
+      if (!finanzaemter.hasNext())
+      {
+        GUI.setActionText(I18N.tr("Ausgewähltes Finanzamt existiert nicht."));
+        return;
+      }
+      mandant.setFinanzamt((Finanzamt) finanzaemter.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -207,6 +229,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.2  2003/11/25 00:22:17  willuhn
+ * @N added Finanzamt
+ *
  * Revision 1.1  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/25 00:22:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,6 +124,8 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     if ("kontenrahmen_id".equals(field))
       return Kontenrahmen.class;
+    if ("finanzamt_id".equals(field))
+      return Finanzamt.class;
     return null;
   }
 
@@ -207,12 +209,31 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#getFinanzamt()
+   */
+  public Finanzamt getFinanzamt() throws RemoteException
+  {
+    return (Finanzamt) getField("finanzamt_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setFinanzamt(de.willuhn.jameica.fibu.objects.Finanzamt)
+   */
+  public void setFinanzamt(Finanzamt finanzamt) throws RemoteException
+  {
+    setField("finanzamt_id",new Integer(finanzamt.getID()));
+  }
+
 
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.4  2003/11/25 00:22:17  willuhn
+ * @N added Finanzamt
+ *
  * Revision 1.3  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

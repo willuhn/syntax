@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
+ * $Revision: 1.1 $
  * $Date: 2003/11/25 00:22:16 $
  * $Author: willuhn $
  * $Locker:  $
@@ -15,8 +15,8 @@ package de.willuhn.jameica.fibu.views;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.controller.MandantControl;
-import de.willuhn.jameica.fibu.objects.Mandant;
+import de.willuhn.jameica.fibu.controller.FinanzamtControl;
+import de.willuhn.jameica.fibu.objects.Finanzamt;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
@@ -26,10 +26,10 @@ import de.willuhn.jameica.views.parts.Table;
 /**
  * @author willuhn
  */
-public class MandantListe extends AbstractView
+public class FinanzamtListe extends AbstractView
 {
 
-  public MandantListe(Object o)
+  public FinanzamtListe(Object o)
   {
     super(o);
   }
@@ -39,33 +39,32 @@ public class MandantListe extends AbstractView
    */
   public void bind()
   {
-    Headline headline = new Headline(getParent(),I18N.tr("Liste der Mandanten."));
+    Headline headline = new Headline(getParent(),I18N.tr("Liste der Finanzämter."));
 
     try {
-      Mandant mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,null);
-      MandantControl controller = new MandantControl(mandant);
+      Finanzamt fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
+      FinanzamtControl controller = new FinanzamtControl(fa);
 
-      DBIterator list = Application.getDefaultDatabase().createList(mandant.getClass());
-      list.addFilter("1 order by firma desc");
+      DBIterator list = Application.getDefaultDatabase().createList(fa.getClass());
+      list.addFilter("1 order by name desc");
 
       Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Name 1"),"name1");
-      table.addColumn(I18N.tr("Name 2"),"name2");
-      table.addColumn(I18N.tr("Firma"),"firma");
+      table.addColumn(I18N.tr("Name"),"name");
+      table.addColumn(I18N.tr("Strasse"),"strasse");
+      table.addColumn(I18N.tr("Postfach"),"postfach");
+      table.addColumn(I18N.tr("PLZ"),"plz");
       table.addColumn(I18N.tr("Ort"),"ort");
-      table.addColumn(I18N.tr("Steuernummer"),"steuernummer");
-      table.addColumn(I18N.tr("Kontenrahmen"),"kontenrahmen_id");
       
       table.paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Mandant"),controller);
+      buttons.addCreateButton(I18N.tr("Finanzamt hinzufügen"),controller);
 
     }
     catch (Exception e)
     {
-      Application.getLog().error("error while loading mandant list");
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandanten."));
+      Application.getLog().error("error while loading finanzamt list");
+      GUI.setActionText(I18N.tr("Fehler beim Lesen der Finanzämter."));
       e.printStackTrace();
     }
   }
@@ -80,11 +79,8 @@ public class MandantListe extends AbstractView
 }
 
 /*********************************************************************
- * $Log: MandantListe.java,v $
- * Revision 1.2  2003/11/25 00:22:16  willuhn
+ * $Log: FinanzamtListe.java,v $
+ * Revision 1.1  2003/11/25 00:22:16  willuhn
  * @N added Finanzamt
- *
- * Revision 1.1  2003/11/24 23:02:11  willuhn
- * @N added settings
  *
  **********************************************************************/

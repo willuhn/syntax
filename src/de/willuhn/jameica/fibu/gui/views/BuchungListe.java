@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/25 00:22:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,17 +49,17 @@ public class BuchungListe extends AbstractView
       list.addFilter("1 order by datum desc");
 
       Table table = new Table(list,controller);
-      table.addColumn("Datum","datum");
-      table.addColumn("Konto","konto_id");
-      table.addColumn("Geldkonto","geldkonto_id");
-      table.addColumn("Text","text");
-      table.addColumn("Beleg","belegnummer");
-      table.addColumn("Betrag","betrag");
+      table.addColumn(I18N.tr("Datum"),"datum");
+      table.addColumn(I18N.tr("Konto"),"konto_id");
+      table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
+      table.addColumn(I18N.tr("Text"),"text");
+      table.addColumn(I18N.tr("Beleg"),"belegnummer");
+      table.addColumn(I18N.tr("Betrag"),"betrag");
       
       table.paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton("Neue Buchung",controller);
+      buttons.addCreateButton(I18N.tr("Neue Buchung"),controller);
 
     }
     catch (Exception e)
@@ -81,6 +81,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.6  2003/11/25 00:22:16  willuhn
+ * @N added Finanzamt
+ *
  * Revision 1.5  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

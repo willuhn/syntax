@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/25 00:22:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,12 +18,16 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.controller.MandantControl;
+import de.willuhn.jameica.fibu.objects.Finanzamt;
 import de.willuhn.jameica.fibu.objects.Kontenrahmen;
 import de.willuhn.jameica.fibu.objects.Mandant;
+import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.Headline;
+import de.willuhn.jameica.views.parts.Input;
 import de.willuhn.jameica.views.parts.LabelGroup;
+import de.willuhn.jameica.views.parts.LabelInput;
 import de.willuhn.jameica.views.parts.SelectInput;
 import de.willuhn.jameica.views.parts.TextInput;
 
@@ -66,6 +70,7 @@ public class MandantNeu extends AbstractView
     // Headline malen
     Headline headline     = new Headline(getParent(),I18N.tr("Mandant bearbeiten"));
 
+    boolean faFound = false;
 
     try {
       
@@ -91,8 +96,29 @@ public class MandantNeu extends AbstractView
 
       Kontenrahmen kr = mandant.getKontenrahmen();
       if (kr == null) kr = (Kontenrahmen) Application.getDefaultDatabase().createObject(Kontenrahmen.class,null);
-
       SelectInput kontenrahmen = new SelectInput(kr);
+
+
+      ////////////////////////////////
+      // Finanzamt
+      Input finanzamt = null;
+      Finanzamt fa = mandant.getFinanzamt();
+      if (fa == null) // noch keins ausgewaehlt, dann bitte jetzt tun.
+        fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
+
+      DBIterator list = fa.getList();
+      if (list.hasNext())
+      {
+        finanzamt    = new SelectInput(fa);
+        faFound = true;
+      }
+      else {
+        finanzamt = new LabelInput(I18N.tr("Kein Finanzamt vorhanden. Bitte richten Sie zunächst eines ein."));
+      }
+      finanzGroup.addLabelPair(I18N.tr("Finanzamt"),finanzamt);
+      ////////////////////////////////
+
+
       TextInput steuernummer   = new TextInput(mandant.getSteuernummer());
 
       finanzGroup.addLabelPair(I18N.tr("Kontenrahmen"),kontenrahmen);
@@ -106,6 +132,7 @@ public class MandantNeu extends AbstractView
       control.register("ort",ort);
       control.register("steuernummer",steuernummer);
       control.register("kontenrahmen",kontenrahmen);
+      control.register("finanzamt",finanzamt);
 
     }
     catch (RemoteException e)
@@ -117,10 +144,10 @@ public class MandantNeu extends AbstractView
 
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),faFound ? 3 : 2);
     buttonArea.addCancelButton(control);
     buttonArea.addDeleteButton(control);
-    buttonArea.addStoreButton(control);
+    if (faFound) buttonArea.addStoreButton(control);
     
   }
 
@@ -134,6 +161,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.2  2003/11/25 00:22:17  willuhn
+ * @N added Finanzamt
+ *
  * Revision 1.1  2003/11/24 23:02:11  willuhn
  * @N added settings
  *
