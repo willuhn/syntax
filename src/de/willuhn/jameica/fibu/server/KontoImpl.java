@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/12 21:11:26 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/19 19:45:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -202,7 +202,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (k == null)
       throw new RemoteException("no kontenrahmen defined.");
 
-    return "select id from " + getTableName() + " where kontenrahmen_id = " + k.getID();
+    return "select " + getIDField() + " from " + getTableName() + " where kontenrahmen_id = " + k.getID();
   }
 
   /**
@@ -252,6 +252,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.11  2003/12/19 19:45:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/12/12 21:11:26  willuhn
  * @N ObjectMetaCache
  *
