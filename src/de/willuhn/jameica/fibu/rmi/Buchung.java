@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,13 @@ public interface Buchung extends DBObject
   public Konto getGeldKonto() throws RemoteException;
   
   /**
+   * Liefert den Mandanten zu dieser Buchung.
+   * @return Mandant der Buchung.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException;
+
+  /**
    * Liefert den Text der Buchung.
    * @return Text der Buchung.
    * @throws RemoteException
@@ -61,7 +68,7 @@ public interface Buchung extends DBObject
   public int getBelegnummer() throws RemoteException;
 
   /**
-   * Erzeugt eine neue Buchungsnummer.
+   * Erzeugt eine neue Buchungsnummer als Vorgabe.
    * @return neu erzeugte Buchungsnummer.
    * @throws RemoteException
    */
@@ -75,48 +82,61 @@ public interface Buchung extends DBObject
   public double getBetrag() throws RemoteException;
 
 
-
-
   /**
    * Setzt das Datum der Buchung.
+   * @param d Datum.
    * @throws RemoteException
    */
   public void setDatum(Date d) throws RemoteException;
 
   /**
-   * Setzt das Konto zu dieser Buchung .
+   * Setzt das Konto zu dieser Buchung.
+   * @param k Konto der Buchung.
    * @throws RemoteException
    */
   public void setKonto(Konto k) throws RemoteException;
 
   /**
-   * Setzt das Geld-Konto zu dieser Buchung .
+   * Setzt das Geld-Konto zu dieser Buchung.
+   * @param k Konto der Buchung.
    * @throws RemoteException
    */
   public void setGeldKonto(Konto k) throws RemoteException;
 
   /**
    * Setzt den Text der Buchung.
+   * @param Text der Buchung.
    * @throws RemoteException
    */
   public void setText(String text) throws RemoteException;
 
   /**
    * Setzt die Belegnummer.
+   * @param belegnummer Belegnummer der Buchung.
    * @throws RemoteException
    */
   public void setBelegnummer(int belegnummer) throws RemoteException;
 
   /**
    * Setzt den Brutto-Betrag der Buchung.
+   * @param betrag Betrag der Buchung.
    * @throws RemoteException
    */
   public void setBetrag(double betrag) throws RemoteException;
 
+  /**
+   * Setzt den Mandanten der Buchung.
+   * @param mandant Mandant der Buchung.
+   * @throws RemoteException
+   */
+  public void setMandant(Mandant mandant) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.5  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

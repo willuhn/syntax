@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,8 +66,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
    */
   public void deleteCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    throw new ApplicationException("Kontenrahmen dürfen nicht gelöscht werden.");
   }
 
   /**
@@ -75,8 +74,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
    */
   public void insertCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    updateCheck();
   }
 
   /**
@@ -84,8 +82,15 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
    */
   public void updateCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    try {
+      String name = (String) getField("name");
+      if (name == null || "".equals(name))
+        throw new ApplicationException("Bitte geben Sie einen Namen für den Kontenrahmen ein.");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
+    }
   }
 
 }
@@ -93,6 +98,9 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.5  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

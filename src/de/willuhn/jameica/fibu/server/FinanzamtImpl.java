@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -199,7 +199,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.");
+      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
   }
 
@@ -207,6 +207,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.3  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.8 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,6 +115,14 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getMandant()
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    return (Mandant) getField("mandant_id");
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#setDatum(java.util.Date)
    */
   public void setDatum(Date d) throws RemoteException
@@ -136,6 +144,14 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public void setGeldKonto(Konto k) throws RemoteException
   {
     setField("geldkonto_id",new Integer(k.getID()));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setMandant(de.willuhn.jameica.fibu.objects.Mandant)
+   */
+  public void setMandant(Mandant m) throws RemoteException
+  {
+    setField("mandant_id",new Integer(m.getID()));
   }
 
   /**
@@ -168,12 +184,13 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public int createBelegnummer() throws RemoteException
   {
     DBIterator iterator = this.getList();
-    iterator.addFilter("belegnummer is not null order by id desc limit 1");
+    iterator.setOrder("order by id desc limit 1");
     // TODO: nur vom aktiven Mandanten
     if (!iterator.hasNext())
       return 1;
     return ((Buchung) iterator.next()).getBelegnummer() + 1;
   }
+
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
@@ -185,6 +202,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
     if ("geldkonto_id".equals(field))
       return Konto.class;
+
+    if ("mandant_id".equals(field))
+      return Mandant.class;
 
     return null;
   }
@@ -211,6 +231,14 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public void updateCheck() throws ApplicationException
   {
     try {
+
+      // ich muss hier deshalb getField() aufrufen, weil getBelegnummer automatisch eine erzeugt
+      if (getField("belegnummer") == null)
+        throw new ApplicationException("Bitte geben Sie eine Belegnummer ein.");
+
+      if (getMandant() == null)
+        throw new ApplicationException("Bitte wählen Sie den Mandanten aus.");
+
       if (getKonto() == null)
         throw new ApplicationException("Bitte geben Sie ein Konto ein.");
 
@@ -227,18 +255,46 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       cal.setTime(d);
       int year = cal.get(Calendar.YEAR);
       if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
-        throw new ApplicationException("Datum nicht innerhalb des gültigen Bereiches.");
+        throw new ApplicationException("Datum befindet sich nicht innerhalb des gültigen Bereiches.");
+
+      int gj = Settings.getActiveMandant().getGeschaeftsjahr();
+      if (year != gj)
+        throw new ApplicationException("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres.");
+
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Prüfung des Datums.");
+      throw new ApplicationException("Fehler bei der Prüfung des Datums.",e);
     }
+  }
+
+  /**
+   * Ueberschrieben von AbstractDBObject weil wir nur die Buchungen:
+   *  - vom aktiven Mandanten
+   *  - aus dem aktuellen Geschaeftsjahr haben wollen.
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   */
+  protected String getListQuery() throws RemoteException
+  {
+    Mandant m = Settings.getActiveMandant();
+
+    if (m == null)
+    {
+      throw new RemoteException("no active mandant defined");
+    }
+    int year = m.getGeschaeftsjahr();
+
+    String s = "select id from " + getTableName() + " where YEAR(datum) = " + year + " and mandant_id = " + m.getID();
+    return s;
   }
 
 }
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.8  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

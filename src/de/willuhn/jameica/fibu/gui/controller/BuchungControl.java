@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,6 +217,9 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
 
       buchung.setText(getField("text").getValue());
+      
+      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
+      buchung.setMandant(Settings.getActiveMandant());
 
       // und jetzt speichern wir.
       buchung.store();
@@ -270,6 +273,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.7  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

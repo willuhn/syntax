@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.8 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,10 @@ import de.willuhn.jameica.views.parts.Table;
 public class BuchungListe extends AbstractView
 {
 
+  /**
+   * Erzeugt einen neuen Dialog des Typs "Buchungsliste".
+   * @param o
+   */
   public BuchungListe(Object o)
   {
     super(o);
@@ -46,7 +50,7 @@ public class BuchungListe extends AbstractView
       BuchungControl controller = new BuchungControl(buchung);
 
       DBIterator list = Application.getDefaultDatabase().createList(buchung.getClass());
-      list.addFilter("1 order by id desc");
+      list.setOrder("order by id desc");
 
       Table table = new Table(list,controller);
       table.addColumn(I18N.tr("Datum"),"datum");
@@ -81,6 +85,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.8  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

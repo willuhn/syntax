@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,8 +128,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void deleteCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    throw new ApplicationException("Konten dürfen nicht gelöscht werden.");
   }
 
   /**
@@ -137,8 +136,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void insertCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    updateCheck();
   }
 
   /**
@@ -146,13 +144,31 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void updateCheck() throws ApplicationException
   {
-    // TODO Auto-generated method stub
-    
+    try {
+      String name = (String) getField("name");
+      if (name == null || "".equals(name))
+        throw new ApplicationException("Bitte geben Sie einen Namen für das Konto ein.");
+      
+      String kontonummer = (String) getField("kontonummer");
+      if (kontonummer == null || "".equals(kontonummer))
+        throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
+      
+      Integer i = (Integer) getField("typ");
+      if (i == null)
+        throw new ApplicationException("Konto-Typ ungültig.");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Überprüfung der Pflichtfelder",e);
+    }
   }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.6  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -273,6 +273,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public void insertCheck() throws ApplicationException
   {
     // insertCheck() ist erstmal das gleiche wie updateCheck() ;)
+    updateCheck();
   }
 
   /**
@@ -306,7 +307,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.");
+      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
   }
 
@@ -316,6 +317,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.6  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

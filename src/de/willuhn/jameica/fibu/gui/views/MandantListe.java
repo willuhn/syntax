@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/25 00:22:16 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/30 16:23:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class MandantListe extends AbstractView
       MandantControl controller = new MandantControl(mandant);
 
       DBIterator list = Application.getDefaultDatabase().createList(mandant.getClass());
-      list.addFilter("1 order by firma desc");
+      list.setOrder("order by firma desc");
 
       Table table = new Table(list,controller);
       table.addColumn(I18N.tr("Name 1"),"name1");
@@ -81,6 +81,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.3  2003/11/30 16:23:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/25 00:22:16  willuhn
  * @N added Finanzamt
  *
