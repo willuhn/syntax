@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/01 21:23:00 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/01 23:01:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -205,7 +205,6 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   {
     DBIterator iterator = this.getList();
     iterator.setOrder("order by id desc limit 1");
-    // TODO: nur vom aktiven Mandanten
     if (!iterator.hasNext())
       return 1;
     return ((Buchung) iterator.next()).getBelegnummer() + 1;
@@ -317,6 +316,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.11  2003/12/01 23:01:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/12/01 21:23:00  willuhn
  * *** empty log message ***
  *
