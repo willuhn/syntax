@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
@@ -28,20 +27,18 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 {
 
   /**
-   * Laedt den Steuersatz oder erzeugt einen neuen.
-   * @param conn Die Connection - reichen wir einfach durch ;).
-   * @param id die optional zu ladende Buchung oder null.
+   * Erzeugt einen neuen Steuersatz.
    * @throws RemoteException
    */
-  public SteuerImpl(Connection conn, String id) throws RemoteException
+  public SteuerImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "steuer";
   }
@@ -168,6 +165,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.4  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

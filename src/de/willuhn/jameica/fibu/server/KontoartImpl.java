@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 
 import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -26,20 +25,18 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
 {
 
   /**
-   * Laedt die Kontoart oder erzeugt eine neue.
-   * @param conn Die Connection - reichen wir einfach durch ;).
-   * @param id die optional zu ladende Buchung oder null.
+   * Erzeugt eine neue Kontoart.
    * @throws RemoteException
    */
-  public KontoartImpl(Connection conn, String id) throws RemoteException
+  public KontoartImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "kontoart";
   }
@@ -107,6 +104,9 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.4  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

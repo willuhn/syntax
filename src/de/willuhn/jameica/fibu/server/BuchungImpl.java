@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.16 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,20 +31,18 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 {
 
   /**
-   * Erzeugt eine neue Buchung oder gibt laedt eine existierende.
-   * @param conn Die Connection - reichen wir einfach durch ;).
-   * @param id die optional zu ladende Buchung oder null.
+   * Erzeugt eine neue Buchung.
    * @throws RemoteException
    */
-  public BuchungImpl(Connection conn, String id) throws RemoteException
+  public BuchungImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "buchung";
   }
@@ -321,6 +318,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.16  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.15  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

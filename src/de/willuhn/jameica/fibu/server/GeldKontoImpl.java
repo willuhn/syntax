@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/GeldKontoImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -27,13 +26,11 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
 
   /**
    * Erzeugt ein neues Geld-Konto.
-   * @param conn
-   * @param id
    * @throws RemoteException
    */
-  public GeldKontoImpl(Connection conn, String id) throws RemoteException
+  public GeldKontoImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
@@ -47,6 +44,9 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
 
 /*********************************************************************
  * $Log: GeldKontoImpl.java,v $
+ * Revision 1.3  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.2  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

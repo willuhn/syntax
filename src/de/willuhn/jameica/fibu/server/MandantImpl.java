@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.util.Calendar;
 
 import de.willuhn.jameica.Application;
@@ -32,20 +31,18 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 {
 
   /**
-   * ct.
-   * @param conn
-   * @param id
+   * Erzeugt einen neuen Mandanten.
    * @throws RemoteException
    */
-  public MandantImpl(Connection conn, String id) throws RemoteException
+  public MandantImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "mandant";
   }
@@ -321,6 +318,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.9  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.8  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

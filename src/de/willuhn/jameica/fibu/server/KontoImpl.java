@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.10 $
+ * $Date: 2003/12/12 21:11:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,19 +29,18 @@ public class KontoImpl extends AbstractDBObject implements Konto
 {
 
   /**
-   * @param conn
-   * @param id
+   * Erzeugt ein neues Konto.
    * @throws RemoteException
    */
-  public KontoImpl(Connection conn, String id) throws RemoteException
+  public KontoImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "konto";
   }
@@ -80,7 +79,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if ("".equals(getID()) || getID() == null)
         return 0;
 
-      Statement stmt = conn.createStatement();
+      Statement stmt = getConnection().createStatement();
       Mandant m = Settings.getActiveMandant();
       if (m == null)
         throw new RemoteException("active mandant not set.");
@@ -253,6 +252,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.10  2003/12/12 21:11:26  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.9  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

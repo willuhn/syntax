@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/12 21:11:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
@@ -29,20 +28,18 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 {
 
   /**
-   * ct.
-   * @param conn
-   * @param id
+   * Erzeugt ein neues Finanzamt.
    * @throws RemoteException
    */
-  public FinanzamtImpl(Connection conn, String id) throws RemoteException
+  public FinanzamtImpl() throws RemoteException
   {
-    super(conn, id);
+    super();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
    */
-  protected String getTableName() throws RemoteException
+  protected String getTableName()
   {
     return "finanzamt";
   }
@@ -209,6 +206,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.6  2003/12/12 21:11:27  willuhn
+ * @N ObjectMetaCache
+ *
  * Revision 1.5  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *
