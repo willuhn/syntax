@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/02/25 23:11:29 $
+ * $Revision: 1.21 $
+ * $Date: 2004/02/26 18:46:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -161,7 +161,7 @@ public class BuchungControl extends AbstractControl
 			return datum;
 		
 		datum = new TextInput(Fibu.DATEFORMAT.format(getBuchung().getDatum()));
-		datum.setComment(I18N.tr("Wochentag: "));
+		datum.setComment("");
 		datum.addListener(new WochentagListener());
 		return datum;
 	}
@@ -551,7 +551,7 @@ public class BuchungControl extends AbstractControl
 				return;
 			try
       {
-        getDatum().setComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
+        getDatum().setComment(I18N.tr(Fibu.WEEKDAYS[i]));
       }
       catch (RemoteException e1)
       {
@@ -638,6 +638,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.21  2004/02/26 18:46:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/02/25 23:11:29  willuhn
  * *** empty log message ***
  *
