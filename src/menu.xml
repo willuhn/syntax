@@ -3,9 +3,7 @@
 <menu>
 
   <cascade name="Fibu">
-    <item name="Neue Buchung"        class="de.willuhn.jameica.menu.EditCopy" />
-    <item name="Cut"                 class="de.willuhn.jameica.menu.EditCut" />
-    <item name="Paste"    			 class="de.willuhn.jameica.menu.EditPaste" />
+    <item name="Einstellungen"       class="de.willuhn.jameica.fibu.menu.Settings" />
   </cascade>
 
 </menu>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO8859-1"?> 
 <navigation>
-  <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="sendung">
-    <item name="neue Buchung" icon-close="page.gif" action="de.bbvag.dhl.easylog.views.SendungNeu" />
-    <item name="Buchungsliste" icon-close="page.gif" action="de.bbvag.dhl.easylog.views.Todo" />
+  <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.fibu.views.Welcome">
+    <item name="neue Buchung" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungNeu" />
+    <item name="Buchungsliste" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungsListe" />
   </item>
 </navigation>
