@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/21 02:10:57 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/22 20:43:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,9 +18,9 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.controller.BuchungNeuControl;
+import de.willuhn.jameica.fibu.controller.BuchungControl;
 import de.willuhn.jameica.fibu.objects.Buchung;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.jameica.fibu.objects.Konto;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.CurrencyInput;
@@ -63,7 +63,7 @@ public class BuchungNeu extends AbstractView
     // Er wird die Interaktionen mit der Business-Logik uebernehmen.
     // Damit er an die Daten des Dialogs kommt, muessen wir jedes
     // Eingabe-Feld in ihm registrieren.
-    final BuchungNeuControl control = new BuchungNeuControl(buchung);
+    final BuchungControl control = new BuchungControl(buchung);
 
     // Headline malen
     Headline headline     = new Headline(getParent(),I18N.tr("Buchung bearbeiten"));
@@ -73,23 +73,28 @@ public class BuchungNeu extends AbstractView
 
     try {
       
+      Konto konto = buchung.getKonto();
+
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput datum       = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
-      SelectInput konto     = new SelectInput((DBObject) buchung.getKonto());
-      TextInput text        = new TextInput(buchung.getText());
-      TextInput belegnummer = new TextInput(""+buchung.getBelegnummer());
-      CurrencyInput betrag  = new CurrencyInput(buchung.getBetrag(),"EUR");
+      TextInput datum        = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
+      SelectInput kontoInput = new SelectInput(konto);
+      TextInput text         = new TextInput(buchung.getText());
+      TextInput belegnummer  = new TextInput(""+buchung.getBelegnummer());
+      CurrencyInput betrag   = new CurrencyInput(buchung.getBetrag(),"EUR");
+
 
       // Fuegen sie zur Gruppe Konto hinzu
       kontoGroup.addLabelPair(I18N.tr("Datum"),     datum);
-      kontoGroup.addLabelPair(I18N.tr("Konto"),     konto);
+      kontoGroup.addLabelPair(I18N.tr("Konto"),     kontoInput);
       kontoGroup.addLabelPair(I18N.tr("Text"),      text);
       kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."), belegnummer);
       kontoGroup.addLabelPair(I18N.tr("Betrag"),    betrag);
 
+      kontoGroup.addLabelPair(I18N.tr("Saldo"),     new TextInput(""+konto.getSaldo()));
+
       // und registrieren sie im Controller.
       control.register("datum",        datum);
-      control.register("konto",        konto);
+      control.register("konto",        kontoInput);
       control.register("text",         text);
       control.register("belegnummer",  belegnummer);
       control.register("betrag",       betrag);
@@ -97,6 +102,8 @@ public class BuchungNeu extends AbstractView
     }
     catch (RemoteException e)
     {
+      if (Application.DEBUG)
+        e.printStackTrace();
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Buchungsdaten."));
     }
 
@@ -119,6 +126,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.3  2003/11/22 20:43:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/21 02:10:57  willuhn
  * @N buchung dialog works now
  *

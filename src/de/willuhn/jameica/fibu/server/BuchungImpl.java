@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/21 02:10:56 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/22 20:43:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,8 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getKonto() throws RemoteException
   {
-    return (Konto) Application.getDefaultDatabase().createObject(Konto.class, (String) getField("konto_id"));
+    Integer kontoId = (Integer) getField("konto_id");
+    return (Konto) Application.getDefaultDatabase().createObject(Konto.class,kontoId == null ? null : kontoId.toString());
   }
 
   /**
@@ -159,6 +160,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.3  2003/11/22 20:43:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/21 02:10:56  willuhn
  * @N buchung dialog works now
  *
