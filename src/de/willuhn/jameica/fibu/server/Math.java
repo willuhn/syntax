@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/16 02:27:33 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/19 01:43:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,7 @@
 package de.willuhn.jameica.fibu.server;
 
 /**
- * Hilfs-Klasse die ein paar methamatische Berechnungen enthaelt.
+ * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
  * @author willuhn
  */
 public class Math
@@ -30,6 +30,17 @@ public class Math
     return round((100 * bruttoBetrag) / (100 + steuer));
   }
   
+  /**
+   * Ermittelt den Brutto-Betrag basierend auf der uebergebenen Steuer.
+   * @param nettoBetrag Netto-Betrag.
+   * @param steuer Steuersatz.
+   * @return Brutto-Betrag.
+   */
+  public static double brutto(double nettoBetrag, double steuer)
+  {
+    return round((nettoBetrag * (100 + steuer)) / 100);
+  }
+
   /**
    * Rechnet den Steuerbetrag aus.
    * @param bruttoBetrag Brutto-Betrag.
@@ -55,6 +66,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.2  2003/12/19 01:43:43  willuhn
+ * @C small fixes
+ *
  * Revision 1.1  2003/12/16 02:27:33  willuhn
  * @N BuchungsEngine
  *

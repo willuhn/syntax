@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/15 19:08:03 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/19 01:43:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,9 +62,10 @@ public class FinanzamtListe extends AbstractView
     }
     catch (Exception e)
     {
+      if (Application.DEBUG)
+        e.printStackTrace();
       Application.getLog().error("error while loading finanzamt list");
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Finanzämter."));
-      e.printStackTrace();
     }
   }
 
@@ -79,6 +80,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.6  2003/12/19 01:43:43  willuhn
+ * @C small fixes
+ *
  * Revision 1.5  2003/12/15 19:08:03  willuhn
  * *** empty log message ***
  *
