@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2003/12/10 01:12:53 $
+ * $Revision: 1.15 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,34 +10,25 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.controller.BuchungControl;
-import de.willuhn.jameica.fibu.objects.Buchung;
-import de.willuhn.jameica.fibu.objects.GeldKonto;
-import de.willuhn.jameica.fibu.objects.Konto;
-import de.willuhn.jameica.fibu.objects.Settings;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
+import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
 import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.ButtonArea;
-import de.willuhn.jameica.views.parts.DecimalInput;
-import de.willuhn.jameica.views.parts.Headline;
-import de.willuhn.jameica.views.parts.LabelGroup;
-import de.willuhn.jameica.views.parts.SearchInput;
-import de.willuhn.jameica.views.parts.TextInput;
 
 /**
  * @author willuhn
@@ -280,6 +271,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.15  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.14  2003/12/10 01:12:53  willuhn
  * *** empty log message ***
  *

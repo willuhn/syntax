@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerKontoSearchDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,15 +10,15 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.objects.SteuerKonto;
-import de.willuhn.jameica.views.SearchDialog;
+import de.willuhn.jameica.fibu.rmi.SteuerKonto;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.SearchDialog;
 
 /**
  * @author willuhn
@@ -75,6 +75,9 @@ public class SteuerKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: SteuerKontoSearchDialog.java,v $
+ * Revision 1.2  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.1  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

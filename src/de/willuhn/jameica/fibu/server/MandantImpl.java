@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
@@ -20,7 +20,9 @@ import java.util.Calendar;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.server.AbstractDBObject;
 
 /**
  * @author willuhn
@@ -319,6 +321,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.8  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

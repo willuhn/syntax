@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/GeldKontoImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,10 +10,13 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+
+import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 
 /**
  * Diese Klasse ist nur fuer Konten des Typs "Geld-Konto" zustaendig.
@@ -44,6 +47,9 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
 
 /*********************************************************************
  * $Log: GeldKontoImpl.java,v $
+ * Revision 1.2  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:53 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -18,16 +18,16 @@ import java.text.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.GUI;
-import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.*;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.objects.Steuer;
-import de.willuhn.jameica.fibu.objects.SteuerKonto;
+import de.willuhn.jameica.fibu.gui.views.SteuerListe;
+import de.willuhn.jameica.fibu.gui.views.SteuerNeu;
+import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.rmi.SteuerKonto;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -109,7 +109,7 @@ public class SteuerControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.SteuerListe",null);
+    GUI.startView(SteuerListe.class.getName(),null);
   }
 
   /**
@@ -180,7 +180,7 @@ public class SteuerControl extends Controller
   {
     try {
       Steuer steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,id);
-      GUI.startView("de.willuhn.jameica.fibu.views.SteuerNeu",steuer);
+      GUI.startView(SteuerNeu.class.getName(),steuer);
     }
     catch (RemoteException e)
     {
@@ -195,13 +195,16 @@ public class SteuerControl extends Controller
    */
   public void handleCreate()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.SteuerNeu",null);
+    GUI.startView(SteuerNeu.class.getName(),null);
   }
 
 }
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.3  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:53  willuhn
  * *** empty log message ***
  *

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO8859-1"?> 
 <navigation>
-  <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.fibu.views.Welcome">
-    <item name="Buchungen" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungListe" />
-    <item name="Konten"    icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.KontoListe" />
-    <item name="Mandanten" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.MandantListe" />
+  <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.fibu.gui.views.Welcome">
+    <item name="Buchungen" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.gui.views.BuchungListe" />
+    <item name="Konten"    icon-close="page.gif" 	action="de.willuhn.jameica.fibu.gui.views.KontoListe" />
+    <item name="Mandanten" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.gui.views.MandantListe" />
   </item>
 </navigation>

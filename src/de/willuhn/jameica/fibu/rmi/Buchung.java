@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -156,6 +156,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.9  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.8  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

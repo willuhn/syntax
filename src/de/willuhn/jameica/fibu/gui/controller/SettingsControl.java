@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:53 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,17 +10,18 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.objects.Mandant;
-import de.willuhn.jameica.fibu.objects.Settings;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.views.Welcome;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -60,7 +61,7 @@ public class SettingsControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.Welcome",null);
+    GUI.startView(Welcome.class.getName(),null);
   }
 
   /**
@@ -106,6 +107,9 @@ public class SettingsControl extends Controller
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.3  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:53  willuhn
  * *** empty log message ***
  *

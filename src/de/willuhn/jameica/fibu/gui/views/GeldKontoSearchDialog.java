@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/GeldKontoSearchDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/10 00:47:29 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,15 +10,15 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.objects.GeldKonto;
-import de.willuhn.jameica.views.SearchDialog;
+import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.SearchDialog;
 
 /**
  * @author willuhn
@@ -77,6 +77,9 @@ public class GeldKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: GeldKontoSearchDialog.java,v $
+ * Revision 1.4  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.3  2003/12/10 00:47:29  willuhn
  * @N SearchDialog for Konto works now ;)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,20 +10,20 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.GUI;
-import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.objects.Finanzamt;
+import de.willuhn.jameica.*;
+import de.willuhn.jameica.fibu.gui.views.FinanzamtListe;
+import de.willuhn.jameica.fibu.gui.views.FinanzamtNeu;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -111,7 +111,7 @@ public class FinanzamtControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.FinanzamtListe",null);
+    GUI.startView(FinanzamtListe.class.getName(),null);
   }
 
   /**
@@ -155,7 +155,7 @@ public class FinanzamtControl extends Controller
   {
     try {
       Finanzamt fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,id);
-      GUI.startView("de.willuhn.jameica.fibu.views.FinanzamtNeu",fa);
+      GUI.startView(FinanzamtNeu.class.getName(),fa);
     }
     catch (RemoteException e)
     {
@@ -177,6 +177,9 @@ public class FinanzamtControl extends Controller
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.3  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

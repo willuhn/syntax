@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Settings.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,24 +10,18 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.controller.SettingsControl;
-import de.willuhn.jameica.fibu.objects.Mandant;
+import de.willuhn.jameica.fibu.gui.controller.SettingsControl;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
 import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.ButtonArea;
-import de.willuhn.jameica.views.parts.Headline;
-import de.willuhn.jameica.views.parts.Input;
-import de.willuhn.jameica.views.parts.LabelGroup;
-import de.willuhn.jameica.views.parts.LabelInput;
-import de.willuhn.jameica.views.parts.SelectInput;
-import de.willuhn.jameica.views.parts.TextInput;
 
 /**
  * @author willuhn
@@ -61,7 +55,7 @@ public class Settings extends AbstractView
       //////////////////////////////////////
       // Mandant
       Input mandantInput = null;
-      Mandant mandant = de.willuhn.jameica.fibu.objects.Settings.getActiveMandant();
+      Mandant mandant = de.willuhn.jameica.fibu.Settings.getActiveMandant();
       if (mandant == null) // noch keiner ausgewahlt. Dann jetzt bitte tun.
         mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,null);
       
@@ -81,7 +75,7 @@ public class Settings extends AbstractView
 
       //////////////////////////////////////
       // Waehrung
-      TextInput currency = new TextInput(de.willuhn.jameica.fibu.objects.Settings.getCurrency());
+      TextInput currency = new TextInput(de.willuhn.jameica.fibu.Settings.getCurrency());
       group.addLabelPair(I18N.tr("Währungsbezeichnung"),currency);
       //
       //////////////////////////////////////
@@ -116,6 +110,9 @@ public class Settings extends AbstractView
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.3  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

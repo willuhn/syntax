@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,18 +10,16 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.controller.SteuerControl;
-import de.willuhn.jameica.fibu.objects.Steuer;
+import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
+import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
 import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.ButtonArea;
-import de.willuhn.jameica.views.parts.Headline;
-import de.willuhn.jameica.views.parts.Table;
 
 /**
  * @author willuhn
@@ -78,6 +76,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.4  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.3  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

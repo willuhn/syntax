@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
@@ -108,6 +108,9 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.8  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/01 21:23:00 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,10 +12,7 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu;
 
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.Locale;
 import java.util.jar.JarFile;
 
@@ -93,6 +90,9 @@ public class Fibu implements Plugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.9  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.8  2003/12/01 21:23:00  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
@@ -69,6 +69,9 @@ public interface Steuer extends DBObject
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.3  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

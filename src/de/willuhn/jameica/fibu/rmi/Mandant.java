@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
@@ -178,6 +178,9 @@ public interface Mandant extends DBObject
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.5  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.4  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

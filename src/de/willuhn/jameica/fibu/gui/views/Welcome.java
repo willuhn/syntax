@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,11 +10,11 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.Headline;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.Headline;
 
 /**
  * @author willuhn
@@ -45,6 +45,9 @@ public class Welcome extends AbstractView
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.4  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.3  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

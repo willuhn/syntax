@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.10 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -19,18 +19,16 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.GUI;
-import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.*;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.objects.Buchung;
-import de.willuhn.jameica.fibu.objects.GeldKonto;
-import de.willuhn.jameica.fibu.objects.Konto;
-import de.willuhn.jameica.fibu.objects.Settings;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.views.BuchungListe;
+import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
+import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -115,7 +113,7 @@ public class BuchungControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.BuchungListe",null);
+    GUI.startView(BuchungListe.class.getName(),null);
   }
 
   /**
@@ -247,7 +245,7 @@ public class BuchungControl extends Controller
       // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
       // auf Speichern als neue Buchung gespeichert wird.
       buchung.clear();
-      GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",buchung);
+      GUI.startView(BuchungNeu.class.getName(),buchung);
 
     }
     catch (ApplicationException e1)
@@ -271,7 +269,7 @@ public class BuchungControl extends Controller
   {
     try {
       Buchung buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,id);
-      GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",buchung);
+      GUI.startView(BuchungNeu.class.getName(),buchung);
     }
     catch (RemoteException e)
     {
@@ -293,6 +291,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.10  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.9  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Finanzamt.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
@@ -97,6 +97,9 @@ public interface Finanzamt extends DBObject
 
 /*********************************************************************
  * $Log: Finanzamt.java,v $
+ * Revision 1.2  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.1  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

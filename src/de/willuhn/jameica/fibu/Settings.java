@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,12 +10,12 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.rmi.DBIterator;
 
 /**
@@ -78,6 +78,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.2  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.1  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:53 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,21 +10,21 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.GUI;
-import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.objects.Konto;
-import de.willuhn.jameica.fibu.objects.Steuer;
+import de.willuhn.jameica.*;
+import de.willuhn.jameica.fibu.gui.views.KontoListe;
+import de.willuhn.jameica.fibu.gui.views.KontoNeu;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -68,7 +68,7 @@ public class KontoControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.KontoListe",null);
+    GUI.startView(KontoListe.class.getName(),null);
   }
 
   /**
@@ -121,7 +121,7 @@ public class KontoControl extends Controller
   {
     try {
       Konto konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,id);
-      GUI.startView("de.willuhn.jameica.fibu.views.KontoNeu",konto);
+      GUI.startView(KontoNeu.class.getName(),konto);
     }
     catch (RemoteException e)
     {
@@ -147,6 +147,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.3  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:53  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,25 +10,17 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.views;
+package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.controller.KontoControl;
-import de.willuhn.jameica.fibu.objects.Kontenrahmen;
-import de.willuhn.jameica.fibu.objects.Konto;
-import de.willuhn.jameica.fibu.objects.Kontoart;
-import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.ButtonArea;
-import de.willuhn.jameica.views.parts.Headline;
-import de.willuhn.jameica.views.parts.Input;
-import de.willuhn.jameica.views.parts.LabelGroup;
-import de.willuhn.jameica.views.parts.LabelInput;
-import de.willuhn.jameica.views.parts.SelectInput;
-import de.willuhn.jameica.views.parts.TextInput;
+import de.willuhn.jameica.fibu.gui.controller.KontoControl;
+import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
 
 /**
  * @author willuhn
@@ -128,6 +120,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.3  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

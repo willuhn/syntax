@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/10 23:51:52 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,15 +10,16 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.fibu.rmi.*;
 import de.willuhn.jameica.rmi.DBIterator;
+import de.willuhn.jameica.server.AbstractDBObject;
 
 /**
  * @author willuhn
@@ -167,6 +168,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.3  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/10 23:51:52  willuhn
  * *** empty log message ***
  *

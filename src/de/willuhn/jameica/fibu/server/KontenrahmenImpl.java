@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/11 21:00:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,13 +11,14 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.objects;
+package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
 import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.server.AbstractDBObject;
 
 /**
  * @author willuhn
@@ -98,6 +99,9 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.6  2003/12/11 21:00:34  willuhn
+ * @C refactoring
+ *
  * Revision 1.5  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/10 23:51:53 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/11 21:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,24 +10,22 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.jameica.fibu.controller;
+package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
-import de.willuhn.jameica.GUI;
-import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.*;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.objects.Finanzamt;
-import de.willuhn.jameica.fibu.objects.Kontenrahmen;
-import de.willuhn.jameica.fibu.objects.Mandant;
+import de.willuhn.jameica.fibu.gui.views.MandantListe;
+import de.willuhn.jameica.fibu.gui.views.MandantNeu;
+import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.views.parts.Controller;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
-import de.willuhn.jameica.views.parts.Controller;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -109,7 +107,7 @@ public class MandantControl extends Controller
    */
   public void handleCancel()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.MandantListe",null);
+    GUI.startView(MandantListe.class.getName(),null);
   }
 
   /**
@@ -195,7 +193,7 @@ public class MandantControl extends Controller
   {
     try {
       Mandant mandant = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,id);
-      GUI.startView("de.willuhn.jameica.fibu.views.MandantNeu",mandant);
+      GUI.startView(MandantNeu.class.getName(),mandant);
     }
     catch (RemoteException e)
     {
@@ -210,13 +208,16 @@ public class MandantControl extends Controller
    */
   public void handleCreate()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.MandantNeu",null);
+    GUI.startView(MandantNeu.class.getName(),null);
   }
 
 }
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.6  2003/12/11 21:00:35  willuhn
+ * @C refactoring
+ *
  * Revision 1.5  2003/12/10 23:51:53  willuhn
  * *** empty log message ***
  *
