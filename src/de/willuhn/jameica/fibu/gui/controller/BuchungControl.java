@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.20 $
+ * $Date: 2004/02/25 23:11:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,6 @@ import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.server.KontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
@@ -177,8 +176,7 @@ public class BuchungControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 		
-		// TODO richtige Impl wird nicht gefunden.
-		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
+		DBIterator list = Settings.getDatabase().createList(Konto.class);
 		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
 		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
 		d.addColumn(I18N.tr("Name"),"name");
@@ -218,8 +216,7 @@ public class BuchungControl extends AbstractControl
 		if (geldKontoAuswahl != null)
 			return geldKontoAuswahl;
 		
-		// TODO richtige Impl wird nicht gefunden.
-		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
+		DBIterator list = Settings.getDatabase().createList(Konto.class);
 		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
 		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
 		d.addColumn(I18N.tr("Name"),"name");
@@ -641,6 +638,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.20  2004/02/25 23:11:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

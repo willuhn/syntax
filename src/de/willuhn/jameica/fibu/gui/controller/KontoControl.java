@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.14 $
+ * $Date: 2004/02/25 23:11:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.fibu.server.KontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.parts.Input;
@@ -88,8 +87,7 @@ public class KontoControl extends AbstractControl
   public Table getKontoListe() throws RemoteException
 	{
 
-    // TODO: Der ClassFinder nimmt leider GeldKontoImpl wenn ich nur das Interface Konto angebe
-		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
+		DBIterator list = Settings.getDatabase().createList(Konto.class);
 
 		Table table = new Table(list,this);
 		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
@@ -255,6 +253,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.14  2004/02/25 23:11:29  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *
