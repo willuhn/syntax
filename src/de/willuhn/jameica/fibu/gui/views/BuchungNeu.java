@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@ package de.willuhn.jameica.fibu.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -31,7 +29,7 @@ import de.willuhn.jameica.fibu.objects.Settings;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
-import de.willuhn.jameica.views.parts.CurrencyInput;
+import de.willuhn.jameica.views.parts.DecimalInput;
 import de.willuhn.jameica.views.parts.Headline;
 import de.willuhn.jameica.views.parts.LabelGroup;
 import de.willuhn.jameica.views.parts.SelectInput;
@@ -99,8 +97,8 @@ public class BuchungNeu extends AbstractView
 
       TextInput text              = new TextInput(buchung.getText());
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
-      CurrencyInput betrag        = new CurrencyInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()),
-                                                      Settings.getCurrency());
+      DecimalInput betrag         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()));
+        betrag.addComment(Settings.getCurrency(),null);
 
       // TODO: Steuer des oberen Kontos anzeigen und aktualisieren!!
       // Fuer fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
@@ -156,25 +154,28 @@ public class BuchungNeu extends AbstractView
    * @author willuhn
    * 24.11.2003
    */
-  class SaldoListener implements FocusListener,Listener
+  class SaldoListener implements Listener
   {
-
     private SelectInput select;
 
-
     /**
-     * Kosntruktor.
+     * Konstruktor.
      * @param s SelectInput-Feld, an dem der Listener haengt.
      */
-    SaldoListener(SelectInput s)
+    SaldoListener(SelectInput select)
     {
-      this.select = s;
+      this.select = select;
     }
 
-    private void handle(Combo c)
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
     {
       try {
-        String kontonummer = (String) c.getText();
+        Combo c = (Combo) event.widget;
+        String kontonummer = c.getText();
+        System.out.println("Konto: " +kontonummer);
         DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
         if (!list.hasNext()) return;
@@ -189,35 +190,15 @@ public class BuchungNeu extends AbstractView
       }
     }
 
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      handle((Combo) event.widget);
-    }
-
-    /**
-     * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
-     */
-    public void focusGained(FocusEvent event)
-    {
-      handle((Combo) event.widget);
-    }
-
-    /**
-     * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
-     */
-    public void focusLost(FocusEvent event)
-    {
-      handle((Combo) event.widget);
-    }
-    
   }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.8  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.7  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,13 @@ public interface Konto extends DBObject
   public String getKontonummer() throws RemoteException;
 
   /**
+   * Liefert den Kontenrahmen, in dem sich das Konto befindet.
+   * @return Kontenrahmen des Kontos.
+   * @throws RemoteException
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException;
+
+  /**
    * Liefert den Saldo des Kontos.
    * @return Saldo.
    * @throws RemoteException
@@ -61,16 +68,20 @@ public interface Konto extends DBObject
   public int getTyp() throws RemoteException;
 
   /**
-   * Liefert den Mehrwertsteuersatz des Kontos.
+   * Liefert den Steuersatz des Kontos.
    * @return
    * @throws RemoteException
    */
-  public double getMwStSatz() throws RemoteException;
+  public Steuer getSteuer() throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.6  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.5  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,6 +135,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setKonto(Konto k) throws RemoteException
   {
+    if (k == null) return;
     setField("konto_id",new Integer(k.getID()));
   }
 
@@ -143,6 +144,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setGeldKonto(Konto k) throws RemoteException
   {
+    if (k == null) return;
     setField("geldkonto_id",new Integer(k.getID()));
   }
 
@@ -151,6 +153,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setMandant(Mandant m) throws RemoteException
   {
+    if (m == null) return;
     setField("mandant_id",new Integer(m.getID()));
   }
 
@@ -232,6 +235,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   {
     try {
 
+      if (getBetrag() == 0)
+        throw new ApplicationException("Bitte geben Sie einen Buchungsbetrag ein.");
+
       // ich muss hier deshalb getField() aufrufen, weil getBelegnummer automatisch eine erzeugt
       if (getField("belegnummer") == null)
         throw new ApplicationException("Bitte geben Sie eine Belegnummer ein.");
@@ -264,6 +270,8 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     }
     catch (RemoteException e)
     {
+      if (Application.DEBUG)
+        e.printStackTrace();
       throw new ApplicationException("Fehler bei der Prüfung des Datums.",e);
     }
   }
@@ -292,6 +300,10 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.9  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.8  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

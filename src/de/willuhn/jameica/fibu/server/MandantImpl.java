@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -193,6 +193,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
   {
+    if (kontenrahmen == null) return;
     setField("kontenrahmen_id",new Integer(kontenrahmen.getID()));
   }
 
@@ -225,6 +226,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException
   {
+    if (finanzamt == null) return;
     setField("finanzamt_id",new Integer(finanzamt.getID()));
   }
 
@@ -317,6 +319,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.7  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.6  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

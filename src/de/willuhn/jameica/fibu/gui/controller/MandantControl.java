@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ public class MandantControl extends Controller
 
   /**
    * Erzeugt einen neuen Controller der fuer diesen Mandanten zustaendig ist.
-   * @param object die Buchung.
+   * @param object der Mandant.
    */
   public MandantControl(DBObject object)
   {
@@ -222,6 +222,10 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.4  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.3  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

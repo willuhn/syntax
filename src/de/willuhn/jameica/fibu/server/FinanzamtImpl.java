@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
       DBIterator list = Application.getDefaultDatabase().createList(Mandant.class);
       list.addFilter("finanzamt_id='" + getID() + "'");
       if (list.hasNext())
-        throw new ApplicationException("Das Finanzamt ist einem Mandanten zugwiesen.\n" +
+        throw new ApplicationException("Das Finanzamt ist einem Mandanten zugewiesen.\n" +
           "Bitte ändern oder löschen zu Sie zunächst den Mandanten.");
     }
     catch (RemoteException e)
@@ -207,6 +207,10 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.4  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.3  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

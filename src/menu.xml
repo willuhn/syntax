@@ -7,6 +7,7 @@
     <item name="-" />
     <item name="&amp;Einstellungen"       class="de.willuhn.jameica.fibu.views.Settings" />
     <item name="&amp;Finanzämter"         class="de.willuhn.jameica.fibu.views.FinanzamtListe" />
+    <item name="&amp;Steuersätze"         class="de.willuhn.jameica.fibu.views.SteuerListe" />
   </cascade>
 
 </menu>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/01 20:29:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 
@@ -53,6 +54,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#getKontenrahmen()
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException
+  {
+    return (Kontenrahmen) getField("kontenrahmen_id");
+  }
+
+  /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
    */
   public String getPrimaryField() throws RemoteException
@@ -65,14 +74,20 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public double getSaldo() throws RemoteException
   {
-    // TODO: Nur aktuelles Geschaeftsjahr bei den Buchungen heranziehen
     try {
       // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
       if ("".equals(getID()) || getID() == null)
         return 0;
 
       Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("select sum(betrag) as betrag from buchung where konto_id = " + Integer.parseInt(getID()));
+      Mandant m = Settings.getActiveMandant();
+      if (m == null)
+        throw new RemoteException("active mandant not set.");
+
+      String sql = "select sum(betrag) as betrag from buchung where YEAR(datum) = "+m.getGeschaeftsjahr() + " and mandant_id = "+ m.getID() +" and konto_id = " + Integer.parseInt(getID());
+      if (Application.DEBUG)
+        Application.getLog().debug("executing: " + sql);
+      ResultSet rs = stmt.executeQuery(sql);
       rs.next();
       return rs.getDouble("betrag");
     }
@@ -104,15 +119,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getMwStSatz()
+   * @see de.willuhn.jameica.fibu.objects.Konto#getSteuer()
    */
-  public double getMwStSatz() throws RemoteException
+  public Steuer getSteuer() throws RemoteException
   {
-    Double d = (Double) getField("mwstsatz");
-    if (d != null)
-      return d.doubleValue();
-
-    throw new RemoteException("unable to determine mwst of this konto");
+    return (Steuer) getField("steuer_id");
   }
 
   /**
@@ -120,6 +131,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Class getForeignObject(String field) throws RemoteException
   {
+    if ("steuer_id".equals(field))
+      return Steuer.class;
+    if ("kontenrahmen_id".equals(field))
+      return Kontenrahmen.class;
     return null;
   }
 
@@ -145,6 +160,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public void updateCheck() throws ApplicationException
   {
     try {
+      if (getKontenrahmen() == null)
+        throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
+
       String name = (String) getField("name");
       if (name == null || "".equals(name))
         throw new ApplicationException("Bitte geben Sie einen Namen für das Konto ein.");
@@ -162,10 +180,31 @@ public class KontoImpl extends AbstractDBObject implements Konto
       throw new ApplicationException("Fehler bei der Überprüfung der Pflichtfelder",e);
     }
   }
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   */
+  protected String getListQuery() throws RemoteException
+  {
+    // ueberschreiben wir, weil wir nur die Konten des Kontenrahmens des aktiven Mandanten haben wollen
+    Mandant m = Settings.getActiveMandant();
+    if (m == null)
+      throw new RemoteException("no active mandant defined.");
+    
+    Kontenrahmen k = m.getKontenrahmen();
+    if (k == null)
+      throw new RemoteException("no kontenrahmen defined.");
+
+    return "select id from " + getTableName() + " where kontenrahmen_id = " + k.getID();
+  }
+
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.7  2003/12/01 20:29:00  willuhn
+ * @B filter in DBIteratorImpl
+ * @N InputFelder generalisiert
+ *
  * Revision 1.6  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *
