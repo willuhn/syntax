@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerKontoSearchDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/15 19:08:03 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,9 +38,7 @@ public class SteuerKontoSearchDialog extends SearchDialog
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
-      Application.getLog().error("unable to init steuerkonto search dialog.");
+      Application.getLog().error("unable to init steuerkonto search dialog.",e);
       GUI.setActionText(I18N.tr("Fehler beim Öffnen des Such-Dialogs."));
     }
     
@@ -65,9 +63,7 @@ public class SteuerKontoSearchDialog extends SearchDialog
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
-      Application.getLog().error("unable to load selected object.");
+      Application.getLog().error("unable to load selected object.",e);
       GUI.setActionText(I18N.tr("Fehler beim Lesen des ausgewählten Steuer-Sammelkontos."));
       return "";
     }
@@ -76,6 +72,9 @@ public class SteuerKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: SteuerKontoSearchDialog.java,v $
+ * Revision 1.4  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.3  2003/12/15 19:08:03  willuhn
  * *** empty log message ***
  *

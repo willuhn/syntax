@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,10 +166,8 @@ public class SteuerControl extends Controller
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
       GUI.setActionText("Fehler beim Speichern des Steuersatzes.");
-      Application.getLog().error("unable to store steuer");
+      Application.getLog().error("unable to store steuer",e);
     }
     
   }
@@ -203,6 +201,9 @@ public class SteuerControl extends Controller
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.6  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.5  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

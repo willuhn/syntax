@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,10 +178,8 @@ public class MandantControl extends Controller
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("unable to store mandant",e);
       GUI.setActionText("Fehler beim Speichern des Mandanten.");
-      Application.getLog().error("unable to store mandant");
     }
     
   }
@@ -215,6 +213,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.9  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.8  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

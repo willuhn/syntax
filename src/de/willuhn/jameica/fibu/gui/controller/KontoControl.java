@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,10 +107,8 @@ public class KontoControl extends Controller
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("unable to store konto",e);
       GUI.setActionText("Fehler beim Speichern des Kontos.");
-      Application.getLog().error("unable to store konto");
     }
     
   }
@@ -148,6 +146,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.6  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.5  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.17 $
- * $Date: 2003/12/16 02:27:33 $
+ * $Revision: 1.18 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -132,8 +132,7 @@ public class BuchungNeu extends AbstractView
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while reading buchung",e);
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Buchungsdaten."));
     }
 
@@ -283,6 +282,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.18  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.17  2003/12/16 02:27:33  willuhn
  * @N BuchungsEngine
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,8 +97,7 @@ public class KontoNeu extends AbstractView
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while reading konto",e);
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten."));
     }
 
@@ -120,6 +119,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.4  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.3  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

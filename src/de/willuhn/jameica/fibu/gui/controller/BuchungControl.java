@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2003/12/16 02:27:32 $
+ * $Revision: 1.14 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -254,10 +254,8 @@ public class BuchungControl extends Controller
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("unable to store buchung",e);
       GUI.setActionText("Fehler beim Speichern der Buchung.");
-      Application.getLog().error("unable to store buchung");
     }
     
   }
@@ -291,6 +289,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.14  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.13  2003/12/16 02:27:32  willuhn
  * @N BuchungsEngine
  *

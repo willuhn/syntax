@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/15 19:08:03 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,9 +89,8 @@ public class FinanzamtNeu extends AbstractView
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandantendaten."));
+			Application.getLog().error("error while reading finanzamt",e);
+      GUI.setActionText(I18N.tr("Fehler beim Lesen des Finanzamtes."));
     }
 
 
@@ -113,6 +112,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.5  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.4  2003/12/15 19:08:03  willuhn
  * *** empty log message ***
  *

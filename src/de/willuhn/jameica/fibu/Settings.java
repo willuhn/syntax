@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,8 +97,7 @@ public class Settings
     }
     catch (Exception e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("unable to set database",e);
       throw new RemoteException(e.getMessage());
     }
     
@@ -125,8 +124,7 @@ public class Settings
     }
     catch (Exception e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("unable to get database",e);
       throw new RemoteException(e.getMessage());
     }
   }
@@ -135,6 +133,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.4  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.3  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2003/12/19 19:45:06 $
+ * $Revision: 1.19 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -295,8 +295,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while checking buchung",e);
       throw new ApplicationException("Fehler bei der Prüfung der Buchung.",e);
     }
   }
@@ -382,6 +381,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.19  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.18  2003/12/19 19:45:06  willuhn
  * *** empty log message ***
  *

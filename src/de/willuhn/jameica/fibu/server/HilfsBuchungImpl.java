@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/19 19:45:06 $
+ * $Revision: 1.3 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,8 +73,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while reading hilfsbuchung",e);
       throw new ApplicationException("Fehler bei der Prüfung der Hilfs-Buchung.",e);
     }
     super.updateCheck();
@@ -106,6 +105,9 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.3  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.2  2003/12/19 19:45:06  willuhn
  * *** empty log message ***
  *

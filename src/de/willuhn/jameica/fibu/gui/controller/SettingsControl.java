@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,9 +79,7 @@ public class SettingsControl extends Controller
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
-      Application.getLog().error("error while saving dafeult mandant");
+      Application.getLog().error("error while saving dafeult mandant",e);
       GUI.setActionText(I18N.tr("Fehler bei der Speicherung des aktiven Mandanten"));
     }
 
@@ -107,6 +105,9 @@ public class SettingsControl extends Controller
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.5  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.4  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

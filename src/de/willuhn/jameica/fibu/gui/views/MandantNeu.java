@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,8 +135,7 @@ public class MandantNeu extends AbstractView
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while reading mandant",e);
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandantendaten."));
     }
 
@@ -159,6 +158,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.7  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.6  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/12 21:11:27 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -206,8 +206,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
     catch (Exception e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while checking mandant",e);
       return false;
     }
   }
@@ -318,6 +317,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.10  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.9  2003/12/12 21:11:27  willuhn
  * @N ObjectMetaCache
  *

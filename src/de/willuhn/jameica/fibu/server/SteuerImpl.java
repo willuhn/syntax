@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,8 +113,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while checking dependencies",e);
       throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
     }
   }
@@ -140,8 +139,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
     }
     catch (RemoteException e)
     {
-      if (Application.DEBUG)
-        e.printStackTrace();
+			Application.getLog().error("error while checking dependencies",e);
       throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
   }
@@ -166,6 +164,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.6  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.5  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

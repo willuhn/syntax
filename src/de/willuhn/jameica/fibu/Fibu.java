@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/11 21:00:35 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/03 18:07:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,13 @@ import java.text.*;
 import java.util.Locale;
 import java.util.jar.JarFile;
 
-import de.willuhn.jameica.Plugin;
+import de.willuhn.jameica.AbstractPlugin;
 
 /**
  * Basisklasse des Fibu-Plugins fuer das Jameica-Framework.
  * @author willuhn
  */
-public class Fibu implements Plugin
+public class Fibu extends AbstractPlugin
 {
 
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
@@ -52,6 +52,7 @@ public class Fibu implements Plugin
    */
   public Fibu(JarFile jar)
   {
+  	super(jar);
   }
 
   /**
@@ -71,25 +72,28 @@ public class Fibu implements Plugin
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#getName()
+   * @see de.willuhn.jameica.Plugin#install()
    */
-  public String getName()
+  public boolean install()
   {
-    return "Fibu für Jameica";
+    return false;
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#getVersion()
+   * @see de.willuhn.jameica.Plugin#update(double)
    */
-  public double getVersion()
+  public boolean update(double oldVersion)
   {
-    return 1.0;
+    return false;
   }
 
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.10  2004/01/03 18:07:22  willuhn
+ * @N Exception logging
+ *
  * Revision 1.9  2003/12/11 21:00:35  willuhn
  * @C refactoring
  *
