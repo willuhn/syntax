@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:35 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/12 01:28:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,7 @@ public class KontoControl extends Controller
    */
   public void handleDelete()
   {
-    MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
+    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
     box.setText(I18N.tr("Fehler"));
     box.setMessage(I18N.tr("Konten dürfen nicht gelöscht werden."));
     box.open();
@@ -136,7 +136,7 @@ public class KontoControl extends Controller
    */
   public void handleCreate()
   {
-    MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
+    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
     box.setText(I18N.tr("Fehler"));
     box.setMessage(I18N.tr("Neue Konten können nicht angelegt werden."));
     box.open();
@@ -147,6 +147,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.4  2003/12/12 01:28:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/12/11 21:00:35  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/12/11 21:00:35 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/12 01:28:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class MandantControl extends Controller
         return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
       }
 
-      MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.YES | SWT.NO);
+      MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
       box.setText(I18N.tr("Mandant wirklich löschen?"));
       box.setMessage(I18N.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
       if (box.open() != SWT.YES)
@@ -88,7 +88,7 @@ public class MandantControl extends Controller
     }
     catch (ApplicationException e1)
     {
-      MessageBox box2 = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
+      MessageBox box2 = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
       box2.setText(I18N.tr("Fehler"));
       box2.setMessage(e1.getLocalizedMessage());
       box2.open();
@@ -215,6 +215,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.7  2003/12/12 01:28:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2003/12/11 21:00:35  willuhn
  * @C refactoring
  *

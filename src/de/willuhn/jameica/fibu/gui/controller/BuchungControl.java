@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/11 21:00:35 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/12 01:28:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class BuchungControl extends Controller
       Application.getLog().error("no valid buchung found");
     }
 
-    MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.YES | SWT.NO);
+    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
     box.setText(I18N.tr("Buchung wirklich löschen?"));
     box.setMessage(I18N.tr("Wollen Sie diese Buchung wirklich löschen?"));
     if (box.open() == SWT.YES)
@@ -291,6 +291,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.11  2003/12/12 01:28:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/12/11 21:00:35  willuhn
  * @C refactoring
  *
