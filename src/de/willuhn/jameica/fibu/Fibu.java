@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.11 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,19 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu;
 
-import java.text.*;
+import java.io.File;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.jar.JarFile;
 
+import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
+import de.willuhn.jameica.Application;
 
 /**
  * Basisklasse des Fibu-Plugins fuer das Jameica-Framework.
@@ -59,8 +67,17 @@ public class Fibu extends AbstractPlugin
    * Initialisiert das Plugin.
    * @see de.willuhn.jameica.Plugin#init()
    */
-  public void init()
+  public boolean init()
   {
+		try {
+			Settings.setDatabase(getDatabase().getDBService());
+		}
+		catch (RemoteException e)
+		{
+			Application.getLog().error("unable to open database",e);
+			return false;
+		}
+		return true;
   }
 
   /**
@@ -76,7 +93,29 @@ public class Fibu extends AbstractPlugin
    */
   public boolean install()
   {
-    return false;
+		EmbeddedDatabase db = getDatabase();
+		if (!db.exists())
+		{
+			try {
+				db.create();
+			}
+			catch (IOException e)
+			{
+				Application.getLog().error("unable to create database",e);
+				return false;
+			}
+			try
+			{
+				db.executeSQLScript(new File(getPath() + "/sql/create_mckoi.sql"));
+			}
+			catch (Exception e)
+			{
+				Application.getLog().error("unable to create sql tables",e);
+				return false;
+			}
+      
+		}
+		return true;
   }
 
   /**
@@ -84,13 +123,16 @@ public class Fibu extends AbstractPlugin
    */
   public boolean update(double oldVersion)
   {
-    return false;
+    return true;
   }
 
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.11  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

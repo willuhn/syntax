@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.12 $
- * $Date: 2003/12/16 02:27:33 $
+ * $Revision: 1.13 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,15 +12,19 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
+import org.eclipse.swt.widgets.Composite;
+
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
-import de.willuhn.jameica.rmi.DBIterator;
+import de.willuhn.jameica.gui.views.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.parts.Headline;
+import de.willuhn.jameica.gui.views.parts.Table;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -28,21 +32,22 @@ import de.willuhn.jameica.rmi.DBIterator;
 public class BuchungListe extends AbstractView
 {
 
+
   /**
-   * Erzeugt einen neuen Dialog des Typs "Buchungsliste".
-   * @param o
+   * @param parent
    */
-  public BuchungListe(Object o)
+  public BuchungListe(Composite parent)
   {
-    super(o);
+    super(parent);
   }
+
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Buchungsliste."));
+    addHeadline("Buchungsliste.");
 
     try {
       Buchung buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
@@ -84,6 +89,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.13  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2003/12/16 02:27:33  willuhn
  * @N BuchungsEngine
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Diese Klasse bildet die Konten in Fibu ab.
@@ -108,6 +108,9 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.9  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

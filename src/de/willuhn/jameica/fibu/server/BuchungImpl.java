@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.20 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,13 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.*;
-import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.server.AbstractDBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -381,6 +381,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.20  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

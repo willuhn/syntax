@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,11 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.*;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -105,6 +105,9 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.4  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

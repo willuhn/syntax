@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/11 21:00:34 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,9 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.I18N;
+import org.eclipse.swt.widgets.Composite;
+
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.Headline;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -22,9 +24,12 @@ import de.willuhn.jameica.gui.views.parts.Headline;
 public class Welcome extends AbstractView
 {
 
-  public Welcome(Object o)
+  /**
+   * @param parent
+   */
+  public Welcome(Composite parent)
   {
-    super(o);
+    super(parent);
   }
 
   /**
@@ -45,6 +50,9 @@ public class Welcome extends AbstractView
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.5  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/11 21:00:34  willuhn
  * @C refactoring
  *

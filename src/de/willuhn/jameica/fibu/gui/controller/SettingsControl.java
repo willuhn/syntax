@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,13 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.Welcome;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.parts.Controller;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.util.I18N;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -105,6 +104,9 @@ public class SettingsControl extends Controller
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.6  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

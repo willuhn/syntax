@@ -5,5 +5,7 @@
     <classpathentry kind="src" path="/jameica"/>
     <classpathentry kind="lib" path="/jameica/lib/linux/swt.jar" sourcepath="lib/linux/swtsrc.zip"/>
     <classpathentry kind="lib" path="/jameica/lib/linux/swt-pi.jar"/>
+    <classpathentry kind="src" path="/util"/>
+    <classpathentry kind="src" path="/datasource"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

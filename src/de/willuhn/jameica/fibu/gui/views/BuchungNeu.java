@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.19 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,18 +17,23 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.*;
-import de.willuhn.jameica.rmi.DBIterator;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -36,13 +41,17 @@ import de.willuhn.jameica.rmi.DBIterator;
 public class BuchungNeu extends AbstractView
 {
 
+  /**
+   * @param parent
+   */
+  public BuchungNeu(Composite parent)
+  {
+    super(parent);
+  }
+
   private DecimalInput steuer;
   private ButtonArea buttonArea; // Member damit wir den Speichern-Knopf bei Fehlern ausgrauen koennen
 
-  public BuchungNeu(Object o)
-  {
-    super(o);
-  }
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -282,6 +291,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.19  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

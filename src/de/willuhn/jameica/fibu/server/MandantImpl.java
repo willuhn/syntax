@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.11 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,14 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 
+import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.*;
-import de.willuhn.jameica.server.AbstractDBObject;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -317,6 +319,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.11  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

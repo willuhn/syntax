@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/12 21:11:27 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,9 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.ApplicationException;
+import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.server.AbstractDBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -104,6 +104,9 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.5  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/12 21:11:27  willuhn
  * @N ObjectMetaCache
  *

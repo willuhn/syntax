@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,9 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Composite;
+
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
@@ -24,6 +25,7 @@ import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -31,9 +33,13 @@ import de.willuhn.jameica.gui.views.parts.*;
 public class SteuerNeu extends AbstractView
 {
 
-  public SteuerNeu(Object o)
+
+  /**
+   * @param parent
+   */
+  public SteuerNeu(Composite parent)
   {
-    super(o);
+    super(parent);
   }
 
   /**
@@ -109,6 +115,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.7  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

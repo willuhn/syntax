@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Settings.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,16 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Composite;
+
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.gui.controller.SettingsControl;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.*;
-import de.willuhn.jameica.rmi.DBIterator;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -29,9 +31,13 @@ import de.willuhn.jameica.rmi.DBIterator;
 public class Settings extends AbstractView
 {
 
-  public Settings(Object o)
+
+  /**
+   * @param parent
+   */
+  public Settings(Composite parent)
   {
-    super(o);
+    super(parent);
   }
 
   /**
@@ -109,6 +115,9 @@ public class Settings extends AbstractView
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.6  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

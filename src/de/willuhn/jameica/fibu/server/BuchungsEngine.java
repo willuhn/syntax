@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/16 02:27:33 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.*;
-import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 
 /**
  * Diese Klasse uebernimmt alle Buchungen.
@@ -90,6 +88,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.2  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/16 02:27:33  willuhn
  * @N BuchungsEngine
  *

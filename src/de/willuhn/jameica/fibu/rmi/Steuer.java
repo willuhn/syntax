@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/12/11 21:00:35 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Diese Klasse bildet die verschiedenen Steuersätze in Fibu ab.
@@ -69,6 +69,9 @@ public interface Steuer extends DBObject
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.4  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/12/11 21:00:35  willuhn
  * @C refactoring
  *

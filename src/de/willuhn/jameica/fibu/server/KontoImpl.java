@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.13 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,14 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
-import de.willuhn.jameica.ApplicationException;
+import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.*;
-import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.server.AbstractDBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -249,6 +250,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.13  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

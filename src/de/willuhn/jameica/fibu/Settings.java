@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,12 @@ package de.willuhn.jameica.fibu;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.ServiceData;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.Config;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.rmi.*;
-import de.willuhn.jameica.rmi.DBHub;
-import de.willuhn.jameica.rmi.DBIterator;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -29,7 +29,26 @@ public class Settings
 {
 
   private static de.willuhn.jameica.Settings settings = new de.willuhn.jameica.Settings(Fibu.class);
-  private static DBHub db = null;
+  private static DBService db = null;
+
+	/**
+	 * Liefert den Datenbank-Service.
+	 * @return Datenbank.
+	 * @throws RemoteException
+	 */
+	public static DBService getDatabase() throws RemoteException
+	{
+		return db;
+	}
+
+	/**
+	 * Speichert die zu verwendende Datenbank.
+	 * @param db die Datenbank.
+	 */
+	protected static void setDatabase(DBService db)
+	{
+		Settings.db = db;
+	}
 
   /**
    * Liefert den aktiven Mandanten oder null wenn noch keiner als aktiv markiert ist.
@@ -103,36 +122,13 @@ public class Settings
     
   }
 
-  /**
-   * Liefert den Datenbank-Service fuer Fibu.
-   * Bei der ersten Anfrage speichern wir den DBHub gleich hier, damit
-   * er beim naechsten Request gleich da ist.
-   * @return Datenbank-Servicehub.
-   * @throws RemoteException
-   */
-  public static DBHub getDatabase() throws RemoteException
-  {
-    if (db != null)
-      return db;
-
-    try {
-      db = (DBHub) ServiceFactory.lookupService(settings.getAttribute("dbhub",null));
-      if (db == null)
-        throw new RemoteException("unable to find configured database service.");
-      
-      return db;
-    }
-    catch (Exception e)
-    {
-			Application.getLog().error("unable to get database",e);
-      throw new RemoteException(e.getMessage());
-    }
-  }
-
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.5  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

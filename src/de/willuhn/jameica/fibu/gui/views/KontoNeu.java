@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/25 19:44:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,13 +14,17 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Composite;
+
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -28,9 +32,12 @@ import de.willuhn.jameica.gui.views.parts.*;
 public class KontoNeu extends AbstractView
 {
 
-  public KontoNeu(Object o)
+  /**
+   * @param parent
+   */
+  public KontoNeu(Composite parent)
   {
-    super(o);
+    super(parent);
   }
 
   /**
@@ -119,6 +126,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.5  2004/01/25 19:44:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *
