@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Settings.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,12 @@ import java.rmi.RemoteException;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.SettingsControl;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -46,49 +45,18 @@ public class Settings extends AbstractView
   public void bind()
   {
 
-    final SettingsControl control = new SettingsControl(null);
+    SettingsControl control = new SettingsControl(this);
 
     // Headline malen
-    new Headline(getParent(),I18N.tr("Einstellungen"));
+    addHeadline("Einstellungen");
 
     // Gruppe fachliche Einstellungen erzeugen
     LabelGroup group = new LabelGroup(getParent(),I18N.tr("fachliche Einstellungen"));
 
-    boolean store = false;
     try {
 
-
-      //////////////////////////////////////
-      // Mandant
-      Input mandantInput = null;
-      Mandant mandant = de.willuhn.jameica.fibu.Settings.getActiveMandant();
-      if (mandant == null) // noch keiner ausgewahlt. Dann jetzt bitte tun.
-        mandant = (Mandant) de.willuhn.jameica.fibu.Settings.getDatabase().createObject(Mandant.class,null);
-      
-
-      DBIterator list = mandant.getList();
-      if (list.hasNext())
-      {
-        mandantInput    = new SelectInput(mandant);
-        store = true;
-      }
-      else {
-        mandantInput    = new LabelInput(I18N.tr("Kein Mandant vorhanden. Bitte richten Sie zunächst einen ein."));
-      }
-      group.addLabelPair(I18N.tr("aktiver Mandant"),mandantInput);
-      //
-      //////////////////////////////////////
-
-      //////////////////////////////////////
-      // Waehrung
-      TextInput currency = new TextInput(de.willuhn.jameica.fibu.Settings.getCurrency());
-      group.addLabelPair(I18N.tr("Währungsbezeichnung"),currency);
-      //
-      //////////////////////////////////////
-
-      control.register("mandant", mandantInput);
-      control.register("currency", currency);
-
+      group.addLabelPair(I18N.tr("aktiver Mandant"),		control.getMandant());
+      group.addLabelPair(I18N.tr("Währungsbezeichnung"),control.getCurrency());
     }
     catch (RemoteException e)
     {
@@ -97,10 +65,10 @@ public class Settings extends AbstractView
     }
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),store ? 2 : 1);
+    ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 2 : 1);
     buttonArea.addCancelButton(control);
 
-    if (store) buttonArea.addStoreButton(control);
+    if (control.storeAllowed()) buttonArea.addStoreButton(control);
     
   }
 
@@ -115,6 +83,9 @@ public class Settings extends AbstractView
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.7  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.6  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

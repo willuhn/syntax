@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontoart.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,10 +44,21 @@ public interface Kontoart extends DBObject
    * @throws RemoteException
    */
   public int getKontoArt() throws RemoteException;
+
+	/**
+	 * Prueft, ob die Konto-Art steuerpflichtig ist.
+   * @return true, wenn sie steuerpflichtig ist.
+   * @throws RemoteException
+   */
+  public boolean isSteuerpflichtig() throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: Kontoart.java,v $
+ * Revision 1.5  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.4  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

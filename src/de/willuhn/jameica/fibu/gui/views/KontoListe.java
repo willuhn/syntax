@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/27 21:38:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,15 +14,10 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
-import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.Headline;
-import de.willuhn.jameica.gui.views.parts.Table;
 import de.willuhn.util.I18N;
 
 /**
@@ -46,21 +41,13 @@ public class KontoListe extends AbstractView
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Liste der Konten des aktiven Mandanten."));
+
+    addHeadline("Liste der Konten des aktiven Mandanten.");
+
+		KontoControl control = new KontoControl(this);
 
     try {
-      Konto konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
-      KontoControl controller = new KontoControl(konto);
-
-      DBIterator list = Settings.getDatabase().createList(konto.getClass());
-
-      Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-      table.addColumn(I18N.tr("Name"),"name");
-      table.addColumn(I18N.tr("Kontoart"),"kontoart");
-      table.addColumn(I18N.tr("Steuer"),"steuer_id");
-      
-      table.paint(getParent());
+      control.getKontoListe().paint(getParent());
     }
     catch (Exception e)
     {
@@ -81,6 +68,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.6  2004/01/27 21:38:05  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.5  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

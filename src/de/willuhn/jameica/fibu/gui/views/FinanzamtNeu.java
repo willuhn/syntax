@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 21:38:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,15 +17,11 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
-import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.Headline;
 import de.willuhn.jameica.gui.views.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.parts.TextInput;
 import de.willuhn.util.I18N;
 
 /**
@@ -49,51 +45,21 @@ public class FinanzamtNeu extends AbstractView
   public void bind()
   {
 
-    // Wir laden erstmal das Objekt bzw. erstellen ein neues.
-    Finanzamt fa = (Finanzamt) getCurrentObject();
-    if (fa == null)
-    {
-      try {
-        fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Daten für neues Finanzamt konnte nicht erzeugt werden."));
-      }
-    }
-
-    // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
-    // Er wird die Interaktionen mit der Business-Logik uebernehmen.
-    // Damit er an die Daten des Dialogs kommt, muessen wir jedes
-    // Eingabe-Feld in ihm registrieren.
-    final FinanzamtControl control = new FinanzamtControl(fa);
+    FinanzamtControl control = new FinanzamtControl(this);
 
     // Headline malen
-    new Headline(getParent(),I18N.tr("Daten des Finanzamtes bearbeiten"));
+    addHeadline("Daten des Finanzamtes bearbeiten");
 
     try {
       
       // Gruppe Kontaktdaten erzeugen
       LabelGroup contactGroup = new LabelGroup(getParent(),I18N.tr("Anschriftsdaten"));
 
-      // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput name      = new TextInput(fa.getName());
-      TextInput postfach  = new TextInput(fa.getPostfach());
-      TextInput strasse   = new TextInput(fa.getStrasse());
-      TextInput plz       = new TextInput(fa.getPLZ());
-      TextInput ort       = new TextInput(fa.getOrt());
-
-      contactGroup.addLabelPair(I18N.tr("Name")    , name);
-      contactGroup.addLabelPair(I18N.tr("Strasse") , strasse);
-      contactGroup.addLabelPair(I18N.tr("Postfach"), postfach);
-      contactGroup.addLabelPair(I18N.tr("PLZ")     , plz);
-      contactGroup.addLabelPair(I18N.tr("Ort")     , ort);
-
-      control.register("name",name);
-      control.register("postfach",postfach);
-      control.register("strasse",strasse);
-      control.register("plz",plz);
-      control.register("ort",ort);
+      contactGroup.addLabelPair(I18N.tr("Name")    , control.getName());
+      contactGroup.addLabelPair(I18N.tr("Strasse") , control.getStrasse());
+      contactGroup.addLabelPair(I18N.tr("Postfach"), control.getPostfach());
+      contactGroup.addLabelPair(I18N.tr("PLZ")     , control.getPLZ());
+      contactGroup.addLabelPair(I18N.tr("Ort")     , control.getOrt());
 
     }
     catch (RemoteException e)
@@ -121,6 +87,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.7  2004/01/27 21:38:05  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.6  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

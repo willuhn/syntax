@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,12 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
-import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -46,61 +44,22 @@ public class KontoNeu extends AbstractView
   public void bind()
   {
 
-    // Wir laden erstmal das Objekt bzw. erstellen ein neues.
-    Konto konto = (Konto) getCurrentObject();
-    if (konto == null)
-    {
-      GUI.setActionText(I18N.tr("Konto wurde nicht gefunden."));
-      GUI.startView("de.willuhn.jameica.fibu.views.KontoListe",null);
-    }
-
-    // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
-    // Er wird die Interaktionen mit der Business-Logik uebernehmen.
-    // Damit er an die Daten des Dialogs kommt, muessen wir jedes
-    // Eingabe-Feld in ihm registrieren.
-    final KontoControl control = new KontoControl(konto);
+    KontoControl control = new KontoControl(this);
 
     // Headline malen
-    new Headline(getParent(),I18N.tr("Konto bearbeiten"));
+    addHeadline("Konto bearbeiten");
 
     try {
       
       // Gruppe erzeugen
       LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften des Kontos"));
 
-      // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput name             = new TextInput(konto.getName());
-      TextInput kontonummer      = new TextInput(konto.getKontonummer());
+      group.addLabelPair(I18N.tr("Name")        , control.getName());
+      group.addLabelPair(I18N.tr("Kontonummer") , control.getKontonummer());
+      group.addLabelPair(I18N.tr("Steuersatz")  , control.getSteuer());
+      group.addLabelPair(I18N.tr("Kontoart")    , control.getKontoart());
+      group.addLabelPair(I18N.tr("Kontenrahmen"), control.getKontenrahmen());
 
-      Kontoart ka = konto.getKontoArt();
-      LabelInput kontoart        = new LabelInput((String) ka.getField(ka.getPrimaryField()));
-
-      Input steuer = null;
-      if (
-        ka.getKontoArt() == Kontoart.KONTOART_EINNAHME ||
-        ka.getKontoArt() == Kontoart.KONTOART_AUSGABE ||
-        ka.getKontoArt() == Kontoart.KONTOART_ANLAGE
-      )
-      {
-        steuer = new SelectInput(konto.getSteuer());
-      }
-      else {
-        steuer = new LabelInput("Konto besitzt keinen Steuersatz.");
-      }
-
-
-      Kontenrahmen k = konto.getKontenrahmen();
-      LabelInput kontenrahmen    = new LabelInput((String) k.getField(k.getPrimaryField()));
-
-      group.addLabelPair(I18N.tr("Name")        , name);
-      group.addLabelPair(I18N.tr("Kontonummer") , kontonummer);
-      group.addLabelPair(I18N.tr("Steuersatz")  , steuer);
-      group.addLabelPair(I18N.tr("Kontoart")    , kontoart);
-      group.addLabelPair(I18N.tr("Kontenrahmen"), kontenrahmen);
-
-      control.register("name",name);
-      control.register("kontonummer",kontonummer);
-      control.register("steuer",steuer);
     }
     catch (RemoteException e)
     {
@@ -126,6 +85,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.6  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.5  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,18 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.Welcome;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.Input;
+import de.willuhn.jameica.gui.views.parts.LabelInput;
+import de.willuhn.jameica.gui.views.parts.SelectInput;
+import de.willuhn.jameica.gui.views.parts.TextInput;
 import de.willuhn.util.I18N;
 
 /**
@@ -27,17 +33,72 @@ import de.willuhn.util.I18N;
  * Dialogs "Einstellungen".
  * @author willuhn
  */
-public class SettingsControl extends Controller
+public class SettingsControl extends AbstractControl
 {
 
+	// Eingabe-Felder
+	private Input mandant   = null;
+	private Input currency  = null;
+
+	private boolean storeAllowed = false;
+
   /**
-   * Erzeugt einen neuen Controller der fuer die Settings zustaendig ist.
-   * @param object die Buchung.
+   * @param view
    */
-  public SettingsControl(DBObject object)
+  public SettingsControl(AbstractView view)
   {
-    super(object);
+    super(view);
   }
+
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Auswahl des Mandanten.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getMandant() throws RemoteException
+	{
+		if (mandant != null)
+			return mandant;
+
+		Mandant m = de.willuhn.jameica.fibu.Settings.getActiveMandant();
+		if (mandant == null)
+			m = (Mandant) de.willuhn.jameica.fibu.Settings.getDatabase().createObject(Mandant.class,null);
+
+		DBIterator list = m.getList();
+		if (list.hasNext())
+		{
+			storeAllowed = true;
+			mandant = new SelectInput(m);
+		}
+		else {
+			mandant = new LabelInput(I18N.tr("Kein Mandant vorhanden. Bitte richten Sie zunächst einen ein."));
+		}
+		return mandant;
+	}
+      
+	/**
+	 * Liefert das Eingabe-Feld fuer die Waehrung.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getCurrency() throws RemoteException
+	{
+		if (currency != null)
+			return currency;
+
+		currency = new TextInput(de.willuhn.jameica.fibu.Settings.getCurrency());
+		return currency;
+	}
+
+	/**
+	 * Prueft, ob das Speichern freigegeben ist.
+   * @return true, wenn das Speichern freigegeben ist.
+   */
+  public boolean storeAllowed()
+	{
+		return storeAllowed;
+	}
 
   /**
    * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
@@ -68,18 +129,22 @@ public class SettingsControl extends Controller
    */
   public void handleStore()
   {
-
-    Settings.setCurrency(getField("currency").getValue());
-
+  	if (!storeAllowed)
+  	{
+			GUI.setActionText(I18N.tr("Bitte wählen Sie einen Mandanten aus."));
+  		return;
+  	}
     try {
-      Mandant m = (Mandant) Settings.getDatabase().createObject(Mandant.class,getField("mandant").getValue());
+			Settings.setCurrency(getCurrency().getValue());
+
+      Mandant m = (Mandant) Settings.getDatabase().createObject(Mandant.class,getMandant().getValue());
       Settings.setActiveMandant(m);
-      GUI.setActionText(I18N.tr("Einstellungen gespeichert."));
+			GUI.setActionText(I18N.tr("Einstellungen gespeichert."));
     }
     catch (RemoteException e)
     {
-      Application.getLog().error("error while saving dafeult mandant",e);
-      GUI.setActionText(I18N.tr("Fehler bei der Speicherung des aktiven Mandanten"));
+      Application.getLog().error("error while saving the settings",e);
+      GUI.setActionText(I18N.tr("Fehler beim Speichern der Einstellungen"));
     }
 
   }
@@ -104,6 +169,9 @@ public class SettingsControl extends Controller
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.7  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.6  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

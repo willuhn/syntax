@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,10 +100,23 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
     }
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontoart#isSteuerpflichtig()
+   */
+  public boolean isSteuerpflichtig() throws RemoteException
+  {
+		return (getKontoArt() == Kontoart.KONTOART_EINNAHME ||
+						getKontoArt() == Kontoart.KONTOART_AUSGABE ||
+						getKontoArt() == Kontoart.KONTOART_ANLAGE);
+  }
+
 }
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.6  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.5  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.14 $
+ * $Date: 2004/01/27 21:38:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,11 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.Headline;
-import de.willuhn.jameica.gui.views.parts.Table;
 import de.willuhn.util.I18N;
 
 /**
@@ -49,25 +44,14 @@ public class BuchungListe extends AbstractView
   {
     addHeadline("Buchungsliste.");
 
+		BuchungControl control = new BuchungControl(this);
+
     try {
-      Buchung buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
-      BuchungControl controller = new BuchungControl(buchung);
 
-      DBIterator list = Settings.getDatabase().createList(buchung.getClass());
-      list.setOrder("order by id desc");
-
-      Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Datum"),"datum");
-      table.addColumn(I18N.tr("Konto"),"konto_id");
-      table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
-      table.addColumn(I18N.tr("Text"),"text");
-      table.addColumn(I18N.tr("Beleg"),"belegnummer");
-      table.addColumn(I18N.tr("Netto-Betrag"),"betrag");
-      
-      table.paint(getParent());
+      control.getBuchungListe().paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neue Buchung"),controller);
+      buttons.addCreateButton(I18N.tr("Neue Buchung"),control);
 
     }
     catch (Exception e)
@@ -89,6 +73,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.14  2004/01/27 21:38:05  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.13  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

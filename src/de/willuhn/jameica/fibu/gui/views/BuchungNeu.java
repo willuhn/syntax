@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.20 $
+ * $Date: 2004/01/27 21:38:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,26 +13,15 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
-import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.GeldKonto;
-import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -49,8 +38,6 @@ public class BuchungNeu extends AbstractView
     super(parent);
   }
 
-  private DecimalInput steuer;
-  private ButtonArea buttonArea; // Member damit wir den Speichern-Knopf bei Fehlern ausgrauen koennen
 
 
   /**
@@ -59,85 +46,26 @@ public class BuchungNeu extends AbstractView
   public void bind()
   {
 
-    // Wir laden erstmal das Objekt bzw. erstellen ein neues.
-    Buchung buchung = (Buchung) getCurrentObject();
-    if (buchung == null)
-    {
-      try {
-        buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Neue Buchung konnte nicht erzeugt werden."));
-      }
-    }
+		// Headline malen
+		addHeadline("Buchung bearbeiten");
 
-
-    // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
-    // Er wird die Interaktionen mit der Business-Logik uebernehmen.
-    // Damit er an die Daten des Dialogs kommt, muessen wir jedes
-    // Eingabe-Feld in ihm registrieren.
-    final BuchungControl control = new BuchungControl(buchung);
-
-    // Headline malen
-    new Headline(getParent(),I18N.tr("Buchung bearbeiten"));
+    BuchungControl control = new BuchungControl(this);
 
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),I18N.tr("Konto"));
 
     try {
       
-      // Saldo: Summe aller Netto-Buchungen auf diesem Konto
-      Konto konto     = buchung.getKonto();
-      if (konto == null) konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
-
-      // besser Eingabefeld mit Knopf zur Suche dahinter
-      GeldKonto geldKonto = buchung.getGeldKonto();
-      if (geldKonto == null) geldKonto = (GeldKonto) Settings.getDatabase().createObject(GeldKonto.class,null);
-
-      // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
-      datum.addComment(I18N.tr("Wochentag: "),new WochentagListener(datum));
-
-      SearchInput kontoInput      = new SearchInput(konto.getKontonummer(), new KontoSearchDialog());
-      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer(), new GeldKontoSearchDialog());
-
-      TextInput text              = new TextInput(buchung.getText());
-
-      TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
-
-      DecimalInput betrag         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()));
-        betrag.addComment(Settings.getCurrency(),null);
-
-      // Das Ding ist deswegen ein Member, weil wir es beim Kontowechsel aktualisieren muessen
-      steuer         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getSteuer()));
-        steuer.addComment("%",null);
-
-      // Wir fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
-      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput,steuer));
-      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput,null));
-
-      // Fuegen sie zur Gruppe Konto hinzu
-      kontoGroup.addLabelPair(I18N.tr("Datum"),       datum);
-      kontoGroup.addLabelPair(I18N.tr("Konto"),       kontoInput);
-      kontoGroup.addLabelPair(I18N.tr("Geld-Konto"),  geldKontoInput);
-      kontoGroup.addLabelPair(I18N.tr("Text"),        text);
-      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."),   belegnummer);
-      kontoGroup.addLabelPair(I18N.tr("Betrag"),      betrag);
-      kontoGroup.addLabelPair(I18N.tr("Steuer"),      steuer);
-
-      // und registrieren sie im Controller.
-      control.register("datum",        datum);
-      control.register("konto",        kontoInput);
-      control.register("geldkonto",    geldKontoInput);
-      control.register("text",         text);
-      control.register("belegnummer",  belegnummer);
-      control.register("betrag",       betrag);
-      control.register("steuer",       steuer);
+      kontoGroup.addLabelPair(I18N.tr("Datum"),       control.getDatum());
+      kontoGroup.addLabelPair(I18N.tr("Konto"),       control.getKontoAuswahl());
+      kontoGroup.addLabelPair(I18N.tr("Geld-Konto"),  control.getGeldKontoAuswahl());
+      kontoGroup.addLabelPair(I18N.tr("Text"),        control.getText());
+      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."),   control.getBelegnummer());
+      kontoGroup.addLabelPair(I18N.tr("Betrag"),      control.getBetrag());
+      kontoGroup.addLabelPair(I18N.tr("Steuer"),      control.getSteuer());
 
       // wir machen das Datums-Feld zu dem mit dem Focus.
-      datum.focus();
-
+      control.getDatum().focus();
     }
     catch (RemoteException e)
     {
@@ -147,7 +75,7 @@ public class BuchungNeu extends AbstractView
 
 
     // und noch die Abschicken-Knoepfe
-    buttonArea = new ButtonArea(getParent(),3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addCancelButton(control);
     buttonArea.addDeleteButton(control);
     buttonArea.addStoreButton(control);
@@ -160,137 +88,13 @@ public class BuchungNeu extends AbstractView
   public void unbind()
   {
   }
-
-
-  class WochentagListener implements Listener
-  {
-    private TextInput text;
-    
-    WochentagListener(TextInput t)
-    {
-      text = t;
-    }
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      Text t = (Text) event.widget;
-      String datum = t.getText();
-
-      Date d = null;
-      try {
-        d = Fibu.DATEFORMAT.parse(datum);
-      }
-      catch (ParseException e)
-      {
-        // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
-        try {
-          d = Fibu.FASTDATEFORMAT.parse(datum);
-        }
-        catch (ParseException e2)
-        {
-          try {
-            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
-            d = Fibu.FASTDATEFORMAT.parse(datum + Settings.getActiveMandant().getGeschaeftsjahr());
-          }
-          catch (Exception e3)
-          {
-            // Ne, hat keinen Zweck.
-            return;
-          }
-        }
-      }
-
-      if (d == null)
-        return;
-
-      Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-      cal.setTime(d);
-      int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
-      if (i < 0 || i >= Fibu.WEEKDAYS.length)
-        return;
-      text.updateComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
-    }
-  }
-
-  /**
-   * Listener, der an die Auswahlbox des Kontos angehaengt wurden und
-   * den Saldo von dem gerade ausgewaehlten Konto als Kommentar anzeigt.
-   * @author willuhn
-   * 24.11.2003
-   */
-  class SaldoListener implements Listener
-  {
-    private SearchInput search;
-    private DecimalInput steuer;
-
-    /**
-     * Konstruktor.
-     * @param search Search-Feld, an dem der Listener haengt.
-     * @param s DecimalInput mit dem Feld fuer die Steuer des Kontos. Optional.
-     */
-    SaldoListener(SearchInput search, DecimalInput s)
-    {
-      this.search = search;
-      this.steuer = s;
-    }
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      if (!(event.widget instanceof Text))
-        return;
-      try {
-        Text t = (Text) event.widget;
-        String kontonummer = t.getText();
-        if (kontonummer == null || "".equals(kontonummer))
-        {
-          return; // Kontonummer fehlt oder ist leer -> keine Saldenermittlung moeglich
-        }
-
-        DBIterator list = Settings.getDatabase().createList(Konto.class);
-        list.addFilter("kontonummer = " + kontonummer);
-        if (!list.hasNext())
-        {
-          GUI.setActionText(I18N.tr("Das ausgewählte Konto existiert nicht."));
-          return;
-        } 
-        Konto konto = (Konto) list.next();
-        search.updateComment(I18N.tr("Saldo") + ": " +  
-                             Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
-                             " " + Settings.getCurrency());
-        GUI.setStatusText(I18N.tr("Ausgewähltes Konto: ") + konto.getName());
-      
-        // wenn uns das Steuer-Eingabefeld uebergeben wurde, aktualisieren wir es auch gleich
-        // Wenn das Konto aber gar keine Steuer hat, deaktivieren wir das Steuer-Eingabefeld.
-        if (steuer != null)
-        {
-          if (konto.getSteuer() == null)
-          {
-            steuer.disable();
-          }
-          else {
-            steuer.setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
-            steuer.enable();
-          }
-        }
-        GUI.setActionText("");
-      }
-      catch (RemoteException es)
-      {
-        GUI.setActionText(I18N.tr("Fehler bei der Saldenermittlung des Kontos."));
-      }
-    }
-
-  }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.20  2004/01/27 21:38:05  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.19  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

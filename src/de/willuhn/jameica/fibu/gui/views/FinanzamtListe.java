@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/27 21:38:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,11 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
-import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.Headline;
-import de.willuhn.jameica.gui.views.parts.Table;
 import de.willuhn.util.I18N;
 
 /**
@@ -47,26 +42,16 @@ public class FinanzamtListe extends AbstractView
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Liste der Finanzämter."));
+    addHeadline("Liste der Finanzämter.");
+
+		FinanzamtControl control = new FinanzamtControl(this);
 
     try {
-      Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
-      FinanzamtControl controller = new FinanzamtControl(fa);
 
-      DBIterator list = Settings.getDatabase().createList(fa.getClass());
-      list.setOrder("order by name desc");
-
-      Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Name"),"name");
-      table.addColumn(I18N.tr("Strasse"),"strasse");
-      table.addColumn(I18N.tr("Postfach"),"postfach");
-      table.addColumn(I18N.tr("PLZ"),"plz");
-      table.addColumn(I18N.tr("Ort"),"ort");
-      
-      table.paint(getParent());
+ 			control.getFinanzamtListe().paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Finanzamt hinzufügen"),controller);
+      buttons.addCreateButton(I18N.tr("Finanzamt hinzufügen"),control);
 
     }
     catch (Exception e)
@@ -87,6 +72,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.9  2004/01/27 21:38:05  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.8  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

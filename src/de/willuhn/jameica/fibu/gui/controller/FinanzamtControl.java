@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/27 00:09:10 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,70 +17,153 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtListe;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtNeu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.Input;
+import de.willuhn.jameica.gui.views.parts.Table;
+import de.willuhn.jameica.gui.views.parts.TextInput;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
- * Dialogs "Finanzamt".
- * @author willuhn
+ * 
  */
-public class FinanzamtControl extends Controller
+public class FinanzamtControl extends AbstractControl
 {
 
-  /**
-   * Erzeugt einen neuen Controller der fuer dieses Finanzamt zustaendig ist.
-   * @param object die Buchung.
-   */
-  public FinanzamtControl(DBObject object)
-  {
-    super(object);
-  }
+	// Fach-Objekte
+	private Finanzamt finanzamt   = null;
+
+	// Eingabe-Felder
+	private Input name		 	= null;
+	private Input postfach 	= null;
+	private Input strasse		= null;
+	private Input plz				= null;
+	private Input ort				= null;
+
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
+   * @param view
    */
-  public void handleDelete(String id)
+  public FinanzamtControl(AbstractView view)
   {
-    try {
-      this.object = Settings.getDatabase().createObject(Finanzamt.class,id);
-      handleDelete();
-    }
-    catch (RemoteException e)
-    {
-      // Objekt kann nicht geladen werden. Dann muessen wir es auch nicht loeschen.
-      Application.getLog().error("no valid finanzamt found");
-      GUI.setActionText(I18N.tr("Finanzamt wurde nicht gefunden."));
-    }
+    super(view);
   }
 
+	/**
+	 * Liefert das Finanzamt.
+   * @return das Finanzamt.
+   * @throws RemoteException
+   */
+  public Finanzamt getFinanzamt() throws RemoteException
+	{
+		if (finanzamt != null)
+			return finanzamt;
+
+		finanzamt = (Finanzamt) getCurrentObject();
+		if (finanzamt != null)
+			return finanzamt;
+			
+		finanzamt = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
+		return finanzamt;
+	}
+
+	/**
+	 * Liefert eine Tabelle mit den eingerichteten Finanzaemtern.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Table getFinanzamtListe() throws RemoteException
+	{
+		DBIterator list = Settings.getDatabase().createList(Finanzamt.class);
+		list.setOrder("order by name desc");
+
+		Table table = new Table(list,this);
+		table.addColumn(I18N.tr("Name"),"name");
+		table.addColumn(I18N.tr("Strasse"),"strasse");
+		table.addColumn(I18N.tr("Postfach"),"postfach");
+		table.addColumn(I18N.tr("PLZ"),"plz");
+		table.addColumn(I18N.tr("Ort"),"ort");
+		return table;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Namen.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getName() throws RemoteException
+	{
+		if (name != null)
+			return name;
+		name = new TextInput(getFinanzamt().getName());
+		return name;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer das Postfach.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getPostfach() throws RemoteException
+	{
+		if (postfach != null)
+			return postfach;
+		postfach = new TextInput(getFinanzamt().getPostfach());
+		return postfach;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Strasse.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getStrasse() throws RemoteException
+	{
+		if (strasse != null)
+			return strasse;
+		strasse = new TextInput(getFinanzamt().getStrasse());
+		return strasse;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die PLZ.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getPLZ() throws RemoteException
+	{
+		if (plz != null)
+			return plz;
+		plz = new TextInput(getFinanzamt().getPLZ());
+		return plz;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Ort.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getOrt() throws RemoteException
+	{
+		if (ort != null)
+			return ort;
+		ort = new TextInput(getFinanzamt().getOrt());
+		return ort;
+	}
+
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete()
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete()
   {
-    Finanzamt fa = (Finanzamt) getObject();
-
-    try {
-      if (fa.isNewObject())
-      {
-        GUI.setActionText(I18N.tr("Finanzamt wurde noch nicht gespeichert und muss daher nicht gelöscht werden."));
-        return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
-      }
-
-    }
-    catch (RemoteException e)
-    {
-      // Also wenn wir nicht mal ne Verbindung zum Business-Objekt haben, ist sowieso was faul ;)
-      Application.getLog().error("no valid finanzamt found");
-    }
 
     MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
     box.setText(I18N.tr("Finanzamt wirklich löschen?"));
@@ -89,27 +172,23 @@ public class FinanzamtControl extends Controller
     {
       // ok, wir loeschen das Objekt
       try {
-        fa.delete();
+        getFinanzamt().delete();
         GUI.setActionText(I18N.tr("Daten des Finanzamtes gelöscht."));
-      }
-      catch (ApplicationException e1)
-      {
-        MessageBox box2 = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
-        box2.setText(I18N.tr("Fehler"));
-        box2.setMessage(e1.getLocalizedMessage());
-        box2.open();
-        return;
       }
       catch (RemoteException e)
       {
         GUI.setActionText(I18N.tr("Fehler beim Löschen der Daten des Finanzamtes."));
         Application.getLog().error("unable to delete finanzamt");
       }
+			catch (ApplicationException e1)
+			{
+				GUI.setActionText(e1.getLocalizedMessage());
+			}
     }
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCancel()
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
    */
   public void handleCancel()
   {
@@ -117,23 +196,21 @@ public class FinanzamtControl extends Controller
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
   public void handleStore()
   {
-    Finanzamt fa = (Finanzamt) getObject();
-
     try {
 
-      fa.setName(getField("name").getValue());
-      fa.setStrasse(getField("strasse").getValue());
-      fa.setPLZ(getField("plz").getValue());
-      fa.setPostfach(getField("postfach").getValue());
-      fa.setOrt(getField("ort").getValue());
+      getFinanzamt().setName(getName().getValue());
+      getFinanzamt().setStrasse(getStrasse().getValue());
+      getFinanzamt().setPLZ(getPLZ().getValue());
+      getFinanzamt().setPostfach(getPostfach().getValue());
+      getFinanzamt().setOrt(getOrt().getValue());
 
       
       // und jetzt speichern wir.
-      fa.store();
+      getFinanzamt().store();
       GUI.setActionText(I18N.tr("Daten des Finanzamtes gespeichert."));
     }
     catch (ApplicationException e1)
@@ -177,6 +254,9 @@ public class FinanzamtControl extends Controller
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.9  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.8  2004/01/27 00:09:10  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/01/27 00:09:10 $
+ * $Revision: 1.16 $
+ * $Date: 2004/01/27 21:38:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,89 +14,261 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.BuchungListe;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
+import de.willuhn.jameica.fibu.gui.views.KontoSearchDialog;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
- * Dialogs "Neue Buchung".
- * @author willuhn
+ * Controller fuer Buchungen.
  */
-public class BuchungControl extends Controller
+public class BuchungControl extends AbstractControl
 {
+	
+	// Fachobjekte
+	private Buchung buchung 		= null;
+	private Konto konto					= null;
+	private GeldKonto geldkonto = null;
+
+	// Eingabe-Felder
+	private Input datum					   = null;
+	private Input kontoAuswahl     = null;
+	private Input geldKontoAuswahl = null;
+	private Input	text					   = null;
+	private Input belegnummer		   = null;
+	private Input betrag				   = null;
+	private Input steuer				   = null;
 
   /**
-   * Erzeugt einen neuen Controller der fuer diese Buchung zustaendig ist.
-   * @param object die Buchung.
+   * @param view
    */
-  public BuchungControl(DBObject object)
+  public BuchungControl(AbstractView view)
   {
-    super(object);
+    super(view);
   }
 
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
+	/**
+	 * Liefert die Buchung.
+   * @return die Buchung.
+   * @throws RemoteException
    */
-  public void handleDelete(String id)
-  {
-    try {
-      this.object = Settings.getDatabase().createObject(Buchung.class,id);
-      handleDelete();
-    }
-    catch (RemoteException e)
-    {
-      // Objekt kann nicht geladen werden. Dann muessen wir es auch nicht loeschen.
-      Application.getLog().error("no valid buchung found");
-      GUI.setActionText(I18N.tr("Buchung wurde nicht gefunden."));
-    }
-  }
+  public Buchung getBuchung() throws RemoteException
+	{
+		if (buchung != null)
+			return buchung;
+		
+		buchung = (Buchung) getCurrentObject();
+		if (buchung != null)
+			return buchung;
+		
+		buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
+		return buchung;
+		
+	}
+
+	/**
+	 * Liefert das Konto der Buchung.
+   * @return Konto.
+   * @throws RemoteException
+   */
+  public Konto getKonto() throws RemoteException
+	{	
+		if (konto != null)
+			return konto;
+
+		konto = getBuchung().getKonto();
+		if (konto != null)
+			return konto;
+		
+		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+		return konto;
+	}
+	
+	/**
+	 * Liefert das Geld-Konto der Buchung.
+	 * @return Geld-Konto.
+	 * @throws RemoteException
+	 */
+	public GeldKonto getGeldKonto() throws RemoteException
+	{	
+		if (geldkonto != null)
+			return geldkonto;
+
+		geldkonto = getBuchung().getGeldKonto();
+		if (geldkonto != null)
+			return geldkonto;
+		
+		geldkonto = (GeldKonto) Settings.getDatabase().createObject(GeldKonto.class,null);
+		return geldkonto;
+	}
+
+	/**
+	 * Liefert eine Tabelle mit den Buchungen.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Table getBuchungListe() throws RemoteException
+	{
+		DBIterator list = Settings.getDatabase().createList(Buchung.class);
+		list.setOrder("order by id desc");
+
+		Table table = new Table(list,this);
+		table.addColumn(I18N.tr("Datum"),"datum");
+		table.addColumn(I18N.tr("Konto"),"konto_id");
+		table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
+		table.addColumn(I18N.tr("Text"),"text");
+		table.addColumn(I18N.tr("Beleg"),"belegnummer");
+		table.addColumn(I18N.tr("Netto-Betrag"),"betrag");
+		return table;		
+	}
+
+
+	/**
+	 * Liefert das Eingabe-Feld fuer das Datum.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getDatum() throws RemoteException
+	{
+		if (datum != null)
+			return datum;
+		
+		datum = new TextInput(Fibu.DATEFORMAT.format(getBuchung().getDatum()));
+		datum.addComment(I18N.tr("Wochentag: "),new WochentagListener());
+		return datum;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld zur Auswahl des Kontos.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getKontoAuswahl() throws RemoteException
+	{
+		if (kontoAuswahl != null)
+			return kontoAuswahl;
+		
+		kontoAuswahl = new SearchInput(getKonto().getKontonummer(), new KontoSearchDialog());
+		kontoAuswahl.addComment(I18N.tr("Saldo") + ": " + 
+														Fibu.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + 
+														Settings.getCurrency(), new SaldoListener(kontoAuswahl,true));
+		return kontoAuswahl;
+	}
+
+
+	/**
+	 * Liefert das Eingabe-Feld zur Auswahl des Geld-Kontos.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getGeldKontoAuswahl() throws RemoteException
+	{
+		if (geldKontoAuswahl != null)
+			return geldKontoAuswahl;
+		
+		geldKontoAuswahl = new SearchInput(getGeldKonto().getKontonummer(), new KontoSearchDialog());
+		geldKontoAuswahl.addComment(I18N.tr("Saldo") + ": " +
+															  Fibu.DECIMALFORMAT.format(getGeldKonto().getSaldo()) + " " +
+															  Settings.getCurrency(), new SaldoListener(geldKontoAuswahl,false));
+		return geldKontoAuswahl;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Buchungstext.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getText() throws RemoteException
+	{
+		if (text != null)
+			return text;
+		
+		text = new TextInput(getBuchung().getText());
+		return text;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Belegnummer.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getBelegnummer() throws RemoteException
+	{
+		if (belegnummer != null)
+			return belegnummer;
+		
+		belegnummer = new TextInput(""+getBuchung().getBelegnummer());
+		return belegnummer;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Betrag.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBetrag() throws RemoteException
+	{
+		if (betrag != null)
+			return betrag;
+		
+		betrag = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getBetrag()));
+		betrag.addComment(Settings.getCurrency(),null);
+		return betrag;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Steuer.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getSteuer() throws RemoteException
+	{
+		if (steuer != null)
+			return steuer;
+
+		steuer = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getSteuer()));
+		steuer.addComment("%",null);
+		return steuer;
+	}
+
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete()
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete()
   {
-    Buchung buchung = (Buchung) getObject();
-    int beleg = 0;
-
-    try {
-      beleg = buchung.getBelegnummer();
-      if (buchung.isNewObject())
-      {
-        GUI.setActionText(I18N.tr("Buchung wurde noch nicht gespeichert und muss daher nicht gelöscht werden."));
-        return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
-      }
-    }
-    catch (RemoteException e)
-    {
-      // Also wenn wir nicht mal ne Verbindung zum Business-Objekt haben, ist sowieso was faul ;)
-      Application.getLog().error("no valid buchung found");
-    }
 
     MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
     box.setText(I18N.tr("Buchung wirklich stornieren?"));
     box.setMessage(I18N.tr("Wollen Sie diese Buchung wirklich stornieren?"));
+
     if (box.open() == SWT.YES)
     {
       // ok, wir loeschen das Objekt und wechseln zurueck zur Buchungsliste
       try {
-        buchung.delete();
+      	int beleg = getBuchung().getBelegnummer();
+        getBuchung().delete();
         GUI.setActionText(I18N.tr("Buchung Nr. " + beleg + " storniert."));
       }
       catch (ApplicationException e1)
@@ -124,14 +296,12 @@ public class BuchungControl extends Controller
    */
   public void handleStore()
   {
-    Buchung buchung = (Buchung) getObject();
-
     try {
 
       //////////////////////////////////////////////////////////////////////////
       // Belegnummer checken
       try {
-        buchung.setBelegnummer(Integer.parseInt(getField("belegnummer").getValue()));
+        getBuchung().setBelegnummer(Integer.parseInt(getBelegnummer().getValue()));
       }
       catch (NumberFormatException e)
       {
@@ -144,7 +314,7 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Betrag checken
       try {
-        buchung.setBetrag(Fibu.DECIMALFORMAT.parse(getField("betrag").getValue()).doubleValue());
+        getBuchung().setBetrag(Fibu.DECIMALFORMAT.parse(getBetrag().getValue()).doubleValue());
       }
       catch (NumberFormatException e)
       {
@@ -163,7 +333,7 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Steuer checken
       try {
-        buchung.setSteuer(Fibu.DECIMALFORMAT.parse(getField("steuer").getValue()).doubleValue());
+				getBuchung().setSteuer(Fibu.DECIMALFORMAT.parse(getSteuer().getValue()).doubleValue());
       }
       catch (NumberFormatException e)
       {
@@ -181,21 +351,21 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
-      Date datum = null;
+      String d = getDatum().getValue();
       try {
-        datum = Fibu.DATEFORMAT.parse(getField("datum").getValue());
+				getBuchung().setDatum(Fibu.DATEFORMAT.parse(d));
       }
       catch (ParseException e)
       {
         // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
         try {
-          datum = Fibu.FASTDATEFORMAT.parse(getField("datum").getValue());
+					getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d));
         }
         catch (ParseException e2)
         {
           try {
             // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
-            datum = Fibu.FASTDATEFORMAT.parse(getField("datum").getValue() + Settings.getActiveMandant().getGeschaeftsjahr());
+						getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d + Settings.getActiveMandant().getGeschaeftsjahr()));
           }
           catch (ParseException e3)
           {
@@ -204,8 +374,6 @@ public class BuchungControl extends Controller
           }
         }
       }
-
-      buchung.setDatum(datum);
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -213,13 +381,13 @@ public class BuchungControl extends Controller
       // Konto checken
       
       DBIterator konten = Settings.getDatabase().createList(Konto.class);
-      konten.addFilter("kontonummer = '"+getField("konto").getValue()+"'");
+      konten.addFilter("kontonummer = '"+getKontoAuswahl().getValue()+"'");
       if (!konten.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Konto existiert nicht."));
         return;
       }
-      buchung.setKonto((Konto) konten.next());
+			getBuchung().setKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -227,28 +395,28 @@ public class BuchungControl extends Controller
       // GeldKonto checken
       
       DBIterator geldkonten = Settings.getDatabase().createList(GeldKonto.class);
-      geldkonten.addFilter("kontonummer = '"+getField("geldkonto").getValue()+"'");
+      geldkonten.addFilter("kontonummer = '"+getGeldKontoAuswahl().getValue()+"'");
       if (!geldkonten.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Geld-Konto existiert nicht."));
         return;
       }
-      buchung.setGeldKonto((GeldKonto) geldkonten.next());
+			getBuchung().setGeldKonto((GeldKonto) geldkonten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
-      buchung.setText(getField("text").getValue());
+			getBuchung().setText(getText().getValue());
       
       // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
-      buchung.setMandant(Settings.getActiveMandant());
+			getBuchung().setMandant(Settings.getActiveMandant());
 
       // und jetzt speichern wir.
-      buchung.store();
-      GUI.setActionText(I18N.tr("Buchung Nr.") + " " + buchung.getBelegnummer() + " " + I18N.tr("gespeichert."));
+			getBuchung().store();
+      GUI.setActionText(I18N.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + I18N.tr("gespeichert."));
       // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
       // auf Speichern als neue Buchung gespeichert wird.
-      buchung.clear();
-      GUI.startView(BuchungNeu.class.getName(),buchung);
+			getBuchung().clear();
+      GUI.startView(BuchungNeu.class.getName(),getBuchung());
 
     }
     catch (ApplicationException e1)
@@ -288,10 +456,149 @@ public class BuchungControl extends Controller
     GUI.startView(BuchungNeu.class.getName(),null);
   }
 
+
+
+
+	/**
+   * Listener, der hinter dem Buchungsdatum den Wochentag anzeigt.
+   */
+  private class WochentagListener implements Listener
+	{
+
+		/**
+		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+		 */
+		public void handleEvent(Event event)
+		{
+			Text t = (Text) event.widget;
+			if (t == null)
+				return;
+			String datum = t.getText();
+
+			Date d = null;
+			try {
+				d = Fibu.DATEFORMAT.parse(datum);
+			}
+			catch (ParseException e)
+			{
+				// ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
+				try {
+					d = Fibu.FASTDATEFORMAT.parse(datum);
+				}
+				catch (ParseException e2)
+				{
+					try {
+						// ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
+						d = Fibu.FASTDATEFORMAT.parse(datum + Settings.getActiveMandant().getGeschaeftsjahr());
+					}
+					catch (Exception e3)
+					{
+						// Ne, hat keinen Zweck.
+						return;
+					}
+				}
+			}
+
+			if (d == null)
+				return;
+
+			Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+			cal.setTime(d);
+			int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
+			if (i < 0 || i >= Fibu.WEEKDAYS.length)
+				return;
+			try
+      {
+        getDatum().updateComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
+      }
+      catch (RemoteException e1)
+      {
+      	Application.getLog().error("unable to update week day",e1);
+      	GUI.setActionText(I18N.tr("Fehler bei der Ermittlung des Wochentags"));
+      }
+		}
+	}
+
+	/**
+	 * Listener, der an die Auswahlbox des Kontos angehaengt wurden und
+	 * den Saldo von dem gerade ausgewaehlten Konto als Kommentar anzeigt.
+	 */
+	private class SaldoListener implements Listener
+	{
+
+		private Input k = null;
+		private boolean changeSteuer = false;
+		
+    /**
+		 * ct.
+     * @param k Das Eingabe-Feld des Kontos.
+     * @param b true, wenn das Steuer-Eingabe-Feld mit dem Steuersatz des
+     * ausgewaehlten Kontos ueberschrieben werden soll.
+     */
+    SaldoListener(Input k, boolean b)
+		{
+			this.k = k;
+			this.changeSteuer = b;
+		}
+
+		/**
+		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+		 */
+		public void handleEvent(Event event)
+		{
+			if (!(event.widget instanceof Text))
+				return;
+			try {
+				Text t = (Text) event.widget;
+				if (t == null)
+					return;
+				String kontonummer = t.getText();
+				if (kontonummer == null || "".equals(kontonummer))
+				{
+					return; // Kontonummer fehlt oder ist leer -> keine Saldenermittlung moeglich
+				}
+
+				DBIterator list = Settings.getDatabase().createList(Konto.class);
+				list.addFilter("kontonummer = '" + kontonummer + "'");
+				if (!list.hasNext())
+				{
+					GUI.setActionText(I18N.tr("Das ausgewählte Konto existiert nicht."));
+					return;
+				} 
+				Konto myKonto = (Konto) list.next();
+				k.updateComment(I18N.tr("Saldo") + ": " +  
+														 Fibu.DECIMALFORMAT.format(myKonto.getSaldo()) +
+														 " " + Settings.getCurrency());
+
+				GUI.setActionText(I18N.tr("Ausgewähltes Konto: ") + myKonto.getName());
+      
+				if (changeSteuer) // Steuer soll geaendert werden
+				{
+					if (myKonto.getSteuer() == null) // ausgewaehltes Konto hat keine Steuer.
+					{
+						getSteuer().disable();
+					}
+					else {
+						getSteuer().setValue(Fibu.DECIMALFORMAT.format(myKonto.getSteuer().getSatz()));
+						getSteuer().enable();
+					}
+				}
+			}
+			catch (RemoteException es)
+			{
+				GUI.setActionText(I18N.tr("Fehler bei der Saldenermittlung des Kontos."));
+			}
+		}
+
+	}
+
 }
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.16  2004/01/27 21:38:06  willuhn
+ * @C refactoring finished
+ *
  * Revision 1.15  2004/01/27 00:09:10  willuhn
  * *** empty log message ***
  *
