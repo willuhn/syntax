@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/22 20:43:07 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/24 15:18:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,13 +78,47 @@ public class KontoImpl extends AbstractDBObject implements Konto
     {
       throw new RemoteException("unable to get saldo.",e);
     }
-    
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    return (String) getField("name");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#getTyp()
+   */
+  public int getTyp() throws RemoteException
+  {
+    Integer i = (Integer) getField("typ");
+    if (i != null)
+      return i.intValue();
+
+    throw new RemoteException("unable to determine konto type");
+
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#getMwStSatz()
+   */
+  public double getMwStSatz() throws RemoteException
+  {
+    Double d = (Double) getField("mwstsatz");
+    if (d != null)
+      return d.doubleValue();
+
+    throw new RemoteException("unable to determine mwst of this konto");
+  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.3  2003/11/24 15:18:21  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/11/22 20:43:07  willuhn
  * *** empty log message ***
  *
