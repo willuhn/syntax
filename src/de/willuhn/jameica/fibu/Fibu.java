@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/01/29 00:31:33 $
+ * $Revision: 1.16 $
+ * $Date: 2004/02/09 13:05:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.jar.JarFile;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
@@ -33,6 +32,14 @@ import de.willuhn.util.I18N;
  */
 public class Fibu extends AbstractPlugin
 {
+
+  /**
+   * @param file
+   */
+  public Fibu(File file)
+  {
+    super(file);
+  }
 
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
@@ -55,15 +62,6 @@ public class Fibu extends AbstractPlugin
 
   static {
     DECIMALFORMAT.applyPattern("#0.00");
-  }
-
-  /**
-   * ct.
-   * @param jar
-   */
-  public Fibu(JarFile jar)
-  {
-  	super(jar);
   }
 
   /**
@@ -160,7 +158,7 @@ public class Fibu extends AbstractPlugin
    */
   public String getWelcomeText()
   {
-    String  welcome = I18N.tr("Finanzbuchhaltung für Jameica ") + getVersion() + "\n";
+    String  welcome = I18N.tr("Fibu - Finanzbuchhaltung für Jameica ") + getVersion();
     
     if (!freshInstall)
     	return welcome;
@@ -173,6 +171,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.16  2004/02/09 13:05:13  willuhn
+ * @C misc
+ *
  * Revision 1.15  2004/01/29 00:31:33  willuhn
  * *** empty log message ***
  *

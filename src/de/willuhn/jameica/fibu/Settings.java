@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/28 00:37:32 $
+ * $Revision: 1.8 $
+ * $Date: 2004/02/09 13:05:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,7 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.ServiceData;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.Config;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 
 /**
@@ -59,8 +57,8 @@ public class Settings
   		return mandant;
 
     String m = settings.getAttribute("mandant",null);
-    if (m == null ||m.length() == 0)
-      return null;
+    if (m == null || m.length() == 0)
+			return null;
 
 		Mandant mm = (Mandant) getDatabase().createObject(Mandant.class,m);
 		if (mm == null || mm.isNewObject())
@@ -105,35 +103,13 @@ public class Settings
     settings.setAttribute("currency",currency);
   }
 
-
-  /**
-   * Speichert die Datenbankverbindung.
-   * @param name Alias-Name des Datenbank-Services.
-   * @throws RemoteException
-   */
-  public static void setDatabase(String name) throws RemoteException
-  {
-    ServiceData sd = null;
-    try {
-      sd = (ServiceData) Application.getConfig().getLocalServiceData(name);
-      if (sd == null) sd = (ServiceData) Application.getConfig().getRemoteServiceData(name);
-
-      if (sd == null || sd.getType() != Config.SERVICETYPE_DATABASE)
-        throw new RemoteException("A database hub with this name does not exist.");
-      settings.setAttribute("dbhub",name);
-    }
-    catch (Exception e)
-    {
-			Application.getLog().error("unable to set database",e);
-      throw new RemoteException(e.getMessage());
-    }
-    
-  }
-
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.8  2004/02/09 13:05:13  willuhn
+ * @C misc
+ *
  * Revision 1.7  2004/01/28 00:37:32  willuhn
  * *** empty log message ***
  *

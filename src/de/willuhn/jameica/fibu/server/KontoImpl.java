@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/01/29 01:05:09 $
+ * $Revision: 1.18 $
+ * $Date: 2004/02/09 13:05:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     try {
       // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
-      if ("".equals(getID()) || getID() == null)
+      if (getID() == null || getID().length() == 0)
         return 0;
 
       Statement stmt = getConnection().createStatement();
@@ -254,6 +254,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.18  2004/02/09 13:05:13  willuhn
+ * @C misc
+ *
  * Revision 1.17  2004/01/29 01:05:09  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/GeldKontoImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/29 00:13:19 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/09 13:05:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,10 +40,22 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
     return super.getListQuery() + " and kontoart_id="+Kontoart.KONTOART_GELD;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo()
+   */
+  public double getSaldo() throws RemoteException
+  {
+    // TODO Auto-generated method stub
+    return super.getSaldo();
+  }
+
 }
 
 /*********************************************************************
  * $Log: GeldKontoImpl.java,v $
+ * Revision 1.5  2004/02/09 13:05:13  willuhn
+ * @C misc
+ *
  * Revision 1.4  2004/01/29 00:13:19  willuhn
  * *** empty log message ***
  *
