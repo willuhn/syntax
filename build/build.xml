@@ -64,8 +64,10 @@
             </classpath>
         </rmic>
 
-        <copydir src="${icon.dir}" dest="${class.dir}/img"/>
-        <copydir src="${lang.dir}" dest="${class.dir}/lang"/>
+        <copydir src="${icon.dir}" 						dest="${class.dir}/img"/>
+        <copydir src="${lang.dir}" 						dest="${class.dir}/lang"/>
+        <copyfile 	src="${src.dir}/navigation.xml" 	dest="${class.dir}/navigation.xml"/>
+        <copyfile 	src="${src.dir}/menu.xml"	 		dest="${class.dir}/menu.xml"/>
 
 	</target>
 

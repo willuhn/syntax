@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO8859-1"?> 
+
+<menu>
+
+  <cascade name="Fibu">
+    <item name="Neue Buchung"        class="de.willuhn.jameica.menu.EditCopy" />
+    <item name="Cut"                 class="de.willuhn.jameica.menu.EditCut" />
+    <item name="Paste"    			 class="de.willuhn.jameica.menu.EditPaste" />
+  </cascade>
+
+</menu>
