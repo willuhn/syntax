@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/29 01:14:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,7 +107,7 @@ public class SteuerControl extends AbstractControl
 
 		Table table = new Table(list,this);
 		table.addColumn(I18N.tr("Name"),"name");
-		table.addColumn(I18N.tr("Steuersatz"),"satz");
+		table.addColumn(I18N.tr("Steuersatz"),"satz",new CurrencyFormatter("%",Fibu.DECIMALFORMAT));
 		table.addColumn(I18N.tr("Steuer-Sammelkonto"),"steuerkonto_id");
 		return table;
 	}
@@ -275,6 +275,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.9  2004/01/29 01:14:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

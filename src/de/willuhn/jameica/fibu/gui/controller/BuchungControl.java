@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.18 $
+ * $Date: 2004/01/29 01:11:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,12 +134,12 @@ public class BuchungControl extends AbstractControl
 		list.setOrder("order by id desc");
 
 		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Datum"),"datum");
+		table.addColumn(I18N.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
 		table.addColumn(I18N.tr("Konto"),"konto_id");
 		table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
-		table.addColumn(I18N.tr("Text"),"text");
+		table.addColumn(I18N.tr("Text"),"buchungstext");
 		table.addColumn(I18N.tr("Beleg"),"belegnummer");
-		table.addColumn(I18N.tr("Netto-Betrag"),"betrag");
+		table.addColumn(I18N.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getCurrency(), Fibu.DECIMALFORMAT));
 		return table;		
 	}
 
@@ -596,6 +596,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.18  2004/01/29 01:11:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *
