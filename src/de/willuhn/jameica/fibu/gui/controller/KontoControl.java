@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.12 $
+ * $Date: 2004/02/18 13:51:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,14 +26,15 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.server.KontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.parts.*;
 import de.willuhn.jameica.gui.parts.Input;
 import de.willuhn.jameica.gui.parts.LabelInput;
 import de.willuhn.jameica.gui.parts.SelectInput;
+import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -87,7 +88,8 @@ public class KontoControl extends AbstractControl
   public Table getKontoListe() throws RemoteException
 	{
 
-		DBIterator list = Settings.getDatabase().createList(Konto.class);
+    // TODO: Der ClassFinder nimmt leider GeldKontoImpl wenn ich nur das Interface Konto angebe
+		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
 
 		Table table = new Table(list,this);
 		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
@@ -262,6 +264,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.12  2004/02/18 13:51:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *
