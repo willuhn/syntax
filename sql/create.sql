@@ -97,7 +97,9 @@ ALTER TABLE konto ADD CONSTRAINT fk_steuer FOREIGN KEY (steuer_id) REFERENCES st
 ALTER TABLE buchung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_geldkonto FOREIGN KEY (geldkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
-ALTER TABLE buchung ADD CONSTRAINT fk_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+
+-- Muss raus, weil es auch Buchungen gibt, die keine Haupt-Buchungen haben
+--ALTER TABLE buchung ADD CONSTRAINT fk_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
 
 ALTER TABLE mandant ADD CONSTRAINT fk_kontenrahmen_mand FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 ALTER TABLE mandant ADD CONSTRAINT fk_finanzamt FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;

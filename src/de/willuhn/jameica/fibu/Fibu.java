@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/01/29 00:06:47 $
+ * $Revision: 1.15 $
+ * $Date: 2004/01/29 00:31:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import java.util.jar.JarFile;
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.AbstractPlugin;
 import de.willuhn.jameica.Application;
+import de.willuhn.util.I18N;
 
 /**
  * Basisklasse des Fibu-Plugins fuer das Jameica-Framework.
@@ -49,6 +50,8 @@ public class Fibu extends AbstractPlugin
 
   public static int YEAR_MIN                = 1950;
   public static int YEAR_MAX                = 2020;
+
+	private boolean freshInstall = false;
 
   static {
     DECIMALFORMAT.applyPattern("#0.00");
@@ -124,6 +127,7 @@ public class Fibu extends AbstractPlugin
 			}
       
 		}
+		freshInstall = true;
 		return true;
   }
 
@@ -156,13 +160,22 @@ public class Fibu extends AbstractPlugin
    */
   public String getWelcomeText()
   {
-    return "Finanzbuchhaltung für Jameica " + getVersion();
-  }
+    String  welcome = I18N.tr("Finanzbuchhaltung für Jameica ") + getVersion() + "\n";
+    
+    if (!freshInstall)
+    	return welcome;
+    	
+    welcome += "\n" +
+      I18N.tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +      "   - Legen Sie zuerst ein Finanzamt an (Menü: Fibu/Finanzämter)\n" +      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n" +      "   - Aktivieren Sie den angelegten Mandanten (Menü: Fibu/Einstellungen\n");
+    return welcome;  }
 
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.15  2004/01/29 00:31:33  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/01/29 00:06:47  willuhn
  * *** empty log message ***
  *
