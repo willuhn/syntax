@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2003/12/08 15:41:25 $
+ * $Revision: 1.13 $
+ * $Date: 2003/12/10 00:47:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -98,8 +97,8 @@ public class BuchungNeu extends AbstractView
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
       datum.addComment(I18N.tr("Wochentag: "),new WochentagListener(datum));
 
-      SearchInput kontoInput      = new SearchInput(konto.getKontonummer(), new KontoSearchDialog(konto));
-      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer(), new GeldKontoSearchDialog(geldKonto));
+      SearchInput kontoInput      = new SearchInput(konto.getKontonummer(), new KontoSearchDialog());
+      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer(), new GeldKontoSearchDialog());
 
       TextInput text              = new TextInput(buchung.getText());
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
@@ -110,7 +109,6 @@ public class BuchungNeu extends AbstractView
       steuer         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getSteuer()));
         steuer.addComment("%",null);
 
-      // TODO: Event wird nicht ausgeloest
       // Wir fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
       kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput,steuer));
       geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput,null));
@@ -241,9 +239,11 @@ public class BuchungNeu extends AbstractView
      */
     public void handleEvent(Event event)
     {
+      if (!(event.widget instanceof Text))
+        return;
       try {
-        Combo c = (Combo) event.widget;
-        String kontonummer = c.getText();
+        Text t = (Text) event.widget;
+        String kontonummer = t.getText();
         DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
         if (!list.hasNext()) return;
@@ -270,6 +270,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.13  2003/12/10 00:47:29  willuhn
+ * @N SearchDialog for Konto works now ;)
+ *
  * Revision 1.12  2003/12/08 15:41:25  willuhn
  * @N searchInput
  *
