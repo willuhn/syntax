@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/29 01:14:52 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/29 01:21:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -220,7 +220,8 @@ public class SteuerControl extends AbstractControl
       // Steuerkonto checken
       
       DBIterator steuerkonten = Settings.getDatabase().createList(SteuerKonto.class);
-      steuerkonten.addFilter("kontonummer="+getKontoAuswahl().getValue());
+      steuerkonten.addFilter("kontonummer='"+getKontoAuswahl().getValue() + "'");
+      // TODO: Geht grad nicht
       if (!steuerkonten.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Steuerkonto existiert nicht."));
@@ -275,6 +276,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.10  2004/01/29 01:21:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/29 01:14:52  willuhn
  * *** empty log message ***
  *
