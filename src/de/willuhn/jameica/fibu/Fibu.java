@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/01/27 22:47:30 $
+ * $Revision: 1.14 $
+ * $Date: 2004/01/29 00:06:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,10 +151,21 @@ public class Fibu extends AbstractPlugin
     return "fibu";
   }
 
+  /**
+   * @see de.willuhn.jameica.Plugin#getWelcomeText()
+   */
+  public String getWelcomeText()
+  {
+    return "Finanzbuchhaltung für Jameica " + getVersion();
+  }
+
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.14  2004/01/29 00:06:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/01/27 22:47:30  willuhn
  * *** empty log message ***
  *

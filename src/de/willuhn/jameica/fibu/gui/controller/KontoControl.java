@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/28 00:37:32 $
+ * $Revision: 1.11 $
+ * $Date: 2004/01/29 00:06:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,11 +29,11 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
-import de.willuhn.jameica.gui.views.parts.Input;
-import de.willuhn.jameica.gui.views.parts.LabelInput;
-import de.willuhn.jameica.gui.views.parts.SelectInput;
-import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.jameica.gui.parts.*;
+import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.LabelInput;
+import de.willuhn.jameica.gui.parts.SelectInput;
+import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -262,6 +262,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.11  2004/01/29 00:06:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/28 00:37:32  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/27 21:38:06 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/29 00:06:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,9 +26,9 @@ import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.Input;
-import de.willuhn.jameica.gui.views.parts.Table;
-import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.Table;
+import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -254,6 +254,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.10  2004/01/29 00:06:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/27 21:38:06  willuhn
  * @C refactoring finished
  *

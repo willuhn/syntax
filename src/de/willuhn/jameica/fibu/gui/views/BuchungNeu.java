@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/01/27 21:38:05 $
+ * $Revision: 1.21 $
+ * $Date: 2004/01/29 00:06:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -92,6 +92,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.21  2004/01/29 00:06:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/01/27 21:38:05  willuhn
  * @C refactoring finished
  *

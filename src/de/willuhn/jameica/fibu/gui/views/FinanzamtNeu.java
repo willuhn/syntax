@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/27 21:38:05 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/29 00:06:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -87,6 +87,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.8  2004/01/29 00:06:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/27 21:38:05  willuhn
  * @C refactoring finished
  *

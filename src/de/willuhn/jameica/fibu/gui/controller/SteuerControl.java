@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/27 00:09:10 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/29 00:06:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,11 +31,11 @@ import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
-import de.willuhn.jameica.gui.views.parts.DecimalInput;
-import de.willuhn.jameica.gui.views.parts.Input;
-import de.willuhn.jameica.gui.views.parts.Table;
-import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.jameica.gui.parts.*;
+import de.willuhn.jameica.gui.parts.DecimalInput;
+import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.Table;
+import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -275,6 +275,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.8  2004/01/29 00:06:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/27 00:09:10  willuhn
  * *** empty log message ***
  *

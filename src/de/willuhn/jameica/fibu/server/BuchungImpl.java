@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/01/27 22:47:30 $
+ * $Revision: 1.22 $
+ * $Date: 2004/01/29 00:06:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -212,8 +212,12 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public int createBelegnummer() throws RemoteException
   {
+		// wir koennen hier keine Sequence oder aehnliches verwenden
+		// weil sie die fachlichen Anforderungen entsprechend getListQuery()
+		// nicht beachten wuerde. Ausserdem schneiden wir uns sonst die
+		// Kompatibilitaet zu MySQL ab.
     DBIterator iterator = this.getList();
-    iterator.setOrder("order by id desc limit 1");
+    iterator.setOrder("order by id desc");
     if (!iterator.hasNext())
       return 1;
     return ((Buchung) iterator.next()).getBelegnummer() + 1;
@@ -317,9 +321,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     int year = m.getGeschaeftsjahr();
 
     String s = "select " + getIDField() + " from " + getTableName() +
-      " where YEAR(datum) = " + year + 
-      " and mandant_id = " + m.getID() +
-      " and buchung_id is NULL";
+      " where YEAR(datum) = " + year +    // nur aktuelles Geschaeftsjahr 
+      " and mandant_id = " + m.getID() +  // nur aktueller Mandant
+      " and buchung_id is NULL";          // keine Hilfs-Buchungen
     return s;
   }
 
@@ -381,6 +385,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.22  2004/01/29 00:06:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/01/27 22:47:30  willuhn
  * *** empty log message ***
  *

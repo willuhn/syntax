@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/27 23:54:18 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/29 00:06:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,10 +22,10 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.Input;
-import de.willuhn.jameica.gui.views.parts.LabelInput;
-import de.willuhn.jameica.gui.views.parts.SelectInput;
-import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.LabelInput;
+import de.willuhn.jameica.gui.parts.SelectInput;
+import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.util.I18N;
 
 /**
@@ -174,6 +174,9 @@ public class SettingsControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.9  2004/01/29 00:06:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/27 23:54:18  willuhn
  * *** empty log message ***
  *
