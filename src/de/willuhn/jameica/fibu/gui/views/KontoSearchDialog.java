@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/KontoSearchDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/29 01:18:06 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/18 17:14:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.server.KontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.SearchDialog;
 import de.willuhn.util.I18N;
@@ -34,7 +35,8 @@ public class KontoSearchDialog extends SearchDialog
   {
     // wir setzten die Liste, die der Dialog anzeigen soll.
     try {
-      setList(Settings.getDatabase().createList(Konto.class));
+      // TODO: Falsche Impl
+      setList(Settings.getDatabase().createList(KontoImpl.class));
     }
     catch (RemoteException e)
     {
@@ -74,6 +76,9 @@ public class KontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: KontoSearchDialog.java,v $
+ * Revision 1.9  2004/02/18 17:14:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/29 01:18:06  willuhn
  * *** empty log message ***
  *

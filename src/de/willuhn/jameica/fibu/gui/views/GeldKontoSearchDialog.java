@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/GeldKontoSearchDialog.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/29 00:13:20 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/18 17:14:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.server.GeldKontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.SearchDialog;
 import de.willuhn.util.I18N;
@@ -34,7 +35,8 @@ public class GeldKontoSearchDialog extends SearchDialog
   {
     // wir setzten die Liste, die der Dialog anzeigen soll.
     try {
-      setList(Settings.getDatabase().createList(GeldKonto.class));
+      // TODO: Falsche Impl
+      setList(Settings.getDatabase().createList(GeldKontoImpl.class));
     }
     catch (RemoteException e)
     {
@@ -74,6 +76,9 @@ public class GeldKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: GeldKontoSearchDialog.java,v $
+ * Revision 1.9  2004/02/18 17:14:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/29 00:13:20  willuhn
  * *** empty log message ***
  *
