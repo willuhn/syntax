@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 14:21:56 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/24 16:26:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,8 +68,10 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getKonto() throws RemoteException
   {
-    Integer kontoId = (Integer) getField("konto_id");
-    return (Konto) Application.getDefaultDatabase().createObject(Konto.class,kontoId == null ? null : kontoId.toString());
+    Konto k = (Konto) getField("konto_id");
+    if (k == null)
+      return (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+    return k;
   }
 
   /**
@@ -77,8 +79,10 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getGeldKonto() throws RemoteException
   {
-    Integer kontoId = (Integer) getField("geldkonto_id");
-    return (Konto) Application.getDefaultDatabase().createObject(Konto.class,kontoId == null ? null : kontoId.toString());
+    Konto k = (Konto) getField("geldkonto_id");
+    if (k == null)
+      return (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+    return k;
   }
 
   /**
@@ -173,10 +177,27 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     return ((Buchung) iterator.next()).getBelegnummer() + 1;
   }
 
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    if ("konto_id".equals(field))
+      return Konto.class;
+
+    if ("geldkonto_id".equals(field))
+      return Konto.class;
+
+    return null;
+  }
+
 }
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.5  2003/11/24 16:26:15  willuhn
+ * @N AbstractDBObject is now able to resolve foreign keys
+ *
  * Revision 1.4  2003/11/24 14:21:56  willuhn
  * *** empty log message ***
  *

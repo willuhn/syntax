@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 15:18:21 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/24 16:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,12 +121,23 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     return (String) getField("steuernummer");
   }
 
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    return null;
+  }
+
 
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.2  2003/11/24 16:26:16  willuhn
+ * @N AbstractDBObject is now able to resolve foreign keys
+ *
  * Revision 1.1  2003/11/24 15:18:21  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/24 15:18:21 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/24 16:26:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,10 +112,21 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
     throw new RemoteException("unable to determine mwst of this konto");
   }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    return null;
+  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.4  2003/11/24 16:26:15  willuhn
+ * @N AbstractDBObject is now able to resolve foreign keys
+ *
  * Revision 1.3  2003/11/24 15:18:21  willuhn
  * *** empty log message ***
  *

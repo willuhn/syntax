@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/22 20:43:07 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/24 16:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public class BuchungListe extends AbstractView
       BuchungControl controller = new BuchungControl(buchung);
 
       DBIterator list = Application.getDefaultDatabase().createList(buchung.getClass());
+      list.addFilter("1 order by datum desc");
 
       Table table = new Table(list,controller);
       table.addColumn("Datum","datum");
@@ -79,6 +80,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.4  2003/11/24 16:26:16  willuhn
+ * @N AbstractDBObject is now able to resolve foreign keys
+ *
  * Revision 1.3  2003/11/22 20:43:07  willuhn
  * *** empty log message ***
  *
