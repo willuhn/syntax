@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
+ * $Revision: 1.1 $
  * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
@@ -15,21 +15,20 @@ package de.willuhn.jameica.fibu.views;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
-import de.willuhn.jameica.fibu.controller.SteuerControl;
-import de.willuhn.jameica.fibu.objects.Steuer;
+import de.willuhn.jameica.fibu.controller.KontoControl;
+import de.willuhn.jameica.fibu.objects.Konto;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
-import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.Headline;
 import de.willuhn.jameica.views.parts.Table;
 
 /**
  * @author willuhn
  */
-public class SteuerListe extends AbstractView
+public class KontoListe extends AbstractView
 {
 
-  public SteuerListe(Object o)
+  public KontoListe(Object o)
   {
     super(o);
   }
@@ -39,29 +38,27 @@ public class SteuerListe extends AbstractView
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Liste der Steuersätze."));
+    new Headline(getParent(),I18N.tr("Liste der Konten des aktiven Mandanten."));
 
     try {
-      Steuer steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,null);
-      SteuerControl controller = new SteuerControl(steuer);
+      Konto konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+      KontoControl controller = new KontoControl(konto);
 
-      DBIterator list = Application.getDefaultDatabase().createList(steuer.getClass());
-      list.setOrder("order by name desc");
+      DBIterator list = Application.getDefaultDatabase().createList(konto.getClass());
 
       Table table = new Table(list,controller);
+      table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
       table.addColumn(I18N.tr("Name"),"name");
-      table.addColumn(I18N.tr("Steuersatz"),"satz");
+      table.addColumn(I18N.tr("Kontoart"),"kontoart");
+      table.addColumn(I18N.tr("Kontenrahmen"),"kontenrahmen_id");
+      table.addColumn(I18N.tr("Steuer"),"steuer_id");
       
       table.paint(getParent());
-
-      ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Steuersatz"),controller);
-
     }
     catch (Exception e)
     {
-      Application.getLog().error("error while loading steuer list");
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Steuersätze."));
+      Application.getLog().error("error while loading konto list");
+      GUI.setActionText(I18N.tr("Fehler beim Lesen der Konten."));
       e.printStackTrace();
     }
   }
@@ -76,12 +73,8 @@ public class SteuerListe extends AbstractView
 }
 
 /*********************************************************************
- * $Log: SteuerListe.java,v $
- * Revision 1.2  2003/12/05 17:11:58  willuhn
+ * $Log: KontoListe.java,v $
+ * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
- *
- * Revision 1.1  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
  *
  **********************************************************************/

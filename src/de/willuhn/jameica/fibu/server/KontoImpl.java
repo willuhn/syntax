@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.sql.Statement;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.rmi.DBIterator;
 
 /**
  * @author willuhn
@@ -84,7 +85,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if (m == null)
         throw new RemoteException("active mandant not set.");
 
-      String sql = "select sum(betrag) as betrag from buchung where YEAR(datum) = "+m.getGeschaeftsjahr() + " and mandant_id = "+ m.getID() +" and konto_id = " + Integer.parseInt(getID());
+      String sql = "select sum(betrag) as betrag from buchung where YEAR(datum) = " + m.getGeschaeftsjahr() + " and mandant_id = "+ m.getID() +" and konto_id = " + Integer.parseInt(getID());
       if (Application.DEBUG)
         Application.getLog().debug("executing: " + sql);
       ResultSet rs = stmt.executeQuery(sql);
@@ -106,16 +107,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getTyp()
+   * @see de.willuhn.jameica.fibu.objects.Konto#getKontoArt()
    */
-  public int getTyp() throws RemoteException
+  public Kontoart getKontoArt() throws RemoteException
   {
-    Integer i = (Integer) getField("typ");
-    if (i != null)
-      return i.intValue();
-
-    throw new RemoteException("unable to determine konto type");
-
+    return (Kontoart) getField("kontoart");
   }
 
   /**
@@ -131,6 +127,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Class getForeignObject(String field) throws RemoteException
   {
+    if ("kontoart".equals(field))
+      return Kontoart.class;
     if ("steuer_id".equals(field))
       return Steuer.class;
     if ("kontenrahmen_id".equals(field))
@@ -171,15 +169,26 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if (kontonummer == null || "".equals(kontonummer))
         throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
       
-      Integer i = (Integer) getField("typ");
-      if (i == null)
-        throw new ApplicationException("Konto-Typ ungültig.");
+      Kontoart ka = (Kontoart) getField("kontoart");
+      if (ka == null)
+        throw new ApplicationException("Bitte wählen Sie eine Kontoart aus.");
+
+      // Jetzt muessen wir noch pruefen, ob die Kontonummer schon bei einem anderen
+      // Konto vergeben ist
+      DBIterator konten = getList();
+      while(konten.hasNext())
+      {
+        Konto k = (Konto) konten.next();
+        if (k.getKontonummer().equals(kontonummer) && !k.getID().equals(getID()))
+          throw new ApplicationException("Ein Konto mit dieser Kontonummer existiert bereits.");
+      }
     }
     catch (RemoteException e)
     {
       throw new ApplicationException("Fehler bei der Überprüfung der Pflichtfelder",e);
     }
   }
+
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
    */
@@ -197,10 +206,56 @@ public class KontoImpl extends AbstractDBObject implements Konto
     return "select id from " + getTableName() + " where kontenrahmen_id = " + k.getID();
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#setKontonummer(java.lang.String)
+   */
+  public void setKontonummer(String kontonummer) throws RemoteException
+  {
+    setField("kontonummer",kontonummer);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#setKontenrahmen(de.willuhn.jameica.fibu.objects.Kontenrahmen)
+   */
+  public void setKontenrahmen(Kontenrahmen k) throws RemoteException
+  {
+    if (k == null) return;
+    setField("kontenrahmen_id",new Integer(k.getID()));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#setName(java.lang.String)
+   */
+  public void setName(String name) throws RemoteException
+  {
+    setField("name",name);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#setKontoArt(Kontoart)
+   */
+  public void setKontoArt(Kontoart art) throws RemoteException
+  {
+    if (art == null) return;
+    setField("kontoart",new Integer(art.getID()));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Konto#setSteuer(de.willuhn.jameica.fibu.objects.Steuer)
+   */
+  public void setSteuer(Steuer steuer) throws RemoteException
+  {
+    if (steuer == null) return;
+    setField("steuer_id",new Integer(steuer.getID()));
+  }
+
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.8  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.7  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

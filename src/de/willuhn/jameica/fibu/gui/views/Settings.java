@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Settings.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class Settings extends AbstractView
     final SettingsControl control = new SettingsControl(null);
 
     // Headline malen
-    Headline headline     = new Headline(getParent(),I18N.tr("Einstellungen"));
+    new Headline(getParent(),I18N.tr("Einstellungen"));
 
     // Gruppe fachliche Einstellungen erzeugen
     LabelGroup group = new LabelGroup(getParent(),I18N.tr("fachliche Einstellungen"));
@@ -116,6 +116,9 @@ public class Settings extends AbstractView
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.2  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.1  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

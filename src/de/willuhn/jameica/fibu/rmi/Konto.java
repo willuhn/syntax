@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,13 +22,6 @@ import de.willuhn.jameica.rmi.DBObject;
  */
 public interface Konto extends DBObject
 {
-
-  public final static int KONTOTYP_EINNAHME   = 1;
-  public final static int KONTOTYP_AUSGABE    = 2;
-  public final static int KONTOTYP_GELD       = 3;
-  public final static int KONTOTYP_ANLAGE     = 4;
-  public final static int KONTOTYP_PRIVAT     = 5; // bedeutet, dass dessen Bestand zum Jahreswechsel nicht uebernommen wird
-  
 
   /**
    * Liefert die Kontonummer.
@@ -60,12 +53,11 @@ public interface Konto extends DBObject
   public String getName() throws RemoteException;
 
   /**
-   * Liefert den Typ des Kontos.
-   * @see Konto#KONTOTYP_*.
-   * @return Typ des Kontos. Zur Kodierung siehe Konto#KONTOTYP_*.
+   * Liefert die Art des Kontos.
+   * @return Art des Kontos.
    * @throws RemoteException
    */
-  public int getTyp() throws RemoteException;
+  public Kontoart getKontoArt() throws RemoteException;
 
   /**
    * Liefert den Steuersatz des Kontos.
@@ -74,10 +66,51 @@ public interface Konto extends DBObject
    */
   public Steuer getSteuer() throws RemoteException;
 
+
+
+
+  /**
+   * Setzt die Kontonummer.
+   * @param kontonummer Die Kontonummer.
+   * @throws RemoteException
+   */
+  public void setKontonummer(String kontonummer) throws RemoteException;
+
+  /**
+   * Setzt den Kontenrahmen, in dem sich das Konto befindet.
+   * @param k Kontenrahmen des Kontos.
+   * @throws RemoteException
+   */
+  public void setKontenrahmen(Kontenrahmen k) throws RemoteException;
+
+  /**
+   * Setzt den Namen des Kontos.
+   * @param name Name des Kontos.
+   * @throws RemoteException
+   */
+  public void setName(String name) throws RemoteException;
+
+  /**
+   * Setzt den Typ des Kontos.
+   * @param art Art des Kontos.
+   * @throws RemoteException
+   */
+  public void setKontoArt(Kontoart art) throws RemoteException;
+
+  /**
+   * Setzt den Steuersatz des Kontos.
+   * @param steuer der Steuersatz
+   * @throws RemoteException
+   */
+  public void setSteuer(Steuer steuer) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.7  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.6  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

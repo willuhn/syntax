@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,7 @@ public class SteuerNeu extends AbstractView
     final SteuerControl control = new SteuerControl(steuer);
 
     // Headline malen
-    Headline headline     = new Headline(getParent(),I18N.tr("Steuersatz bearbeiten"));
+    new Headline(getParent(),I18N.tr("Steuersatz bearbeiten"));
 
     try {
       
@@ -106,6 +106,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.2  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.1  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

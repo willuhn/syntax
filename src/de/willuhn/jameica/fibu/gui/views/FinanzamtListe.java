@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ public class FinanzamtListe extends AbstractView
    */
   public void bind()
   {
-    Headline headline = new Headline(getParent(),I18N.tr("Liste der Finanzämter."));
+    new Headline(getParent(),I18N.tr("Liste der Finanzämter."));
 
     try {
       Finanzamt fa = (Finanzamt) Application.getDefaultDatabase().createObject(Finanzamt.class,null);
@@ -80,6 +80,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.3  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.2  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/12/01 21:23:00 $
+ * $Revision: 1.7 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public interface Buchung extends DBObject
    * @return Geldkonto der Buchung.
    * @throws RemoteException
    */
-  public Konto getGeldKonto() throws RemoteException;
+  public GeldKonto getGeldKonto() throws RemoteException;
   
   /**
    * Liefert den Mandanten zu dieser Buchung.
@@ -105,10 +105,10 @@ public interface Buchung extends DBObject
 
   /**
    * Setzt das Geld-Konto zu dieser Buchung.
-   * @param k Konto der Buchung.
+   * @param k GeldKonto der Buchung.
    * @throws RemoteException
    */
-  public void setGeldKonto(Konto k) throws RemoteException;
+  public void setGeldKonto(GeldKonto k) throws RemoteException;
 
   /**
    * Setzt den Text der Buchung.
@@ -148,6 +148,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.7  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.6  2003/12/01 21:23:00  willuhn
  * *** empty log message ***
  *

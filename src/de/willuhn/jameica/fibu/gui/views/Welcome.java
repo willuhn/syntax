@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/21 02:10:57 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ public class Welcome extends AbstractView
    */
   public void bind()
   {
-    Headline headline = new Headline(getParent(),I18N.tr("Finanzbuchhaltung für Jameica."));
+    new Headline(getParent(),I18N.tr("Finanzbuchhaltung für Jameica."));
   }
 
   /**
@@ -45,6 +45,9 @@ public class Welcome extends AbstractView
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.3  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.2  2003/11/21 02:10:57  willuhn
  * @N buchung dialog works now
  *

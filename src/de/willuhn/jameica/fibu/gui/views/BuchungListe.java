@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class BuchungListe extends AbstractView
    */
   public void bind()
   {
-    Headline headline = new Headline(getParent(),I18N.tr("Buchungsliste."));
+    new Headline(getParent(),I18N.tr("Buchungsliste."));
 
     try {
       Buchung buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,null);
@@ -85,6 +85,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.9  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.8  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

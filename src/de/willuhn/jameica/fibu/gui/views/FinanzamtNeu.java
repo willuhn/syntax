@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/25 00:22:16 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class FinanzamtNeu extends AbstractView
     final FinanzamtControl control = new FinanzamtControl(fa);
 
     // Headline malen
-    Headline headline     = new Headline(getParent(),I18N.tr("Daten des Finanzamtes bearbeiten"));
+    new Headline(getParent(),I18N.tr("Daten des Finanzamtes bearbeiten"));
 
     try {
       
@@ -115,6 +115,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.2  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.1  2003/11/25 00:22:16  willuhn
  * @N added Finanzamt
  *

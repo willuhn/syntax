@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2003/12/01 23:01:59 $
+ * $Revision: 1.12 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,9 +77,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#getGeldKonto()
    */
-  public Konto getGeldKonto() throws RemoteException
+  public GeldKonto getGeldKonto() throws RemoteException
   {
-    return (Konto) getField("geldkonto_id");
+    return (GeldKonto) getField("geldkonto_id");
   }
 
   /**
@@ -152,9 +152,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setGeldKonto(de.willuhn.jameica.fibu.objects.Konto)
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setGeldKonto(de.willuhn.jameica.fibu.objects.GeldKonto)
    */
-  public void setGeldKonto(Konto k) throws RemoteException
+  public void setGeldKonto(GeldKonto k) throws RemoteException
   {
     if (k == null) return;
     setField("geldkonto_id",new Integer(k.getID()));
@@ -316,6 +316,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.12  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.11  2003/12/01 23:01:59  willuhn
  * *** empty log message ***
  *

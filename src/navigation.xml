@@ -2,6 +2,7 @@
 <navigation>
   <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.fibu.views.Welcome">
     <item name="Buchungen" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungListe" />
+    <item name="Konten"    icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.KontoListe" />
     <item name="Mandanten" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.MandantListe" />
   </item>
 </navigation>

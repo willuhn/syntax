@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/01 21:23:00 $
+ * $Revision: 1.10 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.controller.BuchungControl;
 import de.willuhn.jameica.fibu.objects.Buchung;
+import de.willuhn.jameica.fibu.objects.GeldKonto;
 import de.willuhn.jameica.fibu.objects.Konto;
 import de.willuhn.jameica.fibu.objects.Settings;
 import de.willuhn.jameica.rmi.DBIterator;
@@ -78,22 +79,20 @@ public class BuchungNeu extends AbstractView
     final BuchungControl control = new BuchungControl(buchung);
 
     // Headline malen
-    Headline headline     = new Headline(getParent(),I18N.tr("Buchung bearbeiten"));
+    new Headline(getParent(),I18N.tr("Buchung bearbeiten"));
 
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),I18N.tr("Konto"));
 
     try {
       
-      // TODO: Oben alle Konten erlauben
       // Saldo: Summe aller Netto-Buchungen auf diesem Konto
       Konto konto     = buchung.getKonto();
       if (konto == null) konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
-      // TODO: Hier nur Geldkonten erlauben
       // besser Eingabefeld mit Knopf zur Suche dahinter
-      Konto geldKonto = buchung.getGeldKonto();
-      if (geldKonto == null) geldKonto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+      GeldKonto geldKonto = buchung.getGeldKonto();
+      if (geldKonto == null) geldKonto = (GeldKonto) Application.getDefaultDatabase().createObject(GeldKonto.class,null);
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
@@ -228,7 +227,8 @@ public class BuchungNeu extends AbstractView
 
     /**
      * Konstruktor.
-     * @param s SelectInput-Feld, an dem der Listener haengt.
+     * @param select SelectInput-Feld, an dem der Listener haengt.
+     * @param s DecimalInput mit dem Feld fuer die Steuer des Kontos. Optional.
      */
     SaldoListener(SelectInput select, DecimalInput s)
     {
@@ -271,6 +271,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.10  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.9  2003/12/01 21:23:00  willuhn
  * *** empty log message ***
  *

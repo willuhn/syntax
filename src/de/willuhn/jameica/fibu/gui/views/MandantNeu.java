@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.4 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class MandantNeu extends AbstractView
     final MandantControl control = new MandantControl(mandant);
 
     // Headline malen
-    Headline headline     = new Headline(getParent(),I18N.tr("Mandant bearbeiten"));
+    new Headline(getParent(),I18N.tr("Mandant bearbeiten"));
 
     boolean faFound = false;
 
@@ -166,6 +166,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.4  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.3  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/01 21:23:00 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/05 17:11:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.objects.Buchung;
+import de.willuhn.jameica.fibu.objects.GeldKonto;
 import de.willuhn.jameica.fibu.objects.Konto;
 import de.willuhn.jameica.fibu.objects.Settings;
 import de.willuhn.jameica.rmi.DBIterator;
@@ -224,14 +225,14 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // GeldKonto checken
       
-      DBIterator geldkonten = Application.getDefaultDatabase().createList(Konto.class);
+      DBIterator geldkonten = Application.getDefaultDatabase().createList(GeldKonto.class);
       geldkonten.addFilter("kontonummer = '"+getField("geldkonto").getValue()+"'");
       if (!geldkonten.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Geld-Konto existiert nicht."));
         return;
       }
-      buchung.setGeldKonto((Konto) geldkonten.next());
+      buchung.setGeldKonto((GeldKonto) geldkonten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -292,6 +293,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.9  2003/12/05 17:11:58  willuhn
+ * @N added GeldKonto, Kontoart
+ *
  * Revision 1.8  2003/12/01 21:23:00  willuhn
  * *** empty log message ***
  *
