@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/22 20:43:07 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/23 19:26:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,10 @@ package de.willuhn.jameica.fibu.views;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
@@ -21,6 +25,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.controller.BuchungControl;
 import de.willuhn.jameica.fibu.objects.Buchung;
 import de.willuhn.jameica.fibu.objects.Konto;
+import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.CurrencyInput;
@@ -82,6 +87,7 @@ public class BuchungNeu extends AbstractView
       TextInput belegnummer  = new TextInput(""+buchung.getBelegnummer());
       CurrencyInput betrag   = new CurrencyInput(buchung.getBetrag(),"EUR");
 
+      kontoInput.addComment(I18N.tr("Saldo") + ": " + konto.getSaldo() + " EUR", new SaldoListener(kontoInput));
 
       // Fuegen sie zur Gruppe Konto hinzu
       kontoGroup.addLabelPair(I18N.tr("Datum"),     datum);
@@ -89,8 +95,6 @@ public class BuchungNeu extends AbstractView
       kontoGroup.addLabelPair(I18N.tr("Text"),      text);
       kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."), belegnummer);
       kontoGroup.addLabelPair(I18N.tr("Betrag"),    betrag);
-
-      kontoGroup.addLabelPair(I18N.tr("Saldo"),     new TextInput(""+konto.getSaldo()));
 
       // und registrieren sie im Controller.
       control.register("datum",        datum);
@@ -122,10 +126,42 @@ public class BuchungNeu extends AbstractView
   public void unbind()
   {
   }
+
+  class SaldoListener implements Listener
+  {
+
+    private SelectInput select;
+    SaldoListener(SelectInput s)
+    {
+      this.select = s;
+    }
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try {
+        Combo c = (Combo) event.widget;
+        String kontonummer = (String) c.getText();
+        DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
+        list.addFilter("kontonummer = " + kontonummer);
+        Konto konto = (Konto) list.next();
+        select.updateComment(I18N.tr("Saldo") + ": " + konto.getSaldo() + " EUR");
+      }
+      catch (RemoteException es)
+      {
+        GUI.setActionText(I18N.tr("Fehler bei der Saldenermittlung des Kontos."));
+      }
+    }
+    
+  }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.4  2003/11/23 19:26:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2003/11/22 20:43:07  willuhn
  * *** empty log message ***
  *
