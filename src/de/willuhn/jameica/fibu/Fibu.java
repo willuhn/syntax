@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/01/27 00:09:10 $
+ * $Revision: 1.13 $
+ * $Date: 2004/01/27 22:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,10 +135,29 @@ public class Fibu extends AbstractPlugin
     return true;
   }
 
+  /**
+   * @see de.willuhn.jameica.AbstractPlugin#getPassword()
+   */
+  protected String getPassword()
+  {
+    return "fibu";
+  }
+
+  /**
+   * @see de.willuhn.jameica.AbstractPlugin#getUsername()
+   */
+  protected String getUsername()
+  {
+    return "fibu";
+  }
+
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.13  2004/01/27 22:47:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/01/27 00:09:10  willuhn
  * *** empty log message ***
  *

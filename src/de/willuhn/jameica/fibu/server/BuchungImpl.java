@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.21 $
+ * $Date: 2004/01/27 22:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public String getText() throws RemoteException
   {
-    return (String) getField("text");
+    return (String) getField("buchungstext");
   }
 
   /**
@@ -183,7 +183,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setText(String text) throws RemoteException
   {
-    setField("text", text);
+    setField("buchungstext", text);
   }
 
   /**
@@ -381,6 +381,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.21  2004/01/27 22:47:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

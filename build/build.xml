@@ -6,7 +6,8 @@
 
         <property environment="env"/>
 
-		<property name="define.jarfilename"  value="fibu.jar"/>
+		<property name="define.pluginname"   value="fibu"/>
+		<property name="define.jarfilename"  value="${define.pluginname}.jar"/>
 		<property name="define.package"      value="de.willuhn.jameica"/>
 
         <property name="build.dir" 			 value="build"/>
@@ -20,7 +21,7 @@
 		<echo message="VERSION: ${version}"/>
 		<echo message="BUILD  : ${build.number}"/>
 
-        <property name="project.release"	 value="releases/${version}-${build.number}"/>
+        <property name="project.release"	 value="releases/${version}-${build.number}/${define.pluginname}"/>
         <property name="project.src" 		 value="${project.release}/src/classes"/>
         <property name="project.tmp" 		 value="${project.release}/tmp"/>
         <property name="project.javadoc" 	 value="${project.release}/javadoc"/>
@@ -28,15 +29,17 @@
         <property name="icon.dir" 			 value="${src.dir}/img"/>
         <property name="lang.dir" 			 value="${src.dir}/lang"/>
         <property name="lib.dir" 			 value="lib"/>
+        <property name="db.dir" 			 value="db"/>
+        <property name="sql.dir" 			 value="sql"/>
+        <property name="cfg.dir" 			 value="cfg"/>
         <property name="class.dir" 			 value="${project.tmp}/bin"/>
 
-
-
-		<fileset dir="">
-			<patternset id="lib.compileset">
-				<include name="${lib.dir}/**.jar"/>
-			</patternset>
-		</fileset>
+		<path id="compilepath">
+			<pathelement location="../jameica/lib/linux/swt.jar"/>
+			<pathelement location="../jameica/bin/"/>
+			<pathelement location="../util/bin/"/>
+			<pathelement location="../datasource/bin/"/>
+		</path>
 
     </target>
 
@@ -46,28 +49,16 @@
         <mkdir dir="${class.dir}"/>
 
 		<javac fork="true" debug="true" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
-			<classpath>
-				<path path="/home/willuhn/eclipse.linux/jameica/bin"></path>
-				<fileset dir="">
-					<patternset refid="lib.compileset"/>
-				</fileset>
-			</classpath>
+			<classpath refid="compilepath" />
         </javac>
 
         <rmic verify="true" base="${class.dir}">
             <include name="**/*.class"/>
-            <classpath>
-				<path path="/home/willuhn/eclipse.linux/jameica/bin"></path>
-				<fileset dir="">
-					<patternset refid="lib.compileset"/>
-				</fileset>
-            </classpath>
+			<classpath refid="compilepath" />
         </rmic>
 
-        <copydir src="${icon.dir}" 						dest="${class.dir}/img"/>
-        <copydir src="${lang.dir}" 						dest="${class.dir}/lang"/>
-        <copyfile 	src="${src.dir}/navigation.xml" 	dest="${class.dir}/navigation.xml"/>
-        <copyfile 	src="${src.dir}/menu.xml"	 		dest="${class.dir}/menu.xml"/>
+		<copy file="${src.dir}/navigation.xml" tofile="${class.dir}/navigation.xml" />
+		<copy file="${src.dir}/menu.xml" 	   tofile="${class.dir}/menu.xml" />
 
 	</target>
 
@@ -88,21 +79,25 @@
 	    <jar destfile="${project.release}/${define.jarfilename}">
 		    <manifest>
 		    	<attribute name="Built-By" value="${user.name}"/>
-		    	<attribute name="Implementation-Title" value="${define.package}"/>
+		    	<attribute name="Implementation-Title" value="${define.pluginname}"/>
 		    	<attribute name="Implementation-Version" value="${version}"/>
 		    	<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-		    	<attribute name="Main-Class" value="de.willuhn.jameica.Main"/>
-		    	<attribute name="Class-Path" value="img"/>
+		    	<attribute name="Class-Path" value=""/>
 		    </manifest>
 		    <fileset dir="${class.dir}"/>
 		</jar>
-		
-		<mkdir dir="${project.release}/lib"/>
 
-		<copy todir="${project.release}/lib">
-			<fileset dir="${lib.dir}"/>
+		<mkdir dir="${project.release}/db"/>
+		<mkdir dir="${project.release}/sql"/>
+
+		<copy todir="${project.release}/db">
+			<fileset dir="${db.dir}"/>
 		</copy>
 
+		<copy todir="${project.release}/sql">
+			<fileset dir="${sql.dir}"/>
+		</copy>
+		
     </target>
 
     <target depends="jar" name="javadoc" description="creates the api doc">
@@ -110,11 +105,7 @@
         <mkdir dir="${project.javadoc}"/>
 
         <javadoc destdir="${project.javadoc}" packagenames="${define.package}.*">
-			<classpath>
-				<fileset dir="">
-					<patternset refid="lib.compileset"/>
-				</fileset>
-			</classpath>
+			<classpath refid="compilepath" />
             <sourcepath>
                 <pathelement location="${src.dir}"/>
             </sourcepath>

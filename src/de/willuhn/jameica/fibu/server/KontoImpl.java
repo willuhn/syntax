@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.14 $
+ * $Date: 2004/01/27 22:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontoart getKontoArt() throws RemoteException
   {
-    return (Kontoart) getField("kontoart");
+    return (Kontoart) getField("kontoart_id");
   }
 
   /**
@@ -124,7 +124,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("kontoart".equals(field))
+    if ("kontoart_id".equals(field))
       return Kontoart.class;
     if ("steuer_id".equals(field))
       return Steuer.class;
@@ -234,7 +234,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public void setKontoArt(Kontoart art) throws RemoteException
   {
     if (art == null) return;
-    setField("kontoart",new Integer(art.getID()));
+    setField("kontoart_id",new Integer(art.getID()));
   }
 
   /**
@@ -250,6 +250,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.14  2004/01/27 22:47:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *
