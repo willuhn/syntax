@@ -7,13 +7,11 @@ INSERT INTO kontoart (id, name) VALUES (4, 'Anlagevermögen');
 INSERT INTO kontoart (id, name) VALUES (5, 'Privatkonto');
 INSERT INTO kontoart (id, name) VALUES (6, 'Steuer-Sammelkonto');
 
-
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (36, 6, '1570', 'Abziehbare Vorsteuer', 1, NULL);
 INSERT INTO steuer (id, name, satz, steuerkonto_id) VALUES (1, 'Vorsteuer 16%', '16', 36);
 
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (37, 6, '1571', 'Abziehbare Vorsteuer 7 %', 1, NULL);
 INSERT INTO steuer (id, name, satz, steuerkonto_id) VALUES (2, 'Vorsteuer 7%', '7', 37);
-
 
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (45, 6, '1770', 'Umsatzsteuer', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (46, 6, '1772', 'Umsatzsteuer aus innergem. Erwerb 7%', 1, NULL);

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/27 00:09:10 $
+ * $Revision: 1.11 $
+ * $Date: 2004/01/27 23:54:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -346,7 +346,13 @@ public class MandantControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
       
-      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,getKontenrahmenAuswahl().getValue());
+      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,
+      																																		getKontenrahmenAuswahl().getValue());
+			if (kr.isNewObject())
+			{
+				GUI.setActionText(I18N.tr("Bitte wählen Sie einen Kontenrahmen aus."));
+				return;
+			}
       getMandant().setKontenrahmen(kr);
       //
       //////////////////////////////////////////////////////////////////////////
@@ -369,14 +375,15 @@ public class MandantControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Finanzamt checken
       
-      DBIterator finanzaemter = Settings.getDatabase().createList(Finanzamt.class);
-      finanzaemter.addFilter("name = '"+getFinanzamtAuswahl().getValue()+"'");
-      if (!finanzaemter.hasNext())
+			Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,
+																												 getFinanzamtAuswahl().getValue());
+
+      if (!fa.isNewObject())
       {
-        GUI.setActionText(I18N.tr("Ausgewähltes Finanzamt existiert nicht."));
+        GUI.setActionText(I18N.tr("Bitte wählen Sie ein Finanzamt aus."));
         return;
       }
-      getMandant().setFinanzamt((Finanzamt) finanzaemter.next());
+      getMandant().setFinanzamt(fa);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -434,6 +441,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.11  2004/01/27 23:54:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/27 00:09:10  willuhn
  * *** empty log message ***
  *

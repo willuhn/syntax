@@ -2,6 +2,7 @@ CREATE TABLE kontenrahmen (
   id NUMERIC default UNIQUEKEY('kontenrahmen'),
   name varchar(100) NOT NULL,
   UNIQUE (id),
+  UNIQUE (name),
   PRIMARY KEY (id)
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE konto (
   kontenrahmen_id int(2) NOT NULL,
   steuer_id int(2),
   UNIQUE (id),
+  UNIQUE (kontonummer),
   PRIMARY KEY (id)
 );
 
@@ -37,6 +39,7 @@ CREATE TABLE buchung (
   mandant_id int(10) NOT NULL,
   buchung_id int(10),
   UNIQUE (id),
+  UNIQUE (belegnummer),
   PRIMARY KEY (id)
 );
 
@@ -48,6 +51,7 @@ CREATE TABLE finanzamt (
   plz varchar(7) NOT NULL,
   ort varchar(255) NOT NULL,
   UNIQUE (id),
+  UNIQUE (name),
   PRIMARY KEY (id)
 );
 
@@ -55,6 +59,7 @@ CREATE TABLE kontoart (
   id NUMERIC default UNIQUEKEY('kontoart'),
   name varchar(255) NOT NULL,
   UNIQUE (id),
+  UNIQUE (name),
   PRIMARY KEY (id)
 );
 

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/27 21:38:06 $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/27 23:54:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -204,12 +204,13 @@ public class KontoControl extends AbstractControl
 
 			if (getKonto().getKontoArt().isSteuerpflichtig())
 			{
-				String s = getSteuer().getValue();
-				Steuer steuer = null;
-				if (s != null)
-					steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,s);
-
-				getKonto().setSteuer(steuer);
+				Steuer s = (Steuer) Settings.getDatabase().createObject(Steuer.class,getSteuer().getValue());
+				if (s.isNewObject())
+				{
+					GUI.setActionText(I18N.tr("Bitte wählen Sie einen Steuersatz aus."));
+					return;
+				}
+				getKonto().setSteuer(s);
 			}
 
       // und jetzt speichern wir.
@@ -261,6 +262,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.9  2004/01/27 23:54:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/27 21:38:06  willuhn
  * @C refactoring finished
  *

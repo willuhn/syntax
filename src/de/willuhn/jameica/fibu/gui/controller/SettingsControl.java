@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/27 21:38:06 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/27 23:54:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -138,6 +138,11 @@ public class SettingsControl extends AbstractControl
 			Settings.setCurrency(getCurrency().getValue());
 
       Mandant m = (Mandant) Settings.getDatabase().createObject(Mandant.class,getMandant().getValue());
+      if (m.isNewObject())
+      {
+      	GUI.setActionText(I18N.tr("Bitte wählen Sie einen Mandanten aus."));
+      	return;
+      }
       Settings.setActiveMandant(m);
 			GUI.setActionText(I18N.tr("Einstellungen gespeichert."));
     }
@@ -169,6 +174,9 @@ public class SettingsControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.8  2004/01/27 23:54:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/27 21:38:06  willuhn
  * @C refactoring finished
  *
