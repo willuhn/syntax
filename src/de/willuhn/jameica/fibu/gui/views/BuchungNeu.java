@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2003/12/05 18:42:59 $
+ * $Revision: 1.12 $
+ * $Date: 2003/12/08 15:41:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,8 +98,8 @@ public class BuchungNeu extends AbstractView
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
       datum.addComment(I18N.tr("Wochentag: "),new WochentagListener(datum));
 
-      SearchInput kontoInput      = new SearchInput(konto.getKontonummer());
-      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer());
+      SearchInput kontoInput      = new SearchInput(konto.getKontonummer(), new KontoSearchDialog(konto));
+      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer(), new GeldKontoSearchDialog(geldKonto));
 
       TextInput text              = new TextInput(buchung.getText());
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
@@ -270,6 +270,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.12  2003/12/08 15:41:25  willuhn
+ * @N searchInput
+ *
  * Revision 1.11  2003/12/05 18:42:59  willuhn
  * *** empty log message ***
  *
