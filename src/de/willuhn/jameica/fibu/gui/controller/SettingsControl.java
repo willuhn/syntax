@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.objects.Mandant;
 import de.willuhn.jameica.fibu.objects.Settings;
-import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.parts.Controller;
 
@@ -69,18 +68,12 @@ public class SettingsControl extends Controller
    */
   public void handleStore()
   {
+
     Settings.setCurrency(getField("currency").getValue());
-    
-    String firma = getField("mandant").getValue();
+
     try {
-      DBIterator list = Application.getDefaultDatabase().createList(Mandant.class);
-      list.addFilter("firma='" + firma + "' limit 1");
-      if(!list.hasNext())
-      {
-        GUI.setActionText(I18N.tr("ausgewählter Mandant konnte nicht gefunden werden."));
-        return;
-      }
-      Settings.setActiveMandant((Mandant) list.next());
+      Mandant m = (Mandant) Application.getDefaultDatabase().createObject(Mandant.class,getField("mandant").getValue());
+      Settings.setActiveMandant(m);
       GUI.setActionText(I18N.tr("Einstellungen gespeichert."));
     }
     catch (RemoteException e)
@@ -113,6 +106,9 @@ public class SettingsControl extends Controller
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.2  2003/12/10 23:51:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

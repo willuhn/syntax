@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,7 @@ public class SteuerListe extends AbstractView
       Table table = new Table(list,controller);
       table.addColumn(I18N.tr("Name"),"name");
       table.addColumn(I18N.tr("Steuersatz"),"satz");
+      table.addColumn(I18N.tr("Steuer-Sammelkonto"),"steuerkonto_id");
       
       table.paint(getParent());
 
@@ -77,6 +78,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.3  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,8 @@ import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.objects.Steuer;
+import de.willuhn.jameica.fibu.objects.SteuerKonto;
+import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.parts.Controller;
 
@@ -139,6 +141,20 @@ public class SteuerControl extends Controller
       //
       //////////////////////////////////////////////////////////////////////////
 
+      //////////////////////////////////////////////////////////////////////////
+      // Steuerkonto checken
+      
+      DBIterator steuerkonten = Application.getDefaultDatabase().createList(SteuerKonto.class);
+      steuerkonten.addFilter("kontonummer="+getField("steuerkonto").getValue());
+      if (!steuerkonten.hasNext())
+      {
+        GUI.setActionText(I18N.tr("Ausgewähltes Steuerkonto existiert nicht."));
+        return;
+      }
+      steuer.setSteuerKonto((SteuerKonto) steuerkonten.next());
+      //
+      //////////////////////////////////////////////////////////////////////////
+
       // und jetzt speichern wir.
       steuer.store();
       GUI.setActionText(I18N.tr("Steuersatz gespeichert."));
@@ -186,6 +202,9 @@ public class SteuerControl extends Controller
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.2  2003/12/10 23:51:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

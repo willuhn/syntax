@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.fibu.objects.Kontoart;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.Headline;
+import de.willuhn.jameica.views.parts.Input;
 import de.willuhn.jameica.views.parts.LabelGroup;
 import de.willuhn.jameica.views.parts.LabelInput;
 import de.willuhn.jameica.views.parts.SelectInput;
@@ -71,10 +72,23 @@ public class KontoNeu extends AbstractView
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput name             = new TextInput(konto.getName());
       TextInput kontonummer      = new TextInput(konto.getKontonummer());
-      SelectInput steuer         = new SelectInput(konto.getSteuer());
 
       Kontoart ka = konto.getKontoArt();
       LabelInput kontoart        = new LabelInput((String) ka.getField(ka.getPrimaryField()));
+
+      Input steuer = null;
+      if (
+        ka.getKontoArt() == Kontoart.KONTOART_EINNAHME ||
+        ka.getKontoArt() == Kontoart.KONTOART_AUSGABE ||
+        ka.getKontoArt() == Kontoart.KONTOART_ANLAGE
+      )
+      {
+        steuer = new SelectInput(konto.getSteuer());
+      }
+      else {
+        steuer = new LabelInput("Konto besitzt keinen Steuersatz.");
+      }
+
 
       Kontenrahmen k = konto.getKontenrahmen();
       LabelInput kontenrahmen    = new LabelInput((String) k.getField(k.getPrimaryField()));
@@ -114,6 +128,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.2  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

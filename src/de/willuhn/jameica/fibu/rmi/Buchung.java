@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,14 @@ public interface Buchung extends DBObject
    */
   public double getSteuer() throws RemoteException;
 
+//  /**
+//   * Wenn es sich bei dieser Buchung um eine Hilfs-Buchung (z.Bsp. Steuerbuchung handelt),
+//   * dann liefert diese Funktion die eigentliche Hauptbuchung. Andernfalls null.
+//   * @return die Hauptbuchung falls es eine Hilfsbuchung ist, sonst null.
+//   * @throws RemoteException
+//   */
+// TODO
+//  public Buchung getHauptBuchung() throws RemoteException;
 
   /**
    * Setzt das Datum der Buchung.
@@ -148,6 +156,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.8  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2003/12/05 18:42:59 $
+ * $Revision: 1.14 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -308,7 +308,10 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     }
     int year = m.getGeschaeftsjahr();
 
-    String s = "select id from " + getTableName() + " where YEAR(datum) = " + year + " and mandant_id = " + m.getID();
+    String s = "select id from " + getTableName() +
+      " where YEAR(datum) = " + year + 
+      " and mandant_id = " + m.getID() +
+      " and buchung_id is NULL";
     return s;
   }
 
@@ -316,6 +319,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.14  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2003/12/05 18:42:59  willuhn
  * *** empty log message ***
  *

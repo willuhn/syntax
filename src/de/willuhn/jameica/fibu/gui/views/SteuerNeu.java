@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.3 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,11 +20,13 @@ import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.controller.SteuerControl;
 import de.willuhn.jameica.fibu.objects.Steuer;
+import de.willuhn.jameica.fibu.objects.SteuerKonto;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.DecimalInput;
 import de.willuhn.jameica.views.parts.Headline;
 import de.willuhn.jameica.views.parts.LabelGroup;
+import de.willuhn.jameica.views.parts.SearchInput;
 import de.willuhn.jameica.views.parts.TextInput;
 
 /**
@@ -75,11 +77,17 @@ public class SteuerNeu extends AbstractView
       DecimalInput satz = new DecimalInput(Fibu.DECIMALFORMAT.format(steuer.getSatz()));
         satz.addComment("%",null);
 
+      SteuerKonto konto = steuer.getSteuerKonto();
+      if (konto == null) konto = (SteuerKonto) Application.getDefaultDatabase().createObject(SteuerKonto.class,null);
+      SearchInput kontoInput = new SearchInput(konto.getKontonummer(), new SteuerKontoSearchDialog());
+
       steuerGroup.addLabelPair(I18N.tr("Name")      , name);
       steuerGroup.addLabelPair(I18N.tr("Steuersatz"), satz);
+      steuerGroup.addLabelPair(I18N.tr("Steuer-Sammelkonto"), kontoInput);
 
       control.register("name",name);
       control.register("satz",satz);
+      control.register("steuerkonto",kontoInput);
     }
     catch (RemoteException e)
     {
@@ -106,6 +114,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.3  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

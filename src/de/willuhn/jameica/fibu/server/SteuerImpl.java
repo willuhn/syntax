@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,6 +94,8 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public Class getForeignObject(String field) throws RemoteException
   {
+    if ("steuerkonto_id".equals(field))
+      return SteuerKonto.class;
     return null;
   }
 
@@ -144,10 +146,30 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
       throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Steuer#getSteuerKonto()
+   */
+  public SteuerKonto getSteuerKonto() throws RemoteException
+  {
+    return (SteuerKonto) getField("steuerkonto_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.objects.SteuerKonto)
+   */
+  public void setSteuerKonto(SteuerKonto k) throws RemoteException
+  {
+    if (k == null) return;
+    setField("steuerkonto_id",new Integer(k.getID()));
+  }
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.2  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,6 @@ public class KontoListe extends AbstractView
       table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
       table.addColumn(I18N.tr("Name"),"name");
       table.addColumn(I18N.tr("Kontoart"),"kontoart");
-      table.addColumn(I18N.tr("Kontenrahmen"),"kontenrahmen_id");
       table.addColumn(I18N.tr("Steuer"),"steuer_id");
       
       table.paint(getParent());
@@ -74,6 +73,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.2  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

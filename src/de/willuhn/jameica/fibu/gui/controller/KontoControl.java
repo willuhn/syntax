@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.jameica.fibu.objects.Konto;
 import de.willuhn.jameica.fibu.objects.Steuer;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.parts.Controller;
-import de.willuhn.jameica.views.parts.SelectInput;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -88,8 +87,11 @@ public class KontoControl extends Controller
 
       //////////////////////////////////////////////////////////////////////////
       // Steuersatz checken
-      String choosen = getField("steuer").getValue();
-      Steuer steuer = (Steuer) ((SelectInput) getField("steuer")).getValue(choosen);
+      String s = getField("steuer").getValue();
+      Steuer steuer = null;
+      if (s != null)
+        steuer = (Steuer) Application.getDefaultDatabase().createObject(Steuer.class,s);
+
       konto.setSteuer(steuer);
       //
       //////////////////////////////////////////////////////////////////////////
@@ -145,6 +147,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.2  2003/12/10 23:51:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

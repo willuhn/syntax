@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.5 $
+ * $Date: 2003/12/10 23:51:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,14 +124,9 @@ public class MandantControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
       
-      DBIterator kontenrahmen = Application.getDefaultDatabase().createList(Kontenrahmen.class);
-      kontenrahmen.addFilter("name = '"+getField("kontenrahmen").getValue()+"'");
-      if (!kontenrahmen.hasNext())
-      {
-        GUI.setActionText(I18N.tr("Ausgewählter Kontenrahmen existiert nicht."));
-        return;
-      }
-      mandant.setKontenrahmen((Kontenrahmen) kontenrahmen.next());
+      Kontenrahmen kr = (Kontenrahmen) Application.getDefaultDatabase().
+                                         createObject(Kontenrahmen.class,getField("kontenrahmen").getValue());
+      mandant.setKontenrahmen(kr);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -222,6 +217,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.5  2003/12/10 23:51:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

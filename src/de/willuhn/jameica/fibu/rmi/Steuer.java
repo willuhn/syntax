@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,14 @@ public interface Steuer extends DBObject
   public double getSatz() throws RemoteException;
 
   /**
+   * Liefert das Steuersammelkonto, welches fuer Konten verwendet wird, die
+   * diese Steuer als Vorschlag registriert haben.
+   * @return das Steuersammel-Konto
+   * @throws RemoteException
+   */
+  public SteuerKonto getSteuerKonto() throws RemoteException;
+  
+  /**
    * Setzt den Namen des Steuersatzes.
    * @param Name des Steuersatzes.
    * @throws RemoteException
@@ -51,10 +59,19 @@ public interface Steuer extends DBObject
    */
   public void setSatz(double satz) throws RemoteException;
 
+  /**
+   * Setzt das Steuer-Sammelkonto.
+   * @param k das zu verwendende Steuersammel-Konto.
+   * @throws RemoteException
+   */
+  public void setSteuerKonto(SteuerKonto k) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.2  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

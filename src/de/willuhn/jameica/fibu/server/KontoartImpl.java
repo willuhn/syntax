@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/10 23:51:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,10 +88,27 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
     return null;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Kontoart#getKontoArt()
+   */
+  public int getKontoArt() throws RemoteException
+  {
+    try {
+      return Integer.parseInt(getID());
+    }
+    catch (NumberFormatException ne)
+    {
+      return KONTOART_UNGUELTIG;
+    }
+  }
+
 }
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.2  2003/12/10 23:51:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *
