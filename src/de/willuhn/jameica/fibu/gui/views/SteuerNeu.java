@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,14 +17,11 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
-import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.parts.LabelGroup;
 import de.willuhn.util.I18N;
 
 /**
@@ -48,48 +45,19 @@ public class SteuerNeu extends AbstractView
   public void bind()
   {
 
-    // Wir laden erstmal das Objekt bzw. erstellen ein neues.
-    Steuer steuer = (Steuer) getCurrentObject();
-    if (steuer == null)
-    {
-      try {
-        steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Neuer Steuersatz konnte nicht erzeugt werden."));
-      }
-    }
+		// Headline malen
+		addHeadline("Steuersatz bearbeiten");
 
-    // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
-    // Er wird die Interaktionen mit der Business-Logik uebernehmen.
-    // Damit er an die Daten des Dialogs kommt, muessen wir jedes
-    // Eingabe-Feld in ihm registrieren.
-    final SteuerControl control = new SteuerControl(steuer);
+    SteuerControl control = new SteuerControl(this);
 
-    // Headline malen
-    new Headline(getParent(),I18N.tr("Steuersatz bearbeiten"));
 
     try {
       
       LabelGroup steuerGroup = new LabelGroup(getParent(),I18N.tr("Steuersatz"));
 
-      // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
-      TextInput name    = new TextInput(steuer.getName());
-      DecimalInput satz = new DecimalInput(Fibu.DECIMALFORMAT.format(steuer.getSatz()));
-        satz.addComment("%",null);
-
-      SteuerKonto konto = steuer.getSteuerKonto();
-      if (konto == null) konto = (SteuerKonto) Settings.getDatabase().createObject(SteuerKonto.class,null);
-      SearchInput kontoInput = new SearchInput(konto.getKontonummer(), new SteuerKontoSearchDialog());
-
-      steuerGroup.addLabelPair(I18N.tr("Name")      , name);
-      steuerGroup.addLabelPair(I18N.tr("Steuersatz"), satz);
-      steuerGroup.addLabelPair(I18N.tr("Steuer-Sammelkonto"), kontoInput);
-
-      control.register("name",name);
-      control.register("satz",satz);
-      control.register("steuerkonto",kontoInput);
+      steuerGroup.addLabelPair(I18N.tr("Name")      , 				control.getName());
+      steuerGroup.addLabelPair(I18N.tr("Steuersatz"), 				control.getSatz());
+      steuerGroup.addLabelPair(I18N.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
     }
     catch (RemoteException e)
     {
@@ -115,6 +83,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.8  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

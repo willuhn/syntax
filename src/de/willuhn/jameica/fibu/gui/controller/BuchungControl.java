@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.15 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,16 +19,19 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.*;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.BuchungListe;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.parts.Controller;
-import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -289,6 +292,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.15  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

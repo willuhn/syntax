@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,66 +18,147 @@ import java.text.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.*;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.views.SteuerKontoSearchDialog;
 import de.willuhn.jameica.fibu.gui.views.SteuerListe;
 import de.willuhn.jameica.fibu.gui.views.SteuerNeu;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.parts.Controller;
-import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.DecimalInput;
+import de.willuhn.jameica.gui.views.parts.Input;
+import de.willuhn.jameica.gui.views.parts.Table;
+import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
-/**
- * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
- * Dialogs "Steuern".
- * @author willuhn
- */
-public class SteuerControl extends Controller
+public class SteuerControl extends AbstractControl
 {
 
+	// Fach-Objekte.
+	private Steuer steuer = null;
+	private Konto konto   = null;
+
+	// Eingabe-Felder
+	private Input name					= null;
+	private Input satz    			= null;
+	private Input kontoauswahl	= null;
   /**
-   * Erzeugt einen neuen Controller der fuer diesen Steuersatz zustaendig ist.
-   * @param object der Steuersatz.
+   * @param view
    */
-  public SteuerControl(DBObject object)
+  public SteuerControl(AbstractView view)
   {
-    super(object);
+    super(view);
   }
 
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
+	/**
+	 * Liefert die Steuer.
+   * @return Steuer.
+   * @throws RemoteException
    */
-  public void handleDelete(String id)
-  {
-    try {
-      this.object = Settings.getDatabase().createObject(Steuer.class,id);
-      handleDelete();
-    }
-    catch (RemoteException e)
-    {
-      // Objekt kann nicht geladen werden. Dann muessen wir es auch nicht loeschen.
-      Application.getLog().error("no valid steuer found");
-      GUI.setActionText(I18N.tr("Steuersatz wurde nicht gefunden."));
-    }
-  }
+  public Steuer getSteuer() throws RemoteException
+	{
+		if (steuer != null)
+			return steuer;
+			
+		steuer = (Steuer) getCurrentObject();
+		if (steuer != null)
+			return steuer;
+
+		steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
+		return steuer;
+
+	}
+
+	/**
+	 * Liefert das Steuerkonto.
+   * @return Steuerkonto.
+   * @throws RemoteException
+   */
+  public Konto getKonto() throws RemoteException
+	{
+		if (konto != null)
+			return konto;
+			
+		konto = getSteuer().getSteuerKonto();
+		if (konto != null)
+			return konto;
+
+		konto = (SteuerKonto) Settings.getDatabase().createObject(SteuerKonto.class,null);
+			return konto;
+	}
+
+	/**
+	 * Liefert eine Tabelle mit den Steuersaetzen.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Table getSteuerListe() throws RemoteException
+	{
+		DBIterator list = Settings.getDatabase().createList(Steuer.class);
+		list.setOrder("order by name desc");
+
+		Table table = new Table(list,this);
+		table.addColumn(I18N.tr("Name"),"name");
+		table.addColumn(I18N.tr("Steuersatz"),"satz");
+		table.addColumn(I18N.tr("Steuer-Sammelkonto"),"steuerkonto_id");
+		return table;
+	}
+      
+	/**
+	 * Liefert ein Eingabe-Feld fuer den Namen des Steuersatzes.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getName() throws RemoteException
+	{
+		if (name != null)
+			return name;
+		name = new TextInput(getSteuer().getName());
+		return name;
+	}
+
+	/**
+	 * Liefert ein Eingabe-Feld fuer den Steuersatz.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getSatz() throws RemoteException
+	{
+		if (satz != null)
+			return satz;
+		satz = new DecimalInput(Fibu.DECIMALFORMAT.format(getSteuer().getSatz()));
+		satz.addComment("%",null);
+		return satz;
+	}
+
+	/**
+	 * Liefert ein Auswahl-Feld fuer das Steuer-Konto.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getKontoAuswahl() throws RemoteException
+	{
+		if (kontoauswahl != null)
+			return kontoauswahl;
+		kontoauswahl = new SearchInput(getKonto().getKontonummer(), new SteuerKontoSearchDialog());
+		return kontoauswahl;
+	}
+
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete()
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
    */
   public void handleDelete()
   {
-    Steuer steuer = (Steuer) getObject();
-
     try {
-
-      if (steuer.isNewObject())
-      {
-        GUI.setActionText(I18N.tr("Steuersatz wurde noch nicht gespeichert und muss daher nicht gelöscht werden."));
-        return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
-      }
 
       MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
       box.setText(I18N.tr("Steuersatz wirklich löschen?"));
@@ -86,22 +167,17 @@ public class SteuerControl extends Controller
         return;
 
       // ok, wir loeschen das Objekt
-      steuer.delete();
+      getSteuer().delete();
       GUI.setActionText(I18N.tr("Steuersatz gelöscht."));
-    }
-    catch (ApplicationException e1)
-    {
-      MessageBox box2 = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
-      box2.setText(I18N.tr("Fehler"));
-      box2.setMessage(e1.getLocalizedMessage());
-      box2.open();
-      return;
-      
     }
     catch (RemoteException e)
     {
       GUI.setActionText(I18N.tr("Fehler beim Löschen des Steuersatzes."));
       Application.getLog().error("unable to delete steuer");
+    }
+    catch (ApplicationException ae)
+    {
+    	GUI.setActionText(ae.getLocalizedMessage());
     }
   }
 
@@ -118,16 +194,14 @@ public class SteuerControl extends Controller
    */
   public void handleStore()
   {
-    Steuer steuer = (Steuer) getObject();
-
     try {
 
-      steuer.setName(getField("name").getValue());
+      getSteuer().setName(getName().getValue());
 
       //////////////////////////////////////////////////////////////////////////
       // Steuersatz checken
       try {
-        steuer.setSatz(Fibu.DECIMALFORMAT.parse(getField("satz").getValue()).doubleValue());
+        getSteuer().setSatz(Fibu.DECIMALFORMAT.parse(getSatz().getValue()).doubleValue());
       }
       catch (NumberFormatException e)
       {
@@ -146,18 +220,18 @@ public class SteuerControl extends Controller
       // Steuerkonto checken
       
       DBIterator steuerkonten = Settings.getDatabase().createList(SteuerKonto.class);
-      steuerkonten.addFilter("kontonummer="+getField("steuerkonto").getValue());
+      steuerkonten.addFilter("kontonummer="+getKontoAuswahl().getValue());
       if (!steuerkonten.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Steuerkonto existiert nicht."));
         return;
       }
-      steuer.setSteuerKonto((SteuerKonto) steuerkonten.next());
+      getSteuer().setSteuerKonto((SteuerKonto) steuerkonten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
       // und jetzt speichern wir.
-      steuer.store();
+      getSteuer().store();
       GUI.setActionText(I18N.tr("Steuersatz gespeichert."));
     }
     catch (ApplicationException e1)
@@ -201,6 +275,9 @@ public class SteuerControl extends Controller
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.7  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

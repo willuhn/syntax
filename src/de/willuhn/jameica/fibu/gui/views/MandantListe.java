@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,11 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.Headline;
-import de.willuhn.jameica.gui.views.parts.Table;
 import de.willuhn.util.I18N;
 
 /**
@@ -47,27 +42,15 @@ public class MandantListe extends AbstractView
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Liste der Mandanten."));
+    addHeadline("Liste der Mandanten.");
+		MandantControl control = new MandantControl(this);
 
     try {
-      Mandant mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,null);
-      MandantControl controller = new MandantControl(mandant);
 
-      DBIterator list = Settings.getDatabase().createList(mandant.getClass());
-      list.setOrder("order by firma desc");
-
-      Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Name 1"),"name1");
-      table.addColumn(I18N.tr("Name 2"),"name2");
-      table.addColumn(I18N.tr("Firma"),"firma");
-      table.addColumn(I18N.tr("Ort"),"ort");
-      table.addColumn(I18N.tr("Steuernummer"),"steuernummer");
-      table.addColumn(I18N.tr("Kontenrahmen"),"kontenrahmen_id");
-      
-      table.paint(getParent());
+      control.getMandantListe().paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Mandant"),controller);
+      buttons.addCreateButton(I18N.tr("Neuer Mandant"),control);
 
     }
     catch (Exception e)
@@ -89,6 +72,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.8  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,65 +17,295 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.*;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.MandantListe;
 import de.willuhn.jameica.fibu.gui.views.MandantNeu;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.parts.Controller;
-import de.willuhn.jameica.rmi.DBIterator;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.views.parts.*;
+import de.willuhn.jameica.gui.views.parts.Input;
+import de.willuhn.jameica.gui.views.parts.SelectInput;
+import de.willuhn.jameica.gui.views.parts.Table;
+import de.willuhn.jameica.gui.views.parts.TextInput;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
-/**
- * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
- * Dialogs "Mandant".
- * @author willuhn
- */
-public class MandantControl extends Controller
+public class MandantControl extends AbstractControl
 {
 
-  /**
-   * Erzeugt einen neuen Controller der fuer diesen Mandanten zustaendig ist.
-   * @param object der Mandant.
-   */
-  public MandantControl(DBObject object)
-  {
-    super(object);
-  }
+	// Fach-Objekte
+	private Mandant mandant 					= null;
+	private Kontenrahmen kontenrahmen = null;
+	private Finanzamt finanzamt				= null;
+
+	// Eingabe-Felder
+	private Input name1								= null;
+	private Input name2								= null;
+	private Input firma								= null;
+	private Input strasse							= null;
+	private Input plz									= null;
+	private Input ort									= null;
+	private Input steuernummer				= null;
+	private Input kontenrahmenAuswahl	= null;
+	private Input finanzamtAuswahl		= null;
+	private Input geschaeftsjahr			= null;
+
+	private boolean storeAllowed      = false;
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
+   * @param view
    */
-  public void handleDelete(String id)
+  public MandantControl(AbstractView view)
   {
-    try {
-      this.object = Settings.getDatabase().createObject(Mandant.class,id);
-      handleDelete();
-    }
-    catch (RemoteException e)
-    {
-      // Objekt kann nicht geladen werden. Dann muessen wir es auch nicht loeschen.
-      Application.getLog().error("no valid mandant found");
-      GUI.setActionText(I18N.tr("Mandant wurde nicht gefunden."));
-    }
+    super(view);
   }
+
+	/**
+	 * Liefert den Mandanten.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException
+	{
+		if (mandant != null)
+			return mandant;
+
+		mandant = (Mandant) getCurrentObject();
+		if (mandant != null)
+			return mandant;
+
+		mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,null);
+		return mandant;
+	}
+
+
+	/**
+	 * Liefert den Kontenrahmen des Mandanten.
+   * @return Kontenrahmen.
+   * @throws RemoteException
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException
+	{
+		if (kontenrahmen != null)
+			return kontenrahmen;
+
+		kontenrahmen = getMandant().getKontenrahmen();
+		if (kontenrahmen != null)
+			return kontenrahmen;
+
+		kontenrahmen = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,null);
+		return kontenrahmen;
+	}
+
+	/**
+	 * Liefert das Finanzamt des Mandanten.
+   * @return Finanzamt.
+   * @throws RemoteException
+   */
+  public Finanzamt getFinanzamt() throws RemoteException
+	{
+		if (finanzamt != null)
+			return finanzamt;
+
+		finanzamt = mandant.getFinanzamt();
+		if (finanzamt != null)
+			return finanzamt;
+
+		finanzamt = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
+		return finanzamt;
+	}
+
+	/**
+	 * Liefert eine Tabelle mit allen eingerichteten Mandanten.
+   * @return Tabelle.
+   * @throws RemoteException
+   */
+  public Table getMandantListe() throws RemoteException
+	{
+		DBIterator list = Settings.getDatabase().createList(Mandant.class);
+		list.setOrder("order by firma desc");
+
+		Table table = new Table(list,this);
+		table.addColumn(I18N.tr("Name 1"),"name1");
+		table.addColumn(I18N.tr("Name 2"),"name2");
+		table.addColumn(I18N.tr("Firma"),"firma");
+		table.addColumn(I18N.tr("Ort"),"ort");
+		table.addColumn(I18N.tr("Steuernummer"),"steuernummer");
+		table.addColumn(I18N.tr("Kontenrahmen"),"kontenrahmen_id");
+		return table;
+	}
+
+	
+	/**
+	 * Liefert das Eingabe-Feld fuer Name1.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getName1() throws RemoteException
+	{
+		if (name1 != null)
+			return name1;
+		
+		name1 = new TextInput(getMandant().getName1());
+		return name1;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer Name2.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getName2() throws RemoteException
+	{
+		if (name2 != null)
+			return name2;
+		
+		name2 = new TextInput(getMandant().getName2());
+		return name2;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Strasse.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getStrasse() throws RemoteException
+	{
+		if (strasse != null)
+			return strasse;
+		
+		strasse = new TextInput(getMandant().getStrasse());
+		return strasse;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Firma.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getFirma() throws RemoteException
+	{
+		if (firma != null)
+			return firma;
+		
+		firma = new TextInput(getMandant().getFirma());
+		return firma;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die PLZ.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getPLZ() throws RemoteException
+	{
+		if (plz != null)
+			return plz;
+		
+		plz = new TextInput(getMandant().getPLZ());
+		return plz;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer den Ort.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getOrt() throws RemoteException
+	{
+		if (ort != null)
+			return ort;
+		
+		ort= new TextInput(getMandant().getOrt());
+		return ort;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer das Geschaeftsjahr.
+	 * @return Eingabe-Feld.
+	 * @throws RemoteException
+	 */
+	public Input getGeschaeftsjahr() throws RemoteException
+	{
+		if (geschaeftsjahr != null)
+			return geschaeftsjahr;
+		
+		geschaeftsjahr = new TextInput(""+getMandant().getGeschaeftsjahr());
+		return geschaeftsjahr;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld fuer die Steuernummer.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getSteuernummer() throws RemoteException
+	{
+		if (steuernummer != null)
+			return steuernummer;
+		
+		steuernummer = new TextInput(getMandant().getSteuernummer());
+		return steuernummer;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld zur Auswahl des Kontenrahmens.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getKontenrahmenAuswahl() throws RemoteException
+	{
+		if (kontenrahmenAuswahl != null)
+			return kontenrahmenAuswahl;
+
+		kontenrahmenAuswahl = new SelectInput(getKontenrahmen());
+		return kontenrahmenAuswahl;
+	}
+
+	/**
+	 * Liefert das Eingabe-Feld zur Auswahl des Finanzamtes.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getFinanzamtAuswahl() throws RemoteException
+	{
+		if (finanzamtAuswahl != null)
+			return finanzamtAuswahl;
+
+		DBIterator list = getFinanzamt().getList();
+		if (list.hasNext())
+		{
+			finanzamtAuswahl = new SelectInput(getFinanzamt());
+			storeAllowed = true;
+		}
+		else {
+			finanzamtAuswahl = new LabelInput(I18N.tr("Kein Finanzamt vorhanden. Bitte richten Sie zunächst eines ein."));
+		}
+		return finanzamtAuswahl;
+	}
+
+	/**
+	 * Prueft, ob gespeichert werden kann.
+   * @return true, wenn gespeichert werden kann.
+   */
+  public boolean storeAllowed() 
+	{
+		return storeAllowed;
+	}
 
   /**
    * @see de.willuhn.jameica.views.parts.Controller#handleDelete()
    */
   public void handleDelete()
   {
-    Mandant mandant = (Mandant) getObject();
-
     try {
-
-      if (mandant.isNewObject())
-      {
-        GUI.setActionText(I18N.tr("Mandant wurde noch nicht gespeichert und muss daher nicht gelöscht werden."));
-        return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
-      }
 
       MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
       box.setText(I18N.tr("Mandant wirklich löschen?"));
@@ -84,22 +314,17 @@ public class MandantControl extends Controller
         return;
 
       // ok, wir loeschen das Objekt
-      mandant.delete();
+      getMandant().delete();
       GUI.setActionText(I18N.tr("Mandant gelöscht."));
-    }
-    catch (ApplicationException e1)
-    {
-      MessageBox box2 = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
-      box2.setText(I18N.tr("Fehler"));
-      box2.setMessage(e1.getLocalizedMessage());
-      box2.open();
-      return;
-      
     }
     catch (RemoteException e)
     {
       GUI.setActionText(I18N.tr("Fehler beim Löschen des Mandanten."));
       Application.getLog().error("unable to delete mandant");
+    }
+    catch (ApplicationException ae)
+    {
+    	GUI.setActionText(ae.getLocalizedMessage());
     }
   }
 
@@ -116,24 +341,21 @@ public class MandantControl extends Controller
    */
   public void handleStore()
   {
-    Mandant mandant = (Mandant) getObject();
-
     try {
 
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
       
-      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,getField("kontenrahmen").getValue());
-      mandant.setKontenrahmen(kr);
+      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,getKontenrahmenAuswahl().getValue());
+      getMandant().setKontenrahmen(kr);
       //
       //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Geschaeftsjahr checken
 
-      int geschaeftsjahr = 0;
       try {
-        geschaeftsjahr = Integer.parseInt(getField("geschaeftsjahr").getValue());
+				getMandant().setGeschaeftsjahr(Integer.parseInt(getGeschaeftsjahr().getValue()));
       }
       catch (NumberFormatException e)
       {
@@ -141,7 +363,6 @@ public class MandantControl extends Controller
                           Fibu.YEAR_MIN + I18N.tr(" und ") + Fibu.YEAR_MAX + I18N.tr(" ein"));
         return;
       }
-      mandant.setGeschaeftsjahr(geschaeftsjahr);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -149,27 +370,27 @@ public class MandantControl extends Controller
       // Finanzamt checken
       
       DBIterator finanzaemter = Settings.getDatabase().createList(Finanzamt.class);
-      finanzaemter.addFilter("name = '"+getField("finanzamt").getValue()+"'");
+      finanzaemter.addFilter("name = '"+getFinanzamtAuswahl().getValue()+"'");
       if (!finanzaemter.hasNext())
       {
         GUI.setActionText(I18N.tr("Ausgewähltes Finanzamt existiert nicht."));
         return;
       }
-      mandant.setFinanzamt((Finanzamt) finanzaemter.next());
+      getMandant().setFinanzamt((Finanzamt) finanzaemter.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
-      mandant.setName1(getField("name1").getValue());
-      mandant.setName2(getField("name2").getValue());
-      mandant.setFirma(getField("firma").getValue());
-      mandant.setStrasse(getField("strasse").getValue());
-      mandant.setPLZ(getField("plz").getValue());
-      mandant.setOrt(getField("ort").getValue());
-      mandant.setSteuernummer(getField("steuernummer").getValue());
+      getMandant().setName1(getName1().getValue());
+      getMandant().setName2(getName2().getValue());
+			getMandant().setFirma(getFirma().getValue());
+			getMandant().setStrasse(getStrasse().getValue());
+			getMandant().setPLZ(getPLZ().getValue());
+			getMandant().setOrt(getOrt().getValue());
+			getMandant().setSteuernummer(getSteuernummer().getValue());
 
       
       // und jetzt speichern wir.
-      mandant.store();
+			getMandant().store();
       GUI.setActionText(I18N.tr("Mandant gespeichert."));
     }
     catch (ApplicationException e1)
@@ -213,6 +434,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.10  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *

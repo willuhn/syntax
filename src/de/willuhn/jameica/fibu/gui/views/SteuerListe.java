@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,18 +12,15 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
+import java.rmi.RemoteException;
+
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
-import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.views.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.parts.Headline;
-import de.willuhn.jameica.gui.views.parts.Table;
 import de.willuhn.util.I18N;
 
 /**
@@ -47,27 +44,19 @@ public class SteuerListe extends AbstractView
    */
   public void bind()
   {
-    new Headline(getParent(),I18N.tr("Liste der Steuersätze."));
+    addHeadline("Liste der Steuersätze.");
+
+		SteuerControl control = new SteuerControl(this);
 
     try {
-      Steuer steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
-      SteuerControl controller = new SteuerControl(steuer);
 
-      DBIterator list = Settings.getDatabase().createList(steuer.getClass());
-      list.setOrder("order by name desc");
-
-      Table table = new Table(list,controller);
-      table.addColumn(I18N.tr("Name"),"name");
-      table.addColumn(I18N.tr("Steuersatz"),"satz");
-      table.addColumn(I18N.tr("Steuer-Sammelkonto"),"steuerkonto_id");
-      
-      table.paint(getParent());
+      control.getSteuerListe().paint(getParent());
 
       ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Steuersatz"),controller);
+      buttons.addCreateButton(I18N.tr("Neuer Steuersatz"),control);
 
     }
-    catch (Exception e)
+    catch (RemoteException e)
     {
       Application.getLog().error("error while loading steuer list");
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Steuersätze."));
@@ -86,6 +75,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.7  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

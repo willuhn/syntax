@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.12 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,11 +106,20 @@ public class Fibu extends AbstractPlugin
 			}
 			try
 			{
-				db.executeSQLScript(new File(getPath() + "/sql/create_mckoi.sql"));
+				db.executeSQLScript(new File(getPath() + "/sql/create.sql"));
 			}
 			catch (Exception e)
 			{
 				Application.getLog().error("unable to create sql tables",e);
+				return false;
+			}
+			try
+			{
+				db.executeSQLScript(new File(getPath() + "/sql/init.sql"));
+			}
+			catch (Exception e)
+			{
+				Application.getLog().error("unable to insert init data",e);
 				return false;
 			}
       
@@ -130,6 +139,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.12  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/03 18:07:22 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/27 00:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,15 +17,16 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.jameica.*;
+import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.KontoListe;
 import de.willuhn.jameica.fibu.gui.views.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.parts.Controller;
-import de.willuhn.jameica.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Diese Klasse behandelt alle Button-Drueckungen(sic!) ;) des
@@ -146,6 +147,9 @@ public class KontoControl extends Controller
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.7  2004/01/27 00:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/03 18:07:22  willuhn
  * @N Exception logging
  *
