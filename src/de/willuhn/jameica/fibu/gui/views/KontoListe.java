@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,32 +12,21 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.LabelGroup;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Zeigt eine Liste aller Konten an.
  * @author willuhn
  */
 public class KontoListe extends AbstractView
 {
-
-
-  /**
-   * @param parent
-   */
-  public KontoListe(Composite parent)
-  {
-    super(parent);
-  }
-
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -81,6 +70,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.9  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

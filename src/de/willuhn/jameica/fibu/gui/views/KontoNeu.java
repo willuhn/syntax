@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.8 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,29 +14,20 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Bearbeitet ein Konto.
  * @author willuhn
  */
 public class KontoNeu extends AbstractView
 {
-
-  /**
-   * @param parent
-   */
-  public KontoNeu(Composite parent)
-  {
-    super(parent);
-  }
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -85,6 +76,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.8  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

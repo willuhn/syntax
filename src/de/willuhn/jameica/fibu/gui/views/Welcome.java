@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.7 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,25 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import org.eclipse.swt.widgets.Composite;
-
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.Headline;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Startseite des Fibu-Plugins.
  * @author willuhn
  */
 public class Welcome extends AbstractView
 {
-
-  /**
-   * @param parent
-   */
-  public Welcome(Composite parent)
-  {
-    super(parent);
-  }
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -50,6 +41,9 @@ public class Welcome extends AbstractView
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.7  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

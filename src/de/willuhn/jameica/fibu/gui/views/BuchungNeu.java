@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.22 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,31 +14,20 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.LabelGroup;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Erzeugt eine neue Buchung oder bearbeitet eine existierende.
  * @author willuhn
  */
 public class BuchungNeu extends AbstractView
 {
-
-  /**
-   * @param parent
-   */
-  public BuchungNeu(Composite parent)
-  {
-    super(parent);
-  }
-
-
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -92,6 +81,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.22  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

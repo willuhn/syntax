@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,30 +14,19 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Zeigt eine Liste aller existierenden Steuersaetze an.
  * @author willuhn
  */
 public class SteuerListe extends AbstractView
 {
-
-
-  /**
-   * @param parent
-   */
-  public SteuerListe(Composite parent)
-  {
-    super(parent);
-  }
-
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -75,6 +64,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.9  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

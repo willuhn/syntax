@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/02/11 00:11:06 $
+ * $Revision: 1.11 $
+ * $Date: 2004/02/20 20:44:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,30 +12,19 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import org.eclipse.swt.widgets.Composite;
-
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.I18N;
 
 /**
+ * Zeigt eine Liste aller Mandanten an.
  * @author willuhn
  */
 public class MandantListe extends AbstractView
 {
-
-
-  /**
-   * @param parent
-   */
-  public MandantListe(Composite parent)
-  {
-    super(parent);
-  }
-
 
   /**
    * @see de.willuhn.jameica.views.AbstractView#bind()
@@ -71,6 +60,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.11  2004/02/20 20:44:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/02/11 00:11:06  willuhn
  * *** empty log message ***
  *

@@ -5,9 +5,10 @@
   <cascade name="F&amp;ibu">
     <item name="Neue &amp;Buchung"        shortcut="CTRL+B" class="de.willuhn.jameica.fibu.gui.views.BuchungNeu" />
     <item name="-" />
-    <item name="&amp;Einstellungen"       class="de.willuhn.jameica.fibu.gui.views.Settings" />
     <item name="&amp;Finanzämter"         class="de.willuhn.jameica.fibu.gui.views.FinanzamtListe" />
     <item name="&amp;Steuersätze"         class="de.willuhn.jameica.fibu.gui.views.SteuerListe" />
+	<item name="-" />
+    <item name="&amp;Einstellungen"       class="de.willuhn.jameica.fibu.gui.views.Settings" />
   </cascade>
 
 </menu>
