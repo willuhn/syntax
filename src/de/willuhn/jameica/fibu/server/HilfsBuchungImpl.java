@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/29 01:05:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,8 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
     int year = m.getGeschaeftsjahr();
 
     String s = "select " + getIDField() + " from " + getTableName() +
-      " where YEAR(datum) = " + year + 
+			" where datum >= DATE '" + year + "-01-01'" +
+			" and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
       " and mandant_id = " + m.getID() +
       " and buchung_id is not NULL";
     return s;
@@ -105,6 +106,9 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.5  2004/01/29 01:05:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

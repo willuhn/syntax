@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/01/29 00:19:53 $
+ * $Revision: 1.17 $
+ * $Date: 2004/01/29 01:05:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,7 +84,11 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if (m == null)
         throw new RemoteException("active mandant not set.");
 
-      String sql = "select sum(betrag) as b from buchung where YEAR(datum) = " + m.getGeschaeftsjahr() + " and mandant_id = "+ m.getID() +" and konto_id = " + Integer.parseInt(getID());
+			int year = m.getGeschaeftsjahr();
+      String sql = "select sum(betrag) as b from buchung" +				" where datum >= DATE '" + year + "-01-01'" +
+				" and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
+				" and mandant_id = "+ m.getID() + 
+				" and konto_id = " + Integer.parseInt(getID());
       ResultSet rs = stmt.executeQuery(sql);
       rs.next();
       return rs.getDouble("b");
@@ -250,6 +254,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.17  2004/01/29 01:05:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/01/29 00:19:53  willuhn
  * *** empty log message ***
  *
