@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/01/27 23:54:18 $
+ * $Revision: 1.12 $
+ * $Date: 2004/01/28 00:00:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -378,7 +378,7 @@ public class MandantControl extends AbstractControl
 			Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,
 																												 getFinanzamtAuswahl().getValue());
 
-      if (!fa.isNewObject())
+      if (fa.isNewObject())
       {
         GUI.setActionText(I18N.tr("Bitte wählen Sie ein Finanzamt aus."));
         return;
@@ -441,6 +441,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.12  2004/01/28 00:00:46  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/01/27 23:54:18  willuhn
  * *** empty log message ***
  *
