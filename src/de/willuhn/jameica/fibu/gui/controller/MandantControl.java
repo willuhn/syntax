@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.14 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -413,20 +413,11 @@ public class MandantControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    try {
-      Mandant mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,id);
-      GUI.startView(MandantNeu.class.getName(),mandant);
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("unable to load mandant with id " + id);
-      GUI.setActionText(I18N.tr("Mandant wurde nicht gefunden."));
-    }
-        
+    GUI.startView(MandantNeu.class.getName(),o);
   }
 
   /**
@@ -441,6 +432,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.14  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

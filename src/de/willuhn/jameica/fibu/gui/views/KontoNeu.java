@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.9 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ public class KontoNeu extends AbstractView
     KontoControl control = new KontoControl(this);
 
     // Headline malen
-    addHeadline("Konto bearbeiten");
+		GUI.setTitleText(I18N.tr("Konto bearbeiten"));
 
     try {
       
@@ -76,6 +76,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.9  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/29 00:06:47 $
+ * $Revision: 1.11 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -226,20 +226,11 @@ public class FinanzamtControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    try {
-      Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,id);
-      GUI.startView(FinanzamtNeu.class.getName(),fa);
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("unable to load finanzamt with id " + id);
-      GUI.setActionText(I18N.tr("Daten des zu ladenden Finanzamtes wurde nicht gefunden."));
-    }
-        
+		GUI.startView(FinanzamtNeu.class.getName(),o);
   }
 
   /**
@@ -254,6 +245,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.11  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/29 00:06:47  willuhn
  * *** empty log message ***
  *

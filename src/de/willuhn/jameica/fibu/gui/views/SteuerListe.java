@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.10 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ public class SteuerListe extends AbstractView
    */
   public void bind()
   {
-    addHeadline("Liste der Steuersätze.");
+		GUI.setTitleText(I18N.tr("Liste der Steuersätze."));
 
 		SteuerControl control = new SteuerControl(this);
 
@@ -64,6 +64,9 @@ public class SteuerListe extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.10  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

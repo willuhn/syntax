@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.12 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ public class FinanzamtListe extends AbstractView
    */
   public void bind()
   {
-    addHeadline("Liste der Finanzämter.");
+		GUI.setTitleText(I18N.tr("Liste der Finanzämter."));
 
 		FinanzamtControl control = new FinanzamtControl(this);
 
@@ -61,6 +61,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.12  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

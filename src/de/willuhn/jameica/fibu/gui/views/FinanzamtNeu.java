@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.10 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ public class FinanzamtNeu extends AbstractView
     FinanzamtControl control = new FinanzamtControl(this);
 
     // Headline malen
-    addHeadline("Daten des Finanzamtes bearbeiten");
+		GUI.setTitleText(I18N.tr("Daten des Finanzamtes bearbeiten"));
 
     try {
       
@@ -77,6 +77,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.10  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/01/29 01:21:51 $
+ * $Revision: 1.11 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,14 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.SteuerKontoSearchDialog;
 import de.willuhn.jameica.fibu.gui.views.SteuerListe;
 import de.willuhn.jameica.fibu.gui.views.SteuerNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -30,12 +31,14 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.parts.*;
+import de.willuhn.jameica.gui.dialogs.ListDialog;
+import de.willuhn.jameica.gui.parts.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.DecimalInput;
 import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.SearchInput;
 import de.willuhn.jameica.gui.parts.Table;
 import de.willuhn.jameica.gui.parts.TextInput;
+import de.willuhn.jameica.gui.views.AbstractView;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -135,7 +138,7 @@ public class SteuerControl extends AbstractControl
 		if (satz != null)
 			return satz;
 		satz = new DecimalInput(Fibu.DECIMALFORMAT.format(getSteuer().getSatz()));
-		satz.addComment("%",null);
+		satz.setComment("%");
 		return satz;
 	}
 
@@ -148,7 +151,25 @@ public class SteuerControl extends AbstractControl
 	{
 		if (kontoauswahl != null)
 			return kontoauswahl;
-		kontoauswahl = new SearchInput(getKonto().getKontonummer(), new SteuerKontoSearchDialog());
+
+		DBIterator list = Settings.getDatabase().createList(SteuerKonto.class);
+		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
+		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
+		d.addColumn(I18N.tr("Name"),"name");
+		d.setTitle(I18N.tr("Auswahl des Steuer-Sammelkontos"));
+		d.addListener(new Listener() {
+      public void handleEvent(Event event) {
+      	SteuerKonto k = (SteuerKonto) event.data;
+      	try {
+					kontoauswahl.setValue(k.getKontonummer());
+      	}
+      	catch (RemoteException e)
+      	{
+      		Application.getLog().error("unable to load konto",e);
+      	}
+      }
+    });
+		kontoauswahl = new SearchInput(getKonto().getKontonummer(),d);
 		return kontoauswahl;
 	}
 
@@ -248,20 +269,11 @@ public class SteuerControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    try {
-      Steuer steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,id);
-      GUI.startView(SteuerNeu.class.getName(),steuer);
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("unable to load steuer with id " + id);
-      GUI.setActionText(I18N.tr("Steuersatz wurde nicht gefunden."));
-    }
-        
+    GUI.startView(SteuerNeu.class.getName(),o);
   }
 
   /**
@@ -276,6 +288,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.11  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/01/29 01:21:51  willuhn
  * *** empty log message ***
  *

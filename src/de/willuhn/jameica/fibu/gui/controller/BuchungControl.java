@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/01/29 01:11:14 $
+ * $Revision: 1.19 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,14 +29,21 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.BuchungListe;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
-import de.willuhn.jameica.fibu.gui.views.KontoSearchDialog;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.server.KontoImpl;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.controller.AbstractControl;
+import de.willuhn.jameica.gui.dialogs.ListDialog;
+import de.willuhn.jameica.gui.parts.CurrencyFormatter;
+import de.willuhn.jameica.gui.parts.DateFormatter;
+import de.willuhn.jameica.gui.parts.DecimalInput;
+import de.willuhn.jameica.gui.parts.Input;
+import de.willuhn.jameica.gui.parts.SearchInput;
+import de.willuhn.jameica.gui.parts.Table;
+import de.willuhn.jameica.gui.parts.TextInput;
 import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.parts.*;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -155,7 +162,8 @@ public class BuchungControl extends AbstractControl
 			return datum;
 		
 		datum = new TextInput(Fibu.DATEFORMAT.format(getBuchung().getDatum()));
-		datum.addComment(I18N.tr("Wochentag: "),new WochentagListener());
+		datum.setComment(I18N.tr("Wochentag: "));
+		datum.addListener(new WochentagListener());
 		return datum;
 	}
 
@@ -169,10 +177,33 @@ public class BuchungControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 		
-		kontoAuswahl = new SearchInput(getKonto().getKontonummer(), new KontoSearchDialog());
-		kontoAuswahl.addComment(I18N.tr("Saldo") + ": " + 
+		// TODO richtige Impl wird nicht gefunden.
+		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
+		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
+		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
+		d.addColumn(I18N.tr("Name"),"name");
+		d.addColumn(I18N.tr("Kontoart"),"kontoart_id");
+		d.addColumn(I18N.tr("Steuer"),"steuer_id");
+		d.setTitle(I18N.tr("Auswahl des Kontos"));
+		d.addListener(new Listener() {
+      public void handleEvent(Event event) {
+        Konto k = (Konto) event.data;
+				try {
+					kontoAuswahl.setValue(k.getKontonummer());
+				}
+				catch (RemoteException e)
+				{
+					Application.getLog().error("unable to load konto",e);
+				}
+
+      }
+    });
+		
+		kontoAuswahl = new SearchInput(getKonto().getKontonummer(),d);
+		kontoAuswahl.addListener(new SaldoListener(kontoAuswahl,true));
+		kontoAuswahl.setComment(I18N.tr("Saldo") + ": " + 
 														Fibu.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + 
-														Settings.getCurrency(), new SaldoListener(kontoAuswahl,true));
+														Settings.getCurrency());
 		return kontoAuswahl;
 	}
 
@@ -187,10 +218,33 @@ public class BuchungControl extends AbstractControl
 		if (geldKontoAuswahl != null)
 			return geldKontoAuswahl;
 		
-		geldKontoAuswahl = new SearchInput(getGeldKonto().getKontonummer(), new KontoSearchDialog());
-		geldKontoAuswahl.addComment(I18N.tr("Saldo") + ": " +
+		// TODO richtige Impl wird nicht gefunden.
+		DBIterator list = Settings.getDatabase().createList(KontoImpl.class);
+		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
+		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
+		d.addColumn(I18N.tr("Name"),"name");
+		d.addColumn(I18N.tr("Kontoart"),"kontoart_id");
+		d.addColumn(I18N.tr("Steuer"),"steuer_id");
+		d.setTitle(I18N.tr("Auswahl des Kontos"));
+		d.addListener(new Listener() {
+			public void handleEvent(Event event) {
+				Konto k = (Konto) event.data;
+				try {
+					geldKontoAuswahl.setValue(k.getKontonummer());
+				}
+				catch (RemoteException e)
+				{
+					Application.getLog().error("unable to load konto",e);
+				}
+
+			}
+		});
+
+		geldKontoAuswahl = new SearchInput(getGeldKonto().getKontonummer(),d);
+		geldKontoAuswahl.addListener(new SaldoListener(geldKontoAuswahl,false));
+		geldKontoAuswahl.setComment(I18N.tr("Saldo") + ": " +
 															  Fibu.DECIMALFORMAT.format(getGeldKonto().getSaldo()) + " " +
-															  Settings.getCurrency(), new SaldoListener(geldKontoAuswahl,false));
+															  Settings.getCurrency());
 		return geldKontoAuswahl;
 	}
 
@@ -233,7 +287,7 @@ public class BuchungControl extends AbstractControl
 			return betrag;
 		
 		betrag = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getBetrag()));
-		betrag.addComment(Settings.getCurrency(),null);
+		betrag.setComment(Settings.getCurrency());
 		return betrag;
 	}
 
@@ -248,7 +302,7 @@ public class BuchungControl extends AbstractControl
 			return steuer;
 
 		steuer = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getSteuer()));
-		steuer.addComment("%",null);
+		steuer.setComment("%");
 		return steuer;
 	}
 
@@ -432,20 +486,11 @@ public class BuchungControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    try {
-      Buchung buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,id);
-      GUI.startView(BuchungNeu.class.getName(),buchung);
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("unable to load buchung with id " + id);
-      GUI.setActionText(I18N.tr("Buchung wurde nicht gefunden."));
-    }
-        
+    GUI.startView(BuchungNeu.class.getName(),o);
   }
 
   /**
@@ -509,7 +554,7 @@ public class BuchungControl extends AbstractControl
 				return;
 			try
       {
-        getDatum().updateComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
+        getDatum().setComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
       }
       catch (RemoteException e1)
       {
@@ -566,7 +611,7 @@ public class BuchungControl extends AbstractControl
 					return;
 				} 
 				Konto myKonto = (Konto) list.next();
-				k.updateComment(I18N.tr("Saldo") + ": " +  
+				k.setComment(I18N.tr("Saldo") + ": " +  
 														 Fibu.DECIMALFORMAT.format(myKonto.getSaldo()) +
 														 " " + Settings.getCurrency());
 
@@ -596,6 +641,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.19  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/01/29 01:11:14  willuhn
  * *** empty log message ***
  *

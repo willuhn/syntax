@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.12 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class MandantNeu extends AbstractView
   {
 
 		// Headline malen
-		addHeadline("Mandant bearbeiten");
+		GUI.setTitleText(I18N.tr("Mandant bearbeiten"));
 
     MandantControl control = new MandantControl(this);
 
@@ -84,6 +84,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.12  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

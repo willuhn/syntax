@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.10 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,11 +155,10 @@ public class SettingsControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    // nothing to load
   }
 
   /**
@@ -167,13 +166,15 @@ public class SettingsControl extends AbstractControl
    */
   public void handleCreate()
   {
-    // nothing to create
   }
 
 }
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.10  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *

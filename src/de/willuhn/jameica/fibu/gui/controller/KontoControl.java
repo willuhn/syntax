@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/02/18 13:51:09 $
+ * $Revision: 1.13 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -232,20 +232,11 @@ public class KontoControl extends AbstractControl
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
+   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
    */
-  public void handleLoad(String id)
+  public void handleOpen(Object o)
   {
-    try {
-      Konto konto = (Konto) Settings.getDatabase().createObject(Konto.class,id);
-      GUI.startView(KontoNeu.class.getName(),konto);
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("unable to load konto with id " + id);
-      GUI.setActionText(I18N.tr("Konto wurde nicht gefunden."));
-    }
-        
+    GUI.startView(KontoNeu.class.getName(),o);
   }
 
   /**
@@ -264,6 +255,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.13  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/02/18 13:51:09  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.23 $
+ * $Date: 2004/02/24 22:48:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class BuchungNeu extends AbstractView
   {
 
 		// Headline malen
-		addHeadline("Buchung bearbeiten");
+		GUI.setTitleText(I18N.tr("Buchung bearbeiten"));
 
     BuchungControl control = new BuchungControl(this);
 
@@ -81,6 +81,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.23  2004/02/24 22:48:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

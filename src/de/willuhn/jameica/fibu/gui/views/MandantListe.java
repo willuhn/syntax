@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.12 $
+ * $Date: 2004/02/24 22:48:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ public class MandantListe extends AbstractView
    */
   public void bind()
   {
-    addHeadline("Liste der Mandanten.");
+		GUI.setTitleText(I18N.tr("Liste der Mandanten."));
 		MandantControl control = new MandantControl(this);
 
     try {
@@ -60,6 +60,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.12  2004/02/24 22:48:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *
