@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/11/27 00:21:05 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/01 21:23:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,16 @@ public class Fibu implements Plugin
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
   
+  public static String[] WEEKDAYS = new String[] {
+    "Sonntag",
+    "Montag",
+    "Dienstag",
+    "Mittwoch",
+    "Donnerstag",
+    "Freitag",
+    "Sonnabend"
+  };
+
   public static int YEAR_MIN                = 1950;
   public static int YEAR_MAX                = 2020;
 
@@ -83,6 +93,9 @@ public class Fibu implements Plugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.8  2003/12/01 21:23:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/11/27 00:21:05  willuhn
  * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
  *

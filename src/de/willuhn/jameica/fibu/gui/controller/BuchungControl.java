@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.8 $
+ * $Date: 2003/12/01 21:23:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,6 +157,25 @@ public class BuchungControl extends Controller
       //
       //////////////////////////////////////////////////////////////////////////
       
+
+      //////////////////////////////////////////////////////////////////////////
+      // Steuer checken
+      try {
+        buchung.setSteuer(Fibu.DECIMALFORMAT.parse(getField("steuer").getValue()).doubleValue());
+      }
+      catch (NumberFormatException e)
+      {
+        GUI.setActionText(I18N.tr("Steuersatz ungültig."));
+        return;
+      }
+      catch (ParseException e)
+      {
+        GUI.setActionText(I18N.tr("Steuersatz ungültig."));
+        return;
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
@@ -273,6 +292,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.8  2003/12/01 21:23:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.10 $
+ * $Date: 2003/12/01 21:23:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,6 +115,18 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getSteuer()
+   */
+  public double getSteuer() throws RemoteException
+  {
+    Double d = (Double) getField("steuer");
+    if (d != null)
+      return d.doubleValue();
+
+    return 0;
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#getMandant()
    */
   public Mandant getMandant() throws RemoteException
@@ -179,6 +191,11 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public void setBetrag(double betrag) throws RemoteException
   {
     setField("betrag", new Double(betrag));
+  }
+
+  public void setSteuer(double steuer) throws RemoteException
+  {
+    setField("steuer", new Double(steuer));
   }
 
   /**
@@ -300,6 +317,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.10  2003/12/01 21:23:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2003/12/01 20:29:00 $
+ * $Revision: 1.9 $
+ * $Date: 2003/12/01 21:23:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,14 @@
 package de.willuhn.jameica.fibu.views;
 
 import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
@@ -40,6 +44,8 @@ import de.willuhn.jameica.views.parts.TextInput;
  */
 public class BuchungNeu extends AbstractView
 {
+
+  private DecimalInput steuer;
 
   public BuchungNeu(Object o)
   {
@@ -84,14 +90,15 @@ public class BuchungNeu extends AbstractView
       Konto konto     = buchung.getKonto();
       if (konto == null) konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
-      // Hier nur Geldkonten erlauben
+      // TODO: Hier nur Geldkonten erlauben
       // besser Eingabefeld mit Knopf zur Suche dahinter
       Konto geldKonto = buchung.getGeldKonto();
       if (geldKonto == null) geldKonto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
-      // TODO: Hier noch einen Listener, der als Kommentar den Wochentag zum Datum anzeigt.
+      datum.addComment(I18N.tr("Wochentag: "),new WochentagListener(datum));
+
       SelectInput kontoInput      = new SelectInput(konto);
       SelectInput geldKontoInput  = new SelectInput(geldKonto);
 
@@ -100,10 +107,14 @@ public class BuchungNeu extends AbstractView
       DecimalInput betrag         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()));
         betrag.addComment(Settings.getCurrency(),null);
 
+      // Das Ding ist deswegen ein Member, weil wir es beim Kontowechsel aktualisieren muessen
+      steuer         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getSteuer()));
+        steuer.addComment("%",null);
+
       // TODO: Steuer des oberen Kontos anzeigen und aktualisieren!!
-      // Fuer fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
-      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput));
-      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput));
+      // Wir fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
+      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput,steuer));
+      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput,null));
 
       // Fuegen sie zur Gruppe Konto hinzu
       kontoGroup.addLabelPair(I18N.tr("Datum"),       datum);
@@ -112,6 +123,7 @@ public class BuchungNeu extends AbstractView
       kontoGroup.addLabelPair(I18N.tr("Text"),        text);
       kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."),   belegnummer);
       kontoGroup.addLabelPair(I18N.tr("Betrag"),      betrag);
+      kontoGroup.addLabelPair(I18N.tr("Steuer"),      steuer);
 
       // und registrieren sie im Controller.
       control.register("datum",        datum);
@@ -120,6 +132,7 @@ public class BuchungNeu extends AbstractView
       control.register("text",         text);
       control.register("belegnummer",  belegnummer);
       control.register("betrag",       betrag);
+      control.register("steuer",       steuer);
 
       // wir machen das Datums-Feld zu dem mit dem Focus.
       datum.focus();
@@ -148,6 +161,60 @@ public class BuchungNeu extends AbstractView
   {
   }
 
+
+  class WochentagListener implements Listener
+  {
+    private TextInput text;
+    
+    WochentagListener(TextInput t)
+    {
+      text = t;
+    }
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      Text t = (Text) event.widget;
+      String datum = t.getText();
+
+      Date d = null;
+      try {
+        d = Fibu.DATEFORMAT.parse(datum);
+      }
+      catch (ParseException e)
+      {
+        // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
+        try {
+          d = Fibu.FASTDATEFORMAT.parse(datum);
+        }
+        catch (ParseException e2)
+        {
+          try {
+            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
+            d = Fibu.FASTDATEFORMAT.parse(datum + Settings.getActiveMandant().getGeschaeftsjahr());
+          }
+          catch (Exception e3)
+          {
+            // Ne, hat keinen Zweck.
+            return;
+          }
+        }
+      }
+
+      if (d == null)
+        return;
+
+      Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+      cal.setTime(d);
+      int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
+      if (i < 0 || i >= Fibu.WEEKDAYS.length)
+        return;
+      text.updateComment(I18N.tr("Wochentag: ") + I18N.tr(Fibu.WEEKDAYS[i]));
+    }
+  }
+
   /**
    * Listener, der an die Auswahlbox des Kontos angehaengt wurden und
    * den Saldo von dem gerade ausgewaehlten Konto als Kommentar anzeigt.
@@ -157,14 +224,16 @@ public class BuchungNeu extends AbstractView
   class SaldoListener implements Listener
   {
     private SelectInput select;
+    private DecimalInput steuer;
 
     /**
      * Konstruktor.
      * @param s SelectInput-Feld, an dem der Listener haengt.
      */
-    SaldoListener(SelectInput select)
+    SaldoListener(SelectInput select, DecimalInput s)
     {
       this.select = select;
+      this.steuer = s;
     }
 
     /**
@@ -183,6 +252,13 @@ public class BuchungNeu extends AbstractView
         select.updateComment(I18N.tr("Saldo") + ": " +
                              Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
                              " " + Settings.getCurrency());
+      
+        // wenn uns das Steuer-Eingabefeld uebergeben wurde, aktualisieren wir es auch gleich
+        if (steuer != null)
+        {
+          steuer.setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
+        }
+
       }
       catch (RemoteException es)
       {
@@ -195,6 +271,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.9  2003/12/01 21:23:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2003/12/01 20:29:00  willuhn
  * @B filter in DBIteratorImpl
  * @N InputFelder generalisiert

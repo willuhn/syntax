@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/30 16:23:11 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/01 21:23:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,11 +75,18 @@ public interface Buchung extends DBObject
   public int createBelegnummer() throws RemoteException;
 
   /**
-   * Liefert den Brutto-Betrag der Buchung.
+   * Liefert den Netto-Betrag der Buchung.
    * @return Brutto-Betrag der Buchung.
    * @throws RemoteException
    */
   public double getBetrag() throws RemoteException;
+
+  /**
+   * Liefert Steuersatz der Buchung.
+   * @return Steuersatz der Buchung.
+   * @throws RemoteException
+   */
+  public double getSteuer() throws RemoteException;
 
 
   /**
@@ -118,11 +125,18 @@ public interface Buchung extends DBObject
   public void setBelegnummer(int belegnummer) throws RemoteException;
 
   /**
-   * Setzt den Brutto-Betrag der Buchung.
+   * Setzt den Netto-Betrag der Buchung.
    * @param betrag Betrag der Buchung.
    * @throws RemoteException
    */
   public void setBetrag(double betrag) throws RemoteException;
+
+  /**
+   * Setzt den Steuersatz der Buchung.
+   * @param steuer Steuersatz der Buchung.
+   * @throws RemoteException
+   */
+  public void setSteuer(double steuer) throws RemoteException;
 
   /**
    * Setzt den Mandanten der Buchung.
@@ -134,6 +148,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.6  2003/12/01 21:23:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2003/11/30 16:23:11  willuhn
  * *** empty log message ***
  *
