@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/29 00:06:46 $
+ * $Revision: 1.10 $
+ * $Date: 2004/02/11 00:11:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,9 +55,8 @@ public class MandantListe extends AbstractView
     }
     catch (Exception e)
     {
-      Application.getLog().error("error while loading mandant list");
+      Application.getLog().error("error while loading mandant list",e);
       GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandanten."));
-      e.printStackTrace();
     }
   }
 
@@ -72,6 +71,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.10  2004/02/11 00:11:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/29 00:06:46  willuhn
  * *** empty log message ***
  *
