@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/01/27 23:54:18 $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/28 00:37:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,7 +92,7 @@ public class KontoControl extends AbstractControl
 		Table table = new Table(list,this);
 		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
 		table.addColumn(I18N.tr("Name"),"name");
-		table.addColumn(I18N.tr("Kontoart"),"kontoart");
+		table.addColumn(I18N.tr("Kontoart"),"kontoart_id");
 		table.addColumn(I18N.tr("Steuer"),"steuer_id");
 		return table;
 	}
@@ -262,6 +262,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.10  2004/01/28 00:37:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2004/01/27 23:54:18  willuhn
  * *** empty log message ***
  *

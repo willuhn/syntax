@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/28 00:31:34 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/28 00:37:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,7 @@ public class Settings
    */
   public static Mandant getActiveMandant() throws RemoteException
   {
-  	if (mandant != null)
+  	if (mandant != null && !mandant.isNewObject())
   		return mandant;
 
     String m = settings.getAttribute("mandant",null);
@@ -134,6 +134,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.7  2004/01/28 00:37:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/01/28 00:31:34  willuhn
  * *** empty log message ***
  *
