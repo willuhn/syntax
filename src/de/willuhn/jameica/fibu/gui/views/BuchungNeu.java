@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.13 $
- * $Date: 2003/12/10 00:47:29 $
+ * $Revision: 1.14 $
+ * $Date: 2003/12/10 01:12:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public class BuchungNeu extends AbstractView
 {
 
   private DecimalInput steuer;
+  private ButtonArea buttonArea; // Member damit wir den Speichern-Knopf bei Fehlern ausgrauen koennen
 
   public BuchungNeu(Object o)
   {
@@ -144,11 +145,11 @@ public class BuchungNeu extends AbstractView
 
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addCancelButton(control);
     buttonArea.addDeleteButton(control);
     buttonArea.addStoreButton(control);
-    
+
   }
 
   /**
@@ -244,9 +245,18 @@ public class BuchungNeu extends AbstractView
       try {
         Text t = (Text) event.widget;
         String kontonummer = t.getText();
+        if (kontonummer == null || "".equals(kontonummer))
+        {
+          return; // Kontonummer fehlt oder ist leer -> keine Saldenermittlung moeglich
+        }
+
         DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
-        if (!list.hasNext()) return;
+        if (!list.hasNext())
+        {
+          GUI.setActionText(I18N.tr("Das ausgewählte Konto existiert nicht."));
+          return;
+        } 
         Konto konto = (Konto) list.next();
         search.updateComment(I18N.tr("Saldo") + ": " +
                              Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
@@ -257,7 +267,7 @@ public class BuchungNeu extends AbstractView
         {
           steuer.setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
         }
-
+        GUI.setActionText("");
       }
       catch (RemoteException es)
       {
@@ -270,6 +280,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.14  2003/12/10 01:12:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2003/12/10 00:47:29  willuhn
  * @N SearchDialog for Konto works now ;)
  *
