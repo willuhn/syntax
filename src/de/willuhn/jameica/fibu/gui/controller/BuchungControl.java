@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/24 14:21:56 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/24 17:27:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.Application;
@@ -47,9 +46,26 @@ public class BuchungControl extends Controller
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(org.eclipse.swt.widgets.Button)
+   * @see de.willuhn.jameica.views.parts.Controller#handleDelete(java.lang.String)
    */
-  public void handleDelete(Button button)
+  public void handleDelete(String id)
+  {
+    try {
+      this.object = Application.getDefaultDatabase().createObject(Buchung.class,id);
+    }
+    catch (RemoteException e)
+    {
+      // Objekt kann nicht geladen werden. Dann muessen wir es auch nicht loeschen.
+      Application.getLog().error("no valid buchung found");
+      GUI.setActionText(I18N.tr("Buchung wurde nicht gefunden."));
+    }
+    handleDelete();
+  }
+
+  /**
+   * @see de.willuhn.jameica.views.parts.Controller#handleDelete()
+   */
+  public void handleDelete()
   {
     Buchung buchung = (Buchung) getObject();
     int beleg = 0;
@@ -87,17 +103,17 @@ public class BuchungControl extends Controller
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCancel(org.eclipse.swt.widgets.Button)
+   * @see de.willuhn.jameica.views.parts.Controller#handleCancel()
    */
-  public void handleCancel(Button button)
+  public void handleCancel()
   {
     GUI.startView("de.willuhn.jameica.fibu.views.BuchungListe",null);
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore(org.eclipse.swt.widgets.Button)
+   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
    */
-  public void handleStore(Button button)
+  public void handleStore()
   {
     Buchung buchung = (Buchung) getObject();
 
@@ -198,7 +214,7 @@ public class BuchungControl extends Controller
   /**
    * @see de.willuhn.jameica.views.parts.Controller#handleChooseFromList(java.lang.String)
    */
-  public void handleChooseFromList(String id)
+  public void handleLoad(String id)
   {
     try {
       Buchung buchung = (Buchung) Application.getDefaultDatabase().createObject(Buchung.class,id);
@@ -213,9 +229,9 @@ public class BuchungControl extends Controller
   }
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCreate(org.eclipse.swt.widgets.Button)
+   * @see de.willuhn.jameica.views.parts.Controller#handleCreate()
    */
-  public void handleCreate(Button button)
+  public void handleCreate()
   {
     GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",null);
   }
@@ -224,6 +240,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.3  2003/11/24 17:27:53  willuhn
+ * @N Context menu in table
+ *
  * Revision 1.2  2003/11/24 14:21:56  willuhn
  * *** empty log message ***
  *
