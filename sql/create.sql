@@ -15,6 +15,8 @@ CREATE TABLE steuer (
   PRIMARY KEY (id)
 );
 
+CREATE INDEX idx_steuerkonto ON steuer(steuerkonto_id);
+
 CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
   kontoart_id int(2) NOT NULL,
@@ -26,6 +28,11 @@ CREATE TABLE konto (
   UNIQUE (kontonummer),
   PRIMARY KEY (id)
 );
+
+CREATE INDEX idx_kontonummer ON konto(kontonummer);
+CREATE INDEX idx_kontoart ON konto(kontoart_id);
+CREATE INDEX idx_kontenrahmen ON konto(kontenrahmen_id);
+CREATE INDEX idx_steuer ON konto(steuer_id);
 
 CREATE TABLE buchung (
   id NUMERIC default UNIQUEKEY('buchung'),
@@ -39,9 +46,11 @@ CREATE TABLE buchung (
   mandant_id int(10) NOT NULL,
   buchung_id int(10),
   UNIQUE (id),
-  UNIQUE (belegnummer),
   PRIMARY KEY (id)
 );
+
+CREATE INDEX idx_belegnummer ON buchung(belegnummer);
+CREATE INDEX idx_mandant ON buchung(mandant_id);
 
 CREATE TABLE finanzamt (
   id NUMERIC default UNIQUEKEY('finanzamt'),
