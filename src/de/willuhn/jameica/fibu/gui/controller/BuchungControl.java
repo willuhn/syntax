@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.13 $
+ * $Date: 2003/12/16 02:27:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,14 +87,14 @@ public class BuchungControl extends Controller
     }
 
     MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
-    box.setText(I18N.tr("Buchung wirklich löschen?"));
-    box.setMessage(I18N.tr("Wollen Sie diese Buchung wirklich löschen?"));
+    box.setText(I18N.tr("Buchung wirklich stornieren?"));
+    box.setMessage(I18N.tr("Wollen Sie diese Buchung wirklich stornieren?"));
     if (box.open() == SWT.YES)
     {
       // ok, wir loeschen das Objekt und wechseln zurueck zur Buchungsliste
       try {
         buchung.delete();
-        GUI.setActionText(I18N.tr("Buchung Nr. " + beleg + " gelöscht."));
+        GUI.setActionText(I18N.tr("Buchung Nr. " + beleg + " storniert."));
       }
       catch (ApplicationException e1)
       {
@@ -102,7 +102,7 @@ public class BuchungControl extends Controller
       }
       catch (RemoteException e)
       {
-        GUI.setActionText(I18N.tr("Fehler beim Löschen der Buchung."));
+        GUI.setActionText(I18N.tr("Fehler beim Stornieren der Buchung."));
         Application.getLog().error("unable to delete buchung");
       }
     }
@@ -284,13 +284,16 @@ public class BuchungControl extends Controller
    */
   public void handleCreate()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",null);
+    GUI.startView(BuchungNeu.class.getName(),null);
   }
 
 }
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.13  2003/12/16 02:27:32  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.12  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/16 02:27:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
 
 /**
@@ -143,10 +144,21 @@ public interface Buchung extends DBObject
    * @throws RemoteException
    */
   public void setMandant(Mandant mandant) throws RemoteException;
+
+  /**
+   * Liefert eine Liste mit allen Hilfs-Buchungen, die zu dieser gehoeren.
+   * @return Liste aller Hilfs-Buchungen dieser Buchung.
+   * @throws RemoteException
+   */
+  public DBIterator getHilfsBuchungen() throws RemoteException;
+  
 }
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.11  2003/12/16 02:27:32  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.10  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.6 $
+ * $Date: 2003/12/16 02:27:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,13 +171,16 @@ public class FinanzamtControl extends Controller
    */
   public void handleCreate()
   {
-    GUI.startView("de.willuhn.jameica.fibu.views.FinanzamtNeu",null);
+    GUI.startView(FinanzamtNeu.class.getName(),null);
   }
 
 }
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.6  2003/12/16 02:27:32  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.5  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

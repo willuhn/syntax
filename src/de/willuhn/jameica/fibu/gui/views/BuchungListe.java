@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2003/12/15 19:08:04 $
+ * $Revision: 1.12 $
+ * $Date: 2003/12/16 02:27:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class BuchungListe extends AbstractView
       table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
       table.addColumn(I18N.tr("Text"),"text");
       table.addColumn(I18N.tr("Beleg"),"belegnummer");
-      table.addColumn(I18N.tr("Betrag"),"betrag");
+      table.addColumn(I18N.tr("Netto-Betrag"),"betrag");
       
       table.paint(getParent());
 
@@ -84,6 +84,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.12  2003/12/16 02:27:33  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.11  2003/12/15 19:08:04  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.16 $
- * $Date: 2003/12/15 19:08:03 $
+ * $Revision: 1.17 $
+ * $Date: 2003/12/16 02:27:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,6 +63,7 @@ public class BuchungNeu extends AbstractView
       }
     }
 
+
     // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
     // Er wird die Interaktionen mit der Business-Logik uebernehmen.
     // Damit er an die Daten des Dialogs kommt, muessen wir jedes
@@ -93,7 +94,9 @@ public class BuchungNeu extends AbstractView
       SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer(), new GeldKontoSearchDialog());
 
       TextInput text              = new TextInput(buchung.getText());
+
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
+
       DecimalInput betrag         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()));
         betrag.addComment(Settings.getCurrency(),null);
 
@@ -249,14 +252,23 @@ public class BuchungNeu extends AbstractView
           return;
         } 
         Konto konto = (Konto) list.next();
-        search.updateComment(I18N.tr("Saldo") + ": " +
+        search.updateComment(I18N.tr("Saldo") + ": " +  
                              Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
                              " " + Settings.getCurrency());
+        GUI.setStatusText(I18N.tr("Ausgewähltes Konto: ") + konto.getName());
       
         // wenn uns das Steuer-Eingabefeld uebergeben wurde, aktualisieren wir es auch gleich
+        // Wenn das Konto aber gar keine Steuer hat, deaktivieren wir das Steuer-Eingabefeld.
         if (steuer != null)
         {
-          steuer.setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
+          if (konto.getSteuer() == null)
+          {
+            steuer.disable();
+          }
+          else {
+            steuer.setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
+            steuer.enable();
+          }
         }
         GUI.setActionText("");
       }
@@ -271,6 +283,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.17  2003/12/16 02:27:33  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.16  2003/12/15 19:08:03  willuhn
  * *** empty log message ***
  *

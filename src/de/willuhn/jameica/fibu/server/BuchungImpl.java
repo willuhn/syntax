@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2003/12/12 21:11:27 $
+ * $Revision: 1.17 $
+ * $Date: 2003/12/16 02:27:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,10 +107,20 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public double getBetrag() throws RemoteException
   {
     Double d = (Double) getField("betrag");
-    if (d != null)
-      return d.doubleValue();
+    if (d == null)
+      return 0;
 
-    return 0;
+    double betrag = d.doubleValue();
+    // jetzt muessen wir aber noch die Betraege der Hilfs-Buchungen drauf rechnen
+    DBIterator hbs = getHilfsBuchungen();
+    while (hbs.hasNext())
+    {
+      HilfsBuchung hb = (HilfsBuchung) hbs.next();
+      betrag += hb.getBetrag();
+    }
+
+    return betrag;
+
   }
 
   /**
@@ -287,7 +297,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     {
       if (Application.DEBUG)
         e.printStackTrace();
-      throw new ApplicationException("Fehler bei der Prüfung des Datums.",e);
+      throw new ApplicationException("Fehler bei der Prüfung der Buchung.",e);
     }
   }
 
@@ -314,10 +324,67 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     return s;
   }
 
+  /**
+   * Diese Methode haben wir hier deshalb ueberschrieben, weil nicht nur
+   * das Objekt speichern wollen sondern auch noch damit zusammenhaengende
+   * Hilfe-Buchungen (z.Bsp. fuer die Steuern).
+   * @see de.willuhn.jameica.rmi.DBObject#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+
+    HilfsBuchung[] hbs = BuchungsEngine.buche(this);
+    
+    if (hbs == null)
+    {
+      // keine Hilfs-Buchungen noetig.
+      super.store();
+      return;
+    }
+
+    try {
+      // Hilfs-Buchungen noetig.
+      transactionBegin();
+
+      super.store();
+
+      for (int i=0;i<hbs.length;++i)
+      {
+        hbs[i].setHauptBuchung(this); // das koennen wir erst nach dem Speichern der Hauptbuchung machen.
+        hbs[i].store();
+      }
+
+      transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException ae)
+    {
+      transactionRollback();
+      throw ae;
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getHilfsBuchungen()
+   */
+  public DBIterator getHilfsBuchungen() throws RemoteException
+  {
+    DBIterator i = Settings.getDatabase().createList(HilfsBuchung.class);
+    i.addFilter("buchung_id = " + this.getID());
+    return i;
+  }
+
 }
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.17  2003/12/16 02:27:33  willuhn
+ * @N BuchungsEngine
+ *
  * Revision 1.16  2003/12/12 21:11:27  willuhn
  * @N ObjectMetaCache
  *
