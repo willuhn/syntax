@@ -2,6 +2,6 @@
 <navigation>
   <item name="Fibu" icon-close="folder.gif" icon-open="folderopen.gif" action="de.willuhn.jameica.fibu.views.Welcome">
     <item name="neue Buchung" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungNeu" />
-    <item name="Buchungsliste" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungsListe" />
+    <item name="Buchungsliste" icon-close="page.gif" 	action="de.willuhn.jameica.fibu.views.BuchungListe" />
   </item>
 </navigation>

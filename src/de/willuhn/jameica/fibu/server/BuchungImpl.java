@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/20 03:48:44 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/21 02:10:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Date;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.rmi.DBIterator;
 
 /**
  * @author willuhn
@@ -45,11 +46,21 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   */
+  public String getPrimaryField() throws RemoteException
+  {
+    return "datum";
+  }
+
+
+  /**
    * @see de.willuhn.jameica.fibu.objects.Buchung#getDatum()
    */
   public Date getDatum() throws RemoteException
   {
-    return (Date) getField("datum");
+    Date d = (Date) getField("datum");
+    return (d == null ? new Date() : d);
   }
 
   /**
@@ -61,17 +72,96 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getText()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getText() throws RemoteException
   {
-    return "datum";
+    return (String) getField("text");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getBelegnummer()
+   */
+  public int getBelegnummer() throws RemoteException
+  {
+    Integer i = (Integer) getField("belegnummer");
+    if (i != null)
+      return i.intValue();
+    
+    return createBelegnummer();
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#getBetrag()
+   */
+  public double getBetrag() throws RemoteException
+  {
+    Double d = (Double) getField("betrag");
+    if (d != null)
+      return d.doubleValue();
+
+    return 0;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setDatum(java.util.Date)
+   */
+  public void setDatum(Date d) throws RemoteException
+  {
+    setField("datum",d);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setKonto(de.willuhn.jameica.fibu.objects.Konto)
+   */
+  public void setKonto(Konto k) throws RemoteException
+  {
+    setField("konto_id",new Integer(k.getID()));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setText(java.lang.String)
+   */
+  public void setText(String text) throws RemoteException
+  {
+    setField("text", text);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setBelegnummer(int)
+   */
+  public void setBelegnummer(int belegnummer) throws RemoteException
+  {
+    setField("belegnummer",new Integer(belegnummer));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#setBetrag(double)
+   */
+  public void setBetrag(double betrag) throws RemoteException
+  {
+    setField("betrag", new Double(betrag));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Buchung#createBelegnummer()
+   */
+  public int createBelegnummer() throws RemoteException
+  {
+    DBIterator iterator = this.getList();
+    iterator.addFilter("belegnummer is not null order by belegnummer desc limit 1");
+    if (!iterator.hasNext())
+      return 1;
+    return ((Buchung) iterator.next()).getBelegnummer() + 1;
   }
 
 }
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.2  2003/11/21 02:10:56  willuhn
+ * @N buchung dialog works now
+ *
  * Revision 1.1  2003/11/20 03:48:44  willuhn
  * @N first dialogues
  *

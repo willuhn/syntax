@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
+ * $Revision: 1.1 $
  * $Date: 2003/11/21 02:10:57 $
  * $Author: willuhn $
  * $Locker:  $
@@ -19,10 +19,10 @@ import de.willuhn.jameica.views.parts.Headline;
 /**
  * @author willuhn
  */
-public class Welcome extends AbstractView
+public class BuchungListe extends AbstractView
 {
 
-  public Welcome(Object o)
+  public BuchungListe(Object o)
   {
     super(o);
   }
@@ -32,7 +32,7 @@ public class Welcome extends AbstractView
    */
   public void bind()
   {
-    Headline headline = new Headline(getParent(),I18N.tr("Finanzbuchhaltung für Jameica."));
+    Headline headline = new Headline(getParent(),I18N.tr("Buchungsliste."));
   }
 
   /**
@@ -44,11 +44,8 @@ public class Welcome extends AbstractView
 }
 
 /*********************************************************************
- * $Log: Welcome.java,v $
- * Revision 1.2  2003/11/21 02:10:57  willuhn
+ * $Log: BuchungListe.java,v $
+ * Revision 1.1  2003/11/21 02:10:57  willuhn
  * @N buchung dialog works now
- *
- * Revision 1.1  2003/11/20 03:48:44  willuhn
- * @N first dialogues
  *
  **********************************************************************/

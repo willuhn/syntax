@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/20 03:48:44 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/21 02:10:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,18 +13,18 @@
 package de.willuhn.jameica.fibu.views;
 
 import java.rmi.RemoteException;
-import java.util.Date;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.Application;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.controller.BuchungNeuControl;
 import de.willuhn.jameica.fibu.objects.Buchung;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.AbstractView;
+import de.willuhn.jameica.views.parts.ButtonArea;
+import de.willuhn.jameica.views.parts.CurrencyInput;
+import de.willuhn.jameica.views.parts.Headline;
 import de.willuhn.jameica.views.parts.LabelGroup;
 import de.willuhn.jameica.views.parts.SelectInput;
 import de.willuhn.jameica.views.parts.TextInput;
@@ -46,11 +46,7 @@ public class BuchungNeu extends AbstractView
   public void bind()
   {
 
-    setHeadline(I18N.tr("Neue Buchung erfassen"));
-
-    LabelGroup kontoGroup = createLabelGroup(I18N.tr("Konto"));
-
-    // Laden der Buchung oder Erstellen einer neuen
+    // Wir laden erstmal das Objekt bzw. erstellen ein neues.
     Buchung buchung = (Buchung) getCurrentObject();
     if (buchung == null)
     {
@@ -63,11 +59,41 @@ public class BuchungNeu extends AbstractView
       }
     }
 
-    
+    // jetzt erzeugen wir uns einen Controller fuer diesen Dialog.
+    // Er wird die Interaktionen mit der Business-Logik uebernehmen.
+    // Damit er an die Daten des Dialogs kommt, muessen wir jedes
+    // Eingabe-Feld in ihm registrieren.
+    final BuchungNeuControl control = new BuchungNeuControl(buchung);
+
+    // Headline malen
+    Headline headline     = new Headline(getParent(),I18N.tr("Buchung bearbeiten"));
+
+    // Gruppe Konto erzeugen
+    LabelGroup kontoGroup = new LabelGroup(getParent(),I18N.tr("Konto"));
+
     try {
-      Date buchungsdatum = buchung.getDatum();
-      kontoGroup.addLabelPair(I18N.tr("Datum"),new TextInput(Fibu.DATEFORMAT.format(buchungsdatum == null ? new Date() : buchungsdatum)));
-      kontoGroup.addLabelPair(I18N.tr("Konto"),new SelectInput((DBObject) buchung.getKonto()));
+      
+      // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
+      TextInput datum       = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
+      SelectInput konto     = new SelectInput((DBObject) buchung.getKonto());
+      TextInput text        = new TextInput(buchung.getText());
+      TextInput belegnummer = new TextInput(""+buchung.getBelegnummer());
+      CurrencyInput betrag  = new CurrencyInput(buchung.getBetrag(),"EUR");
+
+      // Fuegen sie zur Gruppe Konto hinzu
+      kontoGroup.addLabelPair(I18N.tr("Datum"),     datum);
+      kontoGroup.addLabelPair(I18N.tr("Konto"),     konto);
+      kontoGroup.addLabelPair(I18N.tr("Text"),      text);
+      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."), belegnummer);
+      kontoGroup.addLabelPair(I18N.tr("Betrag"),    betrag);
+
+      // und registrieren sie im Controller.
+      control.register("datum",        datum);
+      control.register("konto",        konto);
+      control.register("text",         text);
+      control.register("belegnummer",  belegnummer);
+      control.register("betrag",       betrag);
+
     }
     catch (RemoteException e)
     {
@@ -75,6 +101,12 @@ public class BuchungNeu extends AbstractView
     }
 
 
+    // und noch die Abschicken-Knoepfe
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    buttonArea.addCancelButton(control);
+    buttonArea.addDeleteButton(control);
+    buttonArea.addStoreButton(control);
+    
   }
 
   /**
@@ -82,14 +114,14 @@ public class BuchungNeu extends AbstractView
    */
   public void unbind()
   {
-    MessageBox warn = new MessageBox(GUI.shell,SWT.ICON_WARNING);
-    warn.setMessage("Sicher?");
-    warn.open();
   }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.2  2003/11/21 02:10:57  willuhn
+ * @N buchung dialog works now
+ *
  * Revision 1.1  2003/11/20 03:48:44  willuhn
  * @N first dialogues
  *
