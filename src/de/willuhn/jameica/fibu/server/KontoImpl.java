@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 16:26:15 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 
 /**
@@ -64,6 +65,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public double getSaldo() throws RemoteException
   {
+    // TODO: Nur aktuelles Geschaeftsjahr bei den Buchungen heranziehen
     try {
       // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
       if ("".equals(getID()) || getID() == null)
@@ -120,10 +122,40 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     return null;
   }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   */
+  public void deleteCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.5  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.4  2003/11/24 16:26:15  willuhn
  * @N AbstractDBObject is now able to resolve foreign keys
  *

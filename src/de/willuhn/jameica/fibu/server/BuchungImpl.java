@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,12 @@ package de.willuhn.jameica.fibu.objects;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.util.Calendar;
 import java.util.Date;
 
+import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 import de.willuhn.jameica.rmi.DBIterator;
 
@@ -164,7 +168,8 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public int createBelegnummer() throws RemoteException
   {
     DBIterator iterator = this.getList();
-    iterator.addFilter("belegnummer is not null order by belegnummer desc limit 1");
+    iterator.addFilter("belegnummer is not null order by id desc limit 1");
+    // TODO: nur vom aktiven Mandanten
     if (!iterator.hasNext())
       return 1;
     return ((Buchung) iterator.next()).getBelegnummer() + 1;
@@ -184,10 +189,59 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     return null;
   }
 
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   */
+  protected void deleteCheck() throws ApplicationException
+  {
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    // hier gilt erst mal das gleiche wie beim Update-Check ;)
+    updateCheck();
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    try {
+      if (getKonto() == null)
+        throw new ApplicationException("Bitte geben Sie ein Konto ein.");
+
+      if (getGeldKonto() == null)
+        throw new ApplicationException("Bitte geben Sie ein Geld-Konto ein.");
+
+      // Checken, ob Jahr im gueltigen Bereich
+      Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+
+      Date d = getDatum();
+      if (d == null)
+        throw new ApplicationException("Bitte geben Sie ein Datum ein.");
+
+      cal.setTime(d);
+      int year = cal.get(Calendar.YEAR);
+      if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
+        throw new ApplicationException("Datum nicht innerhalb des gültigen Bereiches.");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Prüfung des Datums.");
+    }
+  }
+
 }
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.7  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.6  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

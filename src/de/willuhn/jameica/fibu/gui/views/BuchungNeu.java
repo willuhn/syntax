@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,14 +81,19 @@ public class BuchungNeu extends AbstractView
 
     try {
       
+      // TODO: Oben alle Konten erlauben
+      // Saldo: Summe aller Netto-Buchungen auf diesem Konto
       Konto konto     = buchung.getKonto();
       if (konto == null) konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
+      // Hier nur Geldkonten erlauben
+      // besser Eingabefeld mit Knopf zur Suche dahinter
       Konto geldKonto = buchung.getGeldKonto();
       if (geldKonto == null) geldKonto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
+      // TODO: Hier noch einen Listener, der als Kommentar den Wochentag zum Datum anzeigt.
       SelectInput kontoInput      = new SelectInput(konto);
       SelectInput geldKontoInput  = new SelectInput(geldKonto);
 
@@ -96,6 +101,8 @@ public class BuchungNeu extends AbstractView
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
       CurrencyInput betrag        = new CurrencyInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()),
                                                       Settings.getCurrency());
+
+      // TODO: Steuer des oberen Kontos anzeigen und aktualisieren!!
       // Fuer fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
       kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput));
       geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput));
@@ -211,6 +218,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.7  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.6  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

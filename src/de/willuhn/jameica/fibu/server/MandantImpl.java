@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,11 @@ package de.willuhn.jameica.fibu.objects;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.util.Calendar;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 
 /**
@@ -225,12 +228,97 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     setField("finanzamt_id",new Integer(finanzamt.getID()));
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#getGeschaeftsjahr()
+   */
+  public int getGeschaeftsjahr() throws RemoteException
+  {
+    Integer i = (Integer) getField("geschaeftsjahr");
+    try {
+      return i.intValue();
+    }
+    catch (NumberFormatException e) {}
+    catch (NullPointerException e2) {}
+    // mhh, noch kein's definiert. Also nehmen wir das aktuelle.
+    Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+    return cal.get(Calendar.YEAR);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setGeschaeftsjahr(int)
+   */
+  public void setGeschaeftsjahr(int jahr) throws RemoteException
+  {
+    setField("geschaeftsjahr",new Integer(jahr));
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   */
+  public void deleteCheck() throws ApplicationException
+  {
+    try {
+      if (isActive())
+        throw new ApplicationException("Mandant ist aktiv und kann daher nicht gelöscht werden.\n" +          "Aktivieren Sie hierzu in den Einstellungen einen anderen Mandanten.");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Lösch-Prüfung des Mandanten.");
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    // insertCheck() ist erstmal das gleiche wie updateCheck() ;)
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    try {
+      String firma = getFirma();
+      if (firma == null || "".equals(firma)) {
+        throw new ApplicationException("Bitte geben Sie die Firma ein.");
+      }
+  
+      String steuernummer = getSteuernummer();
+      if (steuernummer == null || "".equals(steuernummer)) {
+        throw new ApplicationException("Bitte geben Sie die Steuernummer ein.");
+      }
+  
+      if (getFinanzamt() == null) {
+        throw new ApplicationException("Bitte wählen Sie ein Finanzamt aus.");
+      }
+
+      if (getKontenrahmen() == null) {
+        throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
+      }
+
+      int year = getGeschaeftsjahr();
+      if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
+        throw new ApplicationException("Geschäftsjahr nicht innerhalb des gültigen Bereiches.");
+
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.");
+    }
+  }
+
 
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.5  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.4  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/24 23:02:11 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.fibu.objects;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 
 /**
@@ -60,11 +61,41 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
     return null;
   }
 
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   */
+  public void deleteCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.4  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.3  2003/11/24 23:02:11  willuhn
  * @N added settings
  *

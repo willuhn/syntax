@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,10 @@ package de.willuhn.jameica.fibu.objects;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
+import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.rmi.AbstractDBObject;
+import de.willuhn.jameica.rmi.DBIterator;
 
 /**
  * @author willuhn
@@ -138,10 +141,75 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
     setField("strasse",strasse);
   }
 
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   */
+  public void deleteCheck() throws ApplicationException
+  {
+    // Wir checken ob das Finanzamt einem Mandanten zugewiesen ist.
+    try {
+      DBIterator list = Application.getDefaultDatabase().createList(Mandant.class);
+      list.addFilter("finanzamt_id='" + getID() + "'");
+      if (list.hasNext())
+        throw new ApplicationException("Das Finanzamt ist einem Mandanten zugwiesen.\n" +
+          "Bitte ändern oder löschen zu Sie zunächst den Mandanten.");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Prüfung auf eventuell vorhandene \n" +        "Abhängigkeiten zu existierenden Mandanten.");
+    }
+    
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    // erst mal das gleiche wie beim updateCheck() ;)
+    updateCheck();
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    try {
+      String name = getName();
+      if (name == null || "".equals(name)) {
+        throw new ApplicationException("Bitte geben Sie den Namen des Finanzamtes ein.");
+      }
+  
+      String plz = getPLZ();
+      if (plz == null || "".equals(plz)) {
+        throw new ApplicationException("Bitte geben Sie die Postleitzahl des Finanzamtes ein.");
+      }
+  
+      String ort = getOrt();
+      if (ort == null || "".equals(ort)) {
+        throw new ApplicationException("Bitte geben Sie den Ort des Finanzamtes ein.");
+      }
+  
+      String strasse  = getStrasse();
+      String postfach = getPostfach();
+      if ((strasse == null || "".equals(strasse)) && (postfach == null || "".equals(postfach))) {
+        throw new ApplicationException("Bitte geben Sie entweder Postfach oder die Strasse des Finanzamtes ein.");
+      }
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.");
+    }
+  }
+
 }
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.2  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.1  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

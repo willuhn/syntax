@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/25 01:23:19 $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,9 @@ public class Fibu implements Plugin
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
   
+  public static int YEAR_MIN                = 1950;
+  public static int YEAR_MAX                = 2020;
+
   static {
     DECIMALFORMAT.applyPattern("#0.00");
   }
@@ -80,6 +83,9 @@ public class Fibu implements Plugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.7  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.6  2003/11/25 01:23:19  willuhn
  * @N added Menu shortcuts
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,7 @@ public class MandantNeu extends AbstractView
       TextInput strasse           = new TextInput(mandant.getStrasse());
       TextInput plz               = new TextInput(mandant.getPLZ());
       TextInput ort               = new TextInput(mandant.getOrt());
+      TextInput geschaeftsjahr    = new TextInput(""+mandant.getGeschaeftsjahr());
 
       contactGroup.addLabelPair(I18N.tr("Name 1")  , name1);
       contactGroup.addLabelPair(I18N.tr("Name 2")  , name2);
@@ -124,6 +125,9 @@ public class MandantNeu extends AbstractView
       finanzGroup.addLabelPair(I18N.tr("Kontenrahmen"),kontenrahmen);
       finanzGroup.addLabelPair(I18N.tr("Steuernummer"),steuernummer);
 
+      finanzGroup.addLabelPair(I18N.tr("Geschäftsjahr"),geschaeftsjahr);
+
+
       control.register("name1",name1);
       control.register("name2",name2);
       control.register("firma",firma);
@@ -133,6 +137,7 @@ public class MandantNeu extends AbstractView
       control.register("steuernummer",steuernummer);
       control.register("kontenrahmen",kontenrahmen);
       control.register("finanzamt",finanzamt);
+      control.register("geschaeftsjahr",geschaeftsjahr);
 
     }
     catch (RemoteException e)
@@ -161,6 +166,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.3  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.2  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

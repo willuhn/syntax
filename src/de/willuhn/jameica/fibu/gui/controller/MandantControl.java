@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.objects.Finanzamt;
 import de.willuhn.jameica.fibu.objects.Kontenrahmen;
 import de.willuhn.jameica.fibu.objects.Mandant;
@@ -69,43 +71,36 @@ public class MandantControl extends Controller
     Mandant mandant = (Mandant) getObject();
 
     try {
+
       if (mandant.isNewObject())
       {
         GUI.setActionText(I18N.tr("Mandant wurde noch nicht gespeichert und muss daher nicht gelöscht werden."));
         return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
       }
 
-      if (mandant.isActive())
-      {
-        MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
-        box.setText(I18N.tr("Aktiver Mandant"));
-        box.setMessage(I18N.tr("Mandant ist aktiv und kann daher nicht gelöscht werden.\nAktivieren Sie hierzu in den Einstellungen einen anderen Mandanten."));
-        box.open();
+      MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.YES | SWT.NO);
+      box.setText(I18N.tr("Mandant wirklich löschen?"));
+      box.setMessage(I18N.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
+      if (box.open() != SWT.YES)
         return;
-      }
 
+      // ok, wir loeschen das Objekt
+      mandant.delete();
+      GUI.setActionText(I18N.tr("Mandant gelöscht."));
+    }
+    catch (ApplicationException e1)
+    {
+      MessageBox box2 = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
+      box2.setText(I18N.tr("Fehler"));
+      box2.setMessage(e1.getLocalizedMessage());
+      box2.open();
+      return;
+      
     }
     catch (RemoteException e)
     {
-      // Also wenn wir nicht mal ne Verbindung zum Business-Objekt haben, ist sowieso was faul ;)
-      Application.getLog().error("no valid mandant found");
-    }
-
-    MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.YES | SWT.NO);
-    box.setText(I18N.tr("Mandant wirklich löschen?"));
-    box.setMessage(I18N.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
-    if (box.open() == SWT.YES)
-    {
-      // ok, wir loeschen das Objekt
-      try {
-        mandant.delete();
-        GUI.setActionText(I18N.tr("Mandant gelöscht."));
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Fehler beim Löschen des Mandanten."));
-        Application.getLog().error("unable to delete mandant");
-      }
+      GUI.setActionText(I18N.tr("Fehler beim Löschen des Mandanten."));
+      Application.getLog().error("unable to delete mandant");
     }
   }
 
@@ -127,29 +122,6 @@ public class MandantControl extends Controller
     try {
 
       //////////////////////////////////////////////////////////////////////////
-      // Pflichtfelder checken
-      String firma = getField("firma").getValue();
-      if (firma == null || "".equals(firma)) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie die Firma ein."));
-        return;
-      }
-
-      String steuernummer = getField("steuernummer").getValue();
-      if (steuernummer == null || "".equals(steuernummer)) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie die Steuernummer ein."));
-        return;
-      }
-
-      String finanzamt = getField("finanzamt").getValue();
-      if (finanzamt == null || "".equals(finanzamt)) {
-        GUI.setActionText(I18N.tr("Bitte wählen Sie ein Finanzamt aus."));
-        return;
-      }
-
-      //
-      //////////////////////////////////////////////////////////////////////////
-      
-      //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
       
       DBIterator kontenrahmen = Application.getDefaultDatabase().createList(Kontenrahmen.class);
@@ -160,6 +132,23 @@ public class MandantControl extends Controller
         return;
       }
       mandant.setKontenrahmen((Kontenrahmen) kontenrahmen.next());
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      //////////////////////////////////////////////////////////////////////////
+      // Geschaeftsjahr checken
+
+      int geschaeftsjahr = 0;
+      try {
+        geschaeftsjahr = Integer.parseInt(getField("geschaeftsjahr").getValue());
+      }
+      catch (NumberFormatException e)
+      {
+        GUI.setActionText(I18N.tr("Bitte geben Sie eine gültige Jahreszahl zwischen ") + 
+                          Fibu.YEAR_MIN + I18N.tr(" und ") + Fibu.YEAR_MAX + I18N.tr(" ein"));
+        return;
+      }
+      mandant.setGeschaeftsjahr(geschaeftsjahr);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +179,11 @@ public class MandantControl extends Controller
       mandant.store();
       GUI.setActionText(I18N.tr("Mandant gespeichert."));
     }
-    catch (Exception e)
+    catch (ApplicationException e1)
+    {
+      GUI.setActionText(e1.getLocalizedMessage());
+    }
+    catch (RemoteException e)
     {
       if (Application.DEBUG)
         e.printStackTrace();
@@ -229,6 +222,9 @@ public class MandantControl extends Controller
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.3  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.2  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

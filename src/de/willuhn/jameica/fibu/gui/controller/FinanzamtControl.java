@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.objects.Finanzamt;
-import de.willuhn.jameica.fibu.objects.Mandant;
-import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.parts.Controller;
 
@@ -74,19 +73,6 @@ public class FinanzamtControl extends Controller
         return; // wenn's ein neues Objekt ist, gibt's nichts zu loeschen. ;)
       }
 
-      // Jetzt muessen wir noch checken, ob das Finanzamt einem Mandanten zugewiesen ist.
-      DBIterator list = Application.getDefaultDatabase().createList(Mandant.class);
-      list.addFilter("finanzamt_id='" + fa.getID() + "'");
-      if (list.hasNext())
-      {
-        // TODO: Das muss noch via deleteCheck() in die Business-Logik.
-        MessageBox box = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
-        box.setText(I18N.tr("Finanzamt in Verwendung"));
-        box.setMessage(I18N.tr("Das Finanzamt ist einem Mandanten zugwiesen.\nBitte ändern oder löschen zu Sie zunächst den Mandanten."));
-        box.open();
-        return;
-      }
-
     }
     catch (RemoteException e)
     {
@@ -103,6 +89,14 @@ public class FinanzamtControl extends Controller
       try {
         fa.delete();
         GUI.setActionText(I18N.tr("Daten des Finanzamtes gelöscht."));
+      }
+      catch (ApplicationException e1)
+      {
+        MessageBox box2 = new MessageBox(GUI.shell,SWT.ICON_WARNING | SWT.OK);
+        box2.setText(I18N.tr("Fehler"));
+        box2.setMessage(e1.getLocalizedMessage());
+        box2.open();
+        return;
       }
       catch (RemoteException e)
       {
@@ -129,48 +123,22 @@ public class FinanzamtControl extends Controller
 
     try {
 
-      //////////////////////////////////////////////////////////////////////////
-      // Pflichtfelder checken
-      String name = getField("name").getValue();
-      if (name == null || "".equals(name)) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie den Namen des Finanzamtes ein."));
-        return;
-      }
-
-      String plz = getField("plz").getValue();
-      if (plz == null || "".equals(plz)) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie die Postleitzahl des Finanzamtes ein."));
-        return;
-      }
-
-      String ort = getField("ort").getValue();
-      if (ort == null || "".equals(ort)) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie den Ort des Finanzamtes ein."));
-        return;
-      }
-
-      String strasse  = getField("strasse").getValue();
-      String postfach = getField("postfach").getValue();
-      if ((strasse == null || "".equals(strasse)) && (postfach == null || "".equals(postfach))) {
-        GUI.setActionText(I18N.tr("Bitte geben Sie entweder Postfach oder die Strasse des Finanzamtes ein."));
-        return;
-      }
-
-      //
-      //////////////////////////////////////////////////////////////////////////
-      
-      fa.setName(name);
-      fa.setStrasse(strasse);
-      fa.setPLZ(plz);
-      fa.setPostfach(postfach);
-      fa.setOrt(ort);
+      fa.setName(getField("name").getValue());
+      fa.setStrasse(getField("strasse").getValue());
+      fa.setPLZ(getField("plz").getValue());
+      fa.setPostfach(getField("postfach").getValue());
+      fa.setOrt(getField("ort").getValue());
 
       
       // und jetzt speichern wir.
       fa.store();
       GUI.setActionText(I18N.tr("Daten des Finanzamtes gespeichert."));
     }
-    catch (Exception e)
+    catch (ApplicationException e1)
+    {
+      GUI.setActionText(e1.getLocalizedMessage());
+    }
+    catch (RemoteException e)
     {
       if (Application.DEBUG)
         e.printStackTrace();
@@ -209,6 +177,9 @@ public class FinanzamtControl extends Controller
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.2  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.1  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

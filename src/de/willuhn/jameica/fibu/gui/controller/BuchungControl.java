@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/25 01:23:19 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,19 @@ package de.willuhn.jameica.fibu.controller;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.jameica.Application;
+import de.willuhn.jameica.ApplicationException;
 import de.willuhn.jameica.GUI;
 import de.willuhn.jameica.I18N;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.objects.Buchung;
 import de.willuhn.jameica.fibu.objects.Konto;
+import de.willuhn.jameica.fibu.objects.Settings;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.rmi.DBObject;
 import de.willuhn.jameica.views.parts.Controller;
@@ -94,6 +97,10 @@ public class BuchungControl extends Controller
         buchung.delete();
         GUI.setActionText(I18N.tr("Buchung Nr. " + beleg + " gelöscht."));
       }
+      catch (ApplicationException e1)
+      {
+        GUI.setActionText(e1.getLocalizedMessage());
+      }
       catch (RemoteException e)
       {
         GUI.setActionText(I18N.tr("Fehler beim Löschen der Buchung."));
@@ -142,27 +149,42 @@ public class BuchungControl extends Controller
         GUI.setActionText(I18N.tr("Betrag ungültig."));
         return;
       }
+      catch (ParseException e)
+      {
+        GUI.setActionText(I18N.tr("Betrag ungültig."));
+        return;
+      }
       //
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
+      Date datum = null;
       try {
-        buchung.setDatum(Fibu.DATEFORMAT.parse(getField("datum").getValue()));
+        datum = Fibu.DATEFORMAT.parse(getField("datum").getValue());
       }
       catch (ParseException e)
       {
         // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
         try {
-          buchung.setDatum(Fibu.FASTDATEFORMAT.parse(getField("datum").getValue()));
+          datum = Fibu.FASTDATEFORMAT.parse(getField("datum").getValue());
         }
         catch (ParseException e2)
         {
-          GUI.setActionText(I18N.tr("Datum ungültig."));
-          return;
+          try {
+            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
+            datum = Fibu.FASTDATEFORMAT.parse(getField("datum").getValue() + Settings.getActiveMandant().getGeschaeftsjahr());
+          }
+          catch (ParseException e3)
+          {
+            GUI.setActionText(I18N.tr("Datum ungültig."));
+            return;
+          }
         }
       }
+
+      buchung.setDatum(datum);
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -205,7 +227,11 @@ public class BuchungControl extends Controller
       GUI.startView("de.willuhn.jameica.fibu.views.BuchungNeu",buchung);
 
     }
-    catch (Exception e)
+    catch (ApplicationException e1)
+    {
+      GUI.setActionText(e1.getLocalizedMessage());
+    }
+    catch (RemoteException e)
     {
       if (Application.DEBUG)
         e.printStackTrace();
@@ -244,6 +270,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.6  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.5  2003/11/25 01:23:19  willuhn
  * @N added Menu shortcuts
  *

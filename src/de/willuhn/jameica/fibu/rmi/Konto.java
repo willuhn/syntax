@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 15:18:21 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,8 @@ public interface Konto extends DBObject
   public final static int KONTOTYP_EINNAHME   = 1;
   public final static int KONTOTYP_AUSGABE    = 2;
   public final static int KONTOTYP_GELD       = 3;
-  public final static int KONTOTYP_BESTAND    = 4;
+  public final static int KONTOTYP_ANLAGE     = 4;
+  public final static int KONTOTYP_PRIVAT     = 5; // bedeutet, dass dessen Bestand zum Jahreswechsel nicht uebernommen wird
   
 
   /**
@@ -70,6 +71,9 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.5  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.4  2003/11/24 15:18:21  willuhn
  * *** empty log message ***
  *

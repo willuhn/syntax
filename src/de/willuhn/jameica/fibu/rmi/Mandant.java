@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/25 00:22:17 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,6 +90,13 @@ public interface Mandant extends DBObject
   public Finanzamt getFinanzamt() throws RemoteException;
   
   /**
+   * Liefert das Geschaeftsjahr oder das aktuelle wenn noch keins definiert ist.
+   * @return das aktuelle Geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public int getGeschaeftsjahr() throws RemoteException;
+
+  /**
    * Speichert den ersten Namen des Mandanten (typischerweise der Vorname).
    * @param name1 Name 1 des Mandanten. 
    * @throws RemoteException
@@ -153,6 +160,13 @@ public interface Mandant extends DBObject
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException;
 
   /**
+   * Speichert das aktuelle Geschaeftsjahr.
+   * @param das aktuelle Geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public void setGeschaeftsjahr(int jahr) throws RemoteException;
+
+  /**
    * Prueft, ob der aktuelle Mandant aktiv ist und somit nicht geloescht werden kann.
    * @return true, wenn er aktiv ist.
    * @throws RemoteException
@@ -164,6 +178,9 @@ public interface Mandant extends DBObject
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.4  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.3  2003/11/25 00:22:17  willuhn
  * @N added Finanzamt
  *

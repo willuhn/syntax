@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2003/11/25 00:22:16 $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/27 00:21:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class BuchungListe extends AbstractView
       BuchungControl controller = new BuchungControl(buchung);
 
       DBIterator list = Application.getDefaultDatabase().createList(buchung.getClass());
-      list.addFilter("1 order by datum desc");
+      list.addFilter("1 order by id desc");
 
       Table table = new Table(list,controller);
       table.addColumn(I18N.tr("Datum"),"datum");
@@ -81,6 +81,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.7  2003/11/27 00:21:05  willuhn
+ * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
+ *
  * Revision 1.6  2003/11/25 00:22:16  willuhn
  * @N added Finanzamt
  *
