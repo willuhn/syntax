@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/01/27 22:47:30 $
+ * $Revision: 1.15 $
+ * $Date: 2004/01/29 00:13:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,7 +166,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       if (kontonummer == null || "".equals(kontonummer))
         throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
       
-      Kontoart ka = (Kontoart) getField("kontoart");
+      Kontoart ka = (Kontoart) getField("kontoart_id");
       if (ka == null)
         throw new ApplicationException("Bitte wählen Sie eine Kontoart aus.");
 
@@ -250,6 +250,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.15  2004/01/29 00:13:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/01/27 22:47:30  willuhn
  * *** empty log message ***
  *

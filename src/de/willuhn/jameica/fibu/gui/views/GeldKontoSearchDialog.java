@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/GeldKontoSearchDialog.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/29 00:13:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ public class GeldKontoSearchDialog extends SearchDialog
     // und definieren noch die Spalten, die im Dialog angezeigt werden sollen.
     addColumn(I18N.tr("Kontonummer"),"kontonummer");
     addColumn(I18N.tr("Name"),"name");
-    addColumn(I18N.tr("Kontoart"),"kontoart");
+    addColumn(I18N.tr("Kontoart"),"kontoart_id");
     addColumn(I18N.tr("Steuer"),"steuer_id");
 
     // und wir definieren noch einen passenden Titel
@@ -74,6 +74,9 @@ public class GeldKontoSearchDialog extends SearchDialog
 
 /*********************************************************************
  * $Log: GeldKontoSearchDialog.java,v $
+ * Revision 1.8  2004/01/29 00:13:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *
