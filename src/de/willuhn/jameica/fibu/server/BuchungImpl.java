@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.13 $
+ * $Date: 2003/12/05 18:42:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -220,7 +220,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       return Konto.class;
 
     if ("geldkonto_id".equals(field))
-      return Konto.class;
+      return GeldKonto.class;
 
     if ("mandant_id".equals(field))
       return Mandant.class;
@@ -316,6 +316,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.13  2003/12/05 18:42:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2003/12/05 17:11:58 $
+ * $Revision: 1.11 $
+ * $Date: 2003/12/05 18:42:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ import de.willuhn.jameica.views.parts.ButtonArea;
 import de.willuhn.jameica.views.parts.DecimalInput;
 import de.willuhn.jameica.views.parts.Headline;
 import de.willuhn.jameica.views.parts.LabelGroup;
-import de.willuhn.jameica.views.parts.SelectInput;
+import de.willuhn.jameica.views.parts.SearchInput;
 import de.willuhn.jameica.views.parts.TextInput;
 
 /**
@@ -98,8 +98,8 @@ public class BuchungNeu extends AbstractView
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
       datum.addComment(I18N.tr("Wochentag: "),new WochentagListener(datum));
 
-      SelectInput kontoInput      = new SelectInput(konto);
-      SelectInput geldKontoInput  = new SelectInput(geldKonto);
+      SearchInput kontoInput      = new SearchInput(konto.getKontonummer());
+      SearchInput geldKontoInput  = new SearchInput(geldKonto.getKontonummer());
 
       TextInput text              = new TextInput(buchung.getText());
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
@@ -110,7 +110,7 @@ public class BuchungNeu extends AbstractView
       steuer         = new DecimalInput(Fibu.DECIMALFORMAT.format(buchung.getSteuer()));
         steuer.addComment("%",null);
 
-      // TODO: Steuer des oberen Kontos anzeigen und aktualisieren!!
+      // TODO: Event wird nicht ausgeloest
       // Wir fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
       kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput,steuer));
       geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput,null));
@@ -222,17 +222,17 @@ public class BuchungNeu extends AbstractView
    */
   class SaldoListener implements Listener
   {
-    private SelectInput select;
+    private SearchInput search;
     private DecimalInput steuer;
 
     /**
      * Konstruktor.
-     * @param select SelectInput-Feld, an dem der Listener haengt.
+     * @param search Search-Feld, an dem der Listener haengt.
      * @param s DecimalInput mit dem Feld fuer die Steuer des Kontos. Optional.
      */
-    SaldoListener(SelectInput select, DecimalInput s)
+    SaldoListener(SearchInput search, DecimalInput s)
     {
-      this.select = select;
+      this.search = search;
       this.steuer = s;
     }
 
@@ -244,12 +244,11 @@ public class BuchungNeu extends AbstractView
       try {
         Combo c = (Combo) event.widget;
         String kontonummer = c.getText();
-        System.out.println("Konto: " +kontonummer);
         DBIterator list = Application.getDefaultDatabase().createList(Konto.class);
         list.addFilter("kontonummer = " + kontonummer);
         if (!list.hasNext()) return;
         Konto konto = (Konto) list.next();
-        select.updateComment(I18N.tr("Saldo") + ": " +
+        search.updateComment(I18N.tr("Saldo") + ": " +
                              Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
                              " " + Settings.getCurrency());
       
@@ -271,6 +270,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.11  2003/12/05 18:42:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/12/05 17:11:58  willuhn
  * @N added GeldKonto, Kontoart
  *
