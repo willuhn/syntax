@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 16:26:16 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,8 @@ public class BuchungListe extends AbstractView
 
       Table table = new Table(list,controller);
       table.addColumn("Datum","datum");
-      table.addColumn("Kontonummer","konto_id"); // TODO: foreign keys noch einbauen
+      table.addColumn("Konto","konto_id");
+      table.addColumn("Geldkonto","geldkonto_id");
       table.addColumn("Text","text");
       table.addColumn("Beleg","belegnummer");
       table.addColumn("Betrag","betrag");
@@ -80,6 +81,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.5  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.4  2003/11/24 16:26:16  willuhn
  * @N AbstractDBObject is now able to resolve foreign keys
  *

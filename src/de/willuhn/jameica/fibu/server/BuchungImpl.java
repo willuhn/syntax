@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/24 16:26:15 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.Date;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.rmi.AbstractDBObject;
 import de.willuhn.jameica.rmi.DBIterator;
 
@@ -68,10 +67,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getKonto() throws RemoteException
   {
-    Konto k = (Konto) getField("konto_id");
-    if (k == null)
-      return (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
-    return k;
+    return (Konto) getField("konto_id");
   }
 
   /**
@@ -79,10 +75,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getGeldKonto() throws RemoteException
   {
-    Konto k = (Konto) getField("geldkonto_id");
-    if (k == null)
-      return (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
-    return k;
+    return (Konto) getField("geldkonto_id");
   }
 
   /**
@@ -195,6 +188,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.6  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.5  2003/11/24 16:26:15  willuhn
  * @N AbstractDBObject is now able to resolve foreign keys
  *

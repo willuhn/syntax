@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.4 $
- * $Date: 2003/11/24 14:21:56 $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.jar.JarFile;
 
 import de.willuhn.jameica.Plugin;
 
@@ -26,12 +27,20 @@ import de.willuhn.jameica.Plugin;
  */
 public class Fibu implements Plugin
 {
+
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
-  public static String CURRENCY             = "EUR";
   
   static {
     DECIMALFORMAT.applyPattern("#0.00");
+  }
+
+  /**
+   * ct.
+   * @param jar
+   */
+  public Fibu(JarFile jar)
+  {
   }
 
   /**
@@ -50,10 +59,29 @@ public class Fibu implements Plugin
   {
   }
 
+  /**
+   * @see de.willuhn.jameica.Plugin#getName()
+   */
+  public String getName()
+  {
+    return "Fibu für Jameica";
+  }
+
+  /**
+   * @see de.willuhn.jameica.Plugin#getVersion()
+   */
+  public double getVersion()
+  {
+    return 1.0;
+  }
+
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.5  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.4  2003/11/24 14:21:56  willuhn
  * *** empty log message ***
  *

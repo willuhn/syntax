@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2003/11/24 14:21:56 $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.controller.BuchungControl;
 import de.willuhn.jameica.fibu.objects.Buchung;
 import de.willuhn.jameica.fibu.objects.Konto;
+import de.willuhn.jameica.fibu.objects.Settings;
 import de.willuhn.jameica.rmi.DBIterator;
 import de.willuhn.jameica.views.AbstractView;
 import de.willuhn.jameica.views.parts.ButtonArea;
@@ -81,7 +82,10 @@ public class BuchungNeu extends AbstractView
     try {
       
       Konto konto     = buchung.getKonto();
+      if (konto == null) konto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
+
       Konto geldKonto = buchung.getGeldKonto();
+      if (geldKonto == null) geldKonto = (Konto) Application.getDefaultDatabase().createObject(Konto.class,null);
 
       // Wir erzeugen uns alle Eingabe-Felder mit den Daten aus dem Objekt.
       TextInput datum             = new TextInput(Fibu.DATEFORMAT.format(buchung.getDatum()));
@@ -91,10 +95,10 @@ public class BuchungNeu extends AbstractView
       TextInput text              = new TextInput(buchung.getText());
       TextInput belegnummer       = new TextInput(""+buchung.getBelegnummer());
       CurrencyInput betrag        = new CurrencyInput(Fibu.DECIMALFORMAT.format(buchung.getBetrag()),
-                                                 Fibu.CURRENCY);
+                                                      Settings.getCurrency());
       // Fuer fuegen hinter die beiden Konten noch den Saldo des jeweiligen Kontos hinzu.
-      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Fibu.CURRENCY, new SaldoListener(kontoInput));
-      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Fibu.CURRENCY, new SaldoListener(geldKontoInput));
+      kontoInput.addComment(I18N.tr("Saldo") + ": " + Fibu.DECIMALFORMAT.format(konto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(kontoInput));
+      geldKontoInput.addComment(I18N.tr("Saldo") + ": " +Fibu.DECIMALFORMAT.format(geldKonto.getSaldo()) + " " + Settings.getCurrency(), new SaldoListener(geldKontoInput));
 
       // Fuegen sie zur Gruppe Konto hinzu
       kontoGroup.addLabelPair(I18N.tr("Datum"),       datum);
@@ -170,7 +174,7 @@ public class BuchungNeu extends AbstractView
         Konto konto = (Konto) list.next();
         select.updateComment(I18N.tr("Saldo") + ": " +
                              Fibu.DECIMALFORMAT.format(konto.getSaldo()) +
-                             " " + Fibu.CURRENCY);
+                             " " + Settings.getCurrency());
       }
       catch (RemoteException es)
       {
@@ -207,6 +211,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.6  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.5  2003/11/24 14:21:56  willuhn
  * *** empty log message ***
  *

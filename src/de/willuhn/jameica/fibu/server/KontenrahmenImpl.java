@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/24 16:26:16 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
    * @param id
    * @throws RemoteException
    */
-  protected KontenrahmenImpl(Connection conn, String id) throws RemoteException
+  public KontenrahmenImpl(Connection conn, String id) throws RemoteException
   {
     super(conn, id);
   }
@@ -65,6 +65,9 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.3  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.2  2003/11/24 16:26:16  willuhn
  * @N AbstractDBObject is now able to resolve foreign keys
  *

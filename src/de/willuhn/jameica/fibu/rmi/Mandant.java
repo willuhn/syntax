@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.1 $
- * $Date: 2003/11/24 15:18:21 $
+ * $Revision: 1.2 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -81,11 +81,78 @@ public interface Mandant extends DBObject
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException;
 
+
+  /**
+   * Speichert den ersten Namen des Mandanten (typischerweise der Vorname).
+   * @param name1 Name 1 des Mandanten. 
+   * @throws RemoteException
+   */
+  public void setName1(String name1) throws RemoteException;
+  
+  /**
+   * Speichert den zweiten Namen des Mandanten (typischerweise der Nachname).
+   * @param name2 Name 2 des Mandanten.
+   * @throws RemoteException
+   */
+  public void setName2(String name2) throws RemoteException;
+  
+  /**
+   * Speichert den Firmennamen des Mandanten.
+   * @param firma Firmenname.
+   * @throws RemoteException
+   */
+  public void setFirma(String firma) throws RemoteException;
+  
+  /**
+   * Speichert die Strasse des Mandanten.
+   * @param strasse Strasse des Mandanten.
+   * @throws RemoteException
+   */
+  public void setStrasse(String strasse) throws RemoteException;
+  
+  /**
+   * Speichert die PLZ des Mandanten.
+   * @param plz PLZ des Mandanten.
+   * @throws RemoteException
+   */
+  public void setPLZ(String plz) throws RemoteException;
+  
+  /**
+   * Speichert den Ort des Mandanten.
+   * @param ort Ort des Mandanten.
+   * @throws RemoteException
+   */
+  public void setOrt(String ort) throws RemoteException;
+  
+  /**
+   * Speichert die Steuernummer des Mandanten.
+   * @param steuernummer Steuernummer des Mandanten.
+   * @throws RemoteException
+   */
+  public void setSteuernummer(String steuernummer) throws RemoteException;
+  
+  /**
+   * Speichert den ausgewaehlten Kontenrahmen des Mandanten.
+   * @param kontenrahmen Kontenrahmen des Mandanten.
+   * @throws RemoteException
+   */
+  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException;
+
+  /**
+   * Prueft, ob der aktuelle Mandant aktiv ist und somit nicht geloescht werden kann.
+   * @return true, wenn er aktiv ist.
+   * @throws RemoteException
+   */
+  public boolean isActive() throws RemoteException;
+
 }
 
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.2  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.1  2003/11/24 15:18:21  willuhn
  * *** empty log message ***
  *

@@ -3,7 +3,7 @@
 <menu>
 
   <cascade name="Fibu">
-    <item name="Einstellungen"       class="de.willuhn.jameica.fibu.menu.Settings" />
+    <item name="Einstellungen"       class="de.willuhn.jameica.fibu.views.Settings" />
   </cascade>
 
 </menu>

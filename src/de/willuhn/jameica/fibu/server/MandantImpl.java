@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/11/24 16:26:16 $
+ * $Revision: 1.3 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    * @param id
    * @throws RemoteException
    */
-  protected MandantImpl(Connection conn, String id) throws RemoteException
+  public MandantImpl(Connection conn, String id) throws RemoteException
   {
     super(conn, id);
   }
@@ -58,11 +58,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
-    Integer krId = (Integer) getField("kr_id");
-    if (krId != null)
-      return (Kontenrahmen) Application.getDefaultDatabase().createObject(Kontenrahmen.class,krId.toString());
-
-    throw new RemoteException("unable to determine kontenrahmen of this mandant");
+    return (Kontenrahmen) getField("kontenrahmen_id");
   }
 
   /**
@@ -126,7 +122,89 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public Class getForeignObject(String field) throws RemoteException
   {
+    if ("kontenrahmen_id".equals(field))
+      return Kontenrahmen.class;
     return null;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setName1(java.lang.String)
+   */
+  public void setName1(String name1) throws RemoteException
+  {
+    setField("name1",name1);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setName2(java.lang.String)
+   */
+  public void setName2(String name2) throws RemoteException
+  {
+    setField("name2",name2);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setFirma(java.lang.String)
+   */
+  public void setFirma(String firma) throws RemoteException
+  {
+    setField("firma",firma);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setStrasse(java.lang.String)
+   */
+  public void setStrasse(String strasse) throws RemoteException
+  {
+    setField("strasse",strasse);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setPLZ(java.lang.String)
+   */
+  public void setPLZ(String plz) throws RemoteException
+  {
+    setField("plz",plz);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setOrt(java.lang.String)
+   */
+  public void setOrt(String ort) throws RemoteException
+  {
+    setField("ort",ort);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setSteuernummer(java.lang.String)
+   */
+  public void setSteuernummer(String steuernummer) throws RemoteException
+  {
+    setField("steuernummer",steuernummer);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#setKontenrahmen(de.willuhn.jameica.fibu.objects.Kontenrahmen)
+   */
+  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
+  {
+    setField("kontenrahmen_id",new Integer(kontenrahmen.getID()));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.objects.Mandant#isActive()
+   */
+  public boolean isActive() throws RemoteException
+  {
+    try {
+      return this.getID().equals(Settings.getActiveMandant().getID());
+    }
+    catch (Exception e)
+    {
+      if (Application.DEBUG)
+        e.printStackTrace();
+      return false;
+    }
   }
 
 
@@ -135,6 +213,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.3  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.2  2003/11/24 16:26:16  willuhn
  * @N AbstractDBObject is now able to resolve foreign keys
  *

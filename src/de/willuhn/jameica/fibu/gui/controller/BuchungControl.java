@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2003/11/24 17:27:53 $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/24 23:02:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,6 +52,7 @@ public class BuchungControl extends Controller
   {
     try {
       this.object = Application.getDefaultDatabase().createObject(Buchung.class,id);
+      handleDelete();
     }
     catch (RemoteException e)
     {
@@ -59,7 +60,6 @@ public class BuchungControl extends Controller
       Application.getLog().error("no valid buchung found");
       GUI.setActionText(I18N.tr("Buchung wurde nicht gefunden."));
     }
-    handleDelete();
   }
 
   /**
@@ -135,10 +135,7 @@ public class BuchungControl extends Controller
       //////////////////////////////////////////////////////////////////////////
       // Betrag checken
       try {
-        String b = getField("betrag").getValue();
-        b = b.replaceAll(",",".");
-        
-        buchung.setBetrag(Double.parseDouble(b));
+        buchung.setBetrag(Fibu.DECIMALFORMAT.parse(getField("betrag").getValue()).doubleValue());
       }
       catch (NumberFormatException e)
       {
@@ -194,7 +191,7 @@ public class BuchungControl extends Controller
 
       // und jetzt speichern wir.
       buchung.store();
-      GUI.setActionText(I18N.tr("Buchung Nr. " + buchung.getBelegnummer() + " gespeichert."));
+      GUI.setActionText(I18N.tr("Buchung Nr.") + " " + buchung.getBelegnummer() + " " + I18N.tr("gespeichert."));
       // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
       // auf Speichern als neue Buchung gespeichert wird.
       buchung.clear();
@@ -240,6 +237,9 @@ public class BuchungControl extends Controller
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.4  2003/11/24 23:02:11  willuhn
+ * @N added settings
+ *
  * Revision 1.3  2003/11/24 17:27:53  willuhn
  * @N Context menu in table
  *
