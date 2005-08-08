@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Text;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
@@ -31,10 +33,9 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -57,8 +58,8 @@ public class BuchungControl extends AbstractControl
 
 	// Eingabe-Felder
 	private Input datum					   = null;
-	private Input kontoAuswahl     = null;
-	private Input geldKontoAuswahl = null;
+	private ButtonInput kontoAuswahl     = null;
+	private ButtonInput geldKontoAuswahl = null;
 	private Input	text					   = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
@@ -89,7 +90,7 @@ public class BuchungControl extends AbstractControl
 		if (buchung != null)
 			return buchung;
 		
-		buchung = (Buchung) Settings.getDatabase().createObject(Buchung.class,null);
+		buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
 		return buchung;
 		
 	}
@@ -108,7 +109,7 @@ public class BuchungControl extends AbstractControl
 		if (konto != null)
 			return konto;
 		
-		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
 		return konto;
 	}
 	
@@ -126,7 +127,7 @@ public class BuchungControl extends AbstractControl
 		if (geldkonto != null)
 			return geldkonto;
 		
-		geldkonto = (GeldKonto) Settings.getDatabase().createObject(GeldKonto.class,null);
+		geldkonto = (GeldKonto) Settings.getDBService().createObject(GeldKonto.class,null);
 		return geldkonto;
 	}
 
@@ -137,17 +138,9 @@ public class BuchungControl extends AbstractControl
    */
   public TablePart getBuchungListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Buchung.class);
+		DBIterator list = Settings.getDBService().createList(Buchung.class);
 		list.setOrder("order by id desc");
-
-		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.BuchungNeu());
-		table.addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
-		table.addColumn(i18n.tr("Konto"),"konto_id");
-		table.addColumn(i18n.tr("Geldkonto"),"geldkonto_id");
-		table.addColumn(i18n.tr("Text"),"buchungstext");
-		table.addColumn(i18n.tr("Beleg"),"belegnummer");
-		table.addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getCurrency(), Fibu.DECIMALFORMAT));
-		return table;		
+    return new BuchungList(list,new de.willuhn.jameica.fibu.gui.action.BuchungNeu());
 	}
 
 
@@ -177,33 +170,50 @@ public class BuchungControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 		
-		DBIterator list = Settings.getDatabase().createList(Konto.class);
-		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("Name"),"name");
-		d.addColumn(i18n.tr("Kontoart"),"kontoart_id");
-		d.addColumn(i18n.tr("Steuer"),"steuer_id");
-		d.setTitle(i18n.tr("Auswahl des Kontos"));
-		d.addListener(new Listener() {
+		DBIterator list = Settings.getDBService().createList(Konto.class);
+    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
+		d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
         Konto k = (Konto) event.data;
+        if (k == null)
+          return;
 				try {
-					kontoAuswahl.setValue(k.getKontonummer());
+          konto = k;
+          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
+					kontoAuswahl.setValue(k.getKontonummer() + "[" + k.getName() + "]");
+          if (konto.getSteuer() == null)
+          {
+            getSteuer().disable();
+          }
+          else
+          {
+            getSteuer().enable();
+            getSteuer().setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
+          }
 				}
 				catch (RemoteException e)
 				{
-					Application.getLog().error("unable to load konto",e);
+					Logger.error("unable to load konto",e);
 				}
 
       }
     });
 		
-		kontoAuswahl = new SearchInput(getKonto().getKontonummer(),d);
-		kontoAuswahl.addListener(new SaldoListener(kontoAuswahl,true));
-		kontoAuswahl.setComment(i18n.tr("Saldo") + ": " + 
-														Fibu.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + 
-														Settings.getCurrency());
-		return kontoAuswahl;
+    Konto k = getKonto();
+    kontoAuswahl = new DialogInput(k == null ? "" : (k.getKontonummer() + "[" + k.getName() + "]"),d);
+    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
+    kontoAuswahl.disableClientControl();
+    kontoAuswahl.setValue(k);
+    if (k.getSteuer() == null)
+    {
+      getSteuer().disable();
+    }
+    else
+    {
+      getSteuer().enable();
+      getSteuer().setValue(Fibu.DECIMALFORMAT.format(k.getSteuer().getSatz()));
+    }
+    return kontoAuswahl;
 	}
 
 
@@ -217,33 +227,32 @@ public class BuchungControl extends AbstractControl
 		if (geldKontoAuswahl != null)
 			return geldKontoAuswahl;
 		
-		DBIterator list = Settings.getDatabase().createList(Konto.class);
-		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("Name"),"name");
-		d.addColumn(i18n.tr("Kontoart"),"kontoart_id");
-		d.addColumn(i18n.tr("Steuer"),"steuer_id");
-		d.setTitle(i18n.tr("Auswahl des Kontos"));
-		d.addListener(new Listener() {
-			public void handleEvent(Event event) {
-				Konto k = (Konto) event.data;
-				try {
-					geldKontoAuswahl.setValue(k.getKontonummer());
-				}
-				catch (RemoteException e)
-				{
-					Application.getLog().error("unable to load konto",e);
-				}
+    DBIterator list = Settings.getDBService().createList(GeldKonto.class);
+    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(new Listener() {
+      public void handleEvent(Event event) {
+        GeldKonto k = (GeldKonto) event.data;
+        if (k == null)
+          return;
+        try {
+          geldkonto = k;
+          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
+          kontoAuswahl.setValue(k.getKontonummer() + "[" + k.getName() + "]");
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to load konto",e);
+        }
 
-			}
-		});
-
-		geldKontoAuswahl = new SearchInput(getGeldKonto().getKontonummer(),d);
-		geldKontoAuswahl.addListener(new SaldoListener(geldKontoAuswahl,false));
-		geldKontoAuswahl.setComment(i18n.tr("Saldo") + ": " +
-															  Fibu.DECIMALFORMAT.format(getGeldKonto().getSaldo()) + " " +
-															  Settings.getCurrency());
-		return geldKontoAuswahl;
+      }
+    });
+    
+    Konto k = getGeldKonto();
+    geldKontoAuswahl = new DialogInput(k == null ? "" : (k.getKontonummer() + "[" + k.getName() + "]"),d);
+    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
+    geldKontoAuswahl.disableClientControl();
+    geldKontoAuswahl.setValue(k);
+    return geldKontoAuswahl;
 	}
 
 	/**
@@ -304,9 +313,8 @@ public class BuchungControl extends AbstractControl
 		return steuer;
 	}
 
-
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
+   * Speichert die Buchung.
    */
   public void handleStore()
   {
@@ -384,7 +392,7 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Konto checken
       
-      DBIterator konten = Settings.getDatabase().createList(Konto.class);
+      DBIterator konten = Settings.getDBService().createList(Konto.class);
       konten.addFilter("kontonummer = '"+getKontoAuswahl().getValue()+"'");
       if (!konten.hasNext())
       {
@@ -398,7 +406,7 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // GeldKonto checken
       
-      DBIterator geldkonten = Settings.getDatabase().createList(GeldKonto.class);
+      DBIterator geldkonten = Settings.getDBService().createList(GeldKonto.class);
       geldkonten.addFilter("kontonummer = '"+getGeldKontoAuswahl().getValue()+"'");
       if (!geldkonten.hasNext())
       {
@@ -494,85 +502,13 @@ public class BuchungControl extends AbstractControl
       }
 		}
 	}
-
-	/**
-	 * Listener, der an die Auswahlbox des Kontos angehaengt wurden und
-	 * den Saldo von dem gerade ausgewaehlten Konto als Kommentar anzeigt.
-	 */
-	private class SaldoListener implements Listener
-	{
-
-		private Input k = null;
-		private boolean changeSteuer = false;
-		
-    /**
-		 * ct.
-     * @param k Das Eingabe-Feld des Kontos.
-     * @param b true, wenn das Steuer-Eingabe-Feld mit dem Steuersatz des
-     * ausgewaehlten Kontos ueberschrieben werden soll.
-     */
-    SaldoListener(Input k, boolean b)
-		{
-			this.k = k;
-			this.changeSteuer = b;
-		}
-
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
-		public void handleEvent(Event event)
-		{
-			if (!(event.widget instanceof Text))
-				return;
-			try {
-				Text t = (Text) event.widget;
-				if (t == null)
-					return;
-				String kontonummer = t.getText();
-				if (kontonummer == null || "".equals(kontonummer))
-				{
-					return; // Kontonummer fehlt oder ist leer -> keine Saldenermittlung moeglich
-				}
-
-				DBIterator list = Settings.getDatabase().createList(Konto.class);
-				list.addFilter("kontonummer = '" + kontonummer + "'");
-				if (!list.hasNext())
-				{
-          GUI.getStatusBar().setErrorText(i18n.tr("Das ausgewählte Konto existiert nicht."));
-					return;
-				} 
-				Konto myKonto = (Konto) list.next();
-				k.setComment(i18n.tr("Saldo") + ": " +  
-														 Fibu.DECIMALFORMAT.format(myKonto.getSaldo()) +
-														 " " + Settings.getCurrency());
-
-				GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto: ") + myKonto.getName());
-      
-				if (changeSteuer) // Steuer soll geaendert werden
-				{
-					if (myKonto.getSteuer() == null) // ausgewaehltes Konto hat keine Steuer.
-					{
-						getSteuer().disable();
-					}
-					else {
-						getSteuer().setValue(Fibu.DECIMALFORMAT.format(myKonto.getSteuer().getSatz()));
-						getSteuer().enable();
-					}
-				}
-			}
-			catch (RemoteException es)
-			{
-        Logger.error("unable to read saldo",es);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Saldenermittlung des Kontos."));
-			}
-		}
-
-	}
-
 }
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.23  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.22  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

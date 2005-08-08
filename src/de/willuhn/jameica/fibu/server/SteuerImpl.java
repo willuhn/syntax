@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -108,7 +107,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   {
     // wir checken ob vielleicht ein Konto diesen Steuersatz besitzt.
     try {
-      DBIterator list = Settings.getDatabase().createList(Konto.class);
+      DBIterator list = Settings.getDBService().createList(Konto.class);
       list.addFilter("steuer_id = " + this.getID());
       if (list.hasNext())
         throw new ApplicationException("Der Steuersatz ist einem Konto zugewiesen.\n" +
@@ -166,6 +165,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.9  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.8  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

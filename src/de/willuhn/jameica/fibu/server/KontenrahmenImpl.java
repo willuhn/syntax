@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,11 +90,22 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
     insertCheck();
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    return (String) getAttribute("name");
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.10  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.9  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

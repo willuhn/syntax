@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,10 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.FinanzamtListe;
-import de.willuhn.jameica.fibu.gui.views.FinanzamtNeu;
+import de.willuhn.jameica.fibu.gui.action.FinanzamtNeu;
+import de.willuhn.jameica.fibu.gui.part.FinanzamtList;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -75,7 +71,7 @@ public class FinanzamtControl extends AbstractControl
 		if (finanzamt != null)
 			return finanzamt;
 			
-		finanzamt = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
+		finanzamt = (Finanzamt) Settings.getDBService().createObject(Finanzamt.class,null);
 		return finanzamt;
 	}
 
@@ -86,16 +82,7 @@ public class FinanzamtControl extends AbstractControl
    */
   public TablePart getFinanzamtListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Finanzamt.class);
-		list.setOrder("order by name desc");
-
-		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.FinanzamtNeu());
-		table.addColumn(i18n.tr("Name"),"name");
-		table.addColumn(i18n.tr("Strasse"),"strasse");
-		table.addColumn(i18n.tr("Postfach"),"postfach");
-		table.addColumn(i18n.tr("PLZ"),"plz");
-		table.addColumn(i18n.tr("Ort"),"ort");
-		return table;
+    return new FinanzamtList(new FinanzamtNeu());
 	}
 
 	/**
@@ -164,31 +151,31 @@ public class FinanzamtControl extends AbstractControl
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
+   * Speichert das Finanzamt.
    */
   public void handleStore()
   {
     try {
 
-      getFinanzamt().setName(getName().getValue());
-      getFinanzamt().setStrasse(getStrasse().getValue());
-      getFinanzamt().setPLZ(getPLZ().getValue());
-      getFinanzamt().setPostfach(getPostfach().getValue());
-      getFinanzamt().setOrt(getOrt().getValue());
+      getFinanzamt().setName((String)getName().getValue());
+      getFinanzamt().setStrasse((String)getStrasse().getValue());
+      getFinanzamt().setPLZ((String)getPLZ().getValue());
+      getFinanzamt().setPostfach((String)getPostfach().getValue());
+      getFinanzamt().setOrt((String)getOrt().getValue());
 
       
       // und jetzt speichern wir.
       getFinanzamt().store();
-      GUI.setActionText(i18n.tr("Daten des Finanzamtes gespeichert."));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Daten des Finanzamtes gespeichert."));
     }
     catch (ApplicationException e1)
     {
-      GUI.setActionText(e1.getLocalizedMessage());
+      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("unable to store finanzamt",e);
-      GUI.setActionText("Fehler beim Speichern der Daten des Finanzamtes.");
+			Logger.error("unable to store finanzamt",e);
+      GUI.getStatusBar().setErrorText("Fehler beim Speichern der Daten des Finanzamtes.");
     }
     
   }
@@ -196,6 +183,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.13  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.12  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

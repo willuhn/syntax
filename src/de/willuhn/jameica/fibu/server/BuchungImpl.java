@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.26 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -387,7 +387,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public DBIterator getHilfsBuchungen() throws RemoteException
   {
-    DBIterator i = Settings.getDatabase().createList(HilfsBuchung.class);
+    DBIterator i = Settings.getDBService().createList(HilfsBuchung.class);
     i.addFilter("buchung_id = " + this.getID());
     return i;
   }
@@ -396,6 +396,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.26  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.25  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

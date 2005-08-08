@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class SettingsControl extends AbstractControl
 
 		Mandant m = de.willuhn.jameica.fibu.Settings.getActiveMandant();
 		if (mandant == null)
-			m = (Mandant) de.willuhn.jameica.fibu.Settings.getDatabase().createObject(Mandant.class,null);
+			m = (Mandant) de.willuhn.jameica.fibu.Settings.getDBService().createObject(Mandant.class,null);
 
 		DBIterator list = m.getList();
 		if (list.hasNext())
@@ -137,7 +137,7 @@ public class SettingsControl extends AbstractControl
     try {
 			Settings.setCurrency(getCurrency().getValue());
 
-      Mandant m = (Mandant) Settings.getDatabase().createObject(Mandant.class,getMandant().getValue());
+      Mandant m = (Mandant) Settings.getDBService().createObject(Mandant.class,getMandant().getValue());
       if (m.isNewObject())
       {
       	GUI.setActionText(I18N.tr("Bitte wählen Sie einen Mandanten aus."));
@@ -172,6 +172,9 @@ public class SettingsControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.12  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.11  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

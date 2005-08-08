@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,8 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.KontoListe;
-import de.willuhn.jameica.fibu.gui.views.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -32,6 +28,7 @@ import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -50,6 +47,8 @@ public class KontoControl extends AbstractControl
 	private Input steuer			 = null;
 	private Input kontoart		 = null;
 	private Input kontenrahmen = null;
+  
+  private I18N i18n = null;
 
   /**
    * @param view
@@ -57,6 +56,7 @@ public class KontoControl extends AbstractControl
   public KontoControl(AbstractView view)
   {
     super(view);
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
 	/**
@@ -73,7 +73,7 @@ public class KontoControl extends AbstractControl
 		if (konto != null)
 			return konto;
 
-		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
+		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
 		return konto;
 	}
 
@@ -114,9 +114,9 @@ public class KontoControl extends AbstractControl
 			return steuer;
 
 		if (getKonto().getKontoArt().isSteuerpflichtig())
-			steuer = new SelectInput(getKonto().getSteuer());
+			steuer = new SelectInput(Settings.getDBService().createList(Steuer.class),getKonto().getSteuer());
 		else
-			steuer = new LabelInput("Konto besitzt keinen Steuersatz.");
+			steuer = new LabelInput(i18n.tr("Konto besitzt keinen Steuersatz."));
 		return steuer;
 	}
 
@@ -131,7 +131,7 @@ public class KontoControl extends AbstractControl
 			return kontoart;
 
 		Kontoart ka = getKonto().getKontoArt();
-		kontoart = new LabelInput((String) ka.getField(ka.getPrimaryField()));
+		kontoart = new LabelInput(ka.getName());
 		return kontoart;
 	}
 
@@ -146,93 +146,46 @@ public class KontoControl extends AbstractControl
 			return kontenrahmen;
 
 		Kontenrahmen k = getKonto().getKontenrahmen();
-		kontenrahmen = new LabelInput((String) k.getField(k.getPrimaryField()));
+		kontenrahmen = new LabelInput(k.getName());
 		return kontenrahmen;
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete()
-  {
-    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
-    box.setText(I18N.tr("Fehler"));
-    box.setMessage(I18N.tr("Konten dürfen nicht gelöscht werden."));
-    box.open();
-    return;
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCancel()
-   */
-  public void handleCancel()
-  {
-    GUI.startView(KontoListe.class.getName(),null);
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
+   * Speichert das Konto.
    */
   public void handleStore()
   {
     try {
 
-      getKonto().setName(getName().getValue());
-      getKonto().setKontonummer(getKontonummer().getValue());
+      getKonto().setName((String) getName().getValue());
+      getKonto().setKontonummer((String) getKontonummer().getValue());
 
       // Kontenrahmen und Kontoart darf nicht geaendert werden
 
-			if (getKonto().getKontoArt().isSteuerpflichtig())
-			{
-				Steuer s = (Steuer) Settings.getDatabase().createObject(Steuer.class,getSteuer().getValue());
-				if (s.isNewObject())
-				{
-					GUI.setActionText(I18N.tr("Bitte wählen Sie einen Steuersatz aus."));
-					return;
-				}
-				getKonto().setSteuer(s);
-			}
+      getKonto().setSteuer((Steuer) getSteuer().getValue());
 
       // und jetzt speichern wir.
       getKonto().store();
-      GUI.setActionText(I18N.tr("Konto gespeichert."));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
     }
     catch (ApplicationException e1)
     {
-      GUI.setActionText(e1.getLocalizedMessage());
+      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("unable to store konto",e);
-      GUI.setActionText("Fehler beim Speichern des Kontos.");
+			Logger.error("unable to store konto",e);
+      GUI.getStatusBar().setErrorText("Fehler beim Speichern des Kontos.");
     }
     
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o)
-  {
-    GUI.startView(KontoNeu.class.getName(),o);
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCreate()
-   */
-  public void handleCreate()
-  {
-    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.OK);
-    box.setText(I18N.tr("Fehler"));
-    box.setMessage(I18N.tr("Neue Konten können nicht angelegt werden."));
-    box.open();
-    return;
-  }
-
 }
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.16  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.15  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

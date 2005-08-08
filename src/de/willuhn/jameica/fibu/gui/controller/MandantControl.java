@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,9 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.MandantListe;
-import de.willuhn.jameica.fibu.gui.views.MandantNeu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -29,6 +24,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -38,13 +34,14 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
+/**
+ * Controller fuer den Dialog zum Mandanten.
+ */
 public class MandantControl extends AbstractControl
 {
 
 	// Fach-Objekte
 	private Mandant mandant 					= null;
-	private Kontenrahmen kontenrahmen = null;
-	private Finanzamt finanzamt				= null;
 
 	// Eingabe-Felder
 	private Input name1								= null;
@@ -85,45 +82,8 @@ public class MandantControl extends AbstractControl
 		if (mandant != null)
 			return mandant;
 
-		mandant = (Mandant) Settings.getDatabase().createObject(Mandant.class,null);
+		mandant = (Mandant) Settings.getDBService().createObject(Mandant.class,null);
 		return mandant;
-	}
-
-
-	/**
-	 * Liefert den Kontenrahmen des Mandanten.
-   * @return Kontenrahmen.
-   * @throws RemoteException
-   */
-  public Kontenrahmen getKontenrahmen() throws RemoteException
-	{
-		if (kontenrahmen != null)
-			return kontenrahmen;
-
-		kontenrahmen = getMandant().getKontenrahmen();
-		if (kontenrahmen != null)
-			return kontenrahmen;
-
-		kontenrahmen = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,null);
-		return kontenrahmen;
-	}
-
-	/**
-	 * Liefert das Finanzamt des Mandanten.
-   * @return Finanzamt.
-   * @throws RemoteException
-   */
-  public Finanzamt getFinanzamt() throws RemoteException
-	{
-		if (finanzamt != null)
-			return finanzamt;
-
-		finanzamt = mandant.getFinanzamt();
-		if (finanzamt != null)
-			return finanzamt;
-
-		finanzamt = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,null);
-		return finanzamt;
 	}
 
 	/**
@@ -133,7 +93,7 @@ public class MandantControl extends AbstractControl
    */
   public TablePart getMandantListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Mandant.class);
+		DBIterator list = Settings.getDBService().createList(Mandant.class);
 		list.setOrder("order by firma desc");
 
 		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.MandantNeu());
@@ -241,7 +201,7 @@ public class MandantControl extends AbstractControl
 		if (geschaeftsjahr != null)
 			return geschaeftsjahr;
 		
-		geschaeftsjahr = new TextInput(""+getMandant().getGeschaeftsjahr());
+		geschaeftsjahr = new IntegerInput(getMandant().getGeschaeftsjahr());
 		return geschaeftsjahr;
 	}
 
@@ -269,7 +229,7 @@ public class MandantControl extends AbstractControl
 		if (kontenrahmenAuswahl != null)
 			return kontenrahmenAuswahl;
 
-		kontenrahmenAuswahl = new SelectInput(getKontenrahmen());
+		kontenrahmenAuswahl = new SelectInput(Settings.getDBService().createList(Kontenrahmen.class),getMandant().getKontenrahmen());
 		return kontenrahmenAuswahl;
 	}
 
@@ -283,10 +243,10 @@ public class MandantControl extends AbstractControl
 		if (finanzamtAuswahl != null)
 			return finanzamtAuswahl;
 
-		DBIterator list = getFinanzamt().getList();
+		DBIterator list = Settings.getDBService().createList(Finanzamt.class);
 		if (list.hasNext())
 		{
-			finanzamtAuswahl = new SelectInput(getFinanzamt());
+			finanzamtAuswahl = new SelectInput(list,getMandant().getFinanzamt());
 			storeAllowed = true;
 		}
 		else {
@@ -305,7 +265,7 @@ public class MandantControl extends AbstractControl
 	}
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
+   * 
    */
   public void handleStore()
   {
@@ -313,45 +273,26 @@ public class MandantControl extends AbstractControl
 
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
-      
-      Kontenrahmen kr = (Kontenrahmen) Settings.getDatabase().createObject(Kontenrahmen.class,
-      																																		getKontenrahmenAuswahl().getValue());
-			if (kr.isNewObject())
-			{
-				GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
-				return;
-			}
-      getMandant().setKontenrahmen(kr);
+      getMandant().setKontenrahmen((Kontenrahmen) getKontenrahmenAuswahl().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Geschaeftsjahr checken
 
-      try {
-				getMandant().setGeschaeftsjahr(Integer.parseInt(getGeschaeftsjahr().getValue()));
-      }
-      catch (NumberFormatException e)
+      Integer i = (Integer) getGeschaeftsjahr().getValue();
+      if (i == null || i.intValue() < Fibu.YEAR_MIN || i.intValue() > Fibu.YEAR_MAX)
       {
-        GUI.getView().setErrorText(i18n.tr("Bitte geben Sie eine gültige Jahreszahl zwischen ") + 
-                          Fibu.YEAR_MIN + i18n.tr(" und ") + Fibu.YEAR_MAX + i18n.tr(" ein"));
+        GUI.getView().setErrorText(i18n.tr("Bitte geben Sie eine gültige Jahreszahl zwischen {0} und {1} ein", new String[]{""+Fibu.YEAR_MIN,""+Fibu.YEAR_MAX}));
         return;
       }
+			getMandant().setGeschaeftsjahr(i.intValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Finanzamt checken
-      
-			Finanzamt fa = (Finanzamt) Settings.getDatabase().createObject(Finanzamt.class,
-																												 getFinanzamtAuswahl().getValue());
-
-      if (fa.isNewObject())
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Finanzamt aus."));
-        return;
-      }
-      getMandant().setFinanzamt(fa);
+      getMandant().setFinanzamt((Finanzamt) getFinanzamtAuswahl().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -379,27 +320,13 @@ public class MandantControl extends AbstractControl
     }
     
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o)
-  {
-    GUI.startView(MandantNeu.class.getName(),o);
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCreate()
-   */
-  public void handleCreate()
-  {
-    GUI.startView(MandantNeu.class.getName(),null);
-  }
-
 }
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.16  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.15  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

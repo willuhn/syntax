@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -139,7 +139,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   {
     // Wir checken ob das Finanzamt einem Mandanten zugewiesen ist.
     try {
-      DBIterator list = Settings.getDatabase().createList(Mandant.class);
+      DBIterator list = Settings.getDBService().createList(Mandant.class);
       list.addFilter("finanzamt_id='" + getID() + "'");
       if (list.hasNext())
         throw new ApplicationException("Das Finanzamt ist einem Mandanten zugewiesen.\n" +
@@ -199,6 +199,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.10  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.9  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

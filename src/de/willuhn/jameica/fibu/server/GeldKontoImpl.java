@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/GeldKontoImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/09 13:05:13 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,10 +32,11 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
   {
     super();
   }
+
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
     return super.getListQuery() + " and kontoart_id="+Kontoart.KONTOART_GELD;
   }
@@ -53,6 +54,9 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
 
 /*********************************************************************
  * $Log: GeldKontoImpl.java,v $
+ * Revision 1.6  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.5  2004/02/09 13:05:13  willuhn
  * @C misc
  *

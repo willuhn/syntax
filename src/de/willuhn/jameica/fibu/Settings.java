@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public class Settings
 	 * @return Datenbank.
 	 * @throws RemoteException
 	 */
-	public static DBService getDatabase() throws RemoteException
+	public static DBService getDBService() throws RemoteException
 	{
     if (db == null)
     {
@@ -69,7 +69,7 @@ public class Settings
     if (m == null || m.length() == 0)
 			return null;
 
-		Mandant mm = (Mandant) getDatabase().createObject(Mandant.class,m);
+		Mandant mm = (Mandant) getDBService().createObject(Mandant.class,m);
 		if (mm == null || mm.isNewObject())
 		{
 			Logger.warn("defined mandant isn't readable");
@@ -116,6 +116,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.10  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.9  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

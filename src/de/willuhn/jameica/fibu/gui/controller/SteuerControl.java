@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/08 22:54:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class SteuerControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-		steuer = (Steuer) Settings.getDatabase().createObject(Steuer.class,null);
+		steuer = (Steuer) Settings.getDBService().createObject(Steuer.class,null);
 		return steuer;
 
 	}
@@ -98,7 +98,7 @@ public class SteuerControl extends AbstractControl
 		if (konto != null)
 			return konto;
 
-		konto = (SteuerKonto) Settings.getDatabase().createObject(SteuerKonto.class,null);
+		konto = (SteuerKonto) Settings.getDBService().createObject(SteuerKonto.class,null);
 			return konto;
 	}
 
@@ -109,7 +109,7 @@ public class SteuerControl extends AbstractControl
    */
   public TablePart getSteuerListe() throws RemoteException
 	{
-		DBIterator list = Settings.getDatabase().createList(Steuer.class);
+		DBIterator list = Settings.getDBService().createList(Steuer.class);
 		list.setOrder("order by name desc");
 
 		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.SteuerNeu());
@@ -156,7 +156,7 @@ public class SteuerControl extends AbstractControl
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
-		DBIterator list = Settings.getDatabase().createList(SteuerKonto.class);
+		DBIterator list = Settings.getDBService().createList(SteuerKonto.class);
 		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
 		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
 		d.addColumn(i18n.tr("Name"),"name");
@@ -208,7 +208,7 @@ public class SteuerControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Steuerkonto checken
       
-      DBIterator steuerkonten = Settings.getDatabase().createList(SteuerKonto.class);
+      DBIterator steuerkonten = Settings.getDBService().createList(SteuerKonto.class);
       steuerkonten.addFilter("kontonummer='"+getKontoAuswahl().getValue() + "'");
       // TODO: Geht grad nicht
       if (!steuerkonten.hasNext())
@@ -239,6 +239,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.13  2005/08/08 22:54:15  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.12  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

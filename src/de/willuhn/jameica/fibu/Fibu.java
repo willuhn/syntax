@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,7 @@ public class Fibu extends AbstractPlugin
   {
     try
     {
-      Settings.getDatabase();
+      Settings.getDBService();
     }
     catch (RemoteException e)
     {
@@ -145,6 +145,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.18  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.17  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

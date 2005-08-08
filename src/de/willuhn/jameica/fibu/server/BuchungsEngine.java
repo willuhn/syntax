@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/08 22:54:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class BuchungsEngine
     buchung.setBetrag(netto); // wir buchen nur den Netto-Betrag
 
     // Hilfs-Buchung erstellen
-    HilfsBuchung hb = (HilfsBuchung) Settings.getDatabase().createObject(HilfsBuchung.class,null);
+    HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag); // Steuer-Betrag
     hb.setDatum(buchung.getDatum());        // Datum
@@ -88,6 +88,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.3  2005/08/08 22:54:16  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.2  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *
