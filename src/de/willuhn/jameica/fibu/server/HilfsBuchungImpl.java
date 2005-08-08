@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/29 01:05:09 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,12 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -40,7 +41,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
    */
   public Buchung getHauptBuchung() throws RemoteException
   {
-    return (Buchung) getField("buchung_id");
+    return (Buchung) getAttribute("buchung_id");
   }
 
   /**
@@ -48,8 +49,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
    */
   public void setHauptBuchung(Buchung buchung) throws RemoteException
   {
-    if (buchung == null) return;
-    setField("buchung_id",new Integer(buchung.getID()));
+    setAttribute("buchung_id",buchung);
   }
 
   /**
@@ -65,7 +65,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   /**
    * @see de.willuhn.jameica.server.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  public void insertCheck() throws ApplicationException
   {
     try {
       if (getHauptBuchung() == null)
@@ -73,39 +73,58 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("error while reading hilfsbuchung",e);
+			Logger.error("error while reading hilfsbuchung",e);
       throw new ApplicationException("Fehler bei der Prüfung der Hilfs-Buchung.",e);
     }
-    super.updateCheck();
+    super.insertCheck();
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    insertCheck();
   }
 
   /**
    * Ueberschrieben von BuchungImpl weil die Funktion in BuchungImpl alle Buchungen
    * _ausser_ Hilfs-Buchungen findet. Wir wollen aber genau die ;).
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
-    Mandant m = Settings.getActiveMandant();
-
-    if (m == null)
+    try
     {
-      throw new RemoteException("no active mandant defined");
-    }
-    int year = m.getGeschaeftsjahr();
+      Mandant m = Settings.getActiveMandant();
 
-    String s = "select " + getIDField() + " from " + getTableName() +
-			" where datum >= DATE '" + year + "-01-01'" +
-			" and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
-      " and mandant_id = " + m.getID() +
-      " and buchung_id is not NULL";
-    return s;
+      if (m == null)
+      {
+        throw new RemoteException("no active mandant defined");
+      }
+      int year = m.getGeschaeftsjahr();
+
+      String s = "select " + getIDField() + " from " + getTableName() +
+        " where datum >= DATE '" + year + "-01-01'" +
+        " and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
+        " and mandant_id = " + m.getID() +
+        " and buchung_id is not NULL";
+      return s;
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to create list query",e);
+      return null;
+    }
   }
 
 }
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.6  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.5  2004/01/29 01:05:09  willuhn
  * *** empty log message ***
  *

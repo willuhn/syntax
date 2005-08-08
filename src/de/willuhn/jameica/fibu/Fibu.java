@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/02/09 13:05:13 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu;
 
 import java.io.File;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -22,8 +21,11 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
-import de.willuhn.jameica.AbstractPlugin;
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.PluginResources;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -41,8 +43,19 @@ public class Fibu extends AbstractPlugin
     super(file);
   }
 
+  /**
+   * Dateformatter.
+   */
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
+  
+  /**
+   * Dateformatter fuer Kurz-Format.
+   */
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
+  
+  /**
+   * Dezimal-Formatter.
+   */
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
   
   public static String[] WEEKDAYS = new String[] {
@@ -58,119 +71,83 @@ public class Fibu extends AbstractPlugin
   public static int YEAR_MIN                = 1950;
   public static int YEAR_MAX                = 2020;
 
-	private boolean freshInstall = false;
-
   static {
     DECIMALFORMAT.applyPattern("#0.00");
   }
 
   /**
-   * Initialisiert das Plugin.
-   * @see de.willuhn.jameica.Plugin#init()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#init()
    */
-  public boolean init()
+  public void init() throws ApplicationException
   {
-		try {
-			Settings.setDatabase(getDatabase().getDBService());
-		}
-		catch (RemoteException e)
-		{
-			Application.getLog().error("unable to open database",e);
-			return false;
-		}
-		return true;
+    try
+    {
+      Settings.getDatabase();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while loading db service",e);
+      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+      throw new ApplicationException(i18n.tr("Fehler beim Laden der Datenbank"));
+    }
   }
 
   /**
-   * Beendet das Plugin.
-   * @see de.willuhn.jameica.Plugin#shutDown()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#shutDown()
    */
   public void shutDown()
   {
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#install()
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#install()
    */
-  public boolean install()
+  public void install() throws ApplicationException
   {
-		EmbeddedDatabase db = getDatabase();
-		if (!db.exists())
-		{
-			try {
-				db.create();
-			}
-			catch (IOException e)
-			{
-				Application.getLog().error("unable to create database",e);
-				return false;
-			}
-			try
-			{
-				db.executeSQLScript(new File(getPath() + "/sql/create.sql"));
-			}
-			catch (Exception e)
-			{
-				Application.getLog().error("unable to create sql tables",e);
-				return false;
-			}
-			try
-			{
-				db.executeSQLScript(new File(getPath() + "/sql/init.sql"));
-			}
-			catch (Exception e)
-			{
-				Application.getLog().error("unable to insert init data",e);
-				return false;
-			}
-      
-		}
-		freshInstall = true;
-		return true;
+    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+    I18N i18n = res.getI18N();
+
+    String dir = res.getWorkPath() + "/db/db.conf";
+    try
+    {
+      EmbeddedDatabase db = new EmbeddedDatabase(dir,"fibu","fibu");
+      if (!db.exists())
+      {
+        db.create();
+        db.executeSQLScript(new File(res.getPath() + "/sql/create.sql"));
+        db.executeSQLScript(new File(res.getPath() + "/sql/init.sql"));
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to create sql tables",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Installieren des Fibu-Plugins"));
+    }
+
+    String welcome = i18n.tr("Fibu für Jameica");
+    welcome += "\n";
+    welcome += 
+      i18n.tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +
+      "   - Legen Sie zuerst ein Finanzamt an (Menü: Fibu/Finanzämter)\n" +
+      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n" +
+      "   - Aktivieren Sie den angelegten Mandanten (Menü: Fibu/Einstellungen\n");
+
+    Application.addWelcomeMessage(welcome);
   }
 
   /**
-   * @see de.willuhn.jameica.Plugin#update(double)
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
-  public boolean update(double oldVersion)
+  public void update(double oldVersion) throws ApplicationException
   {
-    return true;
   }
-
-  /**
-   * @see de.willuhn.jameica.AbstractPlugin#getPassword()
-   */
-  protected String getPassword()
-  {
-    return "fibu";
-  }
-
-  /**
-   * @see de.willuhn.jameica.AbstractPlugin#getUsername()
-   */
-  protected String getUsername()
-  {
-    return "fibu";
-  }
-
-  /**
-   * @see de.willuhn.jameica.Plugin#getWelcomeText()
-   */
-  public String getWelcomeText()
-  {
-    String  welcome = I18N.tr("Fibu - Finanzbuchhaltung für Jameica ") + getVersion();
-    
-    if (!freshInstall)
-    	return welcome;
-    	
-    welcome += "\n" +
-      I18N.tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +      "   - Legen Sie zuerst ein Finanzamt an (Menü: Fibu/Finanzämter)\n" +      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n" +      "   - Aktivieren Sie den angelegten Mandanten (Menü: Fibu/Einstellungen\n");
-    return welcome;  }
-
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.17  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.16  2004/02/09 13:05:13  willuhn
  * @C misc
  *

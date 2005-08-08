@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/Attic/SettingsControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,17 +15,17 @@ package de.willuhn.jameica.fibu.gui.controller;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.Welcome;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.parts.Input;
-import de.willuhn.jameica.gui.parts.LabelInput;
-import de.willuhn.jameica.gui.parts.SelectInput;
-import de.willuhn.jameica.gui.parts.TextInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 /**
@@ -172,6 +172,9 @@ public class SettingsControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SettingsControl.java,v $
+ * Revision 1.11  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.10  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

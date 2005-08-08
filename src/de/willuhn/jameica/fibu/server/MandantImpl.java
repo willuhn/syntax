@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,12 +17,13 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -50,9 +51,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "firma";
   }
@@ -62,7 +63,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
-    return (Kontenrahmen) getField("kontenrahmen_id");
+    return (Kontenrahmen) getAttribute("kontenrahmen_id");
   }
 
   /**
@@ -70,7 +71,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getName1() throws RemoteException
   {
-    return (String) getField("name1");
+    return (String) getAttribute("name1");
   }
 
   /**
@@ -78,7 +79,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getName2() throws RemoteException
   {
-    return (String) getField("name2");
+    return (String) getAttribute("name2");
   }
 
   /**
@@ -86,7 +87,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getFirma() throws RemoteException
   {
-    return (String) getField("firma");
+    return (String) getAttribute("firma");
   }
 
   /**
@@ -94,7 +95,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getStrasse() throws RemoteException
   {
-    return (String) getField("strasse");
+    return (String) getAttribute("strasse");
   }
 
   /**
@@ -102,7 +103,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getPLZ() throws RemoteException
   {
-    return (String) getField("plz");
+    return (String) getAttribute("plz");
   }
 
   /**
@@ -110,7 +111,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getOrt() throws RemoteException
   {
-    return (String) getField("ort");
+    return (String) getAttribute("ort");
   }
 
   /**
@@ -118,7 +119,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getSteuernummer() throws RemoteException
   {
-    return (String) getField("steuernummer");
+    return (String) getAttribute("steuernummer");
   }
 
   /**
@@ -138,7 +139,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setName1(String name1) throws RemoteException
   {
-    setField("name1",name1);
+    setAttribute("name1",name1);
   }
 
   /**
@@ -146,7 +147,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setName2(String name2) throws RemoteException
   {
-    setField("name2",name2);
+    setAttribute("name2",name2);
   }
 
   /**
@@ -154,7 +155,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setFirma(String firma) throws RemoteException
   {
-    setField("firma",firma);
+    setAttribute("firma",firma);
   }
 
   /**
@@ -162,7 +163,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setStrasse(String strasse) throws RemoteException
   {
-    setField("strasse",strasse);
+    setAttribute("strasse",strasse);
   }
 
   /**
@@ -170,7 +171,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setPLZ(String plz) throws RemoteException
   {
-    setField("plz",plz);
+    setAttribute("plz",plz);
   }
 
   /**
@@ -178,7 +179,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setOrt(String ort) throws RemoteException
   {
-    setField("ort",ort);
+    setAttribute("ort",ort);
   }
 
   /**
@@ -186,7 +187,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setSteuernummer(String steuernummer) throws RemoteException
   {
-    setField("steuernummer",steuernummer);
+    setAttribute("steuernummer",steuernummer);
   }
 
   /**
@@ -194,8 +195,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
   {
-    if (kontenrahmen == null) return;
-    setField("kontenrahmen_id",new Integer(kontenrahmen.getID()));
+    setAttribute("kontenrahmen_id",kontenrahmen);
   }
 
   /**
@@ -208,7 +208,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
     catch (Exception e)
     {
-			Application.getLog().error("error while checking mandant",e);
+			Logger.error("error while checking mandant",e);
       return false;
     }
   }
@@ -218,7 +218,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public Finanzamt getFinanzamt() throws RemoteException
   {
-    return (Finanzamt) getField("finanzamt_id");
+    return (Finanzamt) getAttribute("finanzamt_id");
   }
 
   /**
@@ -226,8 +226,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException
   {
-    if (finanzamt == null) return;
-    setField("finanzamt_id",new Integer(finanzamt.getID()));
+    setAttribute("finanzamt_id",finanzamt);
   }
 
   /**
@@ -235,7 +234,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public int getGeschaeftsjahr() throws RemoteException
   {
-    Integer i = (Integer) getField("geschaeftsjahr");
+    Integer i = (Integer) getAttribute("geschaeftsjahr");
     try {
       return i.intValue();
     }
@@ -251,7 +250,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void setGeschaeftsjahr(int jahr) throws RemoteException
   {
-    setField("geschaeftsjahr",new Integer(jahr));
+    setAttribute("geschaeftsjahr",new Integer(jahr));
   }
 
   /**
@@ -273,15 +272,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
-  {
-    // insertCheck() ist erstmal das gleiche wie updateCheck() ;)
-    updateCheck();
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
   {
     try {
       String firma = getFirma();
@@ -311,14 +301,24 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     {
       throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
+    super.insertCheck();
   }
 
-
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    insertCheck();
+  }
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.12  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.11  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

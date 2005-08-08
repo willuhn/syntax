@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,19 +45,11 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.DBObject#getForeignObject(java.lang.String)
-   */
-  public Class getForeignObject(String field) throws RemoteException
-  {
-    return null;
   }
 
   /**
@@ -65,7 +57,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public String getName() throws RemoteException
   {
-    return (String) getField("name");
+    return (String) getAttribute("name");
   }
 
   /**
@@ -73,7 +65,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public String getOrt() throws RemoteException
   {
-    return (String) getField("ort");
+    return (String) getAttribute("ort");
   }
 
   /**
@@ -81,7 +73,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public String getPLZ() throws RemoteException
   {
-    return (String) getField("plz");
+    return (String) getAttribute("plz");
   }
 
   /**
@@ -89,7 +81,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public String getPostfach() throws RemoteException
   {
-    return (String) getField("postfach");
+    return (String) getAttribute("postfach");
   }
 
   /**
@@ -97,7 +89,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public String getStrasse() throws RemoteException
   {
-    return (String) getField("strasse");
+    return (String) getAttribute("strasse");
   }
 
   /**
@@ -105,7 +97,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public void setName(String name) throws RemoteException
   {
-    setField("name",name);
+    setAttribute("name",name);
   }
 
   /**
@@ -113,7 +105,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public void setOrt(String ort) throws RemoteException
   {
-    setField("ort",ort);
+    setAttribute("ort",ort);
   }
 
   /**
@@ -121,7 +113,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public void setPLZ(String plz) throws RemoteException
   {
-    setField("plz",plz);
+    setAttribute("plz",plz);
   }
 
   /**
@@ -129,7 +121,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public void setPostfach(String postfach) throws RemoteException
   {
-    setField("postfach",postfach);
+    setAttribute("postfach",postfach);
   }
 
   /**
@@ -137,7 +129,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   public void setStrasse(String strasse) throws RemoteException
   {
-    setField("strasse",strasse);
+    setAttribute("strasse",strasse);
   }
 
   /**
@@ -161,18 +153,18 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void insertCheck() throws ApplicationException
+  public void updateCheck() throws ApplicationException
   {
     // erst mal das gleiche wie beim updateCheck() ;)
-    updateCheck();
+    insertCheck();
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void updateCheck() throws ApplicationException
+  public void insertCheck() throws ApplicationException
   {
     try {
       String name = getName();
@@ -200,12 +192,16 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
     {
       throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
+    super.insertCheck();
   }
 
 }
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.9  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.8  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

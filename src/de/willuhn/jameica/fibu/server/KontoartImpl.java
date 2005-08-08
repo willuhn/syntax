@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/27 21:38:06 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,9 +42,9 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
@@ -54,7 +54,7 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
    */
   public String getName() throws RemoteException
   {
-    return (String) getField("name");
+    return (String) getAttribute("name");
   }
 
   /**
@@ -114,6 +114,9 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.7  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.6  2004/01/27 21:38:06  willuhn
  * @C refactoring finished
  *

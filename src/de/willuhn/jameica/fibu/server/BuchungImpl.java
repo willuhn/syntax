@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/01/29 01:01:11 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,15 @@ import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -48,9 +53,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "datum";
   }
@@ -61,7 +66,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Date getDatum() throws RemoteException
   {
-    Date d = (Date) getField("datum");
+    Date d = (Date) getAttribute("datum");
     return (d == null ? new Date() : d);
   }
 
@@ -70,7 +75,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Konto getKonto() throws RemoteException
   {
-    return (Konto) getField("konto_id");
+    return (Konto) getAttribute("konto_id");
   }
 
   /**
@@ -78,7 +83,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public GeldKonto getGeldKonto() throws RemoteException
   {
-    return (GeldKonto) getField("geldkonto_id");
+    return (GeldKonto) getAttribute("geldkonto_id");
   }
 
   /**
@@ -86,7 +91,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public String getText() throws RemoteException
   {
-    return (String) getField("buchungstext");
+    return (String) getAttribute("buchungstext");
   }
 
   /**
@@ -94,7 +99,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public int getBelegnummer() throws RemoteException
   {
-    Integer i = (Integer) getField("belegnummer");
+    Integer i = (Integer) getAttribute("belegnummer");
     if (i != null)
       return i.intValue();
     
@@ -106,7 +111,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getField("betrag");
+    Double d = (Double) getAttribute("betrag");
     if (d == null)
       return 0;
 
@@ -128,7 +133,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public double getSteuer() throws RemoteException
   {
-    Double d = (Double) getField("steuer");
+    Double d = (Double) getAttribute("steuer");
     if (d != null)
       return d.doubleValue();
 
@@ -140,7 +145,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public Mandant getMandant() throws RemoteException
   {
-    return (Mandant) getField("mandant_id");
+    return (Mandant) getAttribute("mandant_id");
   }
 
   /**
@@ -148,7 +153,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setDatum(Date d) throws RemoteException
   {
-    setField("datum",d);
+    setAttribute("datum",d);
   }
 
   /**
@@ -156,8 +161,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setKonto(Konto k) throws RemoteException
   {
-    if (k == null) return;
-    setField("konto_id",new Integer(k.getID()));
+    setAttribute("konto_id",k);
   }
 
   /**
@@ -165,8 +169,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setGeldKonto(GeldKonto k) throws RemoteException
   {
-    if (k == null) return;
-    setField("geldkonto_id",new Integer(k.getID()));
+    setAttribute("geldkonto_id",k);
   }
 
   /**
@@ -174,8 +177,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setMandant(Mandant m) throws RemoteException
   {
-    if (m == null) return;
-    setField("mandant_id",new Integer(m.getID()));
+    setAttribute("mandant_id",m);
   }
 
   /**
@@ -183,7 +185,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setText(String text) throws RemoteException
   {
-    setField("buchungstext", text);
+    setAttribute("buchungstext", text);
   }
 
   /**
@@ -191,7 +193,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setBelegnummer(int belegnummer) throws RemoteException
   {
-    setField("belegnummer",new Integer(belegnummer));
+    setAttribute("belegnummer",new Integer(belegnummer));
   }
 
   /**
@@ -199,12 +201,12 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
    */
   public void setBetrag(double betrag) throws RemoteException
   {
-    setField("betrag", new Double(betrag));
+    setAttribute("betrag", new Double(betrag));
   }
 
   public void setSteuer(double steuer) throws RemoteException
   {
-    setField("steuer", new Double(steuer));
+    setAttribute("steuer", new Double(steuer));
   }
 
   /**
@@ -225,7 +227,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -242,33 +244,24 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
   {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
-  {
-    // hier gilt erst mal das gleiche wie beim Update-Check ;)
-    updateCheck();
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
   {
     try {
 
       if (getBetrag() == 0)
         throw new ApplicationException("Bitte geben Sie einen Buchungsbetrag ein.");
 
-      // ich muss hier deshalb getField() aufrufen, weil getBelegnummer automatisch eine erzeugt
-      if (getField("belegnummer") == null)
+      // ich muss hier deshalb getAttribute() aufrufen, weil getBelegnummer automatisch eine erzeugt
+      if (getAttribute("belegnummer") == null)
         throw new ApplicationException("Bitte geben Sie eine Belegnummer ein.");
 
       if (getMandant() == null)
@@ -299,39 +292,57 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("error while checking buchung",e);
+      Logger.error("error while checking buchung",e);
       throw new ApplicationException("Fehler bei der Prüfung der Buchung.",e);
     }
+    super.insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    // hier gilt erst mal das gleiche wie beim Insert-Check ;)
+    insertCheck();
   }
 
   /**
    * Ueberschrieben von AbstractDBObject weil wir nur die Buchungen:
    *  - vom aktiven Mandanten
    *  - aus dem aktuellen Geschaeftsjahr haben wollen.
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
-    Mandant m = Settings.getActiveMandant();
-
-    if (m == null)
+    try
     {
-      throw new RemoteException("no active mandant defined");
-    }
-    int year = m.getGeschaeftsjahr();
+      Mandant m = Settings.getActiveMandant();
 
-    String s = "select " + getIDField() + " from " + getTableName() +
-		  " where datum >= DATE '" + year + "-01-01'" +		  " and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
-      " and mandant_id = " + m.getID() +  // nur aktueller Mandant
-      " and buchung_id is NULL";          // keine Hilfs-Buchungen
-    return s;
+      if (m == null)
+        throw new RemoteException("no active mandant defined");
+
+      int year = m.getGeschaeftsjahr();
+
+      String s = "select " + getIDField() + " from " + getTableName() +
+        " where datum >= DATE '" + year + "-01-01'" +
+        " and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
+        " and mandant_id = " + m.getID() +  // nur aktueller Mandant
+        " and buchung_id is NULL";          // keine Hilfs-Buchungen
+      return s;
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to create list query",e);
+      return null;
+    }
   }
 
   /**
    * Diese Methode haben wir hier deshalb ueberschrieben, weil nicht nur
    * das Objekt speichern wollen sondern auch noch damit zusammenhaengende
    * Hilfe-Buchungen (z.Bsp. fuer die Steuern).
-   * @see de.willuhn.jameica.rmi.DBObject#store()
+   * @see de.willuhn.datasource.rmi.Changeable#store()
    */
   public void store() throws RemoteException, ApplicationException
   {
@@ -385,6 +396,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.25  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.24  2004/01/29 01:01:11  willuhn
  * *** empty log message ***
  *

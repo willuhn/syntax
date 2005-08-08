@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
- * 24.11.2003
  */
 public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 {
@@ -36,7 +35,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -44,15 +43,15 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -60,7 +59,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   public void deleteCheck() throws ApplicationException
   {
@@ -68,20 +67,12 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
   {
-    updateCheck();
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
-  {
     try {
-      String name = (String) getField("name");
+      String name = (String) getAttribute("name");
       if (name == null || "".equals(name))
         throw new ApplicationException("Bitte geben Sie einen Namen für den Kontenrahmen ein.");
     }
@@ -91,11 +82,22 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
     }
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    insertCheck();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.9  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.8  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

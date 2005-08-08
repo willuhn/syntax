@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,12 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -47,9 +48,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "name";
   }
@@ -59,7 +60,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public String getName() throws RemoteException
   {
-    return (String) getField("name");
+    return (String) getAttribute("name");
   }
 
   /**
@@ -67,7 +68,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public double getSatz() throws RemoteException
   {
-    Double d = (Double) getField("satz");
+    Double d = (Double) getAttribute("satz");
     if (d != null)
       return d.doubleValue();
 
@@ -79,7 +80,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public void setName(String name) throws RemoteException
   {
-    setField("name", name);
+    setAttribute("name", name);
   }
 
   /**
@@ -87,7 +88,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public void setSatz(double satz) throws RemoteException
   {
-    setField("satz", new Double(satz));
+    setAttribute("satz", new Double(satz));
   }
 
   /**
@@ -115,7 +116,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("error while checking dependencies",e);
+			Logger.error("error while checking dependencies",e);
       throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
     }
   }
@@ -125,15 +126,6 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public void insertCheck() throws ApplicationException
   {
-    // hier gilt erst mal das gleiche wie beim Update-Check ;)
-    updateCheck();
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
-  {
     try {
 
       if (getName() == null || "".equals(getName()))
@@ -141,9 +133,18 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("error while checking dependencies",e);
+      Logger.error("error while checking dependencies",e);
       throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
     }
+    super.insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    insertCheck();
   }
 
   /**
@@ -151,7 +152,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public SteuerKonto getSteuerKonto() throws RemoteException
   {
-    return (SteuerKonto) getField("steuerkonto_id");
+    return (SteuerKonto) getAttribute("steuerkonto_id");
   }
 
   /**
@@ -159,13 +160,15 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   public void setSteuerKonto(SteuerKonto k) throws RemoteException
   {
-    if (k == null) return;
-    setField("steuerkonto_id",new Integer(k.getID()));
+    setAttribute("steuerkonto_id",k);
   }
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.8  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.7  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/02/09 13:05:13 $
+ * $Revision: 1.19 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,12 @@ import java.sql.Statement;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.*;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -50,7 +55,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public String getKontonummer() throws RemoteException
   {
-    return (String) getField("kontonummer");
+    return (String) getAttribute("kontonummer");
   }
 
   /**
@@ -58,13 +63,13 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
-    return (Kontenrahmen) getField("kontenrahmen_id");
+    return (Kontenrahmen) getAttribute("kontenrahmen_id");
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getPrimaryField()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException
+  public String getPrimaryAttribute() throws RemoteException
   {
     return "kontonummer";
   }
@@ -104,7 +109,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public String getName() throws RemoteException
   {
-    return (String) getField("name");
+    return (String) getAttribute("name");
   }
 
   /**
@@ -112,7 +117,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontoart getKontoArt() throws RemoteException
   {
-    return (Kontoart) getField("kontoart_id");
+    return (Kontoart) getAttribute("kontoart_id");
   }
 
   /**
@@ -120,7 +125,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Steuer getSteuer() throws RemoteException
   {
-    return (Steuer) getField("steuer_id");
+    return (Steuer) getAttribute("steuer_id");
   }
 
   /**
@@ -146,31 +151,23 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
-  {
-    updateCheck();
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
   {
     try {
       if (getKontenrahmen() == null)
         throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
 
-      String name = (String) getField("name");
+      String name = (String) getAttribute("name");
       if (name == null || "".equals(name))
         throw new ApplicationException("Bitte geben Sie einen Namen für das Konto ein.");
       
-      String kontonummer = (String) getField("kontonummer");
+      String kontonummer = (String) getAttribute("kontonummer");
       if (kontonummer == null || "".equals(kontonummer))
         throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
       
-      Kontoart ka = (Kontoart) getField("kontoart_id");
+      Kontoart ka = (Kontoart) getAttribute("kontoart_id");
       if (ka == null)
         throw new ApplicationException("Bitte wählen Sie eine Kontoart aus.");
 
@@ -188,23 +185,40 @@ public class KontoImpl extends AbstractDBObject implements Konto
     {
       throw new ApplicationException("Fehler bei der Überprüfung der Pflichtfelder",e);
     }
+    super.insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    insertCheck();
   }
 
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
-    // ueberschreiben wir, weil wir nur die Konten des Kontenrahmens des aktiven Mandanten haben wollen
-    Mandant m = Settings.getActiveMandant();
-    if (m == null)
-      throw new RemoteException("no active mandant defined.");
-    
-    Kontenrahmen k = m.getKontenrahmen();
-    if (k == null)
-      throw new RemoteException("no kontenrahmen defined.");
+    try
+    {
+      // ueberschreiben wir, weil wir nur die Konten des Kontenrahmens des aktiven Mandanten haben wollen
+      Mandant m = Settings.getActiveMandant();
+      if (m == null)
+        throw new RemoteException("no active mandant defined.");
+      
+      Kontenrahmen k = m.getKontenrahmen();
+      if (k == null)
+        throw new RemoteException("no kontenrahmen defined.");
 
-    return "select " + getIDField() + " from " + getTableName() + " where kontenrahmen_id = " + k.getID();
+      return "select " + getIDField() + " from " + getTableName() + " where kontenrahmen_id = " + k.getID();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to load list query",e);
+      return null;
+    }
   }
 
   /**
@@ -212,7 +226,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontonummer(String kontonummer) throws RemoteException
   {
-    setField("kontonummer",kontonummer);
+    setAttribute("kontonummer",kontonummer);
   }
 
   /**
@@ -220,8 +234,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontenrahmen(Kontenrahmen k) throws RemoteException
   {
-    if (k == null) return;
-    setField("kontenrahmen_id",new Integer(k.getID()));
+    setAttribute("kontenrahmen_id",k);
   }
 
   /**
@@ -229,7 +242,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setName(String name) throws RemoteException
   {
-    setField("name",name);
+    setAttribute("name",name);
   }
 
   /**
@@ -237,8 +250,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
-    if (art == null) return;
-    setField("kontoart_id",new Integer(art.getID()));
+    setAttribute("kontoart_id",art);
   }
 
   /**
@@ -246,14 +258,16 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setSteuer(Steuer steuer) throws RemoteException
   {
-    if (steuer == null) return;
-    setField("steuer_id",new Integer(steuer.getID()));
+    setAttribute("steuer_id",steuer);
   }
 
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.19  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.18  2004/02/09 13:05:13  willuhn
  * @C misc
  *

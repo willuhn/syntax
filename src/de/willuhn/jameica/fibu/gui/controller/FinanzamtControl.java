@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,17 +18,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtListe;
 import de.willuhn.jameica.fibu.gui.views.FinanzamtNeu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.views.AbstractView;
-import de.willuhn.jameica.gui.parts.Input;
-import de.willuhn.jameica.gui.parts.Table;
-import de.willuhn.jameica.gui.parts.TextInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -48,6 +50,7 @@ public class FinanzamtControl extends AbstractControl
 	private Input plz				= null;
 	private Input ort				= null;
 
+  private I18N i18n;
 
   /**
    * @param view
@@ -55,6 +58,7 @@ public class FinanzamtControl extends AbstractControl
   public FinanzamtControl(AbstractView view)
   {
     super(view);
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
 	/**
@@ -80,17 +84,17 @@ public class FinanzamtControl extends AbstractControl
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Table getFinanzamtListe() throws RemoteException
+  public TablePart getFinanzamtListe() throws RemoteException
 	{
 		DBIterator list = Settings.getDatabase().createList(Finanzamt.class);
 		list.setOrder("order by name desc");
 
-		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Name"),"name");
-		table.addColumn(I18N.tr("Strasse"),"strasse");
-		table.addColumn(I18N.tr("Postfach"),"postfach");
-		table.addColumn(I18N.tr("PLZ"),"plz");
-		table.addColumn(I18N.tr("Ort"),"ort");
+		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.FinanzamtNeu());
+		table.addColumn(i18n.tr("Name"),"name");
+		table.addColumn(i18n.tr("Strasse"),"strasse");
+		table.addColumn(i18n.tr("Postfach"),"postfach");
+		table.addColumn(i18n.tr("PLZ"),"plz");
+		table.addColumn(i18n.tr("Ort"),"ort");
 		return table;
 	}
 
@@ -160,42 +164,6 @@ public class FinanzamtControl extends AbstractControl
 	}
 
   /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete()
-  {
-
-    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
-    box.setText(I18N.tr("Finanzamt wirklich löschen?"));
-    box.setMessage(I18N.tr("Wollen Sie die Daten dieses Finanzamtes wirklich löschen?"));
-    if (box.open() == SWT.YES)
-    {
-      // ok, wir loeschen das Objekt
-      try {
-        getFinanzamt().delete();
-        GUI.setActionText(I18N.tr("Daten des Finanzamtes gelöscht."));
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Fehler beim Löschen der Daten des Finanzamtes."));
-        Application.getLog().error("unable to delete finanzamt");
-      }
-			catch (ApplicationException e1)
-			{
-				GUI.setActionText(e1.getLocalizedMessage());
-			}
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleCancel()
-   */
-  public void handleCancel()
-  {
-    GUI.startView(FinanzamtListe.class.getName(),null);
-  }
-
-  /**
    * @see de.willuhn.jameica.gui.controller.AbstractControl#handleStore()
    */
   public void handleStore()
@@ -211,7 +179,7 @@ public class FinanzamtControl extends AbstractControl
       
       // und jetzt speichern wir.
       getFinanzamt().store();
-      GUI.setActionText(I18N.tr("Daten des Finanzamtes gespeichert."));
+      GUI.setActionText(i18n.tr("Daten des Finanzamtes gespeichert."));
     }
     catch (ApplicationException e1)
     {
@@ -224,27 +192,13 @@ public class FinanzamtControl extends AbstractControl
     }
     
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o)
-  {
-		GUI.startView(FinanzamtNeu.class.getName(),o);
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCreate()
-   */
-  public void handleCreate()
-  {
-    GUI.startView(FinanzamtNeu.class.getName(),null);
-  }
-
 }
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.12  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.11  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

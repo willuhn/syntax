@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/09 13:05:13 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,8 +15,9 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -25,7 +26,7 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 public class Settings
 {
 
-  private static de.willuhn.jameica.Settings settings = new de.willuhn.jameica.Settings(Fibu.class);
+  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Fibu.class);
   private static DBService db = null;
 	private static Mandant mandant = null;
 	/**
@@ -35,35 +36,43 @@ public class Settings
 	 */
 	public static DBService getDatabase() throws RemoteException
 	{
-		return db;
-	}
-
-	/**
-	 * Speichert die zu verwendende Datenbank.
-	 * @param db die Datenbank.
-	 */
-	protected static void setDatabase(DBService db)
-	{
-		Settings.db = db;
+    if (db == null)
+    {
+      try
+      {
+        db = (DBService) Application.getServiceFactory().lookup(Fibu.class,"database");
+      }
+      catch (RemoteException e)
+      {
+        throw e;
+      }
+      catch (Exception e2)
+      {
+        Logger.error("unable to load database service",e2);
+        throw new RemoteException("Fehler beim Laden des Datenbank-Service",e2);
+      }
+    }
+    return db;
 	}
 
   /**
    * Liefert den aktiven Mandanten oder null wenn noch keiner als aktiv markiert ist.
    * @return den aktiven Mandanten.
+   * @throws RemoteException
    */
   public static Mandant getActiveMandant() throws RemoteException
   {
   	if (mandant != null && !mandant.isNewObject())
   		return mandant;
 
-    String m = settings.getAttribute("mandant",null);
+    String m = settings.getString("mandant",null);
     if (m == null || m.length() == 0)
 			return null;
 
 		Mandant mm = (Mandant) getDatabase().createObject(Mandant.class,m);
 		if (mm == null || mm.isNewObject())
 		{
-			Application.getLog().warn("defined mandant isn't readable");
+			Logger.warn("defined mandant isn't readable");
 		}
 		mandant = mm;
 		return mandant;
@@ -78,7 +87,7 @@ public class Settings
   {
   	if (m == null || m.isNewObject())
   	{
-  		Application.getLog().warn("given mandant was null or new object");
+  		Logger.warn("given mandant was null or new object");
 			return;
   	}
     settings.setAttribute("mandant",m.getID());
@@ -91,7 +100,7 @@ public class Settings
    */
   public static String getCurrency()
   {
-    return settings.getAttribute("currency","EUR");
+    return settings.getString("currency","EUR");
   }
 
   /**
@@ -107,6 +116,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.9  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.8  2004/02/09 13:05:13  willuhn
  * @C misc
  *

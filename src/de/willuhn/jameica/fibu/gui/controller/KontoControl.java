@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/02/25 23:11:29 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.views.KontoListe;
 import de.willuhn.jameica.fibu.gui.views.KontoNeu;
@@ -26,14 +24,14 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.controller.AbstractControl;
-import de.willuhn.jameica.gui.parts.Input;
-import de.willuhn.jameica.gui.parts.LabelInput;
-import de.willuhn.jameica.gui.parts.SelectInput;
-import de.willuhn.jameica.gui.parts.Table;
-import de.willuhn.jameica.gui.parts.TextInput;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -77,24 +75,6 @@ public class KontoControl extends AbstractControl
 
 		konto = (Konto) Settings.getDatabase().createObject(Konto.class,null);
 		return konto;
-	}
-
-	/**
-	 * Liefert eine Tabelle mit allen Konten.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public Table getKontoListe() throws RemoteException
-	{
-
-		DBIterator list = Settings.getDatabase().createList(Konto.class);
-
-		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		table.addColumn(I18N.tr("Name"),"name");
-		table.addColumn(I18N.tr("Kontoart"),"kontoart_id");
-		table.addColumn(I18N.tr("Steuer"),"steuer_id");
-		return table;
 	}
 
 	/**
@@ -253,6 +233,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.15  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.14  2004/02/25 23:11:29  willuhn
  * *** empty log message ***
  *

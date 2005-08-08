@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/02/26 18:46:52 $
+ * $Revision: 1.22 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,32 +17,30 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.Application;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.BuchungListe;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.gui.AbstractControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.controller.AbstractControl;
 import de.willuhn.jameica.gui.dialogs.ListDialog;
-import de.willuhn.jameica.gui.parts.CurrencyFormatter;
-import de.willuhn.jameica.gui.parts.DateFormatter;
-import de.willuhn.jameica.gui.parts.DecimalInput;
-import de.willuhn.jameica.gui.parts.Input;
-import de.willuhn.jameica.gui.parts.SearchInput;
-import de.willuhn.jameica.gui.parts.Table;
-import de.willuhn.jameica.gui.parts.TextInput;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.IntegerInput;
+import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -65,6 +63,8 @@ public class BuchungControl extends AbstractControl
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 	private Input steuer				   = null;
+  
+  private I18N i18n;
 
   /**
    * @param view
@@ -72,6 +72,7 @@ public class BuchungControl extends AbstractControl
   public BuchungControl(AbstractView view)
   {
     super(view);
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
 	/**
@@ -134,18 +135,18 @@ public class BuchungControl extends AbstractControl
    * @return Tabelle.
    * @throws RemoteException
    */
-  public Table getBuchungListe() throws RemoteException
+  public TablePart getBuchungListe() throws RemoteException
 	{
 		DBIterator list = Settings.getDatabase().createList(Buchung.class);
 		list.setOrder("order by id desc");
 
-		Table table = new Table(list,this);
-		table.addColumn(I18N.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
-		table.addColumn(I18N.tr("Konto"),"konto_id");
-		table.addColumn(I18N.tr("Geldkonto"),"geldkonto_id");
-		table.addColumn(I18N.tr("Text"),"buchungstext");
-		table.addColumn(I18N.tr("Beleg"),"belegnummer");
-		table.addColumn(I18N.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getCurrency(), Fibu.DECIMALFORMAT));
+		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.BuchungNeu());
+		table.addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
+		table.addColumn(i18n.tr("Konto"),"konto_id");
+		table.addColumn(i18n.tr("Geldkonto"),"geldkonto_id");
+		table.addColumn(i18n.tr("Text"),"buchungstext");
+		table.addColumn(i18n.tr("Beleg"),"belegnummer");
+		table.addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getCurrency(), Fibu.DECIMALFORMAT));
 		return table;		
 	}
 
@@ -178,11 +179,11 @@ public class BuchungControl extends AbstractControl
 		
 		DBIterator list = Settings.getDatabase().createList(Konto.class);
 		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
-		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		d.addColumn(I18N.tr("Name"),"name");
-		d.addColumn(I18N.tr("Kontoart"),"kontoart_id");
-		d.addColumn(I18N.tr("Steuer"),"steuer_id");
-		d.setTitle(I18N.tr("Auswahl des Kontos"));
+		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		d.addColumn(i18n.tr("Name"),"name");
+		d.addColumn(i18n.tr("Kontoart"),"kontoart_id");
+		d.addColumn(i18n.tr("Steuer"),"steuer_id");
+		d.setTitle(i18n.tr("Auswahl des Kontos"));
 		d.addListener(new Listener() {
       public void handleEvent(Event event) {
         Konto k = (Konto) event.data;
@@ -199,7 +200,7 @@ public class BuchungControl extends AbstractControl
 		
 		kontoAuswahl = new SearchInput(getKonto().getKontonummer(),d);
 		kontoAuswahl.addListener(new SaldoListener(kontoAuswahl,true));
-		kontoAuswahl.setComment(I18N.tr("Saldo") + ": " + 
+		kontoAuswahl.setComment(i18n.tr("Saldo") + ": " + 
 														Fibu.DECIMALFORMAT.format(getKonto().getSaldo()) + " " + 
 														Settings.getCurrency());
 		return kontoAuswahl;
@@ -218,11 +219,11 @@ public class BuchungControl extends AbstractControl
 		
 		DBIterator list = Settings.getDatabase().createList(Konto.class);
 		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
-		d.addColumn(I18N.tr("Kontonummer"),"kontonummer");
-		d.addColumn(I18N.tr("Name"),"name");
-		d.addColumn(I18N.tr("Kontoart"),"kontoart_id");
-		d.addColumn(I18N.tr("Steuer"),"steuer_id");
-		d.setTitle(I18N.tr("Auswahl des Kontos"));
+		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
+		d.addColumn(i18n.tr("Name"),"name");
+		d.addColumn(i18n.tr("Kontoart"),"kontoart_id");
+		d.addColumn(i18n.tr("Steuer"),"steuer_id");
+		d.setTitle(i18n.tr("Auswahl des Kontos"));
 		d.addListener(new Listener() {
 			public void handleEvent(Event event) {
 				Konto k = (Konto) event.data;
@@ -239,7 +240,7 @@ public class BuchungControl extends AbstractControl
 
 		geldKontoAuswahl = new SearchInput(getGeldKonto().getKontonummer(),d);
 		geldKontoAuswahl.addListener(new SaldoListener(geldKontoAuswahl,false));
-		geldKontoAuswahl.setComment(I18N.tr("Saldo") + ": " +
+		geldKontoAuswahl.setComment(i18n.tr("Saldo") + ": " +
 															  Fibu.DECIMALFORMAT.format(getGeldKonto().getSaldo()) + " " +
 															  Settings.getCurrency());
 		return geldKontoAuswahl;
@@ -269,7 +270,7 @@ public class BuchungControl extends AbstractControl
 		if (belegnummer != null)
 			return belegnummer;
 		
-		belegnummer = new TextInput(""+getBuchung().getBelegnummer());
+		belegnummer = new IntegerInput(getBuchung().getBelegnummer());
 		return belegnummer;
 	}
 
@@ -283,7 +284,7 @@ public class BuchungControl extends AbstractControl
 		if (betrag != null)
 			return betrag;
 		
-		betrag = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getBetrag()));
+		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
 		betrag.setComment(Settings.getCurrency());
 		return betrag;
 	}
@@ -298,49 +299,11 @@ public class BuchungControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-		steuer = new DecimalInput(Fibu.DECIMALFORMAT.format(getBuchung().getSteuer()));
+		steuer = new DecimalInput(getBuchung().getSteuer(),Fibu.DECIMALFORMAT);
 		steuer.setComment("%");
 		return steuer;
 	}
 
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleDelete()
-   */
-  public void handleDelete()
-  {
-
-    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
-    box.setText(I18N.tr("Buchung wirklich stornieren?"));
-    box.setMessage(I18N.tr("Wollen Sie diese Buchung wirklich stornieren?"));
-
-    if (box.open() == SWT.YES)
-    {
-      // ok, wir loeschen das Objekt und wechseln zurueck zur Buchungsliste
-      try {
-      	int beleg = getBuchung().getBelegnummer();
-        getBuchung().delete();
-        GUI.setActionText(I18N.tr("Buchung Nr. " + beleg + " storniert."));
-      }
-      catch (ApplicationException e1)
-      {
-        GUI.setActionText(e1.getLocalizedMessage());
-      }
-      catch (RemoteException e)
-      {
-        GUI.setActionText(I18N.tr("Fehler beim Stornieren der Buchung."));
-        Application.getLog().error("unable to delete buchung");
-      }
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCancel()
-   */
-  public void handleCancel()
-  {
-    GUI.startView(BuchungListe.class.getName(),null);
-  }
 
   /**
    * @see de.willuhn.jameica.views.parts.Controller#handleStore()
@@ -352,11 +315,11 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Belegnummer checken
       try {
-        getBuchung().setBelegnummer(Integer.parseInt(getBelegnummer().getValue()));
+        getBuchung().setBelegnummer(((Integer) getBelegnummer().getValue()).intValue());
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
-        GUI.setActionText(I18N.tr("Belegnummer ungültig."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Belegnummer ungültig."));
         return;
       }
       //
@@ -365,16 +328,11 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Betrag checken
       try {
-        getBuchung().setBetrag(Fibu.DECIMALFORMAT.parse(getBetrag().getValue()).doubleValue());
+        getBuchung().setBetrag(((Double)getBetrag().getValue()).doubleValue());
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
-        GUI.setActionText(I18N.tr("Betrag ungültig."));
-        return;
-      }
-      catch (ParseException e)
-      {
-        GUI.setActionText(I18N.tr("Betrag ungültig."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Betrag ungültig."));
         return;
       }
       //
@@ -384,16 +342,11 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Steuer checken
       try {
-				getBuchung().setSteuer(Fibu.DECIMALFORMAT.parse(getSteuer().getValue()).doubleValue());
+				getBuchung().setSteuer(((Double)getSteuer().getValue()).doubleValue());
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
-        GUI.setActionText(I18N.tr("Steuersatz ungültig."));
-        return;
-      }
-      catch (ParseException e)
-      {
-        GUI.setActionText(I18N.tr("Steuersatz ungültig."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Steuersatz ungültig."));
         return;
       }
       //
@@ -402,7 +355,7 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
-      String d = getDatum().getValue();
+      String d = (String) getDatum().getValue();
       try {
 				getBuchung().setDatum(Fibu.DATEFORMAT.parse(d));
       }
@@ -420,7 +373,7 @@ public class BuchungControl extends AbstractControl
           }
           catch (ParseException e3)
           {
-            GUI.setActionText(I18N.tr("Datum ungültig."));
+            GUI.getStatusBar().setErrorText(i18n.tr("Datum ungültig."));
             return;
           }
         }
@@ -435,7 +388,7 @@ public class BuchungControl extends AbstractControl
       konten.addFilter("kontonummer = '"+getKontoAuswahl().getValue()+"'");
       if (!konten.hasNext())
       {
-        GUI.setActionText(I18N.tr("Ausgewähltes Konto existiert nicht."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
         return;
       }
 			getBuchung().setKonto((Konto) konten.next());
@@ -449,21 +402,21 @@ public class BuchungControl extends AbstractControl
       geldkonten.addFilter("kontonummer = '"+getGeldKontoAuswahl().getValue()+"'");
       if (!geldkonten.hasNext())
       {
-        GUI.setActionText(I18N.tr("Ausgewähltes Geld-Konto existiert nicht."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geld-Konto existiert nicht."));
         return;
       }
 			getBuchung().setGeldKonto((GeldKonto) geldkonten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
-			getBuchung().setText(getText().getValue());
+			getBuchung().setText((String)getText().getValue());
       
       // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
 			getBuchung().setMandant(Settings.getActiveMandant());
 
       // und jetzt speichern wir.
 			getBuchung().store();
-      GUI.setActionText(I18N.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + I18N.tr("gespeichert."));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + i18n.tr("gespeichert."));
       // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
       // auf Speichern als neue Buchung gespeichert wird.
 			getBuchung().clear();
@@ -472,34 +425,15 @@ public class BuchungControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
-      GUI.setActionText(e1.getLocalizedMessage());
+      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
-			Application.getLog().error("unable to store buchung",e);
-      GUI.setActionText("Fehler beim Speichern der Buchung.");
+			Logger.error("unable to store buchung",e);
+      GUI.getStatusBar().setErrorText("Fehler beim Speichern der Buchung.");
     }
     
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.controller.AbstractControl#handleOpen(java.lang.Object)
-   */
-  public void handleOpen(Object o)
-  {
-    GUI.startView(BuchungNeu.class.getName(),o);
-  }
-
-  /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleCreate()
-   */
-  public void handleCreate()
-  {
-    GUI.startView(BuchungNeu.class.getName(),null);
-  }
-
-
-
 
 	/**
    * Listener, der hinter dem Buchungsdatum den Wochentag anzeigt.
@@ -551,12 +485,12 @@ public class BuchungControl extends AbstractControl
 				return;
 			try
       {
-        getDatum().setComment(I18N.tr(Fibu.WEEKDAYS[i]));
+        getDatum().setComment(i18n.tr(Fibu.WEEKDAYS[i]));
       }
       catch (RemoteException e1)
       {
-      	Application.getLog().error("unable to update week day",e1);
-      	GUI.setActionText(I18N.tr("Fehler bei der Ermittlung des Wochentags"));
+      	Logger.error("unable to update week day",e1);
+      	GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Wochentags"));
       }
 		}
 	}
@@ -604,15 +538,15 @@ public class BuchungControl extends AbstractControl
 				list.addFilter("kontonummer = '" + kontonummer + "'");
 				if (!list.hasNext())
 				{
-					GUI.setActionText(I18N.tr("Das ausgewählte Konto existiert nicht."));
+          GUI.getStatusBar().setErrorText(i18n.tr("Das ausgewählte Konto existiert nicht."));
 					return;
 				} 
 				Konto myKonto = (Konto) list.next();
-				k.setComment(I18N.tr("Saldo") + ": " +  
+				k.setComment(i18n.tr("Saldo") + ": " +  
 														 Fibu.DECIMALFORMAT.format(myKonto.getSaldo()) +
 														 " " + Settings.getCurrency());
 
-				GUI.setActionText(I18N.tr("Ausgewähltes Konto: ") + myKonto.getName());
+				GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto: ") + myKonto.getName());
       
 				if (changeSteuer) // Steuer soll geaendert werden
 				{
@@ -628,7 +562,8 @@ public class BuchungControl extends AbstractControl
 			}
 			catch (RemoteException es)
 			{
-				GUI.setActionText(I18N.tr("Fehler bei der Saldenermittlung des Kontos."));
+        Logger.error("unable to read saldo",es);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Saldenermittlung des Kontos."));
 			}
 		}
 
@@ -638,6 +573,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.22  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.21  2004/02/26 18:46:52  willuhn
  * *** empty log message ***
  *

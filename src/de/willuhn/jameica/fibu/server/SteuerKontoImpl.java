@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/SteuerKontoImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/29 01:18:06 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/08 21:35:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
   /**
    * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
     return super.getListQuery() + " and kontoart_id="+Kontoart.KONTOART_STEUER;
   }
@@ -44,6 +44,9 @@ public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
 
 /*********************************************************************
  * $Log: SteuerKontoImpl.java,v $
+ * Revision 1.5  2005/08/08 21:35:46  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.4  2004/01/29 01:18:06  willuhn
  * *** empty log message ***
  *
