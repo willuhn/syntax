@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.19 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,9 +67,6 @@ public class Fibu extends AbstractPlugin
     "Freitag",
     "Sonnabend"
   };
-
-  public static int YEAR_MIN                = 1950;
-  public static int YEAR_MAX                = 2020;
 
   static {
     DECIMALFORMAT.applyPattern("#0.00");
@@ -145,6 +142,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.19  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.18  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,20 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
+import de.willuhn.jameica.fibu.gui.part.BuchungList;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -28,41 +37,42 @@ public class BuchungListe extends AbstractView
 
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
-		GUI.setTitleText(I18N.tr("Buchungsliste."));
 
-		BuchungControl control = new BuchungControl(this);
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    try {
+    GUI.getView().setTitle(i18n.tr("Buchungsliste."));
 
-      control.getBuchungListe().paint(getParent());
+		Container container = new LabelGroup(getParent(),"Vorhandene Buchungen");
+    
+    Mandant m = Settings.getActiveMandant();
+    container.addText(i18n.tr("Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}),false);
 
-      ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neue Buchung"),control);
-
-    }
-    catch (Exception e)
-    {
-      Application.getLog().error("error while loading buchung list");
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Buchungen."));
-      e.printStackTrace();
-    }
+    Part p = new BuchungList(new BuchungNeu());
+    p.paint(getParent());
+    
+    ButtonArea buttons = new ButtonArea(getParent(),2);
+    buttons.addButton(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
   }
 
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.18  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.17  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

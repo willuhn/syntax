@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,13 +69,6 @@ public interface Buchung extends DBObject
   public int getBelegnummer() throws RemoteException;
 
   /**
-   * Erzeugt eine neue Buchungsnummer als Vorgabe.
-   * @return neu erzeugte Buchungsnummer.
-   * @throws RemoteException
-   */
-  public int createBelegnummer() throws RemoteException;
-
-  /**
    * Liefert den Netto-Betrag der Buchung.
    * @return Brutto-Betrag der Buchung.
    * @throws RemoteException
@@ -112,7 +105,7 @@ public interface Buchung extends DBObject
 
   /**
    * Setzt den Text der Buchung.
-   * @param Text der Buchung.
+   * @param text Text der Buchung.
    * @throws RemoteException
    */
   public void setText(String text) throws RemoteException;
@@ -156,6 +149,9 @@ public interface Buchung extends DBObject
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.13  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.12  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

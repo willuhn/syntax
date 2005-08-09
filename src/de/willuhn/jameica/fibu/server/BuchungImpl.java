@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.27 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,6 +24,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -34,6 +37,8 @@ import de.willuhn.util.ApplicationException;
  */
 public class BuchungImpl extends AbstractDBObject implements Buchung
 {
+  
+  private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Erzeugt eine neue Buchung.
@@ -45,7 +50,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -62,7 +67,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getDatum()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getDatum()
    */
   public Date getDatum() throws RemoteException
   {
@@ -71,7 +76,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getKonto()
    */
   public Konto getKonto() throws RemoteException
   {
@@ -79,7 +84,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getGeldKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getGeldKonto()
    */
   public GeldKonto getGeldKonto() throws RemoteException
   {
@@ -87,7 +92,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getText()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getText()
    */
   public String getText() throws RemoteException
   {
@@ -95,7 +100,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getBelegnummer()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getBelegnummer()
    */
   public int getBelegnummer() throws RemoteException
   {
@@ -107,7 +112,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getBetrag()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getBetrag()
    */
   public double getBetrag() throws RemoteException
   {
@@ -129,7 +134,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getSteuer()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getSteuer()
    */
   public double getSteuer() throws RemoteException
   {
@@ -141,7 +146,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#getMandant()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getMandant()
    */
   public Mandant getMandant() throws RemoteException
   {
@@ -149,7 +154,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setDatum(java.util.Date)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setDatum(java.util.Date)
    */
   public void setDatum(Date d) throws RemoteException
   {
@@ -157,7 +162,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setKonto(de.willuhn.jameica.fibu.objects.Konto)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
   public void setKonto(Konto k) throws RemoteException
   {
@@ -165,7 +170,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setGeldKonto(de.willuhn.jameica.fibu.objects.GeldKonto)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setGeldKonto(de.willuhn.jameica.fibu.rmi.GeldKonto)
    */
   public void setGeldKonto(GeldKonto k) throws RemoteException
   {
@@ -173,7 +178,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setMandant(de.willuhn.jameica.fibu.objects.Mandant)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
    */
   public void setMandant(Mandant m) throws RemoteException
   {
@@ -181,7 +186,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setText(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setText(java.lang.String)
    */
   public void setText(String text) throws RemoteException
   {
@@ -189,7 +194,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setBelegnummer(int)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setBelegnummer(int)
    */
   public void setBelegnummer(int belegnummer) throws RemoteException
   {
@@ -197,22 +202,27 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#setBetrag(double)
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setBetrag(double)
    */
   public void setBetrag(double betrag) throws RemoteException
   {
     setAttribute("betrag", new Double(betrag));
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setSteuer(double)
+   */
   public void setSteuer(double steuer) throws RemoteException
   {
     setAttribute("steuer", new Double(steuer));
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Buchung#createBelegnummer()
+   * Erzeugt eine neue Beleg-Nummer.
+   * @return Neue Belegnummer.
+   * @throws RemoteException
    */
-  public int createBelegnummer() throws RemoteException
+  private int createBelegnummer() throws RemoteException
   {
 		// wir koennen hier keine Sequence oder aehnliches verwenden
 		// weil sie die fachlichen Anforderungen entsprechend getListQuery()
@@ -280,15 +290,14 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       if (d == null)
         throw new ApplicationException("Bitte geben Sie ein Datum ein.");
 
+      Geschaeftsjahr jahr = getMandant().getGeschaeftsjahr();
+      if (d.before(jahr.getStartDatum()) || d.after(jahr.getEndDatum()))
+        throw new ApplicationException("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres.");
+        
       cal.setTime(d);
       int year = cal.get(Calendar.YEAR);
       if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
         throw new ApplicationException("Datum befindet sich nicht innerhalb des gültigen Bereiches.");
-
-      int gj = Settings.getActiveMandant().getGeschaeftsjahr();
-      if (year != gj)
-        throw new ApplicationException("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres.");
-
     }
     catch (RemoteException e)
     {
@@ -322,11 +331,11 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       if (m == null)
         throw new RemoteException("no active mandant defined");
 
-      int year = m.getGeschaeftsjahr();
-
+      Geschaeftsjahr jahr = m.getGeschaeftsjahr();
+      
       String s = "select " + getIDField() + " from " + getTableName() +
-        " where datum >= DATE '" + year + "-01-01'" +
-        " and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
+        " where datum >= DATE '" + DF.format(jahr.getStartDatum()) + "'" +
+        " and datum <= DATE '" + DF.format(jahr.getEndDatum()) + "'" + // nur aktuelles Geschaeftsjahr
         " and mandant_id = " + m.getID() +  // nur aktueller Mandant
         " and buchung_id is NULL";          // keine Hilfs-Buchungen
       return s;
@@ -396,6 +405,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.27  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.26  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

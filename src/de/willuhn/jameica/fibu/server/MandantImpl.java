@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,14 +15,13 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
+import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -43,7 +42,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -59,7 +58,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getKontenrahmen()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getKontenrahmen()
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
@@ -67,7 +66,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getName1()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getName1()
    */
   public String getName1() throws RemoteException
   {
@@ -75,7 +74,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getName2()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getName2()
    */
   public String getName2() throws RemoteException
   {
@@ -83,7 +82,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getFirma()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getFirma()
    */
   public String getFirma() throws RemoteException
   {
@@ -91,7 +90,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getStrasse()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getStrasse()
    */
   public String getStrasse() throws RemoteException
   {
@@ -99,7 +98,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getPLZ()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getPLZ()
    */
   public String getPLZ() throws RemoteException
   {
@@ -107,7 +106,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getOrt()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getOrt()
    */
   public String getOrt() throws RemoteException
   {
@@ -115,7 +114,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getSteuernummer()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getSteuernummer()
    */
   public String getSteuernummer() throws RemoteException
   {
@@ -123,7 +122,19 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * Ueberschrieben, um ein synthetisches Attribut "geschaeftsjahr" zu erzeugen.
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("geschaeftsjahr".equals(arg0))
+      return Fibu.DATEFORMAT.format(getGeschaeftsjahrVon()) + " - " + Fibu.DATEFORMAT.format(getGeschaeftsjahrBis());
+
+    return super.getAttribute(arg0);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -135,7 +146,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setName1(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setName1(java.lang.String)
    */
   public void setName1(String name1) throws RemoteException
   {
@@ -143,7 +154,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setName2(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setName2(java.lang.String)
    */
   public void setName2(String name2) throws RemoteException
   {
@@ -151,7 +162,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setFirma(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setFirma(java.lang.String)
    */
   public void setFirma(String firma) throws RemoteException
   {
@@ -159,7 +170,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setStrasse(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setStrasse(java.lang.String)
    */
   public void setStrasse(String strasse) throws RemoteException
   {
@@ -167,7 +178,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setPLZ(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setPLZ(java.lang.String)
    */
   public void setPLZ(String plz) throws RemoteException
   {
@@ -175,7 +186,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setOrt(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setOrt(java.lang.String)
    */
   public void setOrt(String ort) throws RemoteException
   {
@@ -183,7 +194,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setSteuernummer(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setSteuernummer(java.lang.String)
    */
   public void setSteuernummer(String steuernummer) throws RemoteException
   {
@@ -191,7 +202,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setKontenrahmen(de.willuhn.jameica.fibu.objects.Kontenrahmen)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
    */
   public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
   {
@@ -199,22 +210,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#isActive()
-   */
-  public boolean isActive() throws RemoteException
-  {
-    try {
-      return this.getID().equals(Settings.getActiveMandant().getID());
-    }
-    catch (Exception e)
-    {
-			Logger.error("error while checking mandant",e);
-      return false;
-    }
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getFinanzamt()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getFinanzamt()
    */
   public Finanzamt getFinanzamt() throws RemoteException
   {
@@ -222,7 +218,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setFinanzamt(de.willuhn.jameica.fibu.objects.Finanzamt)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setFinanzamt(de.willuhn.jameica.fibu.rmi.Finanzamt)
    */
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException
   {
@@ -230,46 +226,71 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#getGeschaeftsjahr()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahrVon()
    */
-  public int getGeschaeftsjahr() throws RemoteException
+  public Date getGeschaeftsjahrVon() throws RemoteException
   {
-    Integer i = (Integer) getAttribute("geschaeftsjahr");
-    try {
-      return i.intValue();
-    }
-    catch (NumberFormatException e) {}
-    catch (NullPointerException e2) {}
-    // mhh, noch kein's definiert. Also nehmen wir das aktuelle.
-    Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-    return cal.get(Calendar.YEAR);
+    Date d = (Date) getAttribute("gj_von");
+    if (d != null)
+      return d;
+
+    // Wir erstellen automatisch ein neues, wenn keins existiert.
+    Logger.info("no geschaeftsjahr start given, using current year");
+
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.set(Calendar.MONTH,Calendar.JANUARY);
+    cal.set(Calendar.DAY_OF_MONTH,1);
+    cal.set(Calendar.HOUR_OF_DAY,0);
+    cal.set(Calendar.MINUTE,0);
+    cal.set(Calendar.SECOND,1);
+    d = cal.getTime();
+    setGeschaeftsjahrVon(d);
+    return d;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Mandant#setGeschaeftsjahr(int)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setGeschaeftsjahrVon(java.util.Date)
    */
-  public void setGeschaeftsjahr(int jahr) throws RemoteException
+  public void setGeschaeftsjahrVon(Date von) throws RemoteException
   {
-    setAttribute("geschaeftsjahr",new Integer(jahr));
+    setAttribute("gj_von",von);
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahrBis()
    */
-  public void deleteCheck() throws ApplicationException
+  public Date getGeschaeftsjahrBis() throws RemoteException
   {
-    try {
-      if (isActive())
-        throw new ApplicationException("Mandant ist aktiv und kann daher nicht gelöscht werden.\n" +          "Aktivieren Sie hierzu in den Einstellungen einen anderen Mandanten.");
-    }
-    catch (RemoteException e)
-    {
-      throw new ApplicationException("Fehler bei der Lösch-Prüfung des Mandanten.");
-    }
+    Date d = (Date) getAttribute("gj_bis");
+    if (d != null)
+      return d;
+
+    // Wir erstellen automatisch ein neues, wenn keins existiert.
+    Logger.info("no geschaeftsjahr start given, using current year");
+
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.set(Calendar.MONTH,Calendar.DECEMBER);
+    cal.set(Calendar.DAY_OF_MONTH,31);
+    cal.set(Calendar.HOUR_OF_DAY,23);
+    cal.set(Calendar.MINUTE,59);
+    cal.set(Calendar.SECOND,59);
+    d = cal.getTime();
+    setGeschaeftsjahrBis(d);
+    return d;
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setGeschaeftsjahrBis(java.util.Date)
+   */
+  public void setGeschaeftsjahrBis(Date bis) throws RemoteException
+  {
+    setAttribute("gj_bis",bis);
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
   {
@@ -292,10 +313,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
         throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
       }
 
-      int year = getGeschaeftsjahr();
-      if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
-        throw new ApplicationException("Geschäftsjahr nicht innerhalb des gültigen Bereiches.");
-
+      // Das rufen wir nur auf, damit die Daten automatisch gefuellt werden,
+      // falls sie noch fehlen.
+      getGeschaeftsjahrVon();
+      getGeschaeftsjahrBis();
     }
     catch (RemoteException e)
     {
@@ -305,17 +326,36 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
   public void updateCheck() throws ApplicationException
   {
     insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getWaehrung()
+   */
+  public String getWaehrung() throws RemoteException
+  {
+    return (String) getAttribute("waehrung");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setWaehrung(java.lang.String)
+   */
+  public void setWaehrung(String waehrung) throws RemoteException
+  {
+    setAttribute("waehrung",waehrung);
   }
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.13  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.12  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

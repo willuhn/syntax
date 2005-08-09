@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,11 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.fibu.gui.dialogs.MandantAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -25,11 +27,15 @@ import de.willuhn.logging.Logger;
  */
 public class Settings
 {
-
-  private static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Fibu.class);
   private static DBService db = null;
 	private static Mandant mandant = null;
-	/**
+  
+  /**
+   * I18n.
+   */
+  public final static I18N I18N = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  
+  /**
 	 * Liefert den Datenbank-Service.
 	 * @return Datenbank.
 	 * @throws RemoteException
@@ -49,14 +55,15 @@ public class Settings
       catch (Exception e2)
       {
         Logger.error("unable to load database service",e2);
-        throw new RemoteException("Fehler beim Laden des Datenbank-Service",e2);
+        throw new RemoteException(I18N.tr("Fehler beim Laden des Datenbank-Service"),e2);
       }
     }
     return db;
 	}
 
   /**
-   * Liefert den aktiven Mandanten oder null wenn noch keiner als aktiv markiert ist.
+   * Liefert den aktiven Mandanten oder einen Dialog zur Abfrage, falls dieser noch
+   * nicht ausgeaehlt ist.
    * @return den aktiven Mandanten.
    * @throws RemoteException
    */
@@ -65,57 +72,25 @@ public class Settings
   	if (mandant != null && !mandant.isNewObject())
   		return mandant;
 
-    String m = settings.getString("mandant",null);
-    if (m == null || m.length() == 0)
-			return null;
-
-		Mandant mm = (Mandant) getDBService().createObject(Mandant.class,m);
-		if (mm == null || mm.isNewObject())
-		{
-			Logger.warn("defined mandant isn't readable");
-		}
-		mandant = mm;
-		return mandant;
+  	try
+    {
+      MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_CENTER);
+      mandant = (Mandant) d.open();
+      return mandant;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while choosing mandant",e);
+      throw new RemoteException(I18N.tr("Fehler bei der Auswahl des aktuellen Mandanten"));
+    }
   }
-
-  /**
-   * Speichert den uebergebenen Mandanten als Aktiven.
-   * @param m der zu aktivierende Mandant.
-   * @throws RemoteException
-   */
-  public static void setActiveMandant(Mandant m) throws RemoteException
-  {
-  	if (m == null || m.isNewObject())
-  	{
-  		Logger.warn("given mandant was null or new object");
-			return;
-  	}
-    settings.setAttribute("mandant",m.getID());
-  }
-
-
-  /**
-   * Liefert die Bezeichnung der Waehrung.
-   * @return Bezeichnung der Waehrung.
-   */
-  public static String getCurrency()
-  {
-    return settings.getString("currency","EUR");
-  }
-
-  /**
-   * Speichert den Namen der Waehrung.
-   * @param currency Name der Waehrung.
-   */
-  public static void setCurrency(String currency)
-  {
-    settings.setAttribute("currency",currency);
-  }
-
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.11  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.10  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

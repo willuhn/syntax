@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/FinanzamtDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,54 +13,51 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.rmi.RemoteException;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
+ * Action zum Loeschen eines Finanzamtes.
  */
 public class FinanzamtDelete implements Action
 {
-
-  /**
-   * 
-   */
-  public FinanzamtDelete()
-  {
-    super();
-    // TODO Auto-generated constructor stub
-  }
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
-    box.setText(i18n.tr("Finanzamt wirklich löschen?"));
-    box.setMessage(i18n.tr("Wollen Sie die Daten dieses Finanzamtes wirklich löschen?"));
-    if (box.open() == SWT.YES)
+    if (context == null || !(context instanceof Finanzamt))
+      return;
+    
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+    try
     {
-      // ok, wir loeschen das Objekt
-      try {
-        getFinanzamt().delete();
-        GUI.getStatusBar().setSuccessText(i18n.tr("Daten des Finanzamtes gelöscht."));
-      }
-      catch (RemoteException e)
+      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+      d.setTitle(i18n.tr("Finanzamt wirklich löschen?"));
+      d.setText(i18n.tr("Wollen Sie die Daten dieses Finanzamtes wirklich löschen?"));
+      
+      if (!((Boolean) d.open()).booleanValue())
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen der Daten des Finanzamtes."));
-        Logger.error("unable to delete finanzamt");
+        Logger.info("operation cancelled");
+        return;
       }
-      catch (ApplicationException e1)
-      {
-        GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
-      }
+
+      ((Finanzamt)context).delete();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Daten des Finanzamtes gelöscht"));
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to delete finanzamt",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Daten des Finanzamtes"));
     }
   }
 
@@ -69,6 +66,9 @@ public class FinanzamtDelete implements Action
 
 /*********************************************************************
  * $Log: FinanzamtDelete.java,v $
+ * Revision 1.2  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.1  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

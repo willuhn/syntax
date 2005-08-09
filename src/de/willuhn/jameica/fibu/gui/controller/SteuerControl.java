@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/08 22:54:15 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,46 +13,41 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.views.SteuerListe;
-import de.willuhn.jameica.fibu.gui.views.SteuerNeu;
-import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.ListDialog;
-import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
+/**
+ * Controller fuer den Steuer-Dialog.
+ */
 public class SteuerControl extends AbstractControl
 {
 
 	// Fach-Objekte.
 	private Steuer steuer = null;
-	private Konto konto   = null;
 
 	// Eingabe-Felder
 	private Input name					= null;
 	private Input satz    			= null;
-	private Input kontoauswahl	= null;
+
+  private DialogInput kontoauswahl	= null;
   
   private I18N i18n;
   
@@ -85,41 +80,6 @@ public class SteuerControl extends AbstractControl
 	}
 
 	/**
-	 * Liefert das Steuerkonto.
-   * @return Steuerkonto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException
-	{
-		if (konto != null)
-			return konto;
-			
-		konto = getSteuer().getSteuerKonto();
-		if (konto != null)
-			return konto;
-
-		konto = (SteuerKonto) Settings.getDBService().createObject(SteuerKonto.class,null);
-			return konto;
-	}
-
-	/**
-	 * Liefert eine Tabelle mit den Steuersaetzen.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public TablePart getSteuerListe() throws RemoteException
-	{
-		DBIterator list = Settings.getDBService().createList(Steuer.class);
-		list.setOrder("order by name desc");
-
-		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.SteuerNeu());
-		table.addColumn(i18n.tr("Name"),"name");
-		table.addColumn(i18n.tr("Steuersatz"),"satz",new CurrencyFormatter("%",Fibu.DECIMALFORMAT));
-		table.addColumn(i18n.tr("Steuer-Sammelkonto"),"steuerkonto_id");
-		return table;
-	}
-      
-	/**
 	 * Liefert ein Eingabe-Feld fuer den Namen des Steuersatzes.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -142,7 +102,7 @@ public class SteuerControl extends AbstractControl
 		if (satz != null)
 			return satz;
 		satz = new DecimalInput(getSteuer().getSatz(), Fibu.DECIMALFORMAT);
-		satz.setComment("%");
+		satz.setComment(i18n.tr("Angabe in \"%\""));
 		return satz;
 	}
 
@@ -151,72 +111,48 @@ public class SteuerControl extends AbstractControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getKontoAuswahl() throws RemoteException
+	public DialogInput getKontoAuswahl() throws RemoteException
 	{
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
-		DBIterator list = Settings.getDBService().createList(SteuerKonto.class);
-		ListDialog d = new ListDialog(list,ListDialog.POSITION_MOUSE);
-		d.addColumn(i18n.tr("Kontonummer"),"kontonummer");
-		d.addColumn(i18n.tr("Name"),"name");
-		d.setTitle(i18n.tr("Auswahl des Steuer-Sammelkontos"));
-		d.addListener(new Listener() {
-      public void handleEvent(Event event) {
-      	SteuerKonto k = (SteuerKonto) event.data;
-      	try {
-					kontoauswahl.setValue(k.getKontonummer());
-      	}
-      	catch (RemoteException e)
-      	{
-      		Application.getLog().error("unable to load konto",e);
-      	}
+    KontoAuswahlDialog d = new KontoAuswahlDialog(Settings.getDBService().createList(SteuerKonto.class),KontoAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        if (event == null || event.data == null)
+          return;
+        kontoauswahl.setValue(event.data);
       }
     });
-		kontoauswahl = new SearchInput(getKonto().getKontonummer(),d);
+    SteuerKonto k = getSteuer().getSteuerKonto();
+		kontoauswahl = new DialogInput(k == null ? null : (k.getKontonummer() + " [" + k.getName() + "]"),d);
+    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+    kontoauswahl.disableClientControl();
 		return kontoauswahl;
 	}
 
 
   /**
-   * @see de.willuhn.jameica.views.parts.Controller#handleStore()
+   * Speichert den Steuersatz.
    */
   public void handleStore()
   {
     try {
 
-      getSteuer().setName(getName().getValue());
-
-      //////////////////////////////////////////////////////////////////////////
-      // Steuersatz checken
-      try {
-        getSteuer().setSatz(Fibu.DECIMALFORMAT.parse(getSatz().getValue()).doubleValue());
-      }
-      catch (NumberFormatException e)
-      {
-        GUI.getView().setErrorText(i18n.tr("Steuersatz ungültig."));
-        return;
-      }
-      catch (ParseException e)
-      {
-        GUI.getView().setErrorText(i18n.tr("Steuersatz ungültig."));
-        return;
-      }
-      //
-      //////////////////////////////////////////////////////////////////////////
+      getSteuer().setName((String)  getName().getValue());
+      getSteuer().setSatz(((Double) getSatz().getValue()).doubleValue());
 
       //////////////////////////////////////////////////////////////////////////
       // Steuerkonto checken
       
-      DBIterator steuerkonten = Settings.getDBService().createList(SteuerKonto.class);
-      steuerkonten.addFilter("kontonummer='"+getKontoAuswahl().getValue() + "'");
-      // TODO: Geht grad nicht
-      if (!steuerkonten.hasNext())
+      Object o = getKontoAuswahl().getValue();
+      if (o == null || !(o instanceof SteuerKonto))
       {
-        GUI.getView().setErrorText(i18n.tr("Ausgewähltes Steuerkonto existiert nicht."));
+        GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Steuerkonto aus."));
         return;
       }
-      getSteuer().setSteuerKonto((SteuerKonto) steuerkonten.next());
+      getSteuer().setSteuerKonto((SteuerKonto)o);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -239,6 +175,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.14  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.13  2005/08/08 22:54:15  willuhn
  * @N massive refactoring
  *

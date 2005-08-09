@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,10 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.Date;
+
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -23,12 +27,12 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -53,7 +57,9 @@ public class MandantControl extends AbstractControl
 	private Input steuernummer				= null;
 	private Input kontenrahmenAuswahl	= null;
 	private Input finanzamtAuswahl		= null;
-	private Input geschaeftsjahr			= null;
+
+  private DialogInput gjStart        			= null;
+  private DialogInput gjEnd               = null;
 
 	private boolean storeAllowed      = false;
   
@@ -86,27 +92,6 @@ public class MandantControl extends AbstractControl
 		return mandant;
 	}
 
-	/**
-	 * Liefert eine Tabelle mit allen eingerichteten Mandanten.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public TablePart getMandantListe() throws RemoteException
-	{
-		DBIterator list = Settings.getDBService().createList(Mandant.class);
-		list.setOrder("order by firma desc");
-
-		TablePart table = new TablePart(list,new de.willuhn.jameica.fibu.gui.action.MandantNeu());
-		table.addColumn(i18n.tr("Name 1"),"name1");
-		table.addColumn(i18n.tr("Name 2"),"name2");
-		table.addColumn(i18n.tr("Firma"),"firma");
-		table.addColumn(i18n.tr("Ort"),"ort");
-		table.addColumn(i18n.tr("Steuernummer"),"steuernummer");
-		table.addColumn(i18n.tr("Kontenrahmen"),"kontenrahmen_id");
-		return table;
-	}
-
-	
 	/**
 	 * Liefert das Eingabe-Feld fuer Name1.
    * @return Eingabe-Feld.
@@ -192,20 +177,60 @@ public class MandantControl extends AbstractControl
 	}
 
 	/**
-	 * Liefert das Eingabe-Feld fuer das Geschaeftsjahr.
+	 * Liefert das Eingabe-Feld fuer den Beginn des Geschaeftsjahres.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getGeschaeftsjahr() throws RemoteException
+	public Input getGJStart() throws RemoteException
 	{
-		if (geschaeftsjahr != null)
-			return geschaeftsjahr;
+		if (gjStart != null)
+			return gjStart;
 		
-		geschaeftsjahr = new IntegerInput(getMandant().getGeschaeftsjahr());
-		return geschaeftsjahr;
+    Date start = getMandant().getGeschaeftsjahrVon();
+    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+    d.setDate(start);
+    d.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        if (event == null || event.data == null)
+          return;
+        gjStart.setValue(event.data);
+        gjStart.setText(Fibu.DATEFORMAT.format((Date)event.data));
+      }
+    });
+		gjStart = new DialogInput(Fibu.DATEFORMAT.format(start),d);
+    gjStart.disableClientControl();
+		return gjStart;
 	}
 
-	/**
+  /**
+   * Liefert das Eingabe-Feld fuer das Ende des Geschaeftsjahres.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getGJEnd() throws RemoteException
+  {
+    if (gjEnd != null)
+      return gjEnd;
+    
+    Date end = getMandant().getGeschaeftsjahrBis();
+    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+    d.setDate(end);
+    d.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        if (event == null || event.data == null)
+          return;
+        gjEnd.setValue(event.data);
+        gjEnd.setText(Fibu.DATEFORMAT.format((Date)event.data));
+      }
+    });
+    gjEnd = new DialogInput(Fibu.DATEFORMAT.format(end),d);
+    gjEnd.disableClientControl();
+    return gjEnd;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld fuer die Steuernummer.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -280,13 +305,8 @@ public class MandantControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Geschaeftsjahr checken
 
-      Integer i = (Integer) getGeschaeftsjahr().getValue();
-      if (i == null || i.intValue() < Fibu.YEAR_MIN || i.intValue() > Fibu.YEAR_MAX)
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitte geben Sie eine gültige Jahreszahl zwischen {0} und {1} ein", new String[]{""+Fibu.YEAR_MIN,""+Fibu.YEAR_MAX}));
-        return;
-      }
-			getMandant().setGeschaeftsjahr(i.intValue());
+			getMandant().setGeschaeftsjahrVon((Date)getGJStart().getValue());
+      getMandant().setGeschaeftsjahrVon((Date)getGJEnd().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -324,6 +344,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.17  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.16  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

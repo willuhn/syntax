@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.24 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
@@ -33,13 +32,11 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -53,17 +50,16 @@ public class BuchungControl extends AbstractControl
 	
 	// Fachobjekte
 	private Buchung buchung 		= null;
-	private Konto konto					= null;
-	private GeldKonto geldkonto = null;
 
 	// Eingabe-Felder
 	private Input datum					   = null;
-	private ButtonInput kontoAuswahl     = null;
-	private ButtonInput geldKontoAuswahl = null;
 	private Input	text					   = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 	private Input steuer				   = null;
+
+  private DialogInput kontoAuswahl     = null;
+  private DialogInput geldKontoAuswahl = null;
   
   private I18N i18n;
 
@@ -96,55 +92,6 @@ public class BuchungControl extends AbstractControl
 	}
 
 	/**
-	 * Liefert das Konto der Buchung.
-   * @return Konto.
-   * @throws RemoteException
-   */
-  public Konto getKonto() throws RemoteException
-	{	
-		if (konto != null)
-			return konto;
-
-		konto = getBuchung().getKonto();
-		if (konto != null)
-			return konto;
-		
-		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
-		return konto;
-	}
-	
-	/**
-	 * Liefert das Geld-Konto der Buchung.
-	 * @return Geld-Konto.
-	 * @throws RemoteException
-	 */
-	public GeldKonto getGeldKonto() throws RemoteException
-	{	
-		if (geldkonto != null)
-			return geldkonto;
-
-		geldkonto = getBuchung().getGeldKonto();
-		if (geldkonto != null)
-			return geldkonto;
-		
-		geldkonto = (GeldKonto) Settings.getDBService().createObject(GeldKonto.class,null);
-		return geldkonto;
-	}
-
-	/**
-	 * Liefert eine Tabelle mit den Buchungen.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public TablePart getBuchungListe() throws RemoteException
-	{
-		DBIterator list = Settings.getDBService().createList(Buchung.class);
-		list.setOrder("order by id desc");
-    return new BuchungList(list,new de.willuhn.jameica.fibu.gui.action.BuchungNeu());
-	}
-
-
-	/**
 	 * Liefert das Eingabe-Feld fuer das Datum.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -165,7 +112,7 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getKontoAuswahl() throws RemoteException
+  public DialogInput getKontoAuswahl() throws RemoteException
 	{
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
@@ -178,17 +125,17 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          konto = k;
-          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
-					kontoAuswahl.setValue(k.getKontonummer() + "[" + k.getName() + "]");
-          if (konto.getSteuer() == null)
+          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+					kontoAuswahl.setValue(k.getKontonummer());
+          kontoAuswahl.setText(k.getKontonummer());
+          if (k.getSteuer() == null)
           {
             getSteuer().disable();
           }
           else
           {
             getSteuer().enable();
-            getSteuer().setValue(Fibu.DECIMALFORMAT.format(konto.getSteuer().getSatz()));
+            getSteuer().setValue(Fibu.DECIMALFORMAT.format(k.getSteuer().getSatz()));
           }
 				}
 				catch (RemoteException e)
@@ -199,12 +146,10 @@ public class BuchungControl extends AbstractControl
       }
     });
 		
-    Konto k = getKonto();
-    kontoAuswahl = new DialogInput(k == null ? "" : (k.getKontonummer() + "[" + k.getName() + "]"),d);
-    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
-    kontoAuswahl.disableClientControl();
-    kontoAuswahl.setValue(k);
-    if (k.getSteuer() == null)
+    Konto k = getBuchung().getKonto();
+    kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+    if (k != null && k.getSteuer() == null)
     {
       getSteuer().disable();
     }
@@ -222,7 +167,7 @@ public class BuchungControl extends AbstractControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getGeldKontoAuswahl() throws RemoteException
+	public DialogInput getGeldKontoAuswahl() throws RemoteException
 	{
 		if (geldKontoAuswahl != null)
 			return geldKontoAuswahl;
@@ -235,9 +180,9 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          geldkonto = k;
-          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
-          kontoAuswahl.setValue(k.getKontonummer() + "[" + k.getName() + "]");
+          geldKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+          geldKontoAuswahl.setValue(k.getKontonummer());
+          geldKontoAuswahl.setText(k.getKontonummer());
         }
         catch (RemoteException e)
         {
@@ -247,11 +192,9 @@ public class BuchungControl extends AbstractControl
       }
     });
     
-    Konto k = getGeldKonto();
-    geldKontoAuswahl = new DialogInput(k == null ? "" : (k.getKontonummer() + "[" + k.getName() + "]"),d);
-    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getCurrency()}));
-    geldKontoAuswahl.disableClientControl();
-    geldKontoAuswahl.setValue(k);
+    GeldKonto k = getBuchung().getGeldKonto();
+    geldKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
     return geldKontoAuswahl;
 	}
 
@@ -294,7 +237,7 @@ public class BuchungControl extends AbstractControl
 			return betrag;
 		
 		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
-		betrag.setComment(Settings.getCurrency());
+		betrag.setComment(Settings.getActiveMandant().getWaehrung());
 		return betrag;
 	}
 
@@ -313,6 +256,15 @@ public class BuchungControl extends AbstractControl
 		return steuer;
 	}
 
+  /**
+   * Oeffnet den Dialog fuer eine neue Buchung.
+   * @throws ApplicationException
+   */
+  public void handleNew() throws ApplicationException
+  {
+    new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
+  }
+  
   /**
    * Speichert die Buchung.
    */
@@ -377,7 +329,9 @@ public class BuchungControl extends AbstractControl
         {
           try {
             // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
-						getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d + Settings.getActiveMandant().getGeschaeftsjahr()));
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(Settings.getActiveMandant().getGeschaeftsjahrVon());
+						getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d + "" + cal.get(Calendar.YEAR)));
           }
           catch (ParseException e3)
           {
@@ -392,28 +346,58 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Konto checken
       
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
-      konten.addFilter("kontonummer = '"+getKontoAuswahl().getValue()+"'");
-      if (!konten.hasNext())
+      Konto k = null;
+      Object o = getKontoAuswahl().getValue();
+      if (o == null)
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
         return;
       }
-			getBuchung().setKonto((Konto) konten.next());
+      if (o instanceof String)
+      {
+        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        konten.addFilter("kontonummer = '"+o.toString()+"'");
+        if (!konten.hasNext())
+        {
+          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+          return;
+        }
+        k = (Konto) konten.next();
+      }
+      else
+      {
+        k = (Konto) o;
+      }
+			getBuchung().setKonto(k);
       //
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
       // GeldKonto checken
       
-      DBIterator geldkonten = Settings.getDBService().createList(GeldKonto.class);
-      geldkonten.addFilter("kontonummer = '"+getGeldKontoAuswahl().getValue()+"'");
-      if (!geldkonten.hasNext())
+      GeldKonto gk = null;
+      Object go = getGeldKontoAuswahl().getValue();
+      if (go == null)
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geld-Konto existiert nicht."));
+        GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
         return;
       }
-			getBuchung().setGeldKonto((GeldKonto) geldkonten.next());
+      if (go instanceof String)
+      {
+        DBIterator konten = Settings.getDBService().createList(GeldKonto.class);
+        konten.addFilter("kontonummer = '"+go.toString()+"'");
+        if (!konten.hasNext())
+        {
+          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geldkonto existiert nicht."));
+          return;
+        }
+        gk = (GeldKonto) konten.next();
+      }
+      else
+      {
+        gk = (GeldKonto) go;
+      }
+      getBuchung().setGeldKonto(gk);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -425,11 +409,7 @@ public class BuchungControl extends AbstractControl
       // und jetzt speichern wir.
 			getBuchung().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + i18n.tr("gespeichert."));
-      // jetzt machen wir die Buchung leer, damit sie beim naechsten Druck
-      // auf Speichern als neue Buchung gespeichert wird.
-			getBuchung().clear();
       GUI.startView(BuchungNeu.class.getName(),getBuchung());
-
     }
     catch (ApplicationException e1)
     {
@@ -443,12 +423,11 @@ public class BuchungControl extends AbstractControl
     
   }
 
-	/**
+  /**
    * Listener, der hinter dem Buchungsdatum den Wochentag anzeigt.
    */
   private class WochentagListener implements Listener
 	{
-
 		/**
 		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 		 */
@@ -472,8 +451,10 @@ public class BuchungControl extends AbstractControl
 				catch (ParseException e2)
 				{
 					try {
-						// ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
-						d = Fibu.FASTDATEFORMAT.parse(datum + Settings.getActiveMandant().getGeschaeftsjahr());
+            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(Settings.getActiveMandant().getGeschaeftsjahrVon());
+            d = Fibu.FASTDATEFORMAT.parse(datum + "" + cal.get(Calendar.YEAR));
 					}
 					catch (Exception e3)
 					{
@@ -506,6 +487,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.24  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.23  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

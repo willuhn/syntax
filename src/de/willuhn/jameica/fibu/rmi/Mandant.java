@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBObject;
 
@@ -81,6 +82,19 @@ public interface Mandant extends DBObject
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException;
 
+  /**
+   * Liefert den Beginn des Geschaeftsjahres.
+   * @return geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public Date getGeschaeftsjahrVon() throws RemoteException; 
+
+  /**
+   * Liefert das Ende des Geschaeftsjahres.
+   * @return geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public Date getGeschaeftsjahrBis() throws RemoteException; 
 
   /**
    * Liefert das zugehoerige Finanzamt.
@@ -89,13 +103,6 @@ public interface Mandant extends DBObject
    */
   public Finanzamt getFinanzamt() throws RemoteException;
   
-  /**
-   * Liefert das Geschaeftsjahr oder das aktuelle wenn noch keins definiert ist.
-   * @return das aktuelle Geschaeftsjahr.
-   * @throws RemoteException
-   */
-  public int getGeschaeftsjahr() throws RemoteException;
-
   /**
    * Speichert den ersten Namen des Mandanten (typischerweise der Vorname).
    * @param name1 Name 1 des Mandanten. 
@@ -160,24 +167,40 @@ public interface Mandant extends DBObject
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException;
 
   /**
-   * Speichert das aktuelle Geschaeftsjahr.
-   * @param das aktuelle Geschaeftsjahr.
+   * Speichert den Beginn des Geschaeftsjahres.
+   * @param von Beginn des Geschaeftsjahres.
    * @throws RemoteException
    */
-  public void setGeschaeftsjahr(int jahr) throws RemoteException;
+  public void setGeschaeftsjahrVon(Date von) throws RemoteException;
+  
+  /**
+   * Speichert das Ende des Geschaeftsjahres.
+   * @param bis Ende des Geschaeftsjahres.
+   * @throws RemoteException
+   */
+  public void setGeschaeftsjahrBis(Date bis) throws RemoteException;
 
   /**
-   * Prueft, ob der aktuelle Mandant aktiv ist und somit nicht geloescht werden kann.
-   * @return true, wenn er aktiv ist.
+   * Liefert die Waehrung.
+   * @return Waehrung.
    * @throws RemoteException
    */
-  public boolean isActive() throws RemoteException;
-
+  public String getWaehrung() throws RemoteException;
+  
+  /**
+   * Legt die Waehrung fest.
+   * @param waehrung
+   * @throws RemoteException
+   */
+  public void setWaehrung(String waehrung) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.7  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.6  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

@@ -13,8 +13,6 @@
       <item name="-" />
       <item name="&amp;Finanzämter"         									action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
       <item name="&amp;Steuersätze"         									action="de.willuhn.jameica.fibu.gui.action.SteuerListe" />
-	    <item name="-" />
-      <item name="&amp;Einstellungen"       									action="de.willuhn.jameica.fibu.gui.action.Settings" />
     </item>
   </menu>
 

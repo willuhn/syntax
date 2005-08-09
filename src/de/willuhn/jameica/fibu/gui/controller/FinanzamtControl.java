@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,15 +16,12 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.FinanzamtNeu;
-import de.willuhn.jameica.fibu.gui.part.FinanzamtList;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
-import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -73,16 +70,6 @@ public class FinanzamtControl extends AbstractControl
 			
 		finanzamt = (Finanzamt) Settings.getDBService().createObject(Finanzamt.class,null);
 		return finanzamt;
-	}
-
-	/**
-	 * Liefert eine Tabelle mit den eingerichteten Finanzaemtern.
-   * @return Tabelle.
-   * @throws RemoteException
-   */
-  public TablePart getFinanzamtListe() throws RemoteException
-	{
-    return new FinanzamtList(new FinanzamtNeu());
 	}
 
 	/**
@@ -183,6 +170,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.14  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.13  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

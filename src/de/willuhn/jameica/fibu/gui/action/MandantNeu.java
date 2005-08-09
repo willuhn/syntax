@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,29 +14,21 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
+ * Action zum Anlegen eines neuen Mandanten.
  */
 public class MandantNeu implements Action
 {
-
-  /**
-   * 
-   */
-  public MandantNeu()
-  {
-    super();
-    // TODO Auto-generated constructor stub
-  }
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    // TODO Auto-generated method stub
-
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.MandantNeu.class,null);
   }
 
 }
@@ -44,6 +36,9 @@ public class MandantNeu implements Action
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.2  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.1  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,55 +13,51 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.rmi.RemoteException;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
+ * Action zum Loeschen eines Mandanten.
  */
 public class MandantDelete implements Action
 {
-
-  /**
-   * 
-   */
-  public MandantDelete()
-  {
-    super();
-    // TODO Auto-generated constructor stub
-  }
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    try {
+    if (context == null || !(context instanceof Mandant))
+      return;
+    
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-      MessageBox box = new MessageBox(GUI.getShell(),SWT.ICON_WARNING | SWT.YES | SWT.NO);
-      box.setText(i18n.tr("Mandant wirklich löschen?"));
-      box.setMessage(i18n.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
-      if (box.open() != SWT.YES)
+    try
+    {
+      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+      d.setTitle(i18n.tr("Mandant wirklich löschen?"));
+      d.setText(i18n.tr("Wollen Sie diesen Mandanten wirklich löschen?"));
+      
+      if (!((Boolean) d.open()).booleanValue())
+      {
+        Logger.info("operation cancelled");
         return;
+      }
 
-      // ok, wir loeschen das Objekt
-      getMandant().delete();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gelöscht."));
+      ((Mandant)context).delete();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gelöscht"));
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Löschen des Mandanten."));
-      Logger.error("unable to delete mandant");
-    }
-    catch (ApplicationException ae)
-    {
-      GUI.getStatusBar().setErrorText(ae.getLocalizedMessage());
+      Logger.error("unable to delete mandant",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Daten des Mandanten"));
     }
   }
 
@@ -70,6 +66,9 @@ public class MandantDelete implements Action
 
 /*********************************************************************
  * $Log: MandantDelete.java,v $
+ * Revision 1.2  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.1  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

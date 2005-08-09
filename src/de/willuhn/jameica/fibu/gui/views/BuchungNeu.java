@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.24 $
+ * $Date: 2005/08/09 23:53:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -30,57 +32,64 @@ public class BuchungNeu extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
 
-		// Headline malen
-		GUI.setTitleText(I18N.tr("Buchung bearbeiten"));
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    BuchungControl control = new BuchungControl(this);
+    // Headline malen
+		GUI.getView().setTitle(i18n.tr("Buchung bearbeiten"));
+
+    final BuchungControl control = new BuchungControl(this);
 
     // Gruppe Konto erzeugen
-    LabelGroup kontoGroup = new LabelGroup(getParent(),I18N.tr("Konto"));
+    LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Konto"));
 
-    try {
-      
-      kontoGroup.addLabelPair(I18N.tr("Datum"),       control.getDatum());
-      kontoGroup.addLabelPair(I18N.tr("Konto"),       control.getKontoAuswahl());
-      kontoGroup.addLabelPair(I18N.tr("Geld-Konto"),  control.getGeldKontoAuswahl());
-      kontoGroup.addLabelPair(I18N.tr("Text"),        control.getText());
-      kontoGroup.addLabelPair(I18N.tr("Beleg-Nr."),   control.getBelegnummer());
-      kontoGroup.addLabelPair(I18N.tr("Betrag"),      control.getBetrag());
-      kontoGroup.addLabelPair(I18N.tr("Steuer"),      control.getSteuer());
+    kontoGroup.addLabelPair(i18n.tr("Datum"),       control.getDatum());
+    kontoGroup.addLabelPair(i18n.tr("Konto"),       control.getKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Geld-Konto"),  control.getGeldKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Text"),        control.getText());
+    kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),   control.getBelegnummer());
+    kontoGroup.addLabelPair(i18n.tr("Betrag"),      control.getBetrag());
+    kontoGroup.addLabelPair(i18n.tr("Steuer"),      control.getSteuer());
 
-      // wir machen das Datums-Feld zu dem mit dem Focus.
-      control.getDatum().focus();
-    }
-    catch (RemoteException e)
-    {
-			Application.getLog().error("error while reading buchung",e);
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Buchungsdaten."));
-    }
-
+    // wir machen das Datums-Feld zu dem mit dem Focus.
+    control.getDatum().focus();
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
-    buttonArea.addCancelButton(control);
-    buttonArea.addDeleteButton(control);
-    buttonArea.addStoreButton(control);
+    ButtonArea buttonArea = kontoGroup.createButtonArea(3);
+    buttonArea.addButton(i18n.tr("Speichern und Neue Buchung"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+        control.handleNew();
+      }
+    },null,true);
+    buttonArea.addButton(i18n.tr("Speichern"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,true);
+    buttonArea.addButton(i18n.tr("Zurück"), new Back());
 
   }
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.24  2005/08/09 23:53:34  willuhn
+ * @N massive refactoring
+ *
  * Revision 1.23  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *
