@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -59,7 +60,7 @@ public class BuchungNeu extends AbstractView
     control.getDatum().focus();
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = kontoGroup.createButtonArea(3);
+    ButtonArea buttonArea = kontoGroup.createButtonArea(4);
     buttonArea.addButton(i18n.tr("Speichern und Neue Buchung"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -72,7 +73,8 @@ public class BuchungNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null);
+    buttonArea.addButton(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
 
   }
@@ -87,6 +89,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.25  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.24  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

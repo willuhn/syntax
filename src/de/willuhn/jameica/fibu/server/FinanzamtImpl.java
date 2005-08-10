@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -53,7 +53,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#getName()
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#getName()
    */
   public String getName() throws RemoteException
   {
@@ -61,7 +61,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#getOrt()
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#getOrt()
    */
   public String getOrt() throws RemoteException
   {
@@ -69,7 +69,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#getPLZ()
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#getPLZ()
    */
   public String getPLZ() throws RemoteException
   {
@@ -77,7 +77,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#getPostfach()
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#getPostfach()
    */
   public String getPostfach() throws RemoteException
   {
@@ -85,7 +85,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#getStrasse()
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#getStrasse()
    */
   public String getStrasse() throws RemoteException
   {
@@ -93,7 +93,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#setName(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException
   {
@@ -101,7 +101,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#setOrt(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#setOrt(java.lang.String)
    */
   public void setOrt(String ort) throws RemoteException
   {
@@ -109,7 +109,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#setPLZ(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#setPLZ(java.lang.String)
    */
   public void setPLZ(String plz) throws RemoteException
   {
@@ -117,7 +117,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#setPostfach(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#setPostfach(java.lang.String)
    */
   public void setPostfach(String postfach) throws RemoteException
   {
@@ -125,7 +125,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Finanzamt#setStrasse(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Finanzamt#setStrasse(java.lang.String)
    */
   public void setStrasse(String strasse) throws RemoteException
   {
@@ -133,7 +133,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   public void deleteCheck() throws ApplicationException
   {
@@ -199,6 +199,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.11  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.10  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

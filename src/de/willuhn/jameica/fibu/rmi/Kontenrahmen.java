@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ public interface Kontenrahmen extends DBObject
 {
   /**
    * Liefert den Namen des Kontenrahmens.
-   * @return
+   * @return Liefert den Namen des Kontenrahmens.
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
@@ -34,6 +34,9 @@ public interface Kontenrahmen extends DBObject
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.5  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.4  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

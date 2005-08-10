@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/10 17:48:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,6 +188,8 @@ public class MandantControl extends AbstractControl
 		
     Date start = getMandant().getGeschaeftsjahrVon();
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+    d.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
+    d.setText(i18n.tr("Bitte wählen Sie den Beginn des Geschäftsjahres"));
     d.setDate(start);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event)
@@ -215,6 +217,8 @@ public class MandantControl extends AbstractControl
     
     Date end = getMandant().getGeschaeftsjahrBis();
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+    d.setTitle(i18n.tr("Ende des Geschäftsjahres"));
+    d.setText(i18n.tr("Bitte wählen Sie das Ende des Geschäftsjahres"));
     d.setDate(end);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event)
@@ -344,6 +348,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.18  2005/08/10 17:48:03  willuhn
+ * @C refactoring
+ *
  * Revision 1.17  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

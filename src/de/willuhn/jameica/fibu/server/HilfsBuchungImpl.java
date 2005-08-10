@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -52,7 +53,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   }
 
   /**
-   * @see de.willuhn.jameica.server.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -62,7 +63,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   }
 
   /**
-   * @see de.willuhn.jameica.server.AbstractDBObject#updateCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
   {
@@ -97,15 +98,12 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
     {
       Mandant m = Settings.getActiveMandant();
 
-      if (m == null)
-      {
-        throw new RemoteException("no active mandant defined");
-      }
-      int year = m.getGeschaeftsjahr();
+      Date start = m.getGeschaeftsjahrVon();
+      Date end   = m.getGeschaeftsjahrBis();
 
       String s = "select " + getIDField() + " from " + getTableName() +
-        " where datum >= DATE '" + year + "-01-01'" +
-        " and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
+        " where datum >= DATE '" + DF.format(start) + "'" +
+        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
         " and mandant_id = " + m.getID() +
         " and buchung_id is not NULL";
       return s;
@@ -121,6 +119,9 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.8  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/Welcome.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/20 20:44:58 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.gui.parts.Headline;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.util.Headline;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -24,23 +27,28 @@ public class Welcome extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
-    new Headline(getParent(),I18N.tr("Finanzbuchhaltung für Jameica."));
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    
+    new Headline(getParent(),i18n.tr("Finanzbuchhaltung für Jameica."));
   }
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.8  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2004/02/20 20:44:58  willuhn
  * *** empty log message ***
  *

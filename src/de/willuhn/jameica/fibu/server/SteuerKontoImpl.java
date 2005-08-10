@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/SteuerKontoImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,8 +32,9 @@ public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
   {
     super();
   }
+
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
   protected String getListQuery()
   {
@@ -44,6 +45,9 @@ public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
 
 /*********************************************************************
  * $Log: SteuerKontoImpl.java,v $
+ * Revision 1.6  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.5  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

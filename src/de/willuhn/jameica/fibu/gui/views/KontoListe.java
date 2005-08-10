@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,21 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.controller.KontoControl;
+import de.willuhn.jameica.fibu.gui.action.KontoNeu;
+import de.willuhn.jameica.fibu.gui.part.KontoList;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -29,47 +37,43 @@ public class KontoListe extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
 
-		GUI.setTitleText(I18N.tr("Liste der Konten des aktiven Mandanten."));
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		KontoControl control = new KontoControl(this);
+    GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten"));
 
-    try {
+    Container container = new LabelGroup(getParent(),"Vorhandene Konten");
+    
+    Mandant m = Settings.getActiveMandant();
+    container.addText(i18n.tr("Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}),false);
 
-			Mandant m = Settings.getActiveMandant();
-			if (m == null || m.isNewObject())
-			{
-				LabelGroup group = new LabelGroup(getParent(),I18N.tr("Hinweis"));
-				group.addText(I18N.tr(
-					"Es ist noch kein aktiver Mandant definiert.\n" +					"Bitte wählen Sie diesen zuerst im Menü Fibu/Einstellungen aus."),false);
-				return;
-			}
+    Part p = new KontoList(Settings.getDBService().createList(Konto.class),new KontoNeu());
+    p.paint(getParent());
+    
+    ButtonArea buttons = new ButtonArea(getParent(),2);
+    buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
 
-      control.getKontoListe().paint(getParent());
-    }
-    catch (Exception e)
-    {
-      Application.getLog().error("error while loading konto list");
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Konten."));
-      e.printStackTrace();
-    }
   }
 
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.11  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.10  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

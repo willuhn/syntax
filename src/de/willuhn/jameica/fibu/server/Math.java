@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.2 $
- * $Date: 2003/12/19 01:43:43 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class Math
 
   /**
    * Rundet den uebergebenen Betrag auf 2 Stellen hinter dem Komma.
-   * @param d der zu rundende Betrag.
+   * @param betrag der zu rundende Betrag.
    * @return der gerundete Betrag.
    */
   public static double round(double betrag)
@@ -66,6 +66,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.3  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2003/12/19 01:43:43  willuhn
  * @C small fixes
  *

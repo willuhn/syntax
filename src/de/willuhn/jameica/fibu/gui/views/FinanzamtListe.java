@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtListe.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,17 +13,13 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.FinanzamtNeu;
 import de.willuhn.jameica.fibu.gui.part.FinanzamtList;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -42,12 +38,7 @@ public class FinanzamtListe extends AbstractView
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    GUI.getView().setTitle(i18n.tr("Liste der Finanzämter."));
-
-    Container container = new LabelGroup(getParent(),"Vorhandene Finanzämter");
-    
-    Mandant m = Settings.getActiveMandant();
-    container.addText(i18n.tr("Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}),false);
+    GUI.getView().setTitle(i18n.tr("Liste der Finanzämter"));
 
     Part p = new FinanzamtList(new FinanzamtNeu());
     p.paint(getParent());
@@ -68,6 +59,9 @@ public class FinanzamtListe extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtListe.java,v $
+ * Revision 1.14  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.13  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

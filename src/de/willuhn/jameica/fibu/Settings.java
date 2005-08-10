@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.gui.dialogs.MandantAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -29,11 +28,6 @@ public class Settings
 {
   private static DBService db = null;
 	private static Mandant mandant = null;
-  
-  /**
-   * I18n.
-   */
-  public final static I18N I18N = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
 	 * Liefert den Datenbank-Service.
@@ -55,7 +49,7 @@ public class Settings
       catch (Exception e2)
       {
         Logger.error("unable to load database service",e2);
-        throw new RemoteException(I18N.tr("Fehler beim Laden des Datenbank-Service"),e2);
+        throw new RemoteException("Fehler beim Laden des Datenbank-Service",e2);
       }
     }
     return db;
@@ -81,13 +75,16 @@ public class Settings
     catch (Exception e)
     {
       Logger.error("error while choosing mandant",e);
-      throw new RemoteException(I18N.tr("Fehler bei der Auswahl des aktuellen Mandanten"));
+      throw new RemoteException("Fehler beim Auswählen des aktiven Mandanten");
     }
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.12  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.11  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

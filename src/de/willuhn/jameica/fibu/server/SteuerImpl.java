@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -55,7 +55,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#getName()
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getName()
    */
   public String getName() throws RemoteException
   {
@@ -63,7 +63,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#getSatz()
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getSatz()
    */
   public double getSatz() throws RemoteException
   {
@@ -75,7 +75,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#setName(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException
   {
@@ -83,7 +83,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#setSatz(double)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setSatz(double)
    */
   public void setSatz(double satz) throws RemoteException
   {
@@ -91,7 +91,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -101,7 +101,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
   {
@@ -121,7 +121,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
   {
@@ -139,7 +139,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
   public void updateCheck() throws ApplicationException
   {
@@ -147,7 +147,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#getSteuerKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getSteuerKonto()
    */
   public SteuerKonto getSteuerKonto() throws RemoteException
   {
@@ -155,7 +155,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.objects.SteuerKonto)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.rmi.SteuerKonto)
    */
   public void setSteuerKonto(SteuerKonto k) throws RemoteException
   {
@@ -165,6 +165,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.10  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.9  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

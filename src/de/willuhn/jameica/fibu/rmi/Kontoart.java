@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontoart.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/27 21:38:06 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,12 +23,39 @@ import de.willuhn.datasource.rmi.DBObject;
 public interface Kontoart extends DBObject
 {
 
+  /**
+   * Konto-Art ungueltig.
+   */
   public final static int KONTOART_UNGUELTIG  = 0;
+  
+  /**
+   * Konto-Art Einnahme.
+   */
   public final static int KONTOART_EINNAHME   = 1; // E
+  
+  /**
+   * Konto-Art Ausgabe.
+   */
   public final static int KONTOART_AUSGABE    = 2; // A
+  
+  /**
+   * Konto-Art Geld-Konto.
+   */
   public final static int KONTOART_GELD       = 3; // G
+
+  /**
+   * Konto-Art Anlagevermoegen.
+   */
   public final static int KONTOART_ANLAGE     = 4; // V
+  
+  /**
+   * Konot-Art Privat-Konto.
+   */
   public final static int KONTOART_PRIVAT     = 5; // P // bedeutet, dass dessen Bestand zum Jahreswechsel nicht uebernommen wird
+  
+  /**
+   * Konto-Art Steuerkonto.
+   */
   public final static int KONTOART_STEUER     = 6; // S
 
   /**
@@ -56,6 +83,9 @@ public interface Kontoart extends DBObject
 
 /*********************************************************************
  * $Log: Kontoart.java,v $
+ * Revision 1.6  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.5  2004/01/27 21:38:06  willuhn
  * @C refactoring finished
  *

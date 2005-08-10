@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.KontoDelete;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -30,52 +34,51 @@ public class KontoNeu extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
 
-    KontoControl control = new KontoControl(this);
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    // Headline malen
-		GUI.setTitleText(I18N.tr("Konto bearbeiten"));
+    final KontoControl control = new KontoControl(this);
 
-    try {
-      
-      // Gruppe erzeugen
-      LabelGroup group = new LabelGroup(getParent(),I18N.tr("Eigenschaften des Kontos"));
+		GUI.getView().setTitle(i18n.tr("Konto bearbeiten"));
 
-      group.addLabelPair(I18N.tr("Name")        , control.getName());
-      group.addLabelPair(I18N.tr("Kontonummer") , control.getKontonummer());
-      group.addLabelPair(I18N.tr("Steuersatz")  , control.getSteuer());
-      group.addLabelPair(I18N.tr("Kontoart")    , control.getKontoart());
-      group.addLabelPair(I18N.tr("Kontenrahmen"), control.getKontenrahmen());
+    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
 
-    }
-    catch (RemoteException e)
+    group.addLabelPair(i18n.tr("Name")        , control.getName());
+    group.addLabelPair(i18n.tr("Kontonummer") , control.getKontonummer());
+    group.addLabelPair(i18n.tr("Steuersatz")  , control.getSteuer());
+    group.addLabelPair(i18n.tr("Kontoart")    , control.getKontoart());
+    group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmen());
+
+
+    ButtonArea buttons = group.createButtonArea(3);
+    buttons.addButton(i18n.tr("Speichern"), new Action()
     {
-			Application.getLog().error("error while reading konto",e);
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Konto-Daten."));
-    }
-
-
-    // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),2);
-    buttonArea.addCancelButton(control);
-    buttonArea.addStoreButton(control);
-    
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,true);
+    buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
+    buttons.addButton(i18n.tr("Zurück"), new Back());
   }
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.10  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.9  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

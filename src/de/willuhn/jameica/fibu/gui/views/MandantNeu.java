@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.MandantDelete;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -30,60 +34,63 @@ public class MandantNeu extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
 
-		// Headline malen
-		GUI.setTitleText(I18N.tr("Mandant bearbeiten"));
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    MandantControl control = new MandantControl(this);
+    GUI.getView().setTitle(i18n.tr("Mandant bearbeiten"));
 
-    try {
-      
-      LabelGroup contactGroup = new LabelGroup(getParent(),I18N.tr("Kontaktdaten"));
+    final MandantControl control = new MandantControl(this);
 
-      contactGroup.addLabelPair(I18N.tr("Name 1")  , control.getName1());
-      contactGroup.addLabelPair(I18N.tr("Name 2")  , control.getName2());
-      contactGroup.addLabelPair(I18N.tr("Firma")   , control.getFirma());
-      contactGroup.addLabelPair(I18N.tr("Strasse") , control.getStrasse());
-      contactGroup.addLabelPair(I18N.tr("PLZ")     , control.getPLZ());
-      contactGroup.addLabelPair(I18N.tr("Ort")     , control.getOrt());
+    Container contactGroup = new LabelGroup(getParent(),i18n.tr("Kontaktdaten"));
 
-      LabelGroup finanzGroup = new LabelGroup(getParent(),I18N.tr("Buchhalterische Daten"));
+    contactGroup.addLabelPair(i18n.tr("Name 1")  , control.getName1());
+    contactGroup.addLabelPair(i18n.tr("Name 2")  , control.getName2());
+    contactGroup.addLabelPair(i18n.tr("Firma")   , control.getFirma());
+    contactGroup.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
+    contactGroup.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
+    contactGroup.addLabelPair(i18n.tr("Ort")     , control.getOrt());
 
-			finanzGroup.addLabelPair(I18N.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
-      finanzGroup.addLabelPair(I18N.tr("Finanzamt"),		control.getFinanzamtAuswahl());
-      finanzGroup.addLabelPair(I18N.tr("Steuernummer"),	control.getSteuernummer());
-      finanzGroup.addLabelPair(I18N.tr("Geschäftsjahr"),control.getGeschaeftsjahr());
+    Container finanzGroup = new LabelGroup(getParent(),i18n.tr("Buchhalterische Daten"));
 
-    }
-    catch (RemoteException e)
-    {
-			Application.getLog().error("error while reading mandant",e);
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandantendaten."));
-    }
+		finanzGroup.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
+    finanzGroup.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
+    finanzGroup.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
+    finanzGroup.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getGJStart());
+    finanzGroup.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getGJEnd());
 
-
-    // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 3 : 2);
-    buttonArea.addCancelButton(control);
-    buttonArea.addDeleteButton(control);
-    if (control.storeAllowed()) buttonArea.addStoreButton(control);
+    if (control.storeAllowed())
+    {
+      buttonArea.addButton(i18n.tr("Speichern"), new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleStore();
+        }
+      },null,control.storeAllowed());
+    }
+    buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     
   }
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.13  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.12  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

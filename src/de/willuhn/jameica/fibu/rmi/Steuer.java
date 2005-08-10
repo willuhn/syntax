@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/25 19:44:03 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public interface Steuer extends DBObject
   
   /**
    * Setzt den Namen des Steuersatzes.
-   * @param Name des Steuersatzes.
+   * @param name Name des Steuersatzes.
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
@@ -69,6 +69,9 @@ public interface Steuer extends DBObject
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.5  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.4  2004/01/25 19:44:03  willuhn
  * *** empty log message ***
  *

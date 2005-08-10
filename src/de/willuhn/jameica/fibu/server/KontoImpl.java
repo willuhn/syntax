@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.20 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -32,6 +30,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class KontoImpl extends AbstractDBObject implements Konto
 {
+  // private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Erzeugt ein neues Konto.
@@ -43,7 +42,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -51,7 +50,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
   
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getKontonummer()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getKontonummer()
    */
   public String getKontonummer() throws RemoteException
   {
@@ -59,7 +58,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getKontenrahmen()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getKontenrahmen()
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
@@ -75,37 +74,41 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getSaldo()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo()
    */
   public double getSaldo() throws RemoteException
   {
-    try {
-      // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
-      if (getID() == null || getID().length() == 0)
-        return 0;
+    // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
+    if (getID() == null || getID().length() == 0)
+      return 0;
 
-      Statement stmt = getConnection().createStatement();
-      Mandant m = Settings.getActiveMandant();
-      if (m == null)
-        throw new RemoteException("active mandant not set.");
 
-			int year = m.getGeschaeftsjahr();
-      String sql = "select sum(betrag) as b from buchung" +				" where datum >= DATE '" + year + "-01-01'" +
-				" and datum <= DATE '" + year + "-12-31'" + // nur aktuelles Geschaeftsjahr
-				" and mandant_id = "+ m.getID() + 
-				" and konto_id = " + Integer.parseInt(getID());
-      ResultSet rs = stmt.executeQuery(sql);
-      rs.next();
-      return rs.getDouble("b");
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("unable to get saldo.",e);
-    }
+    return 0;
+
+// TODO SQL Statement
+//      Statement stmt = getConnection().createStatement();
+//
+//      Mandant m = Settings.getActiveMandant();
+//
+//      Date start = m.getGeschaeftsjahrVon();
+//      Date end   = m.getGeschaeftsjahrBis();
+//
+//      String sql = "select sum(betrag) as b from buchung" +//        " where datum >= DATE '" + DF.format(start) + "'" +
+//        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
+//				" and mandant_id = "+ m.getID() + 
+//				" and konto_id = " + Integer.parseInt(getID());
+//      ResultSet rs = stmt.executeQuery(sql);
+//      rs.next();
+//      return rs.getDouble("b");
+//    }
+//    catch (Exception e)
+//    {
+//      throw new RemoteException("unable to get saldo.",e);
+//    }
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getName()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getName()
    */
   public String getName() throws RemoteException
   {
@@ -113,7 +116,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getKontoArt()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getKontoArt()
    */
   public Kontoart getKontoArt() throws RemoteException
   {
@@ -121,7 +124,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#getSteuer()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getSteuer()
    */
   public Steuer getSteuer() throws RemoteException
   {
@@ -129,7 +132,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
@@ -143,7 +146,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   public void deleteCheck() throws ApplicationException
   {
@@ -189,7 +192,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
   public void updateCheck() throws ApplicationException
   {
@@ -197,7 +200,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getListQuery()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
   protected String getListQuery()
   {
@@ -205,8 +208,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     {
       // ueberschreiben wir, weil wir nur die Konten des Kontenrahmens des aktiven Mandanten haben wollen
       Mandant m = Settings.getActiveMandant();
-      if (m == null)
-        throw new RemoteException("no active mandant defined.");
       
       Kontenrahmen k = m.getKontenrahmen();
       if (k == null)
@@ -222,7 +223,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#setKontonummer(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException
   {
@@ -230,7 +231,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#setKontenrahmen(de.willuhn.jameica.fibu.objects.Kontenrahmen)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
    */
   public void setKontenrahmen(Kontenrahmen k) throws RemoteException
   {
@@ -238,7 +239,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#setName(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException
   {
@@ -246,7 +247,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#setKontoArt(Kontoart)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setKontoArt(de.willuhn.jameica.fibu.rmi.Kontoart)
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
@@ -254,7 +255,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Konto#setSteuer(de.willuhn.jameica.fibu.objects.Steuer)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setSteuer(de.willuhn.jameica.fibu.rmi.Steuer)
    */
   public void setSteuer(Steuer steuer) throws RemoteException
   {
@@ -265,6 +266,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.20  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.19  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

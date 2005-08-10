@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoartImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/08 21:35:46 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -34,7 +33,7 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getTableName()
+   * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
   protected String getTableName()
   {
@@ -50,7 +49,7 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Steuer#getName()
+   * @see de.willuhn.jameica.fibu.rmi.Kontoart#getName()
    */
   public String getName() throws RemoteException
   {
@@ -58,28 +57,7 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException
-  {
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#insertCheck()
-   */
-  protected void insertCheck() throws ApplicationException
-  {
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#updateCheck()
-   */
-  protected void updateCheck() throws ApplicationException
-  {
-  }
-
-  /**
-   * @see de.willuhn.jameica.rmi.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String field) throws RemoteException
   {
@@ -87,7 +65,7 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.objects.Kontoart#getKontoArt()
+   * @see de.willuhn.jameica.fibu.rmi.Kontoart#getKontoArt()
    */
   public int getKontoArt() throws RemoteException
   {
@@ -114,6 +92,9 @@ public class KontoartImpl extends AbstractDBObject implements Kontoart
 
 /*********************************************************************
  * $Log: KontoartImpl.java,v $
+ * Revision 1.8  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2005/08/08 21:35:46  willuhn
  * @N massive refactoring
  *

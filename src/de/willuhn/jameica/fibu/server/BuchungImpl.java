@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,20 +15,16 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -38,7 +34,7 @@ import de.willuhn.util.ApplicationException;
 public class BuchungImpl extends AbstractDBObject implements Buchung
 {
   
-  private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
+  final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Erzeugt eine neue Buchung.
@@ -266,6 +262,8 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
   public void insertCheck() throws ApplicationException
   {
     try {
+      
+      Mandant m = getMandant();
 
       if (getBetrag() == 0)
         throw new ApplicationException("Bitte geben Sie einen Buchungsbetrag ein.");
@@ -274,7 +272,7 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       if (getAttribute("belegnummer") == null)
         throw new ApplicationException("Bitte geben Sie eine Belegnummer ein.");
 
-      if (getMandant() == null)
+      if (m == null)
         throw new ApplicationException("Bitte wählen Sie den Mandanten aus.");
 
       if (getKonto() == null)
@@ -283,21 +281,13 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
       if (getGeldKonto() == null)
         throw new ApplicationException("Bitte geben Sie ein Geld-Konto ein.");
 
-      // Checken, ob Jahr im gueltigen Bereich
-      Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-
       Date d = getDatum();
       if (d == null)
         throw new ApplicationException("Bitte geben Sie ein Datum ein.");
 
-      Geschaeftsjahr jahr = getMandant().getGeschaeftsjahr();
-      if (d.before(jahr.getStartDatum()) || d.after(jahr.getEndDatum()))
+      if (!m.checkGeschaeftsJahr(d))
         throw new ApplicationException("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres.");
         
-      cal.setTime(d);
-      int year = cal.get(Calendar.YEAR);
-      if (year < Fibu.YEAR_MIN || year > Fibu.YEAR_MAX)
-        throw new ApplicationException("Datum befindet sich nicht innerhalb des gültigen Bereiches.");
     }
     catch (RemoteException e)
     {
@@ -328,14 +318,12 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
     {
       Mandant m = Settings.getActiveMandant();
 
-      if (m == null)
-        throw new RemoteException("no active mandant defined");
-
-      Geschaeftsjahr jahr = m.getGeschaeftsjahr();
+      Date start = m.getGeschaeftsjahrVon();
+      Date end   = m.getGeschaeftsjahrBis();
       
       String s = "select " + getIDField() + " from " + getTableName() +
-        " where datum >= DATE '" + DF.format(jahr.getStartDatum()) + "'" +
-        " and datum <= DATE '" + DF.format(jahr.getEndDatum()) + "'" + // nur aktuelles Geschaeftsjahr
+        " where datum >= DATE '" + DF.format(start) + "'" +
+        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
         " and mandant_id = " + m.getID() +  // nur aktueller Mandant
         " and buchung_id is NULL";          // keine Hilfs-Buchungen
       return s;
@@ -405,6 +393,9 @@ public class BuchungImpl extends AbstractDBObject implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.28  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.27  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

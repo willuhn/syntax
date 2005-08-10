@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -231,14 +231,16 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public Date getGeschaeftsjahrVon() throws RemoteException
   {
     Date d = (Date) getAttribute("gj_von");
-    if (d != null)
-      return d;
 
-    // Wir erstellen automatisch ein neues, wenn keins existiert.
-    Logger.info("no geschaeftsjahr start given, using current year");
+    if (d == null)
+    {
+      // Wir erstellen automatisch ein neues, wenn keins existiert.
+      Logger.info("no geschaeftsjahr start given, using current year");
+      d = new Date();
+    }
 
     Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
+    cal.setTime(d);
     cal.set(Calendar.MONTH,Calendar.JANUARY);
     cal.set(Calendar.DAY_OF_MONTH,1);
     cal.set(Calendar.HOUR_OF_DAY,0);
@@ -263,11 +265,13 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public Date getGeschaeftsjahrBis() throws RemoteException
   {
     Date d = (Date) getAttribute("gj_bis");
-    if (d != null)
-      return d;
 
-    // Wir erstellen automatisch ein neues, wenn keins existiert.
-    Logger.info("no geschaeftsjahr start given, using current year");
+    if (d == null)
+    {
+      // Wir erstellen automatisch ein neues, wenn keins existiert.
+      Logger.info("no geschaeftsjahr start given, using current year");
+      d = new Date();
+    }
 
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
@@ -348,11 +352,22 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     setAttribute("waehrung",waehrung);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#checkGeschaeftsJahr(java.util.Date)
+   */
+  public boolean checkGeschaeftsJahr(Date d) throws RemoteException
+  {
+    return getGeschaeftsjahrVon().before(d) && getGeschaeftsjahrBis().after(d);
+  }
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.14  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.13  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

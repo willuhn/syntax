@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/02/24 22:48:07 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.gui.controller.MandantControl;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.MandantNeu;
+import de.willuhn.jameica.fibu.gui.part.MandantList;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -27,39 +32,36 @@ public class MandantListe extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
-		GUI.setTitleText(I18N.tr("Liste der Mandanten."));
-		MandantControl control = new MandantControl(this);
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    
+		GUI.getView().setTitle(i18n.tr("Liste der Mandanten"));
 
-    try {
+		Part p = new MandantList(new MandantNeu());
+    p.paint(getParent());
 
-      control.getMandantListe().paint(getParent());
-
-      ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Mandant"),control);
-
-    }
-    catch (Exception e)
-    {
-      Application.getLog().error("error while loading mandant list",e);
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Mandanten."));
-    }
+    ButtonArea buttons = new ButtonArea(getParent(),2);
+    buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
   }
 
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.13  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.12  2004/02/24 22:48:07  willuhn
  * *** empty log message ***
  *

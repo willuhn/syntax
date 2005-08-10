@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,18 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.jameica.Application;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.parts.LabelGroup;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -30,49 +34,47 @@ public class SteuerNeu extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		// Headline malen
-		GUI.setTitleText(I18N.tr("Steuersatz bearbeiten"));
+    GUI.getView().setTitle(i18n.tr("Steuersatz bearbeiten"));
 
-    SteuerControl control = new SteuerControl(this);
+    final SteuerControl control = new SteuerControl(this);
 
+    Container steuerGroup = new LabelGroup(getParent(),i18n.tr("Steuersatz"));
 
-    try {
-      
-      LabelGroup steuerGroup = new LabelGroup(getParent(),I18N.tr("Steuersatz"));
+    steuerGroup.addLabelPair(i18n.tr("Name")      , 				control.getName());
+    steuerGroup.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
+    steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
 
-      steuerGroup.addLabelPair(I18N.tr("Name")      , 				control.getName());
-      steuerGroup.addLabelPair(I18N.tr("Steuersatz"), 				control.getSatz());
-      steuerGroup.addLabelPair(I18N.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
-    }
-    catch (RemoteException e)
+    ButtonArea buttonArea = steuerGroup.createButtonArea(3);
+    buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
-			Application.getLog().error("error while reading steuersaetze",e);
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Steuersätze."));
-    }
-
-    // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
-    buttonArea.addCancelButton(control);
-    buttonArea.addDeleteButton(control);
-    buttonArea.addStoreButton(control);
-    
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,true);
+    buttonArea.addButton(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
+    buttonArea.addButton(i18n.tr("Zurück"), new Back());
   }
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.12  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.11  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

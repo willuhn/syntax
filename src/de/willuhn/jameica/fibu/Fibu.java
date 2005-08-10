@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.20 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu;
 
 import java.io.File;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,11 +21,9 @@ import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.plugin.AbstractPlugin;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Basisklasse des Fibu-Plugins fuer das Jameica-Framework.
@@ -58,6 +55,9 @@ public class Fibu extends AbstractPlugin
    */
   public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
   
+  /**
+   * Wochentage
+   */
   public static String[] WEEKDAYS = new String[] {
     "Sonntag",
     "Montag",
@@ -77,16 +77,6 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
-    try
-    {
-      Settings.getDBService();
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while loading db service",e);
-      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-      throw new ApplicationException(i18n.tr("Fehler beim Laden der Datenbank"));
-    }
   }
 
   /**
@@ -101,30 +91,49 @@ public class Fibu extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
-    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-    I18N i18n = res.getI18N();
+    if (Application.inClientMode())
+      return;
 
-    String dir = res.getWorkPath() + "/db/db.conf";
+    File dbDir = new File(getResources().getWorkPath(),"db");
+    if (!dbDir.exists())
+      dbDir.mkdirs();
+
     try
     {
-      EmbeddedDatabase db = new EmbeddedDatabase(dir,"fibu","fibu");
-      if (!db.exists())
+      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
+
+      File create = new File(getResources().getPath() + "/sql/create.sql");
+      File init   = new File(getResources().getPath() + "/sql/init.sql");
+
+      if (create.exists())
       {
-        db.create();
-        db.executeSQLScript(new File(res.getPath() + "/sql/create.sql"));
-        db.executeSQLScript(new File(res.getPath() + "/sql/init.sql"));
+        Logger.info("executing " + create.getAbsolutePath());
+        db.executeSQLScript(create);
+      }
+      else
+      {
+        Logger.error(create.getAbsolutePath() + " does not exist");
+      }
+      
+      if (init.exists())
+      {
+        Logger.info("executing " + init.getAbsolutePath());
+        db.executeSQLScript(init);
+      }
+      else
+      {
+        Logger.error(init.getAbsolutePath() + " does not exist");
       }
     }
     catch (Exception e)
     {
       Logger.error("unable to create sql tables",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Installieren des Fibu-Plugins"));
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
     }
 
-    String welcome = i18n.tr("Fibu für Jameica");
+    String welcome = getResources().getI18N().tr("Fibu für Jameica");
     welcome += "\n";
-    welcome += 
-      i18n.tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +
+    welcome += getResources().getI18N().tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +
       "   - Legen Sie zuerst ein Finanzamt an (Menü: Fibu/Finanzämter)\n" +
       "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n" +
       "   - Aktivieren Sie den angelegten Mandanten (Menü: Fibu/Einstellungen\n");
@@ -142,6 +151,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.20  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.19  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

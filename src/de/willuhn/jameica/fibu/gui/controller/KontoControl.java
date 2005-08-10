@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/10 17:48:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class KontoControl extends AbstractControl
 
 	/**
 	 * Liefert das Konto.
-   * @return
+   * @return Liefert das Konto.
    * @throws RemoteException
    */
   public Konto getKonto() throws RemoteException
@@ -183,6 +183,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.17  2005/08/10 17:48:03  willuhn
+ * @C refactoring
+ *
  * Revision 1.16  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

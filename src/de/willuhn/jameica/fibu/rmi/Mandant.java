@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -193,11 +193,22 @@ public interface Mandant extends DBObject
    * @throws RemoteException
    */
   public void setWaehrung(String waehrung) throws RemoteException;
+
+  /**
+   * Prueft, ob sich das uebergebene Datum innerhalb des Geschaeftsjahres des Mandanten befindet.
+   * @param d das zu pruefende Datum.
+   * @return true, wenn es im Geschaeftsjahr liegt, sonst false.
+   * @throws RemoteException
+   */
+  public boolean checkGeschaeftsJahr(Date d) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.8  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.7  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

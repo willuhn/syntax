@@ -15,8 +15,6 @@ CREATE TABLE steuer (
   PRIMARY KEY (id)
 );
 
-CREATE INDEX idx_steuerkonto ON steuer(steuerkonto_id);
-
 CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
   kontoart_id int(2) NOT NULL,
@@ -28,11 +26,6 @@ CREATE TABLE konto (
   UNIQUE (kontonummer),
   PRIMARY KEY (id)
 );
-
-CREATE INDEX idx_kontonummer ON konto(kontonummer);
-CREATE INDEX idx_kontoart ON konto(kontoart_id);
-CREATE INDEX idx_kontenrahmen ON konto(kontenrahmen_id);
-CREATE INDEX idx_steuer ON konto(steuer_id);
 
 CREATE TABLE buchung (
   id NUMERIC default UNIQUEKEY('buchung'),
@@ -48,9 +41,6 @@ CREATE TABLE buchung (
   UNIQUE (id),
   PRIMARY KEY (id)
 );
-
-CREATE INDEX idx_belegnummer ON buchung(belegnummer);
-CREATE INDEX idx_mandant ON buchung(mandant_id);
 
 CREATE TABLE finanzamt (
   id NUMERIC default UNIQUEKEY('finanzamt'),
@@ -83,7 +73,8 @@ CREATE TABLE mandant (
   steuernummer varchar(100) NOT NULL,
   kontenrahmen_id int(2) NOT NULL,
   finanzamt_id int(2) NOT NULL,
-  geschaeftsjahr int(4) NOT NULL,
+  gj_von date NOT NULL,
+  gj_bis date NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -98,8 +89,13 @@ ALTER TABLE buchung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES ko
 ALTER TABLE buchung ADD CONSTRAINT fk_geldkonto FOREIGN KEY (geldkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
--- Muss raus, weil es auch Buchungen gibt, die keine Haupt-Buchungen haben
---ALTER TABLE buchung ADD CONSTRAINT fk_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
-
 ALTER TABLE mandant ADD CONSTRAINT fk_kontenrahmen_mand FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 ALTER TABLE mandant ADD CONSTRAINT fk_finanzamt FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;
+
+CREATE INDEX idx_belegnummer ON buchung(belegnummer);
+CREATE INDEX idx_mandant ON buchung(mandant_id);
+CREATE INDEX idx_steuerkonto ON steuer(steuerkonto_id);
+CREATE INDEX idx_kontonummer ON konto(kontonummer);
+CREATE INDEX idx_kontoart ON konto(kontoart_id);
+CREATE INDEX idx_kontenrahmen ON konto(kontenrahmen_id);
+CREATE INDEX idx_steuer ON konto(steuer_id);

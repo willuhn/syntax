@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/SteuerListe.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/02/24 22:48:08 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/10 17:48:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,13 +12,16 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
-import java.rmi.RemoteException;
-
-import de.willuhn.jameica.Application;
-import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
+import de.willuhn.jameica.fibu.gui.part.SteuerList;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.parts.ButtonArea;
-import de.willuhn.jameica.gui.views.AbstractView;
+import de.willuhn.jameica.gui.Part;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -29,41 +32,35 @@ public class SteuerListe extends AbstractView
 {
 
   /**
-   * @see de.willuhn.jameica.views.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
-  public void bind()
+  public void bind() throws Exception
   {
-		GUI.setTitleText(I18N.tr("Liste der Steuersätze."));
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		SteuerControl control = new SteuerControl(this);
+    GUI.getView().setTitle(i18n.tr("Liste der Steuersätze"));
 
-    try {
-
-      control.getSteuerListe().paint(getParent());
-
-      ButtonArea buttons = new ButtonArea(getParent(),1);
-      buttons.addCreateButton(I18N.tr("Neuer Steuersatz"),control);
-
-    }
-    catch (RemoteException e)
-    {
-      Application.getLog().error("error while loading steuer list");
-      GUI.setActionText(I18N.tr("Fehler beim Lesen der Steuersätze."));
-      e.printStackTrace();
-    }
+    Part p = new SteuerList(new SteuerNeu());
+    p.paint(getParent());
+    
+    ButtonArea buttons = new ButtonArea(getParent(),2);
+    buttons.addButton(i18n.tr("Neuer Steuersatz"), new SteuerNeu(),null,true);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
   }
 
-
   /**
-   * @see de.willuhn.jameica.views.AbstractView#unbind()
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */
-  public void unbind()
+  public void unbind() throws ApplicationException
   {
   }
 }
 
 /*********************************************************************
  * $Log: SteuerListe.java,v $
+ * Revision 1.11  2005/08/10 17:48:02  willuhn
+ * @C refactoring
+ *
  * Revision 1.10  2004/02/24 22:48:08  willuhn
  * *** empty log message ***
  *

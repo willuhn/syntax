@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/10 17:48:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,7 +149,7 @@ public class BuchungControl extends AbstractControl
     Konto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
-    if (k != null && k.getSteuer() == null)
+    if (k == null || k.getSteuer() == null)
     {
       getSteuer().disable();
     }
@@ -487,6 +487,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.25  2005/08/10 17:48:03  willuhn
+ * @C refactoring
+ *
  * Revision 1.24  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *
