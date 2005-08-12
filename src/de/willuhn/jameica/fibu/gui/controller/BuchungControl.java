@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.27 $
+ * $Date: 2005/08/12 16:43:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -58,8 +59,8 @@ public class BuchungControl extends AbstractControl
 	private Input	text					   = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
-	private Input steuer				   = null;
 
+  private DecimalInput steuer				   = null;
   private DialogInput kontoAuswahl     = null;
   private DialogInput geldKontoAuswahl = null;
   
@@ -119,6 +120,7 @@ public class BuchungControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 		
+    final SteuerListener sl = new SteuerListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener() {
@@ -130,15 +132,7 @@ public class BuchungControl extends AbstractControl
           kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
 					kontoAuswahl.setValue(k.getKontonummer());
           kontoAuswahl.setText(k.getKontonummer());
-          if (k.getSteuer() == null)
-          {
-            getSteuer().disable();
-          }
-          else
-          {
-            getSteuer().enable();
-            getSteuer().setValue(new Double((k.getSteuer().getSatz())));
-          }
+          sl.handleEvent(event);
 				}
 				catch (RemoteException e)
 				{
@@ -151,15 +145,8 @@ public class BuchungControl extends AbstractControl
     BaseKonto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
-    if (k == null || k.getSteuer() == null)
-    {
-      getSteuer().disable();
-    }
-    else
-    {
-      getSteuer().enable();
-      getSteuer().setValue(new Double((k.getSteuer().getSatz())));
-    }
+    kontoAuswahl.addListener(sl);
+    sl.handleEvent(null);
     return kontoAuswahl;
 	}
 
@@ -248,7 +235,7 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getSteuer() throws RemoteException
+  public DecimalInput getSteuer() throws RemoteException
 	{
 		if (steuer != null)
 			return steuer;
@@ -351,58 +338,40 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Konto checken
       
-      Konto k = null;
-      Object o = getKontoAuswahl().getValue();
-      if (o == null)
+      String s = (String) getKontoAuswahl().getText();
+      if (s == null || s.length() == 0)
       {
         GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
         return;
       }
-      if (o instanceof String)
+      DBIterator konten = Settings.getDBService().createList(Konto.class);
+      konten.addFilter("kontonummer = '" + s + "'");
+      if (!konten.hasNext())
       {
-        DBIterator konten = Settings.getDBService().createList(Konto.class);
-        konten.addFilter("kontonummer = '"+o.toString()+"'");
-        if (!konten.hasNext())
-        {
-          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
-          return;
-        }
-        k = (Konto) konten.next();
+        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+        return;
       }
-      else
-      {
-        k = (Konto) o;
-      }
-			getBuchung().setKonto(k);
+      getBuchung().setKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
       // GeldKonto checken
       
-      GeldKonto gk = null;
-      Object go = getGeldKontoAuswahl().getValue();
-      if (go == null)
+      s = (String) getGeldKontoAuswahl().getText();
+      if (s == null || s.length() == 0)
       {
         GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
         return;
       }
-      if (go instanceof String)
+      konten = Settings.getDBService().createList(GeldKonto.class);
+      konten.addFilter("kontonummer = '" + s + "'");
+      if (!konten.hasNext())
       {
-        DBIterator konten = Settings.getDBService().createList(GeldKonto.class);
-        konten.addFilter("kontonummer = '"+go.toString()+"'");
-        if (!konten.hasNext())
-        {
-          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geldkonto existiert nicht."));
-          return;
-        }
-        gk = (GeldKonto) konten.next();
+        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geldkonto existiert nicht."));
+        return;
       }
-      else
-      {
-        gk = (GeldKonto) go;
-      }
-      getBuchung().setGeldKonto(gk);
+      getBuchung().setGeldKonto((GeldKonto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -424,6 +393,60 @@ public class BuchungControl extends AbstractControl
     {
 			Logger.error("unable to store buchung",e);
       GUI.getStatusBar().setErrorText("Fehler beim Speichern der Buchung.");
+    }
+    
+  }
+
+  /**
+   * Listener, der das Feld fuer die Steuer aktualisiert.
+   */
+  private class SteuerListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        String s = (String) getKontoAuswahl().getText();
+        if (s == null || s.length() == 0)
+        {
+          getSteuer().disable();
+          return;
+        }
+
+        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        konten.addFilter("kontonummer = '" + s + "'");
+        if (!konten.hasNext())
+        {
+          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+          getSteuer().disable();
+          return;
+        }
+        Konto k = (Konto) konten.next();
+        Steuer ss = k.getSteuer();
+        if (ss == null)
+        {
+          getSteuer().disable();
+          return;
+        }
+
+        double satz = ss.getSatz();
+        if (satz == 0.0d)
+        {
+          getSteuer().disable();
+          return;
+        }
+        getSteuer().enable();
+        getSteuer().setValue(new Double(satz));
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to determine steuer",e);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
+      }
     }
     
   }
@@ -492,6 +515,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.27  2005/08/12 16:43:08  willuhn
+ * @B DecimalInput
+ *
  * Revision 1.26  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *
