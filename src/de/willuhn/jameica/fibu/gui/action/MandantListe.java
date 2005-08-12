@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ public class MandantListe implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.MandantListe.class,null);
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.MandantListe.class,context);
   }
 
 }
@@ -37,6 +37,9 @@ public class MandantListe implements Action
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.2  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

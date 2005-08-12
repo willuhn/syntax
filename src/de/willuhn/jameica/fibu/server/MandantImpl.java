@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -300,22 +301,18 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     try {
       String firma = getFirma();
-      if (firma == null || "".equals(firma)) {
+      if (firma == null || "".equals(firma))
         throw new ApplicationException("Bitte geben Sie die Firma ein.");
-      }
   
       String steuernummer = getSteuernummer();
-      if (steuernummer == null || "".equals(steuernummer)) {
+      if (steuernummer == null || "".equals(steuernummer))
         throw new ApplicationException("Bitte geben Sie die Steuernummer ein.");
-      }
   
-      if (getFinanzamt() == null) {
+      if (getFinanzamt() == null)
         throw new ApplicationException("Bitte wählen Sie ein Finanzamt aus.");
-      }
 
-      if (getKontenrahmen() == null) {
+      if (getKontenrahmen() == null)
         throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
-      }
 
       // Das rufen wir nur auf, damit die Daten automatisch gefuellt werden,
       // falls sie noch fehlen.
@@ -342,7 +339,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getWaehrung() throws RemoteException
   {
-    return (String) getAttribute("waehrung");
+    String s = (String) getAttribute("waehrung");
+    if (s != null && s.length() > 0)
+      return s;
+    return Settings.WAEHRUNG;
   }
 
   /**
@@ -365,6 +365,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.15  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.14  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

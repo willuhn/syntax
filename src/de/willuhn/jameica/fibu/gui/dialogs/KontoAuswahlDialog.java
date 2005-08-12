@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,14 @@ package de.willuhn.jameica.fibu.gui.dialogs;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
+import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -37,7 +39,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 {
 
 	private I18N i18n;
-	private Konto choosen = null;
+	private BaseKonto choosen = null;
   private GenericIterator konten = null;
 
   /**
@@ -57,6 +59,7 @@ public class KontoAuswahlDialog extends AbstractDialog
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
 		this.setTitle(i18n.tr("Konto-Auswahl"));
+    this.setSize(SWT.DEFAULT,350);
   }
 
   /**
@@ -71,9 +74,9 @@ public class KontoAuswahlDialog extends AbstractDialog
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        if (context == null || !(context instanceof Konto))
+        if (context == null || !(context instanceof BaseKonto))
           return;
-        choosen = (Konto) context;
+        choosen = (BaseKonto) context;
         close();
       }
     };    
@@ -89,10 +92,10 @@ public class KontoAuswahlDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
 				Object o = konten.getSelection();
-        if (o == null || !(o instanceof Konto))
+        if (o == null || !(o instanceof BaseKonto))
           return;
 
-        choosen = (Konto) o;
+        choosen = (BaseKonto) o;
         close();
       }
     });
@@ -120,6 +123,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.2  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

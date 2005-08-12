@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/10 17:48:03 $
+ * $Revision: 1.19 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,7 @@ public class MandantControl extends AbstractControl
 	private Input plz									= null;
 	private Input ort									= null;
 	private Input steuernummer				= null;
+  private Input waehrung            = null;
 	private Input kontenrahmenAuswahl	= null;
 	private Input finanzamtAuswahl		= null;
 
@@ -92,7 +93,21 @@ public class MandantControl extends AbstractControl
 		return mandant;
 	}
 
-	/**
+  /**
+   * Liefert das Eingabe-Feld fuer die Waehrung.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getWaehrung() throws RemoteException
+  {
+    if (waehrung != null)
+      return waehrung;
+    
+    waehrung = new TextInput(getMandant().getWaehrung());
+    return waehrung;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld fuer Name1.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -201,6 +216,7 @@ public class MandantControl extends AbstractControl
       }
     });
 		gjStart = new DialogInput(Fibu.DATEFORMAT.format(start),d);
+    gjStart.setValue(start);
     gjStart.disableClientControl();
 		return gjStart;
 	}
@@ -230,6 +246,7 @@ public class MandantControl extends AbstractControl
       }
     });
     gjEnd = new DialogInput(Fibu.DATEFORMAT.format(end),d);
+    gjEnd.setValue(end);
     gjEnd.disableClientControl();
     return gjEnd;
   }
@@ -348,6 +365,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.19  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.18  2005/08/10 17:48:03  willuhn
  * @C refactoring
  *

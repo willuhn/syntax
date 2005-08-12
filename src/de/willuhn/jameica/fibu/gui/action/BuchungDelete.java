@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungDelete.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -35,19 +35,19 @@ public class BuchungDelete implements Action
   public void handleAction(Object context) throws ApplicationException
   {
     
-    if (context == null || (!(context instanceof Buchung) && !(context instanceof Buchung[])))
+    if (context == null || (!(context instanceof BaseBuchung) && !(context instanceof BaseBuchung[])))
       return;
     
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     
     try
     {
-      Buchung[] b = null;
+      BaseBuchung[] b = null;
       
-      if (context instanceof Buchung)
-        b = new Buchung[] {(Buchung) context};
+      if (context instanceof BaseBuchung)
+        b = new BaseBuchung[] {(BaseBuchung) context};
       else
-        b = (Buchung[]) context;
+        b = (BaseBuchung[]) context;
       
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       if (b.length > 1)
@@ -57,8 +57,8 @@ public class BuchungDelete implements Action
       }
       else
       {
-        d.setTitle(i18n.tr("Buchung wirklich stornieren?"));
-        d.setText(i18n.tr("Wollen Sie die Buchung \"{0}\" [Beleg {1}] wirklich stornieren?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
+        d.setTitle(i18n.tr("BaseBuchung wirklich stornieren?"));
+        d.setText(i18n.tr("Wollen Sie die BaseBuchung \"{0}\" [Beleg {1}] wirklich stornieren?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
       }
       
 
@@ -80,7 +80,7 @@ public class BuchungDelete implements Action
         if (b.length > 1)
           GUI.getStatusBar().setSuccessText(i18n.tr("{0} Buchungen storniert.", ""+b.length));
         else
-          GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} storniert.", ""+b[0].getBelegnummer()));
+          GUI.getStatusBar().setSuccessText(i18n.tr("BaseBuchung Nr. {0} storniert.", ""+b[0].getBelegnummer()));
       }
       catch (ApplicationException ae)
       {
@@ -91,14 +91,14 @@ public class BuchungDelete implements Action
       {
         b[0].transactionRollback();
         Logger.error("unable to delete buchung",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
+        throw new ApplicationException(i18n.tr("Fehler beim Stornieren der BaseBuchung(en)"));
       }
 
     }
     catch (Exception e)
     {
       Logger.error("unable to delete buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
+      throw new ApplicationException(i18n.tr("Fehler beim Stornieren der BaseBuchung(en)"));
     }
   }
 
@@ -107,6 +107,9 @@ public class BuchungDelete implements Action
 
 /*********************************************************************
  * $Log: BuchungDelete.java,v $
+ * Revision 1.3  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.2  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

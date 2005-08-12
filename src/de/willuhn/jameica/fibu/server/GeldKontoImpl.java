@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/GeldKontoImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.fibu.rmi.Kontoart;
  * Diese Klasse ist nur fuer Konten des Typs "Geld-Konto" zustaendig.
  * @author willuhn
  */
-public class GeldKontoImpl extends KontoImpl implements GeldKonto
+public class GeldKontoImpl extends AbstractBaseKontoImpl implements GeldKonto
 {
 
   /**
@@ -40,20 +40,13 @@ public class GeldKontoImpl extends KontoImpl implements GeldKonto
   {
     return super.getListQuery() + " and kontoart_id="+Kontoart.KONTOART_GELD;
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo()
-   */
-  public double getSaldo() throws RemoteException
-  {
-    // TODO Auto-generated method stub
-    return super.getSaldo();
-  }
-
 }
 
 /*********************************************************************
  * $Log: GeldKontoImpl.java,v $
+ * Revision 1.7  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.6  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *

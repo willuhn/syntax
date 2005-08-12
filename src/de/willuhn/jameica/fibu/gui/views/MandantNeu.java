@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,10 +59,13 @@ public class MandantNeu extends AbstractView
 		finanzGroup.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
     finanzGroup.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
     finanzGroup.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
+    finanzGroup.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
     finanzGroup.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getGJStart());
     finanzGroup.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getGJEnd());
 
     ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 3 : 2);
+    buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
+    buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
     if (control.storeAllowed())
     {
       buttonArea.addButton(i18n.tr("Speichern"), new Action()
@@ -73,8 +76,6 @@ public class MandantNeu extends AbstractView
         }
       },null,control.storeAllowed());
     }
-    buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
-    buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     
   }
 
@@ -88,6 +89,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.14  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.13  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.26 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Erzeugt eine neue Buchung oder bearbeitet eine existierende.
+ * Erzeugt eine neue BaseBuchung oder bearbeitet eine existierende.
  * @author willuhn
  */
 public class BuchungNeu extends AbstractView
@@ -41,7 +41,7 @@ public class BuchungNeu extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     // Headline malen
-		GUI.getView().setTitle(i18n.tr("Buchung bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("BaseBuchung bearbeiten"));
 
     final BuchungControl control = new BuchungControl(this);
 
@@ -54,13 +54,21 @@ public class BuchungNeu extends AbstractView
     kontoGroup.addLabelPair(i18n.tr("Text"),        control.getText());
     kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),   control.getBelegnummer());
     kontoGroup.addLabelPair(i18n.tr("Betrag"),      control.getBetrag());
-    kontoGroup.addLabelPair(i18n.tr("Steuer"),      control.getSteuer());
+    kontoGroup.addLabelPair(i18n.tr("Steuersatz"),  control.getSteuer());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = kontoGroup.createButtonArea(4);
+    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Speichern"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null);
     buttonArea.addButton(i18n.tr("Speichern und Neue Buchung"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -68,14 +76,6 @@ public class BuchungNeu extends AbstractView
         control.handleNew();
       }
     },null,true);
-    buttonArea.addButton(i18n.tr("Speichern"),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleStore();
-      }
-    },null);
-    buttonArea.addButton(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
 
   }
 
@@ -89,6 +89,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.26  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.25  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

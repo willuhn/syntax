@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.21 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,7 @@ package de.willuhn.jameica.fibu;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.plugin.AbstractPlugin;
@@ -51,11 +49,6 @@ public class Fibu extends AbstractPlugin
   public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   
   /**
-   * Dezimal-Formatter.
-   */
-  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) NumberFormat.getNumberInstance(Locale.GERMAN);
-  
-  /**
    * Wochentage
    */
   public static String[] WEEKDAYS = new String[] {
@@ -68,8 +61,14 @@ public class Fibu extends AbstractPlugin
     "Sonnabend"
   };
 
+  /**
+   * DecimalFormat.
+   */
+  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
+
   static {
-    DECIMALFORMAT.applyPattern("#0.00");
+    DECIMALFORMAT.applyPattern("###,###,##0.00");
+    DECIMALFORMAT.setGroupingUsed(true);
   }
 
   /**
@@ -151,6 +150,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.21  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.20  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,8 @@ public class SteuerNeu extends AbstractView
     steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
 
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
+    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -58,8 +60,6 @@ public class SteuerNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    buttonArea.addButton(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
   }
 
   /**
@@ -72,6 +72,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.13  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.12  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

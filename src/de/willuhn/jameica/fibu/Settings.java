@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,13 @@ import de.willuhn.logging.Logger;
  */
 public class Settings
 {
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Fibu.class);
+
+  /**
+   * Default-Waehrung.
+   */
+  public final static String WAEHRUNG = settings.getString("currency.default","EUR");
+
   private static DBService db = null;
 	private static Mandant mandant = null;
   
@@ -82,6 +89,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.13  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.12  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

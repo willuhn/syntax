@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.20 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,8 +55,8 @@ public class BuchungListe extends AbstractView
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
   }
 
 
@@ -70,6 +70,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.20  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.19  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

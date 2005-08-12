@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/10 17:48:03 $
+ * $Revision: 1.26 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,8 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
+import de.willuhn.jameica.fibu.rmi.BaseKonto;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -49,7 +51,7 @@ public class BuchungControl extends AbstractControl
 {
 	
 	// Fachobjekte
-	private Buchung buchung 		= null;
+	private BaseBuchung buchung 		= null;
 
 	// Eingabe-Felder
 	private Input datum					   = null;
@@ -73,11 +75,11 @@ public class BuchungControl extends AbstractControl
   }
 
 	/**
-	 * Liefert die Buchung.
-   * @return die Buchung.
+	 * Liefert die BaseBuchung.
+   * @return die BaseBuchung.
    * @throws RemoteException
    */
-  public Buchung getBuchung() throws RemoteException
+  public BaseBuchung getBuchung() throws RemoteException
 	{
 		if (buchung != null)
 			return buchung;
@@ -121,7 +123,7 @@ public class BuchungControl extends AbstractControl
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
+        BaseKonto k = (BaseKonto) event.data;
         if (k == null)
           return;
 				try {
@@ -135,7 +137,7 @@ public class BuchungControl extends AbstractControl
           else
           {
             getSteuer().enable();
-            getSteuer().setValue(Fibu.DECIMALFORMAT.format(k.getSteuer().getSatz()));
+            getSteuer().setValue(new Double((k.getSteuer().getSatz())));
           }
 				}
 				catch (RemoteException e)
@@ -146,7 +148,7 @@ public class BuchungControl extends AbstractControl
       }
     });
 		
-    Konto k = getBuchung().getKonto();
+    BaseKonto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
     if (k == null || k.getSteuer() == null)
@@ -156,7 +158,7 @@ public class BuchungControl extends AbstractControl
     else
     {
       getSteuer().enable();
-      getSteuer().setValue(Fibu.DECIMALFORMAT.format(k.getSteuer().getSatz()));
+      getSteuer().setValue(new Double((k.getSteuer().getSatz())));
     }
     return kontoAuswahl;
 	}
@@ -257,7 +259,7 @@ public class BuchungControl extends AbstractControl
 	}
 
   /**
-   * Oeffnet den Dialog fuer eine neue Buchung.
+   * Oeffnet den Dialog fuer eine neue BaseBuchung.
    * @throws ApplicationException
    */
   public void handleNew() throws ApplicationException
@@ -266,7 +268,7 @@ public class BuchungControl extends AbstractControl
   }
   
   /**
-   * Speichert die Buchung.
+   * Speichert die BaseBuchung.
    */
   public void handleStore()
   {
@@ -279,6 +281,7 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
+        Logger.error("unable to set belegnummer",e);
         GUI.getStatusBar().setErrorText(i18n.tr("Belegnummer ungültig."));
         return;
       }
@@ -292,6 +295,7 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
+        Logger.error("unable to set betrag",e);
         GUI.getStatusBar().setErrorText(i18n.tr("Betrag ungültig."));
         return;
       }
@@ -306,6 +310,7 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
+        Logger.error("unable to set steuer",e);
         GUI.getStatusBar().setErrorText(i18n.tr("Steuersatz ungültig."));
         return;
       }
@@ -403,7 +408,7 @@ public class BuchungControl extends AbstractControl
 
 			getBuchung().setText((String)getText().getValue());
       
-      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
+      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der BaseBuchung
 			getBuchung().setMandant(Settings.getActiveMandant());
 
       // und jetzt speichern wir.
@@ -487,6 +492,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.26  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.25  2005/08/10 17:48:03  willuhn
  * @C refactoring
  *

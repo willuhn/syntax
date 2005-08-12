@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,8 +44,8 @@ public class MandantListe extends AbstractView
     p.paint(getParent());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true);
   }
 
 
@@ -59,6 +59,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.14  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.13  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

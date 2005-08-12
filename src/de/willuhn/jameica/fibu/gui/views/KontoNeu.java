@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,8 @@ public class KontoNeu extends AbstractView
 
 
     ButtonArea buttons = group.createButtonArea(3);
+    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -62,8 +64,6 @@ public class KontoNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
-    buttons.addButton(i18n.tr("Zurück"), new Back());
   }
 
   /**
@@ -76,6 +76,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.11  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.10  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

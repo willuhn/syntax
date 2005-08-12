@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,8 +55,8 @@ public class KontoListe extends AbstractView
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
 
   }
 
@@ -71,6 +71,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.12  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.11  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

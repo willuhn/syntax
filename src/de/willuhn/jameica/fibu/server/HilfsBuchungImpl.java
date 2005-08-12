@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.logging.Logger;
@@ -25,7 +25,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * @author willuhn
  */
-public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
+public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBuchung
 {
 
   /**
@@ -39,15 +39,15 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   /**
    * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#getHauptBuchung()
    */
-  public Buchung getHauptBuchung() throws RemoteException
+  public BaseBuchung getHauptBuchung() throws RemoteException
   {
-    return (Buchung) getAttribute("buchung_id");
+    return (BaseBuchung) getAttribute("buchung_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#setHauptBuchung(de.willuhn.jameica.fibu.rmi.Buchung)
+   * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#setHauptBuchung(de.willuhn.jameica.fibu.rmi.BaseBuchung)
    */
-  public void setHauptBuchung(Buchung buchung) throws RemoteException
+  public void setHauptBuchung(BaseBuchung buchung) throws RemoteException
   {
     setAttribute("buchung_id",buchung);
   }
@@ -58,7 +58,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   public Class getForeignObject(String field) throws RemoteException
   {
     if ("buchung_id".equals(field))
-      return Buchung.class;
+      return BaseBuchung.class;
     return super.getForeignObject(field);
   }
 
@@ -69,12 +69,12 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   {
     try {
       if (getHauptBuchung() == null)
-        throw new ApplicationException("Keine Haupt-Buchung zugewiesen.");
+        throw new ApplicationException("Keine Haupt-BaseBuchung zugewiesen.");
     }
     catch (RemoteException e)
     {
 			Logger.error("error while reading hilfsbuchung",e);
-      throw new ApplicationException("Fehler bei der Prüfung der Hilfs-Buchung.",e);
+      throw new ApplicationException("Fehler bei der Prüfung der Hilfs-BaseBuchung.",e);
     }
     super.insertCheck();
   }
@@ -88,7 +88,7 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
   }
 
   /**
-   * Ueberschrieben von BuchungImpl weil die Funktion in BuchungImpl alle Buchungen
+   * Ueberschrieben von AbstractBaseBuchungImpl weil die Funktion in AbstractBaseBuchungImpl alle Buchungen
    * _ausser_ Hilfs-Buchungen findet. Wir wollen aber genau die ;).
    * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
@@ -119,6 +119,9 @@ public class HilfsBuchungImpl extends BuchungImpl implements HilfsBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.9  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.8  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

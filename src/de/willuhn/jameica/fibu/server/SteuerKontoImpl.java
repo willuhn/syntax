@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/SteuerKontoImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/12 00:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.fibu.rmi.SteuerKonto;
  * Diese Klasse ist nur fuer Steuersammelkonten zustaendig.
  * @author willuhn
  */
-public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
+public class SteuerKontoImpl extends AbstractBaseKontoImpl implements SteuerKonto
 {
 
   /**
@@ -45,6 +45,9 @@ public class SteuerKontoImpl extends KontoImpl implements SteuerKonto
 
 /*********************************************************************
  * $Log: SteuerKontoImpl.java,v $
+ * Revision 1.7  2005/08/12 00:10:59  willuhn
+ * @B bugfixing
+ *
  * Revision 1.6  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *
