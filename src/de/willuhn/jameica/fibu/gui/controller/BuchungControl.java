@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/08/12 16:43:08 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,8 +76,8 @@ public class BuchungControl extends AbstractControl
   }
 
 	/**
-	 * Liefert die BaseBuchung.
-   * @return die BaseBuchung.
+	 * Liefert die Buchung.
+   * @return die Buchung.
    * @throws RemoteException
    */
   public BaseBuchung getBuchung() throws RemoteException
@@ -246,7 +246,7 @@ public class BuchungControl extends AbstractControl
 	}
 
   /**
-   * Oeffnet den Dialog fuer eine neue BaseBuchung.
+   * Oeffnet den Dialog fuer eine neue Buchung.
    * @throws ApplicationException
    */
   public void handleNew() throws ApplicationException
@@ -255,7 +255,7 @@ public class BuchungControl extends AbstractControl
   }
   
   /**
-   * Speichert die BaseBuchung.
+   * Speichert die Buchung.
    */
   public void handleStore()
   {
@@ -377,7 +377,7 @@ public class BuchungControl extends AbstractControl
 
 			getBuchung().setText((String)getText().getValue());
       
-      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der BaseBuchung
+      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
 			getBuchung().setMandant(Settings.getActiveMandant());
 
       // und jetzt speichern wir.
@@ -515,6 +515,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.28  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/08/12 16:43:08  willuhn
  * @B DecimalInput
  *

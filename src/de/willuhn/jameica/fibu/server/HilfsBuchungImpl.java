@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,12 +69,12 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   {
     try {
       if (getHauptBuchung() == null)
-        throw new ApplicationException("Keine Haupt-BaseBuchung zugewiesen.");
+        throw new ApplicationException("Keine Haupt-Buchung zugewiesen.");
     }
     catch (RemoteException e)
     {
 			Logger.error("error while reading hilfsbuchung",e);
-      throw new ApplicationException("Fehler bei der Prüfung der Hilfs-BaseBuchung.",e);
+      throw new ApplicationException("Fehler bei der Prüfung der Hilfs-Buchung.",e);
     }
     super.insertCheck();
   }
@@ -119,6 +119,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.10  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

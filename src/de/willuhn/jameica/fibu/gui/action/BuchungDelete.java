@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,8 +57,8 @@ public class BuchungDelete implements Action
       }
       else
       {
-        d.setTitle(i18n.tr("BaseBuchung wirklich stornieren?"));
-        d.setText(i18n.tr("Wollen Sie die BaseBuchung \"{0}\" [Beleg {1}] wirklich stornieren?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
+        d.setTitle(i18n.tr("Buchung wirklich stornieren?"));
+        d.setText(i18n.tr("Wollen Sie die Buchung \"{0}\" [Beleg {1}] wirklich stornieren?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
       }
       
 
@@ -80,7 +80,7 @@ public class BuchungDelete implements Action
         if (b.length > 1)
           GUI.getStatusBar().setSuccessText(i18n.tr("{0} Buchungen storniert.", ""+b.length));
         else
-          GUI.getStatusBar().setSuccessText(i18n.tr("BaseBuchung Nr. {0} storniert.", ""+b[0].getBelegnummer()));
+          GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} storniert.", ""+b[0].getBelegnummer()));
       }
       catch (ApplicationException ae)
       {
@@ -91,14 +91,14 @@ public class BuchungDelete implements Action
       {
         b[0].transactionRollback();
         Logger.error("unable to delete buchung",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Stornieren der BaseBuchung(en)"));
+        throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
       }
 
     }
     catch (Exception e)
     {
       Logger.error("unable to delete buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Stornieren der BaseBuchung(en)"));
+      throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
     }
   }
 
@@ -107,6 +107,9 @@ public class BuchungDelete implements Action
 
 /*********************************************************************
  * $Log: BuchungDelete.java,v $
+ * Revision 1.4  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

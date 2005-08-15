@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,37 +25,37 @@ public interface BaseBuchung extends DBObject
 {
 
   /**
-   * Liefert das Datum der BaseBuchung.
-   * Wenn es eine neue BaseBuchung ist, wird das aktuelle Datum geliefert.
-   * @return Datum der BaseBuchung.
+   * Liefert das Datum der Buchung.
+   * Wenn es eine neue Buchung ist, wird das aktuelle Datum geliefert.
+   * @return Datum der Buchung.
    * @throws RemoteException
    */
   public Date getDatum() throws RemoteException;
 
   /**
-   * Liefert das Konto zu dieser BaseBuchung.
-   * @return Konto der BaseBuchung.
+   * Liefert das Konto zu dieser Buchung.
+   * @return Konto der Buchung.
    * @throws RemoteException
    */
   public BaseKonto getKonto() throws RemoteException;
 
   /**
-   * Liefert das Geld-Konto zu dieser BaseBuchung.
-   * @return Geldkonto der BaseBuchung.
+   * Liefert das Geld-Konto zu dieser Buchung.
+   * @return Geldkonto der Buchung.
    * @throws RemoteException
    */
   public GeldKonto getGeldKonto() throws RemoteException;
   
   /**
-   * Liefert den Mandanten zu dieser BaseBuchung.
-   * @return Mandant der BaseBuchung.
+   * Liefert den Mandanten zu dieser Buchung.
+   * @return Mandant der Buchung.
    * @throws RemoteException
    */
   public Mandant getMandant() throws RemoteException;
 
   /**
-   * Liefert den Text der BaseBuchung.
-   * @return Text der BaseBuchung.
+   * Liefert den Text der Buchung.
+   * @return Text der Buchung.
    * @throws RemoteException
    */
   public String getText() throws RemoteException;
@@ -68,71 +68,71 @@ public interface BaseBuchung extends DBObject
   public int getBelegnummer() throws RemoteException;
 
   /**
-   * Liefert den Netto-Betrag der BaseBuchung.
-   * @return Brutto-Betrag der BaseBuchung.
+   * Liefert den Netto-Betrag der Buchung.
+   * @return Brutto-Betrag der Buchung.
    * @throws RemoteException
    */
   public double getBetrag() throws RemoteException;
 
   /**
-   * Liefert Steuersatz der BaseBuchung.
-   * @return Steuersatz der BaseBuchung.
+   * Liefert Steuersatz der Buchung.
+   * @return Steuersatz der Buchung.
    * @throws RemoteException
    */
   public double getSteuer() throws RemoteException;
 
   /**
-   * Setzt das Datum der BaseBuchung.
+   * Setzt das Datum der Buchung.
    * @param d Datum.
    * @throws RemoteException
    */
   public void setDatum(Date d) throws RemoteException;
 
   /**
-   * Setzt das Konto zu dieser BaseBuchung.
-   * @param k Konto der BaseBuchung.
+   * Setzt das Konto zu dieser Buchung.
+   * @param k Konto der Buchung.
    * @throws RemoteException
    */
   public void setKonto(BaseKonto k) throws RemoteException;
 
   /**
-   * Setzt das Geld-Konto zu dieser BaseBuchung.
-   * @param k GeldKonto der BaseBuchung.
+   * Setzt das Geld-Konto zu dieser Buchung.
+   * @param k GeldKonto der Buchung.
    * @throws RemoteException
    */
   public void setGeldKonto(GeldKonto k) throws RemoteException;
 
   /**
-   * Setzt den Text der BaseBuchung.
-   * @param text Text der BaseBuchung.
+   * Setzt den Text der Buchung.
+   * @param text Text der Buchung.
    * @throws RemoteException
    */
   public void setText(String text) throws RemoteException;
 
   /**
    * Setzt die Belegnummer.
-   * @param belegnummer Belegnummer der BaseBuchung.
+   * @param belegnummer Belegnummer der Buchung.
    * @throws RemoteException
    */
   public void setBelegnummer(int belegnummer) throws RemoteException;
 
   /**
-   * Setzt den Netto-Betrag der BaseBuchung.
-   * @param betrag Betrag der BaseBuchung.
+   * Setzt den Netto-Betrag der Buchung.
+   * @param betrag Betrag der Buchung.
    * @throws RemoteException
    */
   public void setBetrag(double betrag) throws RemoteException;
 
   /**
-   * Setzt den Steuersatz der BaseBuchung.
-   * @param steuer Steuersatz der BaseBuchung.
+   * Setzt den Steuersatz der Buchung.
+   * @param steuer Steuersatz der Buchung.
    * @throws RemoteException
    */
   public void setSteuer(double steuer) throws RemoteException;
 
   /**
-   * Setzt den Mandanten der BaseBuchung.
-   * @param mandant Mandant der BaseBuchung.
+   * Setzt den Mandanten der Buchung.
+   * @param mandant Mandant der Buchung.
    * @throws RemoteException
    */
   public void setMandant(Mandant mandant) throws RemoteException;
@@ -141,6 +141,9 @@ public interface BaseBuchung extends DBObject
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
+ * Revision 1.2  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

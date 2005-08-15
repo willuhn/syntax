@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Action zum Anlegen einer neuen BaseBuchung.
+ * Action zum Anlegen einer neuen Buchung.
  */
 public class BuchungNeu implements Action
 {
@@ -36,6 +36,9 @@ public class BuchungNeu implements Action
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.4  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

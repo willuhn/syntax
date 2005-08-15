@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,16 +32,16 @@ public class BuchungsEngine
 {
 
   /**
-   * Bucht die uebergebene BaseBuchung.
+   * Bucht die uebergebene Buchung.
    * Die Funktion erkennt selbstaendig, ob weitere Hilfs-Buchungen noetig sind
    * und liefert diese ungespeichert als Array zurueck.
-   * @param buchung die zu buchende BaseBuchung.
+   * @param buchung die zu buchende Buchung.
    * @return Liste der noch zu speichernden Hilfsbuchungen oder null wenn keine Hilfsbuchungen noetig sind.
    * @throws RemoteException
    */
   public static HilfsBuchung[] buche(Buchung buchung) throws RemoteException
   {
-    // Wir checken ob die BaseBuchung neu ist. Nur neue Buchungen duerfen gebucht
+    // Wir checken ob die Buchung neu ist. Nur neue Buchungen duerfen gebucht
     // werden. Alle anderen muessen storniert werden.
     if (!buchung.isNewObject())
       throw new RemoteException("this is not a new buchung.");
@@ -75,14 +75,14 @@ public class BuchungsEngine
 
     buchung.setBetrag(netto); // wir buchen nur den Netto-Betrag
 
-    // Hilfs-BaseBuchung erstellen
+    // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag); // Steuer-Betrag
     hb.setDatum(buchung.getDatum());        // Datum
     hb.setGeldKonto(gk);                    // Geld-Konto
     hb.setMandant(buchung.getMandant());    // Mandant
-    hb.setText(buchung.getText());          // Text identisch mit Haupt-BaseBuchung
+    hb.setText(buchung.getText());          // Text identisch mit Haupt-Buchung
     hb.setKonto(s.getSteuerKonto());        // Das Steuer-Konto
      
     return new HilfsBuchung[]{hb};
@@ -92,6 +92,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.6  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

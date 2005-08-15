@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -281,7 +281,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     catch (RemoteException e)
     {
       Logger.error("error while checking buchung",e);
-      throw new ApplicationException("Fehler bei der Prüfung der BaseBuchung.",e);
+      throw new ApplicationException("Fehler bei der Prüfung der Buchung.",e);
     }
     super.insertCheck();
   }
@@ -299,6 +299,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.2  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

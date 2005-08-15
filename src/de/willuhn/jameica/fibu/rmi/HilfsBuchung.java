@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/HilfsBuchung.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,23 +16,23 @@ import java.rmi.RemoteException;
 
 /**
  * Bildet Hilfs-Buchungen ab. Das sind insb. Steuerbuchungen.
- * Auf jeden Fall ist es immer eine BaseBuchung, die allein nicht
- * existieren kann sondern Bestandteil einer anderen BaseBuchung ist.
+ * Auf jeden Fall ist es immer eine Buchung, die allein nicht
+ * existieren kann sondern Bestandteil einer anderen Buchung ist.
  * @author willuhn
  */
 public interface HilfsBuchung extends BaseBuchung
 {
 
   /**
-   * Liefert die Haupt-BaseBuchung zu der diese Hilfs-BaseBuchung gehoert.
-   * @return Haupt-BaseBuchung.
+   * Liefert die Haupt-Buchung zu der diese Hilfs-Buchung gehoert.
+   * @return Haupt-Buchung.
    * @throws RemoteException
    */
   public BaseBuchung getHauptBuchung() throws RemoteException;
   
   /**
-   * Definiert die Haupt-BaseBuchung, zu der diese Hilfs-BaseBuchung gehoert.
-   * @param buchung Haupt-BaseBuchung.
+   * Definiert die Haupt-Buchung, zu der diese Hilfs-Buchung gehoert.
+   * @param buchung Haupt-Buchung.
    * @throws RemoteException
    */
   public void setHauptBuchung(BaseBuchung buchung) throws RemoteException;
@@ -41,6 +41,9 @@ public interface HilfsBuchung extends BaseBuchung
 
 /*********************************************************************
  * $Log: HilfsBuchung.java,v $
+ * Revision 1.3  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

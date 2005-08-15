@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.27 $
+ * $Date: 2005/08/15 13:18:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Erzeugt eine neue BaseBuchung oder bearbeitet eine existierende.
+ * Erzeugt eine neue Buchung oder bearbeitet eine existierende.
  * @author willuhn
  */
 public class BuchungNeu extends AbstractView
@@ -41,7 +41,7 @@ public class BuchungNeu extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     // Headline malen
-		GUI.getView().setTitle(i18n.tr("BaseBuchung bearbeiten"));
+		GUI.getView().setTitle(i18n.tr("Buchung bearbeiten"));
 
     final BuchungControl control = new BuchungControl(this);
 
@@ -89,6 +89,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.27  2005/08/15 13:18:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.26  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *
