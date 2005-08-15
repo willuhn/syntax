@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,9 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -94,31 +91,16 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
    */
   protected String getListQuery()
   {
-    try
-    {
-      Mandant m = Settings.getActiveMandant();
-
-      Date start = m.getGeschaeftsjahrVon();
-      Date end   = m.getGeschaeftsjahrBis();
-
-      String s = "select " + getIDField() + " from " + getTableName() +
-        " where datum >= DATE '" + DF.format(start) + "'" +
-        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
-        " and mandant_id = " + m.getID() +
-        " and buchung_id is not NULL";
-      return s;
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to create list query",e);
-      return null;
-    }
+    return super.getListQuery() + " and buchung_id is NOT NULL";          // nur Hilfs-Buchungen
   }
 
 }
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.11  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -26,7 +25,7 @@ import de.willuhn.util.I18N;
 /**
  * Aktion zum Loeschen einer einzelnen oder einer Liste von Konten.
  */
-public class KontoDelete implements Action
+public class KontoDelete extends BaseAction
 {
 
   /**
@@ -107,6 +106,9 @@ public class KontoDelete implements Action
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.2  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

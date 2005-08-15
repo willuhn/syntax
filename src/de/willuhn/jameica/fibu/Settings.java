@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,7 @@ public class Settings
 
   	try
     {
+      Logger.info("open mandant select dialog");
       MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_CENTER);
       mandant = (Mandant) d.open();
       return mandant;
@@ -89,6 +90,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.14  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
@@ -21,7 +20,7 @@ import de.willuhn.util.ApplicationException;
  * Action zum Anlegen eines neuen Kontos.
  * @author willuhn
  */
-public class KontoNeu implements Action
+public class KontoNeu extends BaseAction
 {
 
   /**
@@ -37,6 +36,9 @@ public class KontoNeu implements Action
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.3  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

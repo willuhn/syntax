@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.20 $
+ * $Date: 2005/08/15 23:38:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,7 +173,7 @@ public class MandantControl extends AbstractControl
 		if (plz != null)
 			return plz;
 		
-		plz = new TextInput(getMandant().getPLZ());
+		plz = new TextInput(getMandant().getPLZ(),7);
 		return plz;
 	}
 
@@ -365,6 +365,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.20  2005/08/15 23:38:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

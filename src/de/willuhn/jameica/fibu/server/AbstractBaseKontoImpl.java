@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/AbstractBaseKontoImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,16 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseKonto;
+import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -30,6 +35,7 @@ import de.willuhn.util.ApplicationException;
  */
 public abstract class AbstractBaseKontoImpl extends AbstractDBObject implements BaseKonto
 {
+  
   /**
    * Erzeugt ein neues Konto.
    * @throws RemoteException
@@ -80,29 +86,51 @@ public abstract class AbstractBaseKontoImpl extends AbstractDBObject implements 
     if (getID() == null || getID().length() == 0)
       return 0;
 
+    Double d = SaldenCache.get(this.getKontonummer());
+    if (d != null)
+      return d.doubleValue();
+    
+    Statement stmt = null;
+    try
+    {
+      DBServiceImpl service = (DBServiceImpl) this.getService();
+      stmt = service.getConnection().createStatement();
 
-    return 0;
+      Mandant m = Settings.getActiveMandant();
 
-// TODO SQL Statement
-//      Statement stmt = getConnection().createStatement();
-//
-//      Mandant m = Settings.getActiveMandant();
-//
-//      Date start = m.getGeschaeftsjahrVon();
-//      Date end   = m.getGeschaeftsjahrBis();
-//
-//      String sql = "select sum(betrag) as b from buchung" +//        " where datum >= DATE '" + DF.format(start) + "'" +
-//        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
-//				" and mandant_id = "+ m.getID() + 
-//				" and konto_id = " + Integer.parseInt(getID());
-//      ResultSet rs = stmt.executeQuery(sql);
-//      rs.next();
-//      return rs.getDouble("b");
-//    }
-//    catch (Exception e)
-//    {
-//      throw new RemoteException("unable to get saldo.",e);
-//    }
+      Date start = m.getGeschaeftsjahrVon();
+      Date end   = m.getGeschaeftsjahrBis();
+
+      String sql = "select sum(betrag) as b from buchung " +
+        " where TONUMBER(datum) >= " + start.getTime() +
+        " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
+        " and mandant_id = "+ m.getID() + 
+        " and konto_id = " + this.getID();
+      ResultSet rs = stmt.executeQuery(sql);
+      rs.next();
+      double dd = rs.getDouble("b");
+      SaldenCache.put(this.getKontonummer(),new Double(dd));
+      return dd;
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while closing sql statement",e);
+      throw new RemoteException(e.toString());
+    }
+    finally
+    {
+      if (stmt != null)
+      {
+        try
+        {
+          stmt.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing sql statement",t);
+        }
+      }
+    }
   }
 
   /**
@@ -260,10 +288,39 @@ public abstract class AbstractBaseKontoImpl extends AbstractDBObject implements 
     setAttribute("steuer_id",steuer);
   }
 
+  /**
+   * Ueberschrieben, um ein synthetisches Attribut "saldo" zu erzeugen
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("saldo".equals(arg0))
+      return new Double(getSaldo());
+    return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BaseKonto#getBuchungen()
+   */
+  public DBIterator getBuchungen() throws RemoteException
+  {
+    Kontoart ka = getKontoArt();
+    int art = Kontoart.KONTOART_UNGUELTIG;
+    if (ka != null)
+      art = ka.getKontoArt();
+    DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
+    list.addFilter(" (konto_id = " + this.getID() + " OR geldkonto_id = " + this.getID() + ")");
+    list.setOrder("order by id desc");
+    return list;
+  }
+
 }
 
 /*********************************************************************
  * $Log: AbstractBaseKontoImpl.java,v $
+ * Revision 1.2  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

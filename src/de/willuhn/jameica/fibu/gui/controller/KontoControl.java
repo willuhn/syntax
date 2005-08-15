@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/10 17:48:03 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/15 23:38:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,7 @@ public class KontoControl extends AbstractControl
 	private Input steuer			 = null;
 	private Input kontoart		 = null;
 	private Input kontenrahmen = null;
+  private Input saldo        = null;
   
   private I18N i18n = null;
 
@@ -77,6 +78,20 @@ public class KontoControl extends AbstractControl
 		return konto;
 	}
 
+  /**
+   * Liefert ein Anzeige-Feld fuer den Saldo.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getSaldo() throws RemoteException
+  {
+    if (this.saldo != null)
+      return this.saldo;
+    saldo = new LabelInput(Fibu.DECIMALFORMAT.format(getKonto().getSaldo()));
+    saldo.setComment(Settings.getActiveMandant().getWaehrung());
+    return saldo;
+  }
+  
 	/**
 	 * Liefert das Eingabe-Feld fuer den Namen.
    * @return Eingabe-Feld.
@@ -183,6 +198,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.18  2005/08/15 23:38:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2005/08/10 17:48:03  willuhn
  * @C refactoring
  *

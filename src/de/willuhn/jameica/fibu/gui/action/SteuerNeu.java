@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/SteuerNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,13 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Action zum Anlegen eines neuen Steuersatzes.
  */
-public class SteuerNeu implements Action
+public class SteuerNeu extends BaseAction
 {
 
   /**
@@ -36,6 +35,9 @@ public class SteuerNeu implements Action
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.4  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

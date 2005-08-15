@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,11 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
@@ -33,8 +32,6 @@ import de.willuhn.util.ApplicationException;
 public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implements BaseBuchung
 {
   
-  final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
-
   /**
    * Erzeugt eine neue BaseBuchung.
    * @throws RemoteException
@@ -295,10 +292,51 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     insertCheck();
   }
 
+  /**
+   * Ueberschrieben, um den Salden-Cache fuer die Konten zu loeschen.
+   * @see de.willuhn.datasource.rmi.Changeable#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    SaldenCache.remove(getKonto().getKontonummer());
+    SaldenCache.remove(getGeldKonto().getKontonummer());
+  }
+
+  /**
+   * Ueberschrieben von AbstractDBObject weil wir nur die Buchungen:
+   *  - vom aktiven Mandanten
+   *  - aus dem aktuellen Geschaeftsjahr haben wollen.
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
+   */
+  protected String getListQuery()
+  {
+    try
+    {
+      Mandant m = Settings.getActiveMandant();
+
+      Date start = m.getGeschaeftsjahrVon();
+      Date end   = m.getGeschaeftsjahrBis();
+
+      String s = "select " + getIDField() + " from " + getTableName() +
+        " where TONUMBER(datum) >= " + start.getTime() + 
+        " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
+        " and mandant_id = " + m.getID();
+      return s;
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to create list query",e);
+      return null;
+    }
+  }
 }
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.3  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

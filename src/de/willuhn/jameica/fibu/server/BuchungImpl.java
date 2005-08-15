@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.30 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,11 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
-import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -105,25 +102,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   protected String getListQuery()
   {
-    try
-    {
-      Mandant m = Settings.getActiveMandant();
-
-      Date start = m.getGeschaeftsjahrVon();
-      Date end   = m.getGeschaeftsjahrBis();
-      
-      String s = "select " + getIDField() + " from " + getTableName() +
-        " where datum >= DATE '" + DF.format(start) + "'" +
-        " and datum <= DATE '" + DF.format(end) + "'" + // nur aktuelles Geschaeftsjahr
-        " and mandant_id = " + m.getID() +  // nur aktueller Mandant
-        " and buchung_id is NULL";          // keine Hilfs-Buchungen
-      return s;
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to create list query",e);
-      return null;
-    }
+    return super.getListQuery() + " and buchung_id is NULL";          // keine Hilfs-Buchungen
   }
 
   /**
@@ -135,13 +114,14 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     i.addFilter("buchung_id = " + this.getID());
     return i;
   }
-
-
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.30  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.29  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

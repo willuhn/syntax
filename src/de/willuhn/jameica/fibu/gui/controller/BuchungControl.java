@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.29 $
+ * $Date: 2005/08/15 23:38:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,9 +25,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.fibu.gui.views.BuchungNeu;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -129,7 +128,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
 					kontoAuswahl.setValue(k.getKontonummer());
           kontoAuswahl.setText(k.getKontonummer());
           sl.handleEvent(event);
@@ -144,7 +143,7 @@ public class BuchungControl extends AbstractControl
 		
     BaseKonto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
     kontoAuswahl.addListener(sl);
     sl.handleEvent(null);
     return kontoAuswahl;
@@ -169,7 +168,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          geldKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+          geldKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
           geldKontoAuswahl.setValue(k.getKontonummer());
           geldKontoAuswahl.setText(k.getKontonummer());
         }
@@ -183,7 +182,7 @@ public class BuchungControl extends AbstractControl
     
     GeldKonto k = getBuchung().getGeldKonto();
     geldKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
+    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
     return geldKontoAuswahl;
 	}
 
@@ -246,18 +245,10 @@ public class BuchungControl extends AbstractControl
 	}
 
   /**
-   * Oeffnet den Dialog fuer eine neue Buchung.
-   * @throws ApplicationException
-   */
-  public void handleNew() throws ApplicationException
-  {
-    new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
-  }
-  
-  /**
    * Speichert die Buchung.
+   * @param startNew legt fest, ob danach sofort der Dialog zum Erfassen einer neuen Buchung geoeffnet werden soll.
    */
-  public void handleStore()
+  public void handleStore(boolean startNew)
   {
     try {
 
@@ -269,7 +260,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set belegnummer",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Belegnummer ungültig."));
+        GUI.getView().setErrorText(i18n.tr("Belegnummer ungültig."));
         return;
       }
       //
@@ -283,7 +274,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set betrag",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Betrag ungültig."));
+        GUI.getView().setErrorText(i18n.tr("Betrag ungültig."));
         return;
       }
       //
@@ -298,7 +289,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set steuer",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Steuersatz ungültig."));
+        GUI.getView().setErrorText(i18n.tr("Steuersatz ungültig."));
         return;
       }
       //
@@ -327,7 +318,7 @@ public class BuchungControl extends AbstractControl
           }
           catch (ParseException e3)
           {
-            GUI.getStatusBar().setErrorText(i18n.tr("Datum ungültig."));
+            GUI.getView().setErrorText(i18n.tr("Datum ungültig."));
             return;
           }
         }
@@ -341,14 +332,14 @@ public class BuchungControl extends AbstractControl
       String s = (String) getKontoAuswahl().getText();
       if (s == null || s.length() == 0)
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
+        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
         return;
       }
       DBIterator konten = Settings.getDBService().createList(Konto.class);
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
         return;
       }
       getBuchung().setKonto((Konto) konten.next());
@@ -361,14 +352,14 @@ public class BuchungControl extends AbstractControl
       s = (String) getGeldKontoAuswahl().getText();
       if (s == null || s.length() == 0)
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
+        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
         return;
       }
       konten = Settings.getDBService().createList(GeldKonto.class);
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
-        GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Geldkonto existiert nicht."));
+        GUI.getView().setErrorText(i18n.tr("Das Geldkonto \"{0}\" existiert nicht.",s));
         return;
       }
       getBuchung().setGeldKonto((GeldKonto) konten.next());
@@ -383,7 +374,10 @@ public class BuchungControl extends AbstractControl
       // und jetzt speichern wir.
 			getBuchung().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + i18n.tr("gespeichert."));
-      GUI.startView(BuchungNeu.class.getName(),getBuchung());
+
+      if (startNew)
+        new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
+
     }
     catch (ApplicationException e1)
     {
@@ -421,7 +415,7 @@ public class BuchungControl extends AbstractControl
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
         {
-          GUI.getStatusBar().setErrorText(i18n.tr("Ausgewähltes Konto existiert nicht."));
+          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
           getSteuer().disable();
           return;
         }
@@ -445,7 +439,7 @@ public class BuchungControl extends AbstractControl
       catch (RemoteException e)
       {
         Logger.error("unable to determine steuer",e);
-        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
+        GUI.getView().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
       }
     }
     
@@ -507,7 +501,6 @@ public class BuchungControl extends AbstractControl
       catch (RemoteException e1)
       {
       	Logger.error("unable to update week day",e1);
-      	GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Ermittlung des Wochentags"));
       }
 		}
 	}
@@ -515,6 +508,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.29  2005/08/15 23:38:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,14 +66,13 @@ public class BuchungNeu extends AbstractView
     buttonArea.addButton(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleStore();
+        control.handleStore(false);
       }
     },null);
     buttonArea.addButton(i18n.tr("Speichern und Neue Buchung"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        control.handleStore();
-        control.handleNew();
+        control.handleStore(true);
       }
     },null,true);
 
@@ -89,6 +88,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.28  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

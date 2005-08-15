@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Attic/BaseKonto.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/15 23:38:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
@@ -103,11 +104,21 @@ public interface BaseKonto extends DBObject
    * @throws RemoteException
    */
   public void setSteuer(Steuer steuer) throws RemoteException;
+  
+  /**
+   * Liefert eine Liste aller Buchungen auf dem Konto.
+   * @return Liste der Buchungen.
+   * @throws RemoteException
+   */
+  public DBIterator getBuchungen() throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: BaseKonto.java,v $
+ * Revision 1.2  2005/08/15 23:38:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

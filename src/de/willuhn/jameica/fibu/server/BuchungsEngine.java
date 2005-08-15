@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class BuchungsEngine
     // Wir checken ob die Buchung neu ist. Nur neue Buchungen duerfen gebucht
     // werden. Alle anderen muessen storniert werden.
     if (!buchung.isNewObject())
-      throw new RemoteException("this is not a new buchung.");
+      return null;
 
     BaseKonto konto   = buchung.getKonto();
     GeldKonto gk      = buchung.getGeldKonto();
@@ -92,6 +92,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.7  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

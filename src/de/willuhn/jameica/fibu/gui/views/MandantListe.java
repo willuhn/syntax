@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,8 +37,8 @@ public class MandantListe extends AbstractView
   public void bind() throws Exception
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    
-		GUI.getView().setTitle(i18n.tr("Liste der Mandanten"));
+
+    GUI.getView().setTitle(i18n.tr("Liste der Mandanten"));
 
 		Part p = new MandantList(new MandantNeu());
     p.paint(getParent());
@@ -59,6 +59,9 @@ public class MandantListe extends AbstractView
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.15  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

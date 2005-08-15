@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,17 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoDelete;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
+import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -52,9 +55,9 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Steuersatz")  , control.getSteuer());
     group.addLabelPair(i18n.tr("Kontoart")    , control.getKontoart());
     group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmen());
-
-
-    ButtonArea buttons = group.createButtonArea(3);
+    group.addLabelPair(i18n.tr("Saldo"),        control.getSaldo());
+    
+    ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
     buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"), new Action()
@@ -64,6 +67,10 @@ public class KontoNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
+
+    new Headline(getParent(),i18n.tr("Buchungen auf diesem Konto"));
+    new BuchungList(control.getKonto(),new BuchungNeu()).paint(getParent());
+
   }
 
   /**
@@ -76,6 +83,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.12  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

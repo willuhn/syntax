@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/15 23:38:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public class FinanzamtControl extends AbstractControl
 	{
 		if (plz != null)
 			return plz;
-		plz = new TextInput(getFinanzamt().getPLZ());
+		plz = new TextInput(getFinanzamt().getPLZ(),7);
 		return plz;
 	}
 
@@ -170,6 +170,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.15  2005/08/15 23:38:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

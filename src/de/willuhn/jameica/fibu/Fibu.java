@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.22 $
+ * $Date: 2005/08/15 23:38:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,25 +104,8 @@ public class Fibu extends AbstractPlugin
       File create = new File(getResources().getPath() + "/sql/create.sql");
       File init   = new File(getResources().getPath() + "/sql/init.sql");
 
-      if (create.exists())
-      {
-        Logger.info("executing " + create.getAbsolutePath());
-        db.executeSQLScript(create);
-      }
-      else
-      {
-        Logger.error(create.getAbsolutePath() + " does not exist");
-      }
-      
-      if (init.exists())
-      {
-        Logger.info("executing " + init.getAbsolutePath());
-        db.executeSQLScript(init);
-      }
-      else
-      {
-        Logger.error(init.getAbsolutePath() + " does not exist");
-      }
+      db.executeSQLScript(create);
+      db.executeSQLScript(init);
     }
     catch (Exception e)
     {
@@ -150,6 +133,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.22  2005/08/15 23:38:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *
