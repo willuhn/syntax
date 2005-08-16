@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
@@ -32,7 +33,10 @@ public class BuchungNeu extends BaseAction
       super.handleAction(context);
       return;
     }
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungNeu.class,context);
+    Buchung b = null;
+    if (context != null && (context instanceof Buchung))
+      b = (Buchung) context;
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungNeu.class,b);
   }
 
 }
@@ -40,6 +44,11 @@ public class BuchungNeu extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.7  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.6  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

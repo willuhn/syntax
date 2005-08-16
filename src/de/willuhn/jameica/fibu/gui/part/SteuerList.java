@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/SteuerList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/16 23:14:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.SteuerListMenu;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -45,6 +46,7 @@ public class SteuerList extends TablePart
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Steuersatz"),"satz",new CurrencyFormatter("%",Fibu.DECIMALFORMAT));
     addColumn(i18n.tr("Steuer-Sammelkonto"),"steuerkonto_id");
+    setContextMenu(new SteuerListMenu());
   }
   
   /**
@@ -64,6 +66,11 @@ public class SteuerList extends TablePart
 
 /*********************************************************************
  * $Log: SteuerList.java,v $
+ * Revision 1.2  2005/08/16 23:14:35  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.1  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

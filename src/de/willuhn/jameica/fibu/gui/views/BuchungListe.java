@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.22 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,17 +13,13 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.part.BuchungList;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -46,11 +42,6 @@ public class BuchungListe extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Buchungen"));
 
-		Container container = new LabelGroup(getParent(),"Vorhandene Buchungen");
-    
-    Mandant m = Settings.getActiveMandant();
-    container.addText(i18n.tr("Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}),false);
-
     Part p = new BuchungList(new BuchungNeu());
     p.paint(getParent());
     
@@ -70,6 +61,11 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.22  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.21  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

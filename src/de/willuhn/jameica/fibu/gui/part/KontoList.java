@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/16 23:14:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -43,6 +44,8 @@ public class KontoList extends TablePart
     addColumn(i18n.tr("Kontoart"),"kontoart_id");
     addColumn(i18n.tr("Steuer"),"steuer_id");
     addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    setContextMenu(new KontoListMenu());
+    setMulti(true);
   }
 
 }
@@ -50,6 +53,11 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.3  2005/08/16 23:14:35  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.2  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

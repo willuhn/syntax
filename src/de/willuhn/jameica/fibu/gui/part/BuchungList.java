@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/16 23:14:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -74,6 +75,8 @@ public class BuchungList extends TablePart
     addColumn(i18n.tr("Geldkonto"),"geldkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Text"),"buchungstext");
     addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    setContextMenu(new BuchungListMenu());
+    setMulti(true);
   }
   
   /**
@@ -134,6 +137,11 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.5  2005/08/16 23:14:35  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.4  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

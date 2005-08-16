@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/FinanzamtList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/08 22:54:15 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/16 23:14:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.FinanzamtListMenu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -43,6 +44,7 @@ public class FinanzamtList extends TablePart
     addColumn(i18n.tr("Postfach"),"postfach");
     addColumn(i18n.tr("PLZ"),"plz");
     addColumn(i18n.tr("Ort"),"ort");
+    setContextMenu(new FinanzamtListMenu());
   }
   
   private static GenericIterator init() throws RemoteException
@@ -57,6 +59,11 @@ public class FinanzamtList extends TablePart
 
 /*********************************************************************
  * $Log: FinanzamtList.java,v $
+ * Revision 1.2  2005/08/16 23:14:35  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.1  2005/08/08 22:54:15  willuhn
  * @N massive refactoring
  *

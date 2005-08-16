@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/MandantList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/16 23:14:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.MandantListMenu;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -47,6 +48,7 @@ public class MandantList extends TablePart
     addColumn(i18n.tr("Ort"),"ort");
     addColumn(i18n.tr("Steuernummer"),"steuernummer");
     addColumn(i18n.tr("Kontenrahmen"),"kontenrahmen_id");
+    setContextMenu(new MandantListMenu());
   }
 
   /**
@@ -65,6 +67,11 @@ public class MandantList extends TablePart
 
 /*********************************************************************
  * $Log: MandantList.java,v $
+ * Revision 1.2  2005/08/16 23:14:35  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.1  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

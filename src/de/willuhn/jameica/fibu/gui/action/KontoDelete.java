@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class KontoDelete extends BaseAction
       if (k.length > 1)
       {
         d.setTitle(i18n.tr("Konten wirklich löschen?"));
-        d.setText(i18n.tr("Wollen Sie diese {0} Konten wirklich stornieren?",""+k.length));
+        d.setText(i18n.tr("Wollen Sie diese {0} Konten wirklich löschen?",""+k.length));
       }
       else
       {
@@ -111,6 +111,11 @@ public class KontoDelete extends BaseAction
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.4  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.3  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

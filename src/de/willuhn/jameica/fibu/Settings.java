@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,10 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.fibu.gui.dialogs.MandantAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.I18N;
 
 /**
  * Verwaltet die Einstellungen des Plugins.
@@ -63,6 +65,27 @@ public class Settings
 	}
 
   /**
+   * Legt den aktiven Mandanten manuell fest.
+   * @param m zu aktivierender Mandant.
+   */
+  public static void setActiveMandant(Mandant m)
+  {
+    if (m != null)
+    {
+      mandant = m;
+      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+      try
+      {
+        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}));
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to refresh status bar",e);
+      }
+    }
+  }
+  
+  /**
    * Liefert den aktiven Mandanten oder einen Dialog zur Abfrage, falls dieser noch
    * nicht ausgeaehlt ist.
    * @return den aktiven Mandanten.
@@ -78,6 +101,7 @@ public class Settings
       Logger.info("open mandant select dialog");
       MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_CENTER);
       mandant = (Mandant) d.open();
+      setActiveMandant(mandant);
       return mandant;
     }
     catch (Exception e)
@@ -90,6 +114,11 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.15  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.14  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

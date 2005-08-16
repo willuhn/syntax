@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,14 +17,11 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -46,11 +43,6 @@ public class KontoListe extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten"));
 
-    Container container = new LabelGroup(getParent(),"Vorhandene Konten");
-    
-    Mandant m = Settings.getActiveMandant();
-    container.addText(i18n.tr("Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}),false);
-
     Part p = new KontoList(Settings.getDBService().createList(Konto.class),new KontoNeu());
     p.paint(getParent());
     
@@ -71,6 +63,11 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.13  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.12  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BaseAction.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/16 23:14:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,8 @@ public abstract class BaseAction implements Action
   private boolean fa = false;
   private boolean ma = false;
 
+  private I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
   /**
    * Prueft, ob ein Mandant angelegt ist.
    * @return true, wenn er angelegt ist.
@@ -61,12 +63,13 @@ public abstract class BaseAction implements Action
         DBIterator list = Settings.getDBService().createList(Mandant.class);
         ma = (list.size() > 0);
       }
+      return fa & ma;
     }
     catch (RemoteException e)
     {
       Logger.error("unable to run check",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Mandanten"),e);
     }
-    return fa & ma;
   }
 
   /**
@@ -77,8 +80,6 @@ public abstract class BaseAction implements Action
     if (fa && ma)
       return;
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     if (!fa)
     {
       new FinanzamtNeu().handleAction(null);
@@ -99,6 +100,11 @@ public abstract class BaseAction implements Action
 
 /*********************************************************************
  * $Log: BaseAction.java,v $
+ * Revision 1.3  2005/08/16 23:14:36  willuhn
+ * @N velocity export
+ * @N context menus
+ * @B bugfixes
+ *
  * Revision 1.2  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *
