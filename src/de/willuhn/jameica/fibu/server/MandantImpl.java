@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -233,20 +233,25 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     Date d = (Date) getAttribute("gj_von");
 
+    Calendar cal = Calendar.getInstance();
+
     if (d == null)
     {
       // Wir erstellen automatisch ein neues, wenn keins existiert.
       Logger.info("no geschaeftsjahr start given, using current year");
-      d = new Date();
+      cal.set(Calendar.MONTH,Calendar.JANUARY);
+      cal.set(Calendar.DAY_OF_MONTH,1);
+    }
+    else
+    {
+      cal.setTime(d);
     }
 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(d);
-    cal.set(Calendar.MONTH,Calendar.JANUARY);
-    cal.set(Calendar.DAY_OF_MONTH,1);
+    // Jetzt noch auf den Anfang des Tages setzen.
     cal.set(Calendar.HOUR_OF_DAY,0);
     cal.set(Calendar.MINUTE,0);
     cal.set(Calendar.SECOND,1);
+
     d = cal.getTime();
     setGeschaeftsjahrVon(d);
     return d;
@@ -267,20 +272,25 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     Date d = (Date) getAttribute("gj_bis");
 
+    Calendar cal = Calendar.getInstance();
+
     if (d == null)
     {
       // Wir erstellen automatisch ein neues, wenn keins existiert.
       Logger.info("no geschaeftsjahr start given, using current year");
-      d = new Date();
+      cal.set(Calendar.MONTH,Calendar.DECEMBER);
+      cal.set(Calendar.DAY_OF_MONTH,31);
+    }
+    else
+    {
+      cal.setTime(d);
     }
 
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(Calendar.MONTH,Calendar.DECEMBER);
-    cal.set(Calendar.DAY_OF_MONTH,31);
+    // Jetzt noch auf das Ende des Tages setzen
     cal.set(Calendar.HOUR_OF_DAY,23);
     cal.set(Calendar.MINUTE,59);
     cal.set(Calendar.SECOND,59);
+
     d = cal.getTime();
     setGeschaeftsjahrBis(d);
     return d;
@@ -365,6 +375,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.16  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

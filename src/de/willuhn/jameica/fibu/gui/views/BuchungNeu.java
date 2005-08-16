@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.29 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,15 +46,15 @@ public class BuchungNeu extends AbstractView
     final BuchungControl control = new BuchungControl(this);
 
     // Gruppe Konto erzeugen
-    LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Konto"));
+    LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-    kontoGroup.addLabelPair(i18n.tr("Datum"),       control.getDatum());
-    kontoGroup.addLabelPair(i18n.tr("Konto"),       control.getKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Geld-Konto"),  control.getGeldKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Text"),        control.getText());
-    kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),   control.getBelegnummer());
-    kontoGroup.addLabelPair(i18n.tr("Betrag"),      control.getBetrag());
-    kontoGroup.addLabelPair(i18n.tr("Steuersatz"),  control.getSteuer());
+    kontoGroup.addLabelPair(i18n.tr("Datum"),           control.getDatum());
+    kontoGroup.addLabelPair(i18n.tr("Konto"),           control.getKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Geld-Konto"),      control.getGeldKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Text"),            control.getText());
+    kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
+    kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
+    kontoGroup.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
@@ -88,6 +88,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.29  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

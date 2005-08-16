@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/09 23:53:34 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,11 +162,11 @@ public class SteuerControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
-      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
+      GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
-      GUI.getStatusBar().setErrorText("Fehler beim Speichern des Steuersatzes.");
+      GUI.getView().setErrorText("Fehler beim Speichern des Steuersatzes.");
       Logger.error("unable to store steuer",e);
     }
     
@@ -175,6 +175,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.15  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/08/09 23:53:34  willuhn
  * @N massive refactoring
  *

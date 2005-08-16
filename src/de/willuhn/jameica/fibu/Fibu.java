@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,9 +116,8 @@ public class Fibu extends AbstractPlugin
     String welcome = getResources().getI18N().tr("Fibu für Jameica");
     welcome += "\n";
     welcome += getResources().getI18N().tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +
-      "   - Legen Sie zuerst ein Finanzamt an (Menü: Fibu/Finanzämter)\n" +
-      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n" +
-      "   - Aktivieren Sie den angelegten Mandanten (Menü: Fibu/Einstellungen\n");
+      "   - Legen Sie zuerst ein Finanzamt an (Menü: Plugins/Fibu/Finanzämter)\n" +
+      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n");
 
     Application.addWelcomeMessage(welcome);
   }
@@ -133,6 +132,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.23  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

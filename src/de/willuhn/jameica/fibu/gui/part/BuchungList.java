@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -47,10 +48,31 @@ public class BuchungList extends TablePart
     super(init(konto), action);
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
+    addColumn(i18n.tr("Beleg"),"belegnummer");
+    addColumn(i18n.tr("Art"),"konto_id", new Formatter()
+    {
+      public String format(Object o)
+      {
+        if (o == null || !(o instanceof BaseKonto))
+          return null;
+        try
+        {
+          BaseKonto k = (BaseKonto) o;
+          Kontoart ka = k.getKontoArt();
+          if (ka == null)
+            return null;
+          return ka.getName();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to detect konto art",e);
+          return null;
+        }
+      }
+    });
     addColumn(i18n.tr("Konto"),"konto_id", new KontoFormatter());
     addColumn(i18n.tr("Geldkonto"),"geldkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(), Fibu.DECIMALFORMAT));
   }
   
@@ -112,6 +134,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.4  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

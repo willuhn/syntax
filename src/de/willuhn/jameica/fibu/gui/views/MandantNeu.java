@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,6 @@ public class MandantNeu extends AbstractView
         }
       },null,control.storeAllowed());
     }
-    
   }
 
   /**
@@ -89,6 +88,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.15  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

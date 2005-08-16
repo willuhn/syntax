@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.21 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class BuchungListe extends AbstractView
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    GUI.getView().setTitle(i18n.tr("Buchungungen"));
+    GUI.getView().setTitle(i18n.tr("Buchungen"));
 
 		Container container = new LabelGroup(getParent(),"Vorhandene Buchungen");
     
@@ -70,6 +70,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.21  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

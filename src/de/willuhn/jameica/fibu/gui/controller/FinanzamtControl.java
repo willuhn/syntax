@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/15 23:38:28 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,12 +157,12 @@ public class FinanzamtControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
-      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
+      GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
 			Logger.error("unable to store finanzamt",e);
-      GUI.getStatusBar().setErrorText("Fehler beim Speichern der Daten des Finanzamtes.");
+      GUI.getView().setErrorText("Fehler beim Speichern der Daten des Finanzamtes.");
     }
     
   }
@@ -170,6 +170,9 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.16  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/08/15 23:38:28  willuhn
  * *** empty log message ***
  *

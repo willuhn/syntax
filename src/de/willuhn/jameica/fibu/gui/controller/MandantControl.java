@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/08/15 23:38:28 $
+ * $Revision: 1.21 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -296,7 +296,9 @@ public class MandantControl extends AbstractControl
 			storeAllowed = true;
 		}
 		else {
-			finanzamtAuswahl = new LabelInput(i18n.tr("Kein Finanzamt vorhanden. Bitte richten Sie zunächst eines ein."));
+      String s = i18n.tr("Kein Finanzamt vorhanden. Bitte richten Sie zunächst eines ein.");
+      GUI.getView().setErrorText(s);
+			finanzamtAuswahl = new LabelInput(s);
 		}
 		return finanzamtAuswahl;
 	}
@@ -327,7 +329,7 @@ public class MandantControl extends AbstractControl
       // Geschaeftsjahr checken
 
 			getMandant().setGeschaeftsjahrVon((Date)getGJStart().getValue());
-      getMandant().setGeschaeftsjahrVon((Date)getGJEnd().getValue());
+      getMandant().setGeschaeftsjahrBis((Date)getGJEnd().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -352,12 +354,12 @@ public class MandantControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
-      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
+      GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
 			Logger.error("unable to store mandant",e);
-      GUI.getStatusBar().setErrorText("Fehler beim Speichern des Mandanten.");
+      GUI.getView().setErrorText("Fehler beim Speichern des Mandanten.");
     }
     
   }
@@ -365,6 +367,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.21  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/08/15 23:38:28  willuhn
  * *** empty log message ***
  *

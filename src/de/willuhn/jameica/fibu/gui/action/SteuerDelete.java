@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/SteuerDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,6 +33,12 @@ public class SteuerDelete extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     if (context == null || !(context instanceof Steuer))
       return;
     
@@ -65,6 +71,9 @@ public class SteuerDelete extends BaseAction
 
 /*********************************************************************
  * $Log: SteuerDelete.java,v $
+ * Revision 1.4  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

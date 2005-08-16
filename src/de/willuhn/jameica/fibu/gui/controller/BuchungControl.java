@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/08/15 23:38:28 $
+ * $Revision: 1.30 $
+ * $Date: 2005/08/16 17:39:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,7 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -54,12 +55,12 @@ public class BuchungControl extends AbstractControl
 	private BaseBuchung buchung 		= null;
 
 	// Eingabe-Felder
-	private Input datum					   = null;
 	private Input	text					   = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 
   private DecimalInput steuer				   = null;
+  private DialogInput datum            = null;
   private DialogInput kontoAuswahl     = null;
   private DialogInput geldKontoAuswahl = null;
   
@@ -98,16 +99,36 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getDatum() throws RemoteException
+  public DialogInput getDatum() throws RemoteException
 	{
 		if (datum != null)
 			return datum;
 		
-		datum = new TextInput(Fibu.DATEFORMAT.format(getBuchung().getDatum()));
-		datum.setComment("");
-		datum.addListener(new WochentagListener());
-		return datum;
-	}
+    Date d = getBuchung().getDatum();
+    if (d == null)
+      d = new Date();
+
+    CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
+    cd.setTitle(i18n.tr("Datum"));
+    cd.setText(i18n.tr("Bitte wählen Sie das Datum für diese Buchung"));
+    cd.setDate(d);
+    cd.addCloseListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        if (event == null || event.data == null)
+          return;
+        datum.setText(Fibu.DATEFORMAT.format((Date)event.data));
+      }
+    });
+    String s = Fibu.DATEFORMAT.format(d);
+    datum = new DialogInput(s,cd);
+    datum.setValue(s);
+    datum.setComment("");
+    datum.enableClientControl();
+    datum.addListener(new WochentagListener());
+    return datum;
+  
+  }
 
 	/**
 	 * Liefert das Eingabe-Feld zur Auswahl des Kontos.
@@ -381,12 +402,12 @@ public class BuchungControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
-      GUI.getStatusBar().setErrorText(e1.getLocalizedMessage());
+      GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
 			Logger.error("unable to store buchung",e);
-      GUI.getStatusBar().setErrorText("Fehler beim Speichern der Buchung.");
+      GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
     }
     
   }
@@ -496,6 +517,7 @@ public class BuchungControl extends AbstractControl
 				return;
 			try
       {
+        getDatum().setText(Fibu.DATEFORMAT.format(d));
         getDatum().setComment(i18n.tr(Fibu.WEEKDAYS[i]));
       }
       catch (RemoteException e1)
@@ -508,6 +530,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.30  2005/08/16 17:39:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.29  2005/08/15 23:38:28  willuhn
  * *** empty log message ***
  *
