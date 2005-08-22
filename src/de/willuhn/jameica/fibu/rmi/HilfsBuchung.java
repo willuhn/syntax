@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/HilfsBuchung.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,19 +28,22 @@ public interface HilfsBuchung extends BaseBuchung
    * @return Haupt-Buchung.
    * @throws RemoteException
    */
-  public BaseBuchung getHauptBuchung() throws RemoteException;
+  public Buchung getHauptBuchung() throws RemoteException;
   
   /**
    * Definiert die Haupt-Buchung, zu der diese Hilfs-Buchung gehoert.
    * @param buchung Haupt-Buchung.
    * @throws RemoteException
    */
-  public void setHauptBuchung(BaseBuchung buchung) throws RemoteException;
+  public void setHauptBuchung(Buchung buchung) throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: HilfsBuchung.java,v $
+ * Revision 1.4  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

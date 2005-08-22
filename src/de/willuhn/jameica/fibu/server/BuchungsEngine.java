@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,8 +52,8 @@ public class BuchungsEngine
       }
     }
 
-    Konto sKonto   = buchung.getSollKonto();
-    Konto hKonto      = buchung.getHabenKonto();
+    Konto sKonto = buchung.getSollKonto();
+    Konto hKonto = buchung.getHabenKonto();
 
     // checken, ob alle Daten da sind.
     if (sKonto == null || hKonto == null)
@@ -100,6 +100,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.10  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

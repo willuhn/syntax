@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,18 +17,22 @@ import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
 public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implements BaseBuchung
 {
+  I18N i18n = null;
   
   /**
    * Erzeugt eine neue BaseBuchung.
@@ -37,6 +41,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   public AbstractBaseBuchungImpl() throws RemoteException
   {
     super();
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -70,7 +75,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public Konto getSollKonto() throws RemoteException
   {
-    return (Konto) getAttribute("sollkonto_id");
+    Konto k = (Konto) getAttribute("sollkonto_id");
+    return k;
   }
 
   /**
@@ -78,7 +84,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public Konto getHabenKonto() throws RemoteException
   {
-    return (Konto) getAttribute("habenkonto_id");
+    Konto k = (Konto) getAttribute("habenkonto_id");
+    return k;
   }
 
   /**
@@ -234,51 +241,52 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
-   */
-  protected void deleteCheck() throws ApplicationException
-  {
-  }
-
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
   public void insertCheck() throws ApplicationException
   {
     try {
-      
-      Mandant m = getMandant();
-
       if (getBetrag() == 0.0d)
-        throw new ApplicationException("Bitte geben Sie einen Buchungsbetrag ein.");
-
-      // ich muss hier deshalb getAttribute() aufrufen, weil getBelegnummer automatisch eine erzeugt
-      if (getAttribute("belegnummer") == null)
-        throw new ApplicationException("Bitte geben Sie eine Belegnummer ein.");
-
-      if (m == null)
-        throw new ApplicationException("Bitte wählen Sie den Mandanten aus.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ein."));
 
       if (getSollKonto() == null)
-        throw new ApplicationException("Bitte geben Sie ein Konto für die Soll-Buchung ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto für die Soll-Buchung ein."));
 
       if (getHabenKonto() == null)
-        throw new ApplicationException("Bitte geben Sie ein Konto für die Haben-Buchung ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto für die Haben-Buchung ein."));
 
       Date d = getDatum();
       if (d == null)
-        throw new ApplicationException("Bitte geben Sie ein Datum ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Datum ein."));
+
+      Mandant m = getMandant();
+      if (m == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Mandanten aus."));
 
       if (!m.checkGeschaeftsJahr(d))
-        throw new ApplicationException("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres.");
-        
+        throw new ApplicationException(i18n.tr("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres."));
+
+      // ich muss hier deshalb getAttribute() aufrufen, weil getBelegnummer automatisch eine erzeugt
+      Integer i = (Integer) getAttribute("belegnummer");
+      if (i == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Belegnummer ein."));
     }
     catch (RemoteException e)
     {
       Logger.error("error while checking buchung",e);
-      throw new ApplicationException("Fehler bei der Prüfung der Buchung.",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
     }
     super.insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    super.delete();
+    SaldenCache.remove(getSollKonto().getKontonummer());
+    SaldenCache.remove(getHabenKonto().getKontonummer());
   }
 
   /**
@@ -286,7 +294,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public void updateCheck() throws ApplicationException
   {
-    // hier gilt erst mal das gleiche wie beim Insert-Check ;)
     insertCheck();
   }
 
@@ -332,6 +339,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.6  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

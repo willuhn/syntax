@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.32 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -110,11 +111,37 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     i.addFilter("buchung_id = " + this.getID());
     return i;
   }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    try
+    {
+      // Checken, ob in die Belegnummer eindeutig ist
+      DBIterator list = getService().createList(Buchung.class);
+      list.addFilter("belegnummer = " + getAttribute("belegnummer"));
+      if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
+        list.addFilter("id != " + this.getID());
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Im aktuellen Geschäftsjahr existiert bereits eine Buchung mit dieser Nummer"));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking buchung",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
+    }
+    super.insertCheck();
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.32  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.31  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

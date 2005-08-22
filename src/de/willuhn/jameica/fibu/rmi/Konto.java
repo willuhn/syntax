@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,11 +118,21 @@ public interface Konto extends DBObject
    * @throws RemoteException
    */
   public BaseBuchung[] getBuchungList() throws RemoteException;
+  
+  /**
+   * Liefert den Anfangsbestand des Kontos oder null wenn keiner existiert.
+   * @return Anfangsbestand.
+   * @throws RemoteException
+   */
+  public Anfangsbestand getAnfangsbestand() throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.13  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

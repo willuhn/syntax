@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.24 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,27 +96,20 @@ public class KontoImpl extends AbstractDBObject implements Konto
     ResultSet rs   = null;
     try
     {
-      double dd = 0.0d;
       DBServiceImpl service = (DBServiceImpl) this.getService();
-      Mandant m = Settings.getActiveMandant();
       
-      // Anfangsbestand ermitteln
-      DBIterator ab = service.createList(Anfangsbestand.class);
-      ab.addFilter("konto_id = " + this.getID());
-      ab.addFilter("mandant_id = " + m.getID());
-      if (ab.hasNext())
-      {
-        Anfangsbestand a = (Anfangsbestand) ab.next();
-        dd += a.getBetrag();
-      }
-      
+      double saldo = 0.0d;
+      Anfangsbestand a = getAnfangsbestand();
+      if (a != null)
+        saldo = a.getBetrag();
+     
+
       stmt = service.getConnection().createStatement();
 
-
+      Mandant m = Settings.getActiveMandant();
       Date start = m.getGeschaeftsjahrVon();
       Date end   = m.getGeschaeftsjahrBis();
 
-      // TODO
       String sql = "select sum(betrag) as b from buchung " +
         " where TONUMBER(datum) >= " + start.getTime() +
         " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
@@ -125,10 +118,21 @@ public class KontoImpl extends AbstractDBObject implements Konto
       rs = stmt.executeQuery(sql);
       if (rs.next())
       {
-        dd += rs.getDouble("b");
+        saldo += rs.getDouble("b");
       }
-      SaldenCache.put(this.getKontonummer(),new Double(dd));
-      return dd;
+
+      sql = "select sum(betrag) as b from buchung " +
+      " where TONUMBER(datum) >= " + start.getTime() +
+      " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
+      " and mandant_id = "+ m.getID() + 
+      " and habenkonto_id = " + this.getID();
+    rs = stmt.executeQuery(sql);
+    if (rs.next())
+    {
+      saldo -= rs.getDouble("b");
+    }
+    SaldenCache.put(this.getKontonummer(),new Double(saldo));
+    return saldo;
     }
     catch (Exception e)
     {
@@ -338,7 +342,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (ka != null)
       art = ka.getKontoArt();
     DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
-    list.addFilter(" (konto_id = " + this.getID() + " OR geldkonto_id = " + this.getID() + ")");
+    list.addFilter(" (sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
     list.setOrder("order by tonumber(datum)");
     return list;
   }
@@ -358,10 +362,26 @@ public class KontoImpl extends AbstractDBObject implements Konto
     return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getAnfangsbestand()
+   */
+  public Anfangsbestand getAnfangsbestand() throws RemoteException
+  {
+    DBIterator ab = getService().createList(Anfangsbestand.class);
+    ab.addFilter("konto_id = " + this.getID());
+    ab.addFilter("mandant_id = " + Settings.getActiveMandant().getID());
+    if (!ab.hasNext())
+      return null;
+    return (Anfangsbestand) ab.next();
+  }
+
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.24  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

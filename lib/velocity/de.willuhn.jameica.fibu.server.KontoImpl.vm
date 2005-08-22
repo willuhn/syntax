@@ -211,9 +211,9 @@
           <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
           <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
           <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
-          #set($gegen = $buchung.GeldKonto)
+          #set($gegen = $buchung.SollKonto)
           #if ($gegen.Kontonummer == $konto.Kontonummer)
-            #set($gegen = $buchung.Konto)
+            #set($gegen = $buchung.HabenKonto)
           #end
           <td>$!{gegen.Kontonummer}</td>
 

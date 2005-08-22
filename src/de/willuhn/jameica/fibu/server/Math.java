@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,11 @@ public class Math
    */
   public double steuer(double bruttoBetrag, double steuerSatz)
   {
-    return bruttoBetrag - netto(bruttoBetrag,steuerSatz);
+    double netto = netto(bruttoBetrag,steuerSatz);
+    double steuer = round(bruttoBetrag - netto);
+    if (netto + steuer != bruttoBetrag)
+      Logger.warn("********* NETTO: " + netto + ", STEUER: " + steuer + ", BRUTTO: " + bruttoBetrag + " **************");
+    return steuer;
   }
 
   /**
@@ -114,6 +118,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.7  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

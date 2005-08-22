@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,16 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import java.rmi.RemoteException;
+
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Action zum Anlegen einer neuen Buchung.
@@ -34,8 +41,24 @@ public class BuchungNeu extends BaseAction
       return;
     }
     Buchung b = null;
-    if (context != null && (context instanceof Buchung))
-      b = (Buchung) context;
+    if (context != null)
+    {
+      if (context instanceof Buchung)
+        b = (Buchung) context;
+      else if (context instanceof HilfsBuchung)
+      {
+        try
+        {
+          b = ((HilfsBuchung)context).getHauptBuchung();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to load hauptbuchung",e);
+          I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+          throw new ApplicationException(i18n.tr("Fehler beim Laden der Buchung"));
+        }
+      }
+    }
     GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungNeu.class,b);
   }
 
@@ -44,6 +67,9 @@ public class BuchungNeu extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.8  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

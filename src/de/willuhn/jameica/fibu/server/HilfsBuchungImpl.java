@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -36,15 +36,15 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   /**
    * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#getHauptBuchung()
    */
-  public BaseBuchung getHauptBuchung() throws RemoteException
+  public Buchung getHauptBuchung() throws RemoteException
   {
-    return (BaseBuchung) getAttribute("buchung_id");
+    return (Buchung) getAttribute("buchung_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#setHauptBuchung(de.willuhn.jameica.fibu.rmi.BaseBuchung)
+   * @see de.willuhn.jameica.fibu.rmi.HilfsBuchung#setHauptBuchung(de.willuhn.jameica.fibu.rmi.Buchung)
    */
-  public void setHauptBuchung(BaseBuchung buchung) throws RemoteException
+  public void setHauptBuchung(Buchung buchung) throws RemoteException
   {
     setAttribute("buchung_id",buchung);
   }
@@ -55,7 +55,7 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   public Class getForeignObject(String field) throws RemoteException
   {
     if ("buchung_id".equals(field))
-      return BaseBuchung.class;
+      return Buchung.class;
     return super.getForeignObject(field);
   }
 
@@ -98,6 +98,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.12  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

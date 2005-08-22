@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/22 21:44:08 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,16 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     super();
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    Konto k = getKonto();
+    super.delete();
+    if (k != null)
+      SaldenCache.remove(k.getKontonummer());
+  }
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getTableName()
    */
@@ -161,6 +171,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.3  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/22 21:44:08  willuhn
  * @N Anfangsbestaende
  *

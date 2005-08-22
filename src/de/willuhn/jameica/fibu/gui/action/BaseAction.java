@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BaseAction.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,15 +51,12 @@ public abstract class BaseAction implements Action
     {
       if (!fa)
       {
-        Logger.info("checking if finanzamt exists");
-        
         DBIterator list = Settings.getDBService().createList(Finanzamt.class);
         fa = (list.size() > 0);
       }
 
       if (!ma)
       {
-        Logger.info("checking if mandant exists");
         DBIterator list = Settings.getDBService().createList(Mandant.class);
         ma = (list.size() > 0);
       }
@@ -100,6 +97,9 @@ public abstract class BaseAction implements Action
 
 /*********************************************************************
  * $Log: BaseAction.java,v $
+ * Revision 1.4  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

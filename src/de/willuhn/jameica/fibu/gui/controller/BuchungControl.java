@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.34 $
+ * $Date: 2005/08/22 23:13:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
-import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -51,7 +50,7 @@ public class BuchungControl extends AbstractControl
 {
 	
 	// Fachobjekte
-	private BaseBuchung buchung 		= null;
+	private Buchung buchung 		= null;
 
 	// Eingabe-Felder
 	private Input	text					   = null;
@@ -79,7 +78,7 @@ public class BuchungControl extends AbstractControl
    * @return die Buchung.
    * @throws RemoteException
    */
-  public BaseBuchung getBuchung() throws RemoteException
+  public Buchung getBuchung() throws RemoteException
 	{
 		if (buchung != null)
 			return buchung;
@@ -574,6 +573,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.34  2005/08/22 23:13:26  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *
