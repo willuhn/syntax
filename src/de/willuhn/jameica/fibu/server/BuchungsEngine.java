@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,10 +15,9 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 
 /**
@@ -46,8 +45,8 @@ public class BuchungsEngine
     if (!buchung.isNewObject())
       return null;
 
-    BaseKonto konto   = buchung.getKonto();
-    GeldKonto gk      = buchung.getGeldKonto();
+    Konto konto   = buchung.getKonto();
+    Konto gk      = buchung.getGeldKonto();
 
     // checken, ob alle Daten da sind.
     if (konto == null || gk == null)
@@ -65,10 +64,12 @@ public class BuchungsEngine
       return null;
     }
 
+    Math math = new Math();
+
     double steuer  = buchung.getSteuer();
     double brutto  = buchung.getBetrag();
-    double netto   = Math.netto(brutto,steuer);
-    double sBetrag = Math.steuer(brutto,steuer);
+    double netto   = math.netto(brutto,steuer);
+    double sBetrag = math.steuer(brutto,steuer);
     
     if (steuer == 0.0 || brutto == netto)
       return null; // keine Steuer zu buchen
@@ -92,6 +93,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.8  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.7  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

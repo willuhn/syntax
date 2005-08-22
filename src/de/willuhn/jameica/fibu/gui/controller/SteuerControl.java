@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,13 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -116,7 +118,9 @@ public class SteuerControl extends AbstractControl
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
-    KontoAuswahlDialog d = new KontoAuswahlDialog(Settings.getDBService().createList(SteuerKonto.class),KontoAuswahlDialog.POSITION_MOUSE);
+    DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
+    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -125,7 +129,7 @@ public class SteuerControl extends AbstractControl
         kontoauswahl.setValue(event.data);
       }
     });
-    SteuerKonto k = getSteuer().getSteuerKonto();
+    Konto k = getSteuer().getSteuerKonto();
 		kontoauswahl = new DialogInput(k == null ? null : (k.getKontonummer() + " [" + k.getName() + "]"),d);
     kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung()}));
     kontoauswahl.disableClientControl();
@@ -147,12 +151,12 @@ public class SteuerControl extends AbstractControl
       // Steuerkonto checken
       
       Object o = getKontoAuswahl().getValue();
-      if (o == null || !(o instanceof SteuerKonto))
+      if (o == null || !(o instanceof Konto))
       {
         GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Steuerkonto aus."));
         return;
       }
-      getSteuer().setSteuerKonto((SteuerKonto)o);
+      getSteuer().setSteuerKonto((Konto)o);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -175,6 +179,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.16  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.15  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

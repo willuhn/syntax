@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
@@ -39,7 +38,7 @@ public class KontoAuswahlDialog extends AbstractDialog
 {
 
 	private I18N i18n;
-	private BaseKonto choosen = null;
+	private Konto choosen = null;
   private GenericIterator konten = null;
 
   /**
@@ -74,9 +73,9 @@ public class KontoAuswahlDialog extends AbstractDialog
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        if (context == null || !(context instanceof BaseKonto))
+        if (context == null || !(context instanceof Konto))
           return;
-        choosen = (BaseKonto) context;
+        choosen = (Konto) context;
         close();
       }
     };    
@@ -92,10 +91,10 @@ public class KontoAuswahlDialog extends AbstractDialog
       public void handleAction(Object context) throws ApplicationException
       {
 				Object o = konten.getSelection();
-        if (o == null || !(o instanceof BaseKonto))
+        if (o == null || !(o instanceof Konto))
           return;
 
-        choosen = (BaseKonto) o;
+        choosen = (Konto) o;
         close();
       }
     });
@@ -123,6 +122,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.3  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.2  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

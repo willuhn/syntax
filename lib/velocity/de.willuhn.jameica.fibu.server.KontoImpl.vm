@@ -11,76 +11,61 @@
     }
 
     p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
-      font-family             : Verdana, Helvetica, Arial;
-      color                   : #000000;
-      font-size               : 8pt;
+      font-family              : Verdana, Helvetica, Arial;
+      color                    : #000000;
+      font-size                : 8pt;
     }
 
     table {
+      width                    : 100%;
+      border-bottom            : 1px solid #000000;
     }
     th {
       text-align               : left;
+      vertical-align           : top;
     }
     td {
-      vertical-align           : top;
       text-align               : left;
+      vertical-align           : top;
     }
 
     table.data {
       width                    : 100%;
-      border                   : 1px solid #E0E0E0;
+      border-top               : 1px solid #000000;
+      border-bottom            : 1px solid #000000;
     }
     table.data th {
-      color                    : #ffffff;
-      padding-left             : 3px;
-      padding-right            : 10px;
-      background-color         : #b0b0a0;
+      font-weight              : bold;
     }
     table.data td {
-      background               : #f8f8f8;
-      margin                   : 0px;
-      padding-left             : 3px;
-      padding-right            : 10px;
       font-size                : 7pt;
-      color                    : #505050;
-	  white-space              : nowrap;
+      white-space              : nowrap;
     }
-	tr.red td {
-      background               : #fff1f1;
-      margin                   : 0px;
-      padding-left             : 3px;
-      padding-right            : 10px;
-      font-size                : 7pt;
-      color                    : #900000;
-	  white-space              : nowrap;
-	}
 
     ol,ul {
       list-style-position      : outside;
     }
-    
+
     ul {
       list-style-type          : disk;
       margin-top               : 0px;
       margin-bottom            : 0px;
     }
-    
+
     h1 {
-      color                    : #d76B00;
       font-weight              : bold;
-      font-size                : 10pt;
+      font-size                : 11pt;
       margin-top               : 1px;
       margin-bottom            : 1px;
     }
-    
+
     h2 {
-      color                    : #000055;
       font-weight              : bold;
       font-size                : 8pt;
       margin-top               : 1px;
       margin-bottom            : 3px;
     }
-    
+
     h3 {
       font-weight              : normal;
       font-size                : 7pt;
@@ -129,45 +114,126 @@
       color                    : #000088;
       text-decoration          : none;
     }
-    
+
     a:visited  {
       color                    : #808080;
       text-decoration          : none;
     }
-    
+
     a:hover {
       color                    : #0000dd;
       text-decoration          : none;
     }
-    
+
     a:active {
       color                    : #0000dd;
       text-decoration          : none;
     }
-    
+
     a:focus {
       color                    : #0000dd;
       text-decoration          : none;
     }
   </style>
   <body>
-	<h1>Konto-Umsätze</h1>
-	<h2>$!{dateformat.format(${datum})}</h2>
-	
-		
+
+  <table>
+    <tr>
+      <td>
+        <h1>Konto-Auszug</h1>
+        Geschäftsjahr: $!{dateformat.format(${mandant.GeschaeftsjahrVon})} - $!{dateformat.format(${mandant.GeschaeftsjahrBis})}
+      </td>
+      <td style="text-align:right;">Druck: $!{longdateformat.format(${datum})}</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <td>
+        <b>
+          $!{mandant.Name1} $!{mandant.Name2}
+          <br/>
+          $!{mandant.Firma}
+          <br/>
+          $!{mandant.Strasse}
+          <br/>
+          $!{mandant.PLZ} $!{mandant.Ort}
+        </b>
+      </td>
+      <td>
+        <b>Steuer-Nr.:</b> $!{mandant.Steuernummer}
+        <br/>
+        <b>Finanzamt:</b> $!{mandant.Finanzamt.Name}
+      </td>
+    </tr>
+    <tr>
+  </table>
+
+  #set($eur = $!{mandant.Waehrung})
   #foreach($konto in $objects)
-    #set($buchungen = $konto.Buchungen)
-    <h3>$!{konto.Name} [Kto $!{konto.Kontonummer}]</h3>
-    <h2>Saldo: $decimalformat.format($!{konto.Saldo})</h3>
-  	<table class="data">
-  	  <tr>
-  		<th>Gegenkonto</th>
-  		<th style="text-align:right">Betrag</th>
-  		<th>Datum</th>
-  		<th>Text</th>
-  	  </tr>
-	  </table>
-	  <br/><br/>
+
+    <table>
+      <tr>
+        <td>
+          <b><u>Konto:</u> $!{konto.Kontonummer} - $!{konto.Name}</b>
+        </td>
+        <td>
+          <b><u>Kontoart:</u> $!{konto.KontoArt.Name}
+        </td>
+      </tr>
+    </table>
+
+    <table class="data">
+      <tr>
+        <th style="text-align:right">Beleg</th>
+        <th>Datum</th>
+        <th>Buchungstext</th>
+        <th style="text-align:right">Netto</th>
+        <th style="text-align:right">Steuer</th>
+        <th style="text-align:right">Brutto</th>
+        <th>Gegen</th>
+      </tr>
+
+      #set($buchungen = $konto.BuchungList)
+      #foreach($buchung in $buchungen)
+
+        #set($netto  = $buchung.Betrag)
+        #set($brutto = $math.brutto($netto,$buchung.Steuer))
+        #set($steuer = $math.steuer($brutto,$buchung.Steuer))
+        <tr>
+          <td style="text-align:right">$!{buchung.Belegnummer}</td>
+          <td>$!{dateformat.format(${buchung.Datum})}</td>
+          <td>$!{buchung.Text}</td>
+          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+          <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
+          <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+          #set($gegen = $buchung.GeldKonto)
+          #if ($gegen.Kontonummer == $konto.Kontonummer)
+            #set($gegen = $buchung.Konto)
+          #end
+          <td>$!{gegen.Kontonummer}</td>
+
+          $math.add("netto",${netto})
+          $math.add("steuer",${steuer})
+          $math.add("brutto",${brutto})
+        </tr>
+      #end
+      <tr>
+        <td colspan="7" style="border-top:1px solid #000000">&nbsp;</td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <b>Gesamt:</b>
+        </td>
+        <td style="text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
+        <td style="text-align:right">$!{decimalformat.format($math.get("steuer"))} ${eur}</td>
+        <td style="text-align:right">$!{decimalformat.format($math.get("brutto"))} ${eur}</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+
+    <br/><br/>
+
   #end
   </body>
 </html>

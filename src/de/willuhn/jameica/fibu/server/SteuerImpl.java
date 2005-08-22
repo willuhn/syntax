@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.fibu.rmi.SteuerKonto;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -96,7 +95,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   public Class getForeignObject(String field) throws RemoteException
   {
     if ("steuerkonto_id".equals(field))
-      return SteuerKonto.class;
+      return Konto.class;
     return null;
   }
 
@@ -149,15 +148,15 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   /**
    * @see de.willuhn.jameica.fibu.rmi.Steuer#getSteuerKonto()
    */
-  public SteuerKonto getSteuerKonto() throws RemoteException
+  public Konto getSteuerKonto() throws RemoteException
   {
-    return (SteuerKonto) getAttribute("steuerkonto_id");
+    return (Konto) getAttribute("steuerkonto_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.rmi.SteuerKonto)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setSteuerKonto(SteuerKonto k) throws RemoteException
+  public void setSteuerKonto(Konto k) throws RemoteException
   {
     setAttribute("steuerkonto_id",k);
   }
@@ -165,6 +164,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.11  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.10  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

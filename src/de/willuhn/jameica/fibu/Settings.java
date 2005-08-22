@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,10 +73,9 @@ public class Settings
     if (m != null)
     {
       mandant = m;
-      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
       try
       {
-        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)m.getAttribute("geschaeftsjahr")}));
+        settings.setAttribute("mandant.acive",mandant.getID());
       }
       catch (RemoteException e)
       {
@@ -96,12 +95,22 @@ public class Settings
   	if (mandant != null && !mandant.isNewObject())
   		return mandant;
 
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   	try
     {
+      String id = settings.getString("mandant.acive",null);
+      if (id != null)
+      {
+        mandant = (Mandant) getDBService().createObject(Mandant.class,id);
+        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{mandant.getFirma(),(String)mandant.getAttribute("geschaeftsjahr")}));
+        return mandant;
+      }
+
       Logger.info("open mandant select dialog");
       MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_CENTER);
       mandant = (Mandant) d.open();
       setActiveMandant(mandant);
+      GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{mandant.getFirma(),(String)mandant.getAttribute("geschaeftsjahr")}));
       return mandant;
     }
     catch (Exception e)
@@ -114,6 +123,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.16  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.15  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

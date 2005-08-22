@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public interface Steuer extends DBObject
    * @return das Steuersammel-Konto
    * @throws RemoteException
    */
-  public SteuerKonto getSteuerKonto() throws RemoteException;
+  public Konto getSteuerKonto() throws RemoteException;
   
   /**
    * Setzt den Namen des Steuersatzes.
@@ -64,11 +64,14 @@ public interface Steuer extends DBObject
    * @param k das zu verwendende Steuersammel-Konto.
    * @throws RemoteException
    */
-  public void setSteuerKonto(SteuerKonto k) throws RemoteException;
+  public void setSteuerKonto(Konto k) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.6  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.5  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

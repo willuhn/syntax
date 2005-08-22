@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/16 23:14:35 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.velocity.Template;
@@ -25,6 +26,8 @@ import org.apache.velocity.app.Velocity;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -71,8 +74,9 @@ public class VelocityExporter
    * @param objects die zu exportierenden Daten.
    * @param os OutputStream.
    * @throws ApplicationException
+   * @throws RemoteException
    */
-  public static synchronized void export(GenericObject[] objects, OutputStream os) throws ApplicationException
+  public static synchronized void export(GenericObject[] objects, OutputStream os) throws ApplicationException, RemoteException
   {
     if (os == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -83,10 +87,13 @@ public class VelocityExporter
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
-    context.put("datum",        new Date());
-    context.put("dateformat",   Fibu.DATEFORMAT);
-    context.put("decimalformat",Fibu.DECIMALFORMAT);
-    context.put("objects",      objects);
+    context.put("mandant",        Settings.getActiveMandant());
+    context.put("math",           new Math());
+    context.put("datum",          new Date());
+    context.put("dateformat",     Fibu.DATEFORMAT);
+    context.put("longdateformat", Fibu.LONGDATEFORMAT);
+    context.put("decimalformat",  Fibu.DECIMALFORMAT);
+    context.put("objects",        objects);
 
     BufferedWriter writer = null;
     String name = objects[0].getClass().getName() + ".vm";
@@ -122,6 +129,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.2  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.1  2005/08/16 23:14:35  willuhn
  * @N velocity export
  * @N context menus

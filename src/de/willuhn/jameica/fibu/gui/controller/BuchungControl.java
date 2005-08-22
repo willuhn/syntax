@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/08/22 13:31:03 $
+ * $Revision: 1.32 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,10 +26,9 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -146,7 +145,7 @@ public class BuchungControl extends AbstractControl
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
-        BaseKonto k = (BaseKonto) event.data;
+        Konto k = (Konto) event.data;
         if (k == null)
           return;
 				try {
@@ -163,7 +162,7 @@ public class BuchungControl extends AbstractControl
       }
     });
 		
-    BaseKonto k = getBuchung().getKonto();
+    Konto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
     return kontoAuswahl;
@@ -180,11 +179,12 @@ public class BuchungControl extends AbstractControl
 		if (geldKontoAuswahl != null)
 			return geldKontoAuswahl;
 		
-    DBIterator list = Settings.getDBService().createList(GeldKonto.class);
+    DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_GELD);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
-        GeldKonto k = (GeldKonto) event.data;
+        Konto k = (Konto) event.data;
         if (k == null)
           return;
         try {
@@ -200,7 +200,7 @@ public class BuchungControl extends AbstractControl
       }
     });
     
-    GeldKonto k = getBuchung().getGeldKonto();
+    Konto k = getBuchung().getGeldKonto();
     geldKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
     return geldKontoAuswahl;
@@ -379,14 +379,15 @@ public class BuchungControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
         return;
       }
-      konten = Settings.getDBService().createList(GeldKonto.class);
+      konten = Settings.getDBService().createList(Konto.class);
+      konten.addFilter("kontoart_id = " + Kontoart.KONTOART_GELD);
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
         GUI.getView().setErrorText(i18n.tr("Das Geldkonto \"{0}\" existiert nicht.",s));
         return;
       }
-      getBuchung().setGeldKonto((GeldKonto) konten.next());
+      getBuchung().setGeldKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -439,10 +440,11 @@ public class BuchungControl extends AbstractControl
         if (satz == 0.0d)
           return;
 
+        Math math = new Math();
         Double betrag = (Double) getBetrag().getValue();
         double brutto = betrag == null ? getBuchung().getBetrag() : betrag.doubleValue();
-        double netto  = Math.netto(brutto,satz);
-        double steuer = Math.steuer(brutto,satz);
+        double netto  = math.netto(brutto,satz);
+        double steuer = math.steuer(brutto,satz);
         String curr = Settings.getActiveMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
         getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
@@ -575,6 +577,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.32  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.31  2005/08/22 13:31:03  willuhn
  * *** empty log message ***
  *

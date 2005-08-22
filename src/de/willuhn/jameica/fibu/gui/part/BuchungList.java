@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/16 23:14:35 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -44,7 +44,7 @@ public class BuchungList extends TablePart
    * @param action
    * @throws RemoteException
    */
-  public BuchungList(BaseKonto konto, Action action) throws RemoteException
+  public BuchungList(Konto konto, Action action) throws RemoteException
   {
     super(init(konto), action);
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
@@ -54,11 +54,11 @@ public class BuchungList extends TablePart
     {
       public String format(Object o)
       {
-        if (o == null || !(o instanceof BaseKonto))
+        if (o == null || !(o instanceof Konto))
           return null;
         try
         {
-          BaseKonto k = (BaseKonto) o;
+          Konto k = (Konto) o;
           Kontoart ka = k.getKontoArt();
           if (ka == null)
             return null;
@@ -95,7 +95,7 @@ public class BuchungList extends TablePart
    * @return Liste der Buchungen
    * @throws RemoteException
    */
-  private static GenericIterator init(BaseKonto konto) throws RemoteException
+  private static GenericIterator init(Konto konto) throws RemoteException
   {
     if (konto != null)
       return konto.getBuchungen();
@@ -117,9 +117,9 @@ public class BuchungList extends TablePart
     {
       if (o == null)
         return null;
-      if (! (o instanceof BaseKonto))
+      if (! (o instanceof Konto))
         return o.toString();
-      BaseKonto k = (BaseKonto) o;
+      Konto k = (Konto) o;
       try
       {
         return k.getKontonummer() + " [" + k.getName() + "]";
@@ -137,6 +137,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.6  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.5  2005/08/16 23:14:35  willuhn
  * @N velocity export
  * @N context menus

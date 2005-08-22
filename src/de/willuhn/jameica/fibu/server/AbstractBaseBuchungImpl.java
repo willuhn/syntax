@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,6 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
-import de.willuhn.jameica.fibu.rmi.BaseKonto;
-import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.logging.Logger;
@@ -70,17 +68,17 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getKonto()
    */
-  public BaseKonto getKonto() throws RemoteException
+  public Konto getKonto() throws RemoteException
   {
-    return (BaseKonto) getAttribute("konto_id");
+    return (Konto) getAttribute("konto_id");
   }
 
   /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getGeldKonto()
    */
-  public GeldKonto getGeldKonto() throws RemoteException
+  public Konto getGeldKonto() throws RemoteException
   {
-    return (GeldKonto) getAttribute("geldkonto_id");
+    return (Konto) getAttribute("geldkonto_id");
   }
 
   /**
@@ -146,15 +144,15 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setKonto(BaseKonto k) throws RemoteException
+  public void setKonto(Konto k) throws RemoteException
   {
     setAttribute("konto_id",k);
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeldKonto(de.willuhn.jameica.fibu.rmi.GeldKonto)
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeldKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setGeldKonto(GeldKonto k) throws RemoteException
+  public void setGeldKonto(Konto k) throws RemoteException
   {
     setAttribute("geldkonto_id",k);
   }
@@ -227,7 +225,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       return Konto.class;
 
     if ("geldkonto_id".equals(field))
-      return GeldKonto.class;
+      return Konto.class;
 
     if ("mandant_id".equals(field))
       return Mandant.class;
@@ -334,6 +332,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.4  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.3  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

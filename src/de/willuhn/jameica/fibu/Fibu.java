@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.24 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,11 @@ public class Fibu extends AbstractPlugin
   /**
    * Dateformatter.
    */
+  public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+
+  /**
+   * Dateformatter.
+   */
   public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
   
   /**
@@ -76,6 +81,32 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
+    ////////////////////////////////////////////////////////////////////////////
+    // TODO WIEDER ENTFERNEN, WENN RELEASED
+    // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
+    // bei einem Fehler das letzte Update-Script nochmal auf.
+    if (!Application.inClientMode())
+    {
+      try
+      {
+        de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(Fibu.class);
+        double size = s.getDouble("sql-update-size",-1);
+        
+        File f = new File(getResources().getPath() + "/sql/update.sql");
+        
+        if (f.length() != size)
+        {
+          EmbeddedDatabase db = new EmbeddedDatabase(getResources().getWorkPath() + "/db","fibu","fibu");
+          db.executeSQLScript(f);
+          s.setAttribute("sql-update-size",(double)f.length());
+        }
+      }
+      catch (Exception e2)
+      {
+        e2.printStackTrace();
+      }
+    }
+    ////////////////////////////////////////////////////////////////////////////
   }
 
   /**
@@ -132,6 +163,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.24  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.23  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

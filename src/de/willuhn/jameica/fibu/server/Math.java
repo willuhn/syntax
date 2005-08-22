@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/12 16:43:08 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/22 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,20 +12,25 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
  * @author willuhn
  */
 public class Math
 {
-
+  
+  private Map table = new HashMap();
+  
   /**
    * Ermittelt den Netto-Betrag basierend auf der uebergebenen Steuer.
    * @param bruttoBetrag Brutto-Betrag.
    * @param steuerSatz Steuersatz.
    * @return Netto-Betrag.
    */
-  public static double netto(double bruttoBetrag, double steuerSatz)
+  public double netto(double bruttoBetrag, double steuerSatz)
   {
     return round((100 * bruttoBetrag) / (100 + steuerSatz));
   }
@@ -36,7 +41,7 @@ public class Math
    * @param steuerSatz Steuersatz.
    * @return Brutto-Betrag.
    */
-  public static double brutto(double nettoBetrag, double steuerSatz)
+  public double brutto(double nettoBetrag, double steuerSatz)
   {
     return round((nettoBetrag * (100 + steuerSatz)) / 100);
   }
@@ -47,7 +52,7 @@ public class Math
    * @param steuerSatz Steuersatz.
    * @return Steuer-Anteil.
    */
-  public static double steuer(double bruttoBetrag, double steuerSatz)
+  public double steuer(double bruttoBetrag, double steuerSatz)
   {
     double netto = netto(bruttoBetrag,steuerSatz);
     double s     = round(bruttoBetrag - netto);
@@ -64,15 +69,46 @@ public class Math
    * @param betrag der zu rundende Betrag.
    * @return der gerundete Betrag.
    */
-  public static double round(double betrag)
+  public double round(double betrag)
   {
     int i = (int) ((betrag + 0.005d) * 100d);
     return i / 100d;
+  }
+  
+  /**
+   * Addiert den Betrag zur Summe mit diesem Namen.
+   * @param name Name der Summe.
+   * @param value zu addierender Betrag.
+   */
+  public void add(String name, double value)
+  {
+    Double d = (Double) this.table.get(name);
+    if (d == null)
+      d = new Double(value);
+    else
+      d = new Double(d.doubleValue() + value);
+    this.table.put(name,d);
+  }
+  
+  /**
+   * Liefert den aufsummierten Betrag fuer diesen Namen.
+   * @param name Name der Summe.
+   * @return Betrag.
+   */
+  public double get(String name)
+  {
+    Double d = (Double) this.table.get(name);
+    if (d == null)
+      return 0.0d;
+    return d.doubleValue();
   }
 }
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.5  2005/08/22 16:37:22  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.4  2005/08/12 16:43:08  willuhn
  * @B DecimalInput
  *
