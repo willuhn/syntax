@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class BuchungList extends TablePart
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
-    addColumn(i18n.tr("Art"),"konto_id", new Formatter()
+    addColumn(i18n.tr("Art"),"sollkonto_id", new Formatter()
     {
       public String format(Object o)
       {
@@ -71,8 +71,8 @@ public class BuchungList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Konto"),"konto_id", new KontoFormatter());
-    addColumn(i18n.tr("Geldkonto"),"geldkonto_id", new KontoFormatter());
+    addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
+    addColumn(i18n.tr("Haben-Lonto"),"habenkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Text"),"buchungstext");
     addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(), Fibu.DECIMALFORMAT));
     setContextMenu(new BuchungListMenu());
@@ -137,6 +137,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.7  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.6  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

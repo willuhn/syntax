@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.33 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -59,10 +58,10 @@ public class BuchungControl extends AbstractControl
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 
-  private DecimalInput steuer				   = null;
-  private DialogInput datum            = null;
-  private DialogInput kontoAuswahl     = null;
-  private DialogInput geldKontoAuswahl = null;
+  private DecimalInput steuer				    = null;
+  private DialogInput datum             = null;
+  private DialogInput sollKontoAuswahl  = null;
+  private DialogInput habenKontoAuswahl = null;
   
   private I18N i18n;
 
@@ -131,14 +130,14 @@ public class BuchungControl extends AbstractControl
   }
 
 	/**
-	 * Liefert das Eingabe-Feld zur Auswahl des Kontos.
+	 * Liefert das Eingabe-Feld zur Auswahl des SollKontos.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public DialogInput getSollKontoAuswahl() throws RemoteException
 	{
-		if (kontoAuswahl != null)
-			return kontoAuswahl;
+		if (sollKontoAuswahl != null)
+			return sollKontoAuswahl;
 		
     final KontoListener kl = new KontoListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
@@ -149,9 +148,9 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
-					kontoAuswahl.setValue(k.getKontonummer());
-          kontoAuswahl.setText(k.getKontonummer());
+          sollKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+          sollKontoAuswahl.setValue(k.getKontonummer());
+          sollKontoAuswahl.setText(k.getKontonummer());
           kl.handleEvent(event);
 				}
 				catch (RemoteException e)
@@ -162,25 +161,24 @@ public class BuchungControl extends AbstractControl
       }
     });
 		
-    Konto k = getBuchung().getKonto();
-    kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
-    return kontoAuswahl;
+    Konto k = getBuchung().getSollKonto();
+    sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+    return sollKontoAuswahl;
 	}
 
 
 	/**
-	 * Liefert das Eingabe-Feld zur Auswahl des Geld-Kontos.
+	 * Liefert das Eingabe-Feld zur Auswahl des Haben-Kontos.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public DialogInput getGeldKontoAuswahl() throws RemoteException
+	public DialogInput getHabenKontoAuswahl() throws RemoteException
 	{
-		if (geldKontoAuswahl != null)
-			return geldKontoAuswahl;
+		if (habenKontoAuswahl != null)
+			return habenKontoAuswahl;
 		
     DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontoart_id = " + Kontoart.KONTOART_GELD);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -188,9 +186,9 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          geldKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
-          geldKontoAuswahl.setValue(k.getKontonummer());
-          geldKontoAuswahl.setText(k.getKontonummer());
+          habenKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+          habenKontoAuswahl.setValue(k.getKontonummer());
+          habenKontoAuswahl.setText(k.getKontonummer());
         }
         catch (RemoteException e)
         {
@@ -200,10 +198,10 @@ public class BuchungControl extends AbstractControl
       }
     });
     
-    Konto k = getBuchung().getGeldKonto();
-    geldKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    geldKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
-    return geldKontoAuswahl;
+    Konto k = getBuchung().getHabenKonto();
+    habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+    return habenKontoAuswahl;
 	}
 
 	/**
@@ -351,12 +349,12 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
-      // Konto checken
+      // Soll-Konto checken
       
-      String s = (String) getKontoAuswahl().getText();
+      String s = (String) getSollKontoAuswahl().getText();
       if (s == null || s.length() == 0)
       {
-        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
+        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Soll-Konto ein."));
         return;
       }
       DBIterator konten = Settings.getDBService().createList(Konto.class);
@@ -366,28 +364,27 @@ public class BuchungControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
         return;
       }
-      getBuchung().setKonto((Konto) konten.next());
+      getBuchung().setSollKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
-      // GeldKonto checken
+      // Haben-Konto checken
       
-      s = (String) getGeldKontoAuswahl().getText();
+      s = (String) getHabenKontoAuswahl().getText();
       if (s == null || s.length() == 0)
       {
-        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Geldkonto ein."));
+        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Haben-Konto ein."));
         return;
       }
       konten = Settings.getDBService().createList(Konto.class);
-      konten.addFilter("kontoart_id = " + Kontoart.KONTOART_GELD);
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
-        GUI.getView().setErrorText(i18n.tr("Das Geldkonto \"{0}\" existiert nicht.",s));
+        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
         return;
       }
-      getBuchung().setGeldKonto((Konto) konten.next());
+      getBuchung().setHabenKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -471,7 +468,7 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
-        String s = (String) getKontoAuswahl().getText();
+        String s = (String) getSollKontoAuswahl().getText();
         if (s == null || s.length() == 0)
         {
           getSteuer().disable();
@@ -577,6 +574,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.33  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.32  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

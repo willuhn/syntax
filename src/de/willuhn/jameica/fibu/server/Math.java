@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.fibu.server;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.willuhn.logging.Logger;
 
 /**
  * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
@@ -32,7 +34,7 @@ public class Math
    */
   public double netto(double bruttoBetrag, double steuerSatz)
   {
-    return round((100 * bruttoBetrag) / (100 + steuerSatz));
+    return round((100d * bruttoBetrag) / (100d + steuerSatz));
   }
   
   /**
@@ -43,7 +45,11 @@ public class Math
    */
   public double brutto(double nettoBetrag, double steuerSatz)
   {
-    return round((nettoBetrag * (100 + steuerSatz)) / 100);
+    double brutto = round((nettoBetrag * (100d + steuerSatz)) / 100d);
+    double netto = netto(brutto,steuerSatz);
+    if (nettoBetrag != netto)
+      Logger.warn("********* NETTO ORIG: " + nettoBetrag + ", NETTO CALC: " + netto + " **************");
+    return brutto;
   }
 
   /**
@@ -54,14 +60,7 @@ public class Math
    */
   public double steuer(double bruttoBetrag, double steuerSatz)
   {
-    double netto = netto(bruttoBetrag,steuerSatz);
-    double s     = round(bruttoBetrag - netto);
-    
-    // Wir pruefen jetzt noch, ob die Summe von Netto+Steuer=Brutto
-    // ist. Durch Rundungsfehler kann ggf. eine Abweidung um einen
-    // Cent entstehen. Den rechnen wir der Steuer zu.
-    double diff = bruttoBetrag - netto - s;
-    return s + diff;
+    return bruttoBetrag - netto(bruttoBetrag,steuerSatz);
   }
 
   /**
@@ -102,10 +101,22 @@ public class Math
       return 0.0d;
     return d.doubleValue();
   }
+  
+  /**
+   * Entfernt die Summe.
+   * @param name
+   */
+  public void reset(String name)
+  {
+    this.table.remove(name);
+  }
 }
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.6  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.5  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

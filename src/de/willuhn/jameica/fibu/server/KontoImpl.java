@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,6 +93,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return d.doubleValue();
     
     Statement stmt = null;
+    ResultSet rs   = null;
     try
     {
       double dd = 0.0d;
@@ -115,26 +116,17 @@ public class KontoImpl extends AbstractDBObject implements Konto
       Date start = m.getGeschaeftsjahrVon();
       Date end   = m.getGeschaeftsjahrBis();
 
-      String field = "konto_id";
-      Kontoart ka = getKontoArt();
-      boolean invert = false;
-      if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_GELD)
-      {
-        invert = true;
-        field = "geldkonto_id";
-      }
-      
+      // TODO
       String sql = "select sum(betrag) as b from buchung " +
         " where TONUMBER(datum) >= " + start.getTime() +
         " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
         " and mandant_id = "+ m.getID() + 
-        " and " + field + " = " + this.getID();
-      ResultSet rs = stmt.executeQuery(sql);
-      rs.next();
-      dd += rs.getDouble("b");
-      if (invert && dd != 0.0d)
-        dd = -dd;
-
+        " and sollkonto_id = " + this.getID();
+      rs = stmt.executeQuery(sql);
+      if (rs.next())
+      {
+        dd += rs.getDouble("b");
+      }
       SaldenCache.put(this.getKontonummer(),new Double(dd));
       return dd;
     }
@@ -145,6 +137,17 @@ public class KontoImpl extends AbstractDBObject implements Konto
     }
     finally
     {
+      if (rs != null)
+      {
+        try
+        {
+          rs.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing resultset",t);
+        }
+      }
       if (stmt != null)
       {
         try
@@ -359,6 +362,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.23  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.22  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

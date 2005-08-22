@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnfangsbestandListMenu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,8 @@
 package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.MandantDelete;
-import de.willuhn.jameica.fibu.gui.action.MandantNeu;
-import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
+import de.willuhn.jameica.fibu.gui.action.AnfangsbestandNeu;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -42,13 +38,12 @@ public class AnfangsbestandListMenu extends ContextMenu
     this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new AnfangsbestandDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new ContextMenuItem(i18n.tr("Neuer Anfangsbestand"), new ABNeu()));
-    this.addItem(ContextMenuItem.SEPARATOR);
   }
   
   /**
    * Erzeugt immer einen neuen Mandanten - unabhaengig vom Kontext.
    */
-  private class MNeu extends MandantNeu
+  private class ABNeu extends AnfangsbestandNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -64,6 +59,9 @@ public class AnfangsbestandListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnfangsbestandListMenu.java,v $
+ * Revision 1.2  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.1  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

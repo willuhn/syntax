@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/22 21:44:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,8 +67,6 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
         
-      // HIER weiter
-
       DBIterator list = getService().createList(Anfangsbestand.class);
       list.addFilter("konto_id = " + k.getID());
       list.addFilter("mandant_id = " + m.getID());
@@ -106,6 +104,14 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     setAttribute("mandant_id",m);
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    SaldenCache.remove(getKonto().getKontonummer());
+  }
   /**
    * @see de.willuhn.jameica.fibu.rmi.Anfangsbestand#getKonto()
    */
@@ -155,6 +161,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.2  2005/08/22 21:44:08  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.1  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,18 +33,18 @@ public interface BaseBuchung extends DBObject
   public Date getDatum() throws RemoteException;
 
   /**
-   * Liefert das Konto zu dieser Buchung.
+   * Liefert das Soll-Konto zu dieser Buchung.
    * @return Konto der Buchung.
    * @throws RemoteException
    */
-  public Konto getKonto() throws RemoteException;
+  public Konto getSollKonto() throws RemoteException;
 
   /**
-   * Liefert das Geld-Konto zu dieser Buchung.
-   * @return Geldkonto der Buchung.
+   * Liefert das Haben-Konto zu dieser Buchung.
+   * @return Haben-Konto der Buchung.
    * @throws RemoteException
    */
-  public Konto getGeldKonto() throws RemoteException;
+  public Konto getHabenKonto() throws RemoteException;
   
   /**
    * Liefert den Mandanten zu dieser Buchung.
@@ -89,18 +89,18 @@ public interface BaseBuchung extends DBObject
   public void setDatum(Date d) throws RemoteException;
 
   /**
-   * Setzt das Konto zu dieser Buchung.
-   * @param k Konto der Buchung.
+   * Setzt das Soll-Konto zu dieser Buchung.
+   * @param k Soll-Konto der Buchung.
    * @throws RemoteException
    */
-  public void setKonto(Konto k) throws RemoteException;
+  public void setSollKonto(Konto k) throws RemoteException;
 
   /**
-   * Setzt das Geld-Konto zu dieser Buchung.
-   * @param k GeldKonto der Buchung.
+   * Setzt das Haben-Konto zu dieser Buchung.
+   * @param k Haben-Konto der Buchung.
    * @throws RemoteException
    */
-  public void setGeldKonto(Konto k) throws RemoteException;
+  public void setHabenKonto(Konto k) throws RemoteException;
 
   /**
    * Setzt den Text der Buchung.
@@ -141,6 +141,9 @@ public interface BaseBuchung extends DBObject
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
+ * Revision 1.4  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.3  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

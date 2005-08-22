@@ -172,6 +172,10 @@
   #set($eur = $!{mandant.Waehrung})
   #foreach($konto in $objects)
 
+    $math.reset("netto")
+    $math.reset("steuer")
+    $math.reset("brutto")
+
     <table>
       <tr>
         <td>

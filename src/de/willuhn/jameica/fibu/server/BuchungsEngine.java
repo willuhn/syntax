@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,13 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Diese Klasse uebernimmt alle Buchungen.
@@ -37,25 +39,30 @@ public class BuchungsEngine
    * @param buchung die zu buchende Buchung.
    * @return Liste der noch zu speichernden Hilfsbuchungen oder null wenn keine Hilfsbuchungen noetig sind.
    * @throws RemoteException
+   * @throws ApplicationException
    */
-  public static HilfsBuchung[] buche(Buchung buchung) throws RemoteException
+  public static HilfsBuchung[] buche(Buchung buchung) throws RemoteException, ApplicationException
   {
-    // Wir checken ob die Buchung neu ist. Nur neue Buchungen duerfen gebucht
-    // werden. Alle anderen muessen storniert werden.
     if (!buchung.isNewObject())
-      return null;
+    {
+      DBIterator existing = buchung.getHilfsBuchungen();
+      while (existing.hasNext())
+      {
+        ((HilfsBuchung)existing.next()).delete();
+      }
+    }
 
-    Konto konto   = buchung.getKonto();
-    Konto gk      = buchung.getGeldKonto();
+    Konto sKonto   = buchung.getSollKonto();
+    Konto hKonto      = buchung.getHabenKonto();
 
     // checken, ob alle Daten da sind.
-    if (konto == null || gk == null)
+    if (sKonto == null || hKonto == null)
     {
-      throw new RemoteException("Konto or Geldkonto missing.");
+      throw new RemoteException("Haben- oder Soll-Konto fehlt.");
     }
 
     // Der zu verwendende Steuersatz
-    Steuer s = konto.getSteuer();
+    Steuer s = sKonto.getSteuer();
     
     if (s == null)
     {
@@ -81,10 +88,10 @@ public class BuchungsEngine
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag); // Steuer-Betrag
     hb.setDatum(buchung.getDatum());        // Datum
-    hb.setGeldKonto(gk);                    // Geld-Konto
+    hb.setHabenKonto(hKonto);               // Haben-Konto
     hb.setMandant(buchung.getMandant());    // Mandant
     hb.setText(buchung.getText());          // Text identisch mit Haupt-Buchung
-    hb.setKonto(s.getSteuerKonto());        // Das Steuer-Konto
+    hb.setSollKonto(s.getSteuerKonto());    // Das Steuer-Konto
      
     return new HilfsBuchung[]{hb};
   }
@@ -93,6 +100,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.9  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.8  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

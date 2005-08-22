@@ -39,8 +39,8 @@ CREATE TABLE konto_ab (
 CREATE TABLE buchung (
   id NUMERIC default UNIQUEKEY('buchung'),
   datum date NOT NULL,
-  konto_id int(10) NOT NULL,
-  geldkonto_id int(10) NOT NULL,
+  sollkonto_id int(10) NOT NULL,
+  habenkonto_id int(10) NOT NULL,
   buchungstext varchar(255) NOT NULL,
   belegnummer int(4) NOT NULL,
   betrag double NOT NULL,
@@ -94,8 +94,8 @@ ALTER TABLE konto ADD CONSTRAINT fk_kontoart FOREIGN KEY (kontoart_id) REFERENCE
 ALTER TABLE konto ADD CONSTRAINT fk_kontenrahmen FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id) DEFERRABLE;
 
-ALTER TABLE buchung ADD CONSTRAINT fk_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE buchung ADD CONSTRAINT fk_geldkonto FOREIGN KEY (geldkonto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE buchung ADD CONSTRAINT fk_sollkonto FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE buchung ADD CONSTRAINT fk_habenkonto FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
 ALTER TABLE mandant ADD CONSTRAINT fk_kontenrahmen_mand FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;

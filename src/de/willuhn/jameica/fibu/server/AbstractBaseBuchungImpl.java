@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,19 +66,19 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getKonto()
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getSollKonto()
    */
-  public Konto getKonto() throws RemoteException
+  public Konto getSollKonto() throws RemoteException
   {
-    return (Konto) getAttribute("konto_id");
+    return (Konto) getAttribute("sollkonto_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getGeldKonto()
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getHabenKonto()
    */
-  public Konto getGeldKonto() throws RemoteException
+  public Konto getHabenKonto() throws RemoteException
   {
-    return (Konto) getAttribute("geldkonto_id");
+    return (Konto) getAttribute("habenkonto_id");
   }
 
   /**
@@ -142,19 +142,19 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setKonto(Konto k) throws RemoteException
+  public void setSollKonto(Konto k) throws RemoteException
   {
-    setAttribute("konto_id",k);
+    setAttribute("sollkonto_id",k);
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeldKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setHabenKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setGeldKonto(Konto k) throws RemoteException
+  public void setHabenKonto(Konto k) throws RemoteException
   {
-    setAttribute("geldkonto_id",k);
+    setAttribute("habenkonto_id",k);
   }
 
   /**
@@ -221,10 +221,10 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("konto_id".equals(field))
+    if ("sollkonto_id".equals(field))
       return Konto.class;
 
-    if ("geldkonto_id".equals(field))
+    if ("habenkonto_id".equals(field))
       return Konto.class;
 
     if ("mandant_id".equals(field))
@@ -259,11 +259,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       if (m == null)
         throw new ApplicationException("Bitte wählen Sie den Mandanten aus.");
 
-      if (getKonto() == null)
-        throw new ApplicationException("Bitte geben Sie ein Konto ein.");
+      if (getSollKonto() == null)
+        throw new ApplicationException("Bitte geben Sie ein Konto für die Soll-Buchung ein.");
 
-      if (getGeldKonto() == null)
-        throw new ApplicationException("Bitte geben Sie ein Geld-Konto ein.");
+      if (getHabenKonto() == null)
+        throw new ApplicationException("Bitte geben Sie ein Konto für die Haben-Buchung ein.");
 
       Date d = getDatum();
       if (d == null)
@@ -297,8 +297,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    SaldenCache.remove(getKonto().getKontonummer());
-    SaldenCache.remove(getGeldKonto().getKontonummer());
+    SaldenCache.remove(getSollKonto().getKontonummer());
+    SaldenCache.remove(getHabenKonto().getKontonummer());
   }
 
   /**
@@ -332,6 +332,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.5  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.4  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

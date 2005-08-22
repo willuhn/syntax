@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.30 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,8 +49,8 @@ public class BuchungNeu extends AbstractView
     LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
     kontoGroup.addLabelPair(i18n.tr("Datum"),           control.getDatum());
-    kontoGroup.addLabelPair(i18n.tr("Konto"),           control.getKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Geld-Konto"),      control.getGeldKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Soll-Konto"),      control.getSollKontoAuswahl());
+    kontoGroup.addLabelPair(i18n.tr("Haben-Konto"),     control.getHabenKontoAuswahl());
     kontoGroup.addLabelPair(i18n.tr("Text"),            control.getText());
     kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
     kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
@@ -88,6 +88,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.30  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.29  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

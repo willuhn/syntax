@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.31 $
+ * $Date: 2005/08/22 21:44:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,25 +59,21 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   public void store() throws RemoteException, ApplicationException
   {
-    HilfsBuchung[] hbs = BuchungsEngine.buche(this);
     
-    if (hbs == null)
-    {
-      // keine Hilfs-Buchungen noetig.
-      super.store();
-      return;
-    }
-
     try {
-      // Hilfs-Buchungen noetig.
       transactionBegin();
 
+      HilfsBuchung[] hbs = BuchungsEngine.buche(this);
+
       super.store();
 
-      for (int i=0;i<hbs.length;++i)
+      if (hbs != null)
       {
-        hbs[i].setHauptBuchung(this); // das koennen wir erst nach dem Speichern der Hauptbuchung machen.
-        hbs[i].store();
+        for (int i=0;i<hbs.length;++i)
+        {
+          hbs[i].setHauptBuchung(this); // das koennen wir erst nach dem Speichern der Hauptbuchung machen.
+          hbs[i].store();
+        }
       }
 
       transactionCommit();
@@ -119,6 +115,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.31  2005/08/22 21:44:09  willuhn
+ * @N Anfangsbestaende
+ *
  * Revision 1.30  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *
