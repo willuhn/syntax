@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.31 $
+ * $Date: 2005/08/22 13:31:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.GeldKonto;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -140,7 +141,7 @@ public class BuchungControl extends AbstractControl
 		if (kontoAuswahl != null)
 			return kontoAuswahl;
 		
-    final SteuerListener sl = new SteuerListener();
+    final KontoListener kl = new KontoListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener() {
@@ -152,7 +153,7 @@ public class BuchungControl extends AbstractControl
           kontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
 					kontoAuswahl.setValue(k.getKontonummer());
           kontoAuswahl.setText(k.getKontonummer());
-          sl.handleEvent(event);
+          kl.handleEvent(event);
 				}
 				catch (RemoteException e)
 				{
@@ -165,8 +166,6 @@ public class BuchungControl extends AbstractControl
     BaseKonto k = getBuchung().getKonto();
     kontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     kontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
-    kontoAuswahl.addListener(sl);
-    sl.handleEvent(null);
     return kontoAuswahl;
 	}
 
@@ -247,6 +246,7 @@ public class BuchungControl extends AbstractControl
 		
 		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveMandant().getWaehrung());
+    betrag.addListener(new SteuerListener());
 		return betrag;
 	}
 
@@ -262,6 +262,9 @@ public class BuchungControl extends AbstractControl
 
 		steuer = new DecimalInput(getBuchung().getSteuer(),Fibu.DECIMALFORMAT);
 		steuer.setComment("%");
+    SteuerListener sl = new SteuerListener();
+    steuer.addListener(sl);
+    sl.handleEvent(null);
 		return steuer;
 	}
 
@@ -425,6 +428,47 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
+        if (!getSteuer().isEnabled())
+          return;
+        
+        Double d = (Double) getSteuer().getValue();
+        if (d == null)
+          return;
+        double satz = d.doubleValue();
+          
+        if (satz == 0.0d)
+          return;
+
+        Double betrag = (Double) getBetrag().getValue();
+        double brutto = betrag == null ? getBuchung().getBetrag() : betrag.doubleValue();
+        double netto  = Math.netto(brutto,satz);
+        double steuer = Math.steuer(brutto,satz);
+        String curr = Settings.getActiveMandant().getWaehrung();
+        getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
+        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to determine steuer",e);
+        GUI.getView().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
+      }
+    }
+    
+  }
+
+  /**
+   * Listener, der das Feld fuer die Steuer aktualisiert.
+   */
+  private class KontoListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
         String s = (String) getKontoAuswahl().getText();
         if (s == null || s.length() == 0)
         {
@@ -455,6 +499,7 @@ public class BuchungControl extends AbstractControl
           return;
         }
         getSteuer().enable();
+        GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
         getSteuer().setValue(new Double(satz));
       }
       catch (RemoteException e)
@@ -530,6 +575,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.31  2005/08/22 13:31:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.30  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *
