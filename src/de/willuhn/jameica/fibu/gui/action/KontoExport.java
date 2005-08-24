@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/24 23:02:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Settings;
@@ -107,6 +108,7 @@ public class KontoExport implements Action
       settings.setAttribute("lastdir",file.getParent());
 
       GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
+      new Program().handleAction(file);
     }
     catch (Exception e)
     {
@@ -119,6 +121,9 @@ public class KontoExport implements Action
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.2  2005/08/24 23:02:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

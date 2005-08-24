@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/24 23:02:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@ package de.willuhn.jameica.fibu.server;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import de.willuhn.logging.Logger;
 
 /**
  * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
@@ -45,11 +43,7 @@ public class Math
    */
   public double brutto(double nettoBetrag, double steuerSatz)
   {
-    double brutto = round((nettoBetrag * (100d + steuerSatz)) / 100d);
-    double netto = netto(brutto,steuerSatz);
-    if (nettoBetrag != netto)
-      Logger.warn("********* NETTO ORIG: " + nettoBetrag + ", NETTO CALC: " + netto + " **************");
-    return brutto;
+    return round((nettoBetrag * (100d + steuerSatz)) / 100d);
   }
 
   /**
@@ -61,10 +55,7 @@ public class Math
   public double steuer(double bruttoBetrag, double steuerSatz)
   {
     double netto = netto(bruttoBetrag,steuerSatz);
-    double steuer = round(bruttoBetrag - netto);
-    if (netto + steuer != bruttoBetrag)
-      Logger.warn("********* NETTO: " + netto + ", STEUER: " + steuer + ", BRUTTO: " + bruttoBetrag + " **************");
-    return steuer;
+    return round(bruttoBetrag - netto);
   }
 
   /**
@@ -118,6 +109,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.8  2005/08/24 23:02:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

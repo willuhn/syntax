@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.33 $
+ * $Date: 2005/08/24 23:02:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -134,11 +134,24 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     }
     super.insertCheck();
   }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("brutto".equals(arg0))
+      return new Double(this.getBetrag());
+    return super.getAttribute(arg0);
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.33  2005/08/24 23:02:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.32  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *
