@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/25 21:58:58 $
+ * $Revision: 1.26 $
+ * $Date: 2005/08/25 23:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public class Fibu extends AbstractPlugin
         
         File f = new File(getResources().getPath() + "/sql/update.sql");
         
-        if (f.length() != size)
+        if (f.exists() && f.length() > 1 && f.length() != size)
         {
           EmbeddedDatabase db = new EmbeddedDatabase(getResources().getWorkPath() + "/db","fibu","fibu");
           db.executeSQLScript(f);
@@ -163,6 +163,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.26  2005/08/25 23:00:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/08/25 21:58:58  willuhn
  * @N SKR04
  *

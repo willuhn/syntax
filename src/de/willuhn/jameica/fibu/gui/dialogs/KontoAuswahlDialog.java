@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/25 23:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,11 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.dialogs;
 
-import java.rmi.RemoteException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
@@ -39,21 +36,17 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 	private I18N i18n;
 	private Konto choosen = null;
-  private GenericIterator konten = null;
+  private DBIterator konten = null;
 
   /**
    * ct.
    * @param konten
    * @param position
-   * @throws RemoteException
    */
-  public KontoAuswahlDialog(GenericIterator konten, int position) throws RemoteException
+  public KontoAuswahlDialog(DBIterator konten, int position)
   {
     super(position);
     this.konten = konten;
-
-    if (this.konten == null)
-      this.konten = Settings.getDBService().createList(Konto.class);
 
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
@@ -122,6 +115,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.4  2005/08/25 23:00:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

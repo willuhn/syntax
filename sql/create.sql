@@ -20,17 +20,17 @@ CREATE TABLE konto (
   kontoart_id int(2) NOT NULL,
   kontonummer varchar(4) NOT NULL,
   name varchar(255) NOT NULL,
-  kontenrahmen_id int(2) NOT NULL,
-  steuer_id int(2),
+  kontenrahmen_id int(10) NOT NULL,
+  steuer_id int(10),
   UNIQUE (id),
-  UNIQUE (kontonummer),
+  UNIQUE (kontenrahmen_id,kontonummer),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE konto_ab (
   id NUMERIC default UNIQUEKEY('konto_ab'),
-  konto_id int(2) NOT NULL,
-  mandant_id int(2) NOT NULL,
+  konto_id int(10) NOT NULL,
+  mandant_id int(10) NOT NULL,
   betrag double NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -42,7 +42,7 @@ CREATE TABLE buchung (
   sollkonto_id int(10) NOT NULL,
   habenkonto_id int(10) NOT NULL,
   buchungstext varchar(255) NOT NULL,
-  belegnummer int(4) NOT NULL,
+  belegnummer int(10) NOT NULL,
   betrag double NOT NULL,
   steuer double,
   mandant_id int(10) NOT NULL,
@@ -80,8 +80,8 @@ CREATE TABLE mandant (
   plz varchar(7) NOT NULL,
   ort varchar(255) NOT NULL,
   steuernummer varchar(100) NOT NULL,
-  kontenrahmen_id int(2) NOT NULL,
-  finanzamt_id int(2) NOT NULL,
+  kontenrahmen_id int(10) NOT NULL,
+  finanzamt_id int(10) NOT NULL,
   gj_von date NOT NULL,
   gj_bis date NOT NULL,
   UNIQUE (id),

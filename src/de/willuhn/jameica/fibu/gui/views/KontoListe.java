@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/25 23:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,8 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
-import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
@@ -43,7 +41,7 @@ public class KontoListe extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten"));
 
-    Part p = new KontoList(Settings.getDBService().createList(Konto.class),new KontoNeu());
+    Part p = new KontoList(new KontoNeu());
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
@@ -63,6 +61,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.14  2005/08/25 23:00:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

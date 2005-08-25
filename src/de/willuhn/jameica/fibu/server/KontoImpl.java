@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/25 23:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,7 +218,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public void insertCheck() throws ApplicationException
   {
     try {
-      if (getKontenrahmen() == null)
+      Kontenrahmen kr = getKontenrahmen();
+      if (kr == null)
         throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
 
       String name = (String) getAttribute("name");
@@ -239,8 +240,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
       while(konten.hasNext())
       {
         Konto k = (Konto) konten.next();
-        if (k.getKontonummer().equals(kontonummer) && !k.getID().equals(getID()))
-          throw new ApplicationException("Ein Konto mit dieser Kontonummer existiert bereits.");
+        Kontenrahmen kr2 = k.getKontenrahmen();
+        if (k.getKontonummer().equals(kontonummer) && !k.getID().equals(getID()) && kr.getID().equals(kr2.getID()))
+          throw new ApplicationException("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen.");
       }
     }
     catch (RemoteException e)
@@ -379,6 +381,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.25  2005/08/25 23:00:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

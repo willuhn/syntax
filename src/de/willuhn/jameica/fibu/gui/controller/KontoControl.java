@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.20 $
+ * $Date: 2005/08/25 23:00:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -177,7 +177,9 @@ public class KontoControl extends AbstractControl
 
       // Kontenrahmen und Kontoart darf nicht geaendert werden
 
-      getKonto().setSteuer((Steuer) getSteuer().getValue());
+      Input i = getSteuer();
+      if (i instanceof SelectInput)
+        getKonto().setSteuer((Steuer)i.getValue());
 
       // und jetzt speichern wir.
       getKonto().store();
@@ -187,7 +189,7 @@ public class KontoControl extends AbstractControl
     {
       GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
 			Logger.error("unable to store konto",e);
       GUI.getView().setErrorText("Fehler beim Speichern des Kontos.");
@@ -198,6 +200,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.20  2005/08/25 23:00:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *
