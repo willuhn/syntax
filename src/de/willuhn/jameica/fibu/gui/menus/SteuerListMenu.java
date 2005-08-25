@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/25 21:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class SteuerListMenu extends ContextMenu
   /**
    * Erzeugt immer einen neuen Steuersatz - unabhaengig vom Kontext.
    */
-  private class SNeu extends SteuerNeu
+  private static class SNeu extends SteuerNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -59,6 +59,9 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
+ * Revision 1.2  2005/08/25 21:58:57  willuhn
+ * @N SKR04
+ *
  * Revision 1.1  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus

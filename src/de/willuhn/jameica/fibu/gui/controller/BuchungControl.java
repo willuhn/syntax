@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.35 $
+ * $Date: 2005/08/25 21:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -544,7 +544,7 @@ public class BuchungControl extends AbstractControl
 					}
 					catch (Exception e3)
 					{
-						// Ne, hat keinen Zweck.
+            Logger.warn("unable to parse entered date");
 						return;
 					}
 				}
@@ -573,6 +573,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.35  2005/08/25 21:58:57  willuhn
+ * @N SKR04
+ *
  * Revision 1.34  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

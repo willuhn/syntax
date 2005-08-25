@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.25 $
+ * $Date: 2005/08/25 21:58:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,22 +41,22 @@ public class Fibu extends AbstractPlugin
   /**
    * Dateformatter.
    */
-  public static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+  public final static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
 
   /**
    * Dateformatter.
    */
-  public static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
+  public final static DateFormat DATEFORMAT       = new SimpleDateFormat("dd.MM.yyyy");
   
   /**
    * Dateformatter fuer Kurz-Format.
    */
-  public static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
+  public final static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   
   /**
    * Wochentage
    */
-  public static String[] WEEKDAYS = new String[] {
+  public final static String[] WEEKDAYS = new String[] {
     "Sonntag",
     "Montag",
     "Dienstag",
@@ -69,7 +69,7 @@ public class Fibu extends AbstractPlugin
   /**
    * DecimalFormat.
    */
-  public static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
+  public final static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
 
   static {
     DECIMALFORMAT.applyPattern("###,###,##0.00");
@@ -163,6 +163,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.25  2005/08/25 21:58:58  willuhn
+ * @N SKR04
+ *
  * Revision 1.24  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnfangsbestandListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/25 21:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class AnfangsbestandListMenu extends ContextMenu
   /**
    * Erzeugt immer einen neuen Mandanten - unabhaengig vom Kontext.
    */
-  private class ABNeu extends AnfangsbestandNeu
+  private static class ABNeu extends AnfangsbestandNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -59,6 +59,9 @@ public class AnfangsbestandListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnfangsbestandListMenu.java,v $
+ * Revision 1.3  2005/08/25 21:58:57  willuhn
+ * @N SKR04
+ *
  * Revision 1.2  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

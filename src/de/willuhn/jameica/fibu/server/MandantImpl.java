@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/25 21:58:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,13 +18,17 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
@@ -32,6 +36,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class MandantImpl extends AbstractDBObject implements Mandant
 {
+  private I18N i18n = null;
 
   /**
    * Erzeugt einen neuen Mandanten.
@@ -40,6 +45,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public MandantImpl() throws RemoteException
   {
     super();
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -312,17 +318,17 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     try {
       String firma = getFirma();
       if (firma == null || "".equals(firma))
-        throw new ApplicationException("Bitte geben Sie die Firma ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die Firma ein."));
   
       String steuernummer = getSteuernummer();
       if (steuernummer == null || "".equals(steuernummer))
-        throw new ApplicationException("Bitte geben Sie die Steuernummer ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie die Steuernummer ein."));
   
       if (getFinanzamt() == null)
-        throw new ApplicationException("Bitte wählen Sie ein Finanzamt aus.");
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Finanzamt aus."));
 
       if (getKontenrahmen() == null)
-        throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
 
       // Das rufen wir nur auf, damit die Daten automatisch gefuellt werden,
       // falls sie noch fehlen.
@@ -331,7 +337,8 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
+      Logger.error("error while checking mandant",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."));
     }
     super.insertCheck();
   }
@@ -342,6 +349,23 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public void updateCheck() throws ApplicationException
   {
     insertCheck();
+    
+    // Wir muessen pruefen, ob sich der Kontenrahmen geaendert hat und dies
+    // verbieten, wenn wir schon Buchungen haben.
+    if (hasChanged("kontenrahmen_id"))
+    {
+      try
+      {
+        DBIterator list = getService().createList(Buchung.class);
+        if (list.size() > 0)
+          throw new ApplicationException(i18n.tr("Wechsel des Kontenrahmens nicht mehr möglich, da für das Geschäftsjahr schon Buchungen vorliegen"));
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("error while checking mandant",e);
+        throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."));
+      }
+    }
   }
 
   /**
@@ -375,6 +399,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.17  2005/08/25 21:58:58  willuhn
+ * @N SKR04
+ *
  * Revision 1.16  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/24 23:02:32 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/25 21:58:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,7 +109,7 @@ public class BuchungList extends TablePart
   /**
    * Formatiert ein Konto huebsch.
    */
-  private class KontoFormatter implements Formatter
+  private static class KontoFormatter implements Formatter
   {
     /**
      * @see de.willuhn.jameica.gui.formatter.Formatter#format(java.lang.Object)
@@ -138,6 +138,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.9  2005/08/25 21:58:58  willuhn
+ * @N SKR04
+ *
  * Revision 1.8  2005/08/24 23:02:32  willuhn
  * *** empty log message ***
  *

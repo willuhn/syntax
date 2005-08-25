@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/FinanzamtListMenu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/25 21:58:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class FinanzamtListMenu extends ContextMenu
   /**
    * Erzeugt immer ein neues FA - unabhaengig vom Kontext.
    */
-  private class FNeu extends FinanzamtNeu
+  private static class FNeu extends FinanzamtNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -59,6 +59,9 @@ public class FinanzamtListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: FinanzamtListMenu.java,v $
+ * Revision 1.2  2005/08/25 21:58:57  willuhn
+ * @N SKR04
+ *
  * Revision 1.1  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus
