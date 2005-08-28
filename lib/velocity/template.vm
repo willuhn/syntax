@@ -34,6 +34,7 @@
     }
     table.data th {
       font-weight              : bold;
+      border-bottom            : 1px solid #000000;
     }
     table.data td {
       font-size                : 7pt;
@@ -138,7 +139,7 @@
   <table>
     <tr>
       <td>
-        <h1>Konto-Auszug</h1>
+        <h1>$!{export.Title}</h1>
         Geschäftsjahr: $!{dateformat.format(${mandant.GeschaeftsjahrVon})} - $!{dateformat.format(${mandant.GeschaeftsjahrBis})}
       </td>
       <td style="text-align:right;">Druck: $!{longdateformat.format(${datum})}</td>
@@ -167,95 +168,9 @@
     <tr>
   </table>
   
-  <br/><br/><br/>
+  <br/><br/>
 
-  #set($eur = $!{mandant.Waehrung})
-  #foreach($konto in $objects)
+  #parse($export.Template)
 
-    $math.reset("netto")
-    $math.reset("steuer")
-    $math.reset("brutto")
-
-    <table>
-      <tr>
-        <td>
-          <b><u>Konto:</u> $!{konto.Kontonummer} - $!{konto.Name}</b>
-        </td>
-        <td>
-          <b><u>Kontoart:</u> $!{konto.KontoArt.Name}
-        </td>
-      </tr>
-    </table>
-
-    <table class="data">
-      <tr>
-        <th style="text-align:right">Beleg</th>
-        <th>Datum</th>
-        <th>Buchungstext</th>
-        <th style="text-align:right">Netto</th>
-        <th style="text-align:right">Steuer</th>
-        <th style="text-align:right">Brutto</th>
-        <th>Gegenkonto</th>
-      </tr>
-
-      #set($buchungen      = $konto.BuchungList)
-      #foreach($buchung in $buchungen)
-
-        #set($netto  = $buchung.Betrag)
-        #set($brutto = $math.brutto($netto,$buchung.Steuer))
-        #set($steuer = $math.steuer($brutto,$buchung.Steuer))
-        <tr>
-          <td style="text-align:right">$!{buchung.Belegnummer}</td>
-          <td>$!{dateformat.format(${buchung.Datum})}</td>
-          <td style="width:70%">$!{buchung.Text}</td>
-          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-          <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
-          <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
-          #set($gegen = $buchung.SollKonto)
-          #if ($gegen.Kontonummer == $konto.Kontonummer)
-            #set($gegen = $buchung.HabenKonto)
-          #end
-          <td>$!{gegen.Kontonummer} [$!{gegen.Name}]</td>
-
-          $math.add("netto",${netto})
-          $math.add("steuer",${steuer})
-          $math.add("brutto",${brutto})
-        </tr>
-      #end
-      <tr>
-        <td colspan="3" style="border-top:1px solid #000000">
-          <b>Gesamt:</b>
-        </td>
-        <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
-        <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("steuer"))} ${eur}</td>
-        <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("brutto"))} ${eur}</td>
-        <td style="border-top:1px solid #000000">&nbsp;</td>
-      </tr>
-    </table>
-
-		<br/>
-		<table>
-			<tr>
-			  <td>Summe der Umsätze:</td>
-        <td style="text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
-			</tr>
-      #set($anfangsbestand = $!{konto.Anfangsbestand.Betrag})
-      #set($ab = $!{anfangsbestand.toString()})
-      #if($ab != "")
-        $math.add("netto",${anfangsbestand})
-				<tr>
-				  <td>+ Anfangsbestand:</td>
-          <td style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
-				</tr>
-      #end
-			<tr>
-			  <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
-        <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right"><b>$!{decimalformat.format($math.get("netto"))} ${eur}</b></td>
-			</tr>
-	  </table>
-
-    <br/><br/><br/>
-
-  #end
   </body>
 </html>

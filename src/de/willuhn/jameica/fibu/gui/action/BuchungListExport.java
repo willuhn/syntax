@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/08/28 01:08:03 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,25 +20,27 @@ import java.util.Date;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
-import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
+import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Exporter fuer Konten.
+ * Exporter fuer das Buchungsjournal.
  */
-public class KontoExport implements Action
+public class BuchungListExport implements Action
 {
 
   /**
@@ -48,30 +50,12 @@ public class KontoExport implements Action
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    if (context == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens einen Datensatz aus"));
-
-    if (!(context instanceof GenericObject) && !(context instanceof GenericObject[]))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Datensätze aus"));
-
-    GenericObject[] o = null;
-
-    if (context instanceof GenericObject)
-    {
-      o = new GenericObject[1];
-      o[0] = (GenericObject) context;
-    }
-    else if (context instanceof GenericObject[])
-    {
-      o = (GenericObject[]) context;
-    }
-  
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
-    fd.setFileName(i18n.tr("fibu-kontoauszug-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
+    fd.setFileName(i18n.tr("fibu-buchungsjournal-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
     String s = fd.open();
     
-    Settings settings = new Settings(this.getClass());
+    de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(this.getClass());
     settings.setStoreWhenRead(true);
     String path = settings.getString("lastdir",System.getProperty("user.home"));
     if (path != null && path.length() > 0)
@@ -103,11 +87,30 @@ public class KontoExport implements Action
     
     try
     {
+
+      DBIterator list = Settings.getDBService().createList(Buchung.class);
+      list.setOrder("order by datum");
+      Buchung[] b = new Buchung[list.size()];
+      int count = 0;
+      while (list.hasNext())
+      {
+        b[count++] = (Buchung) list.next();
+      }
+      
+      list = Settings.getDBService().createList(Anfangsbestand.class);
+      Anfangsbestand[] ab = new Anfangsbestand[list.size()];
+      count = 0;
+      while (list.hasNext())
+      {
+        ab[count++] = (Anfangsbestand) list.next();
+      }
+
       Export export = new Export();
-      export.addObject("konten",o);
+      export.addObject("buchungen",b);
+      export.addObject("anfangsbestaende",ab);
       export.setTarget(new FileOutputStream(file));
-      export.setTitle(i18n.tr("Konto-Auszug"));
-      export.setTemplate("kontoauszug.vm");
+      export.setTitle(i18n.tr("Buchungsjournal"));
+      export.setTemplate("buchungsjournal.vm");
 
       VelocityExporter.export(export);
 
@@ -127,8 +130,8 @@ public class KontoExport implements Action
 
 
 /*********************************************************************
- * $Log: KontoExport.java,v $
- * Revision 1.3  2005/08/28 01:08:03  willuhn
+ * $Log: BuchungListExport.java,v $
+ * Revision 1.1  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *
  * Revision 1.2  2005/08/24 23:02:31  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/28 01:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -24,7 +23,6 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
@@ -71,18 +69,18 @@ public class VelocityExporter
 
   /**
    * Exportiert die Daten in den angegebenen OutputStream.
-   * @param objects die zu exportierenden Daten.
-   * @param os OutputStream.
+   * @param export der zu druckende Export.
    * @throws ApplicationException
    * @throws RemoteException
    */
-  public static synchronized void export(GenericObject[] objects, OutputStream os) throws ApplicationException, RemoteException
+  public static synchronized void export(Export export) throws ApplicationException, RemoteException
   {
-    if (os == null)
+    if (export == null || export.getTarget() == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
 
-    if (objects == null || objects.length == 0)
-      throw new ApplicationException(i18n.tr("Kein zu exportierenden Daten ausgewählt"));
+    String template = export.getTemplate();
+    if (template == null || template.length() == 0)
+      throw new ApplicationException(i18n.tr("Kein Template angegeben"));
 
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
@@ -93,20 +91,19 @@ public class VelocityExporter
     context.put("dateformat",     Fibu.DATEFORMAT);
     context.put("longdateformat", Fibu.LONGDATEFORMAT);
     context.put("decimalformat",  Fibu.DECIMALFORMAT);
-    context.put("objects",        objects);
+    context.put("export",         export);
 
     BufferedWriter writer = null;
-    String name = objects[0].getClass().getName() + ".vm";
     try
     {
-      writer = new BufferedWriter(new OutputStreamWriter(os));
+      writer = new BufferedWriter(new OutputStreamWriter(export.getTarget()));
 
-      Template template = Velocity.getTemplate(name);
-      template.merge(context,writer);
+      Template t = Velocity.getTemplate("template.vm");
+      t.merge(context,writer);
     }
     catch (Exception e)
     {
-      Logger.error("error while writing into velocity file " + name,e);
+      Logger.error("error while writing into velocity file " + template,e);
       throw new ApplicationException(i18n.tr("Fehler beim Schreiben in die Export-Datei"));
     }
     finally
@@ -129,6 +126,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.3  2005/08/28 01:08:03  willuhn
+ * @N buchungsjournal
+ *
  * Revision 1.2  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

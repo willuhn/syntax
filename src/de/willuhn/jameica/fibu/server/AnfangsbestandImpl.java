@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/28 01:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -166,11 +167,31 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       return Konto.class;
     return super.getForeignObject(arg0);
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
+   */
+  protected String getListQuery()
+  {
+    try
+    {
+      Mandant m = Settings.getActiveMandant();
+      return "select " + getIDField() + " from " + getTableName() + " where mandant_id = " + m.getID();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to create list query",e);
+      return super.getListQuery();
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.4  2005/08/28 01:08:03  willuhn
+ * @N buchungsjournal
+ *
  * Revision 1.3  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

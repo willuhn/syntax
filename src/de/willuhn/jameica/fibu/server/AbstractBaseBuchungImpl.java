@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/28 01:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -324,7 +324,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       Date end   = m.getGeschaeftsjahrBis();
 
       String s = "select " + getIDField() + " from " + getTableName() +
-        " where TONUMBER(datum) >= " + start.getTime() + 
+        " where TONUMBER(datum) >= " + start.getTime() +  // TODO Eigentlich nicht notwendig, da wir jedes Jahr einen neuen Mandanten haben
         " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
         " and mandant_id = " + m.getID();
       return s;
@@ -332,13 +332,16 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     catch (RemoteException e)
     {
       Logger.error("unable to create list query",e);
-      return null;
+      return super.getListQuery();
     }
   }
 }
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.7  2005/08/28 01:08:03  willuhn
+ * @N buchungsjournal
+ *
  * Revision 1.6  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

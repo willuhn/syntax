@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/08/16 23:14:36 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/28 01:08:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.BuchungListExport;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -45,8 +46,9 @@ public class BuchungListe extends AbstractView
     Part p = new BuchungList(new BuchungNeu());
     p.paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),2);
+    ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Buchungsjournal exportieren"), new BuchungListExport());
     buttons.addButton(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
   }
 
@@ -61,6 +63,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.23  2005/08/28 01:08:03  willuhn
+ * @N buchungsjournal
+ *
  * Revision 1.22  2005/08/16 23:14:36  willuhn
  * @N velocity export
  * @N context menus
