@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="fibu" version="1.0">
+<plugin name="fintax" version="1.0">
 
   <description>Finanzbuchhaltung für Jameica</description>
-  <url>http://www.willuhn.de/projects/fibu</url>
-  <homepage>http://www.willuhn.de/projects/fibu</homepage>
+  <url>http://www.willuhn.de/projects/fintax</url>
+  <homepage>http://www.willuhn.de/projects/fintax</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
   <menu>
     <item id="fibu.menu" name="F&amp;ibu">
-      <item name="Neue &amp;Buchung"        shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+      <item name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+      <item name="Aktuelles &amp;Geschäftsjahr öffnen"  shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu" />
       <item name="-" />
-      <item name="&amp;Finanzämter"         									action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
-      <item name="&amp;Steuersätze"         									action="de.willuhn.jameica.fibu.gui.action.SteuerListe" />
+      <item name="&amp;Finanzämter"         						action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
+      <item name="&amp;Steuersätze"         						action="de.willuhn.jameica.fibu.gui.action.SteuerListe" />
     </item>
   </menu>
 

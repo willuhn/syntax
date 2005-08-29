@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 16:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,6 +60,16 @@ public class GeschaeftsjahrNeu implements Action
         jahr = (Geschaeftsjahr) context;
       }
     }
+    try
+    {
+      if (jahr == null)
+        jahr = Settings.getActiveGeschaeftsjahr();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to read active gj",e);
+      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Laden des Geschäftsjahres"));
+    }
     GUI.startView(de.willuhn.jameica.fibu.gui.views.GeschaeftsjahrNeu.class,jahr);
   }
 
@@ -68,6 +78,9 @@ public class GeschaeftsjahrNeu implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.4  2005/08/29 16:43:14  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

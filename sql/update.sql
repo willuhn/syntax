@@ -9,3 +9,14 @@ ALTER CREATE TABLE anlagevermoegen (
   UNIQUE (id),
   PRIMARY KEY (id)
 );
+
+ALTER CREATE TABLE geschaeftsjahr (
+  id NUMERIC default UNIQUEKEY('geschaeftsjahr'),
+  mandant_id int(10) NOT NULL,
+  beginn date NOT NULL,
+  ende date NOT NULL,
+  kontenrahmen_id int(10) NOT NULL,
+  abgeschlossen int(1) NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);

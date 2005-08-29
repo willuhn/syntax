@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 16:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -231,19 +231,30 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     insertCheck();
     // Wir muessen pruefen, ob sich der Kontenrahmen geaendert hat und dies
     // verbieten, wenn wir schon Buchungen haben.
-    if (hasChanged("kontenrahmen_id"))
+    try
     {
-      try
+      DBIterator list = getService().createList(Buchung.class);
+
+      if (list.size() > 0)
       {
-        DBIterator list = getService().createList(Buchung.class);
-        if (list.size() > 0)
-          throw new ApplicationException(i18n.tr("Wechsel des Kontenrahmens nicht mehr möglich, da für das Geschäftsjahr schon Buchungen vorliegen"));
+        if (hasChanged("kontenrahmen_id"))
+          throw new ApplicationException(i18n.tr("Wechsel des Kontenrahmens nicht mehr möglich, da bereits Buchungen vorliegen"));
+        
+        if (hasChanged("mandant_id"))
+          throw new ApplicationException(i18n.tr("Wechsel des Mandanten nicht mehr möglich, da bereits Buchungen vorliegen"));
+
+        if (hasChanged("beginn"))
+          throw new ApplicationException(i18n.tr("Beginn des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
+
+        if (hasChanged("ende"))
+          throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
+
       }
-      catch (RemoteException e)
-      {
-        Logger.error("error while checking gj",e);
-        throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."));
-      }
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking gj",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."));
     }
   }
   
@@ -325,11 +336,31 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#isAbgeschlossen()
+   */
+  public boolean isAbgeschlossen() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("abgeschlossen");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setAbgeschlossen(boolean)
+   */
+  public void setAbgeschlossen(boolean b) throws RemoteException
+  {
+    setAttribute("abgeschlossen", b ? new Integer(1) : null);
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.2  2005/08/29 16:43:14  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

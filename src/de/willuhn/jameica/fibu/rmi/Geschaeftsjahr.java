@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:28 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 16:43:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,13 +101,28 @@ public interface Geschaeftsjahr extends DBObject
    * @throws RemoteException
    */
   public DBIterator getAnfangsbestaende() throws RemoteException;
+  
+  /**
+   * Prueft, ob das Geschaeftsjahr bereits geschlossen ist.
+   * @return true, wenn es geschlossen ist.
+   * @throws RemoteException
+   */
+  public boolean isAbgeschlossen() throws RemoteException;
 
-
+  /**
+   * Setzt den Status des Geschaeftsjahres.
+   * @param b Status.
+   * @throws RemoteException
+   */
+  public void setAbgeschlossen(boolean b) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
+ * Revision 1.2  2005/08/29 16:43:14  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:28  willuhn
  * @N Geschaeftsjahr
  *
