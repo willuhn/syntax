@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,21 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Diese Klasse uebernimmt alle Buchungen.
@@ -31,7 +40,82 @@ import de.willuhn.util.ApplicationException;
  */
 public class BuchungsEngine
 {
+  private static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
+  /**
+   * Schliesst das Geschaeftsjahr ab.
+   * @param jahr das zu schliessende Geschaeftsjahr.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void close(Geschaeftsjahr jahr) throws RemoteException, ApplicationException
+  {
+    Logger.info("closing geschaeftsjahr " + jahr.getAttribute(jahr.getPrimaryAttribute()));
+
+    if (jahr.isClosed())
+    {
+      Logger.warn("geschaeftsjahr allready closed");
+      return;
+    }
+    
+    try
+    {
+      jahr.transactionBegin();
+      
+      Mandant m        = jahr.getMandant();
+      DBService db     = Settings.getDBService();
+      Buchung buchung  = null;
+      Abschreibung afa = null;
+
+      DBIterator list = m.getAnlagevermoegen();
+      while (list.hasNext())
+      {
+        Anlagevermoegen av = (Anlagevermoegen) list.next();
+        
+        double betrag      = av.getAnschaffungskosten() / (double) av.getLaufzeit();
+        double restwert    = av.getRestwert();
+        boolean rest       = false;
+        
+        if (betrag > restwert)
+        {
+          betrag = restwert;
+          rest = true;
+        }
+        
+        buchung = (Buchung) db.createObject(Buchung.class,null);
+        buchung.setDatum(jahr.getEnde());
+        buchung.setGeschaeftsjahr(jahr);
+        buchung.setSollKonto(jahr.getKontenrahmen().getAbschreibungskonto());
+        buchung.setHabenKonto(av.getKonto());
+        if (rest)
+          buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
+        else
+          buchung.setText(i18n.tr("Restwertbuchung {0}",av.getName()));
+        buchung.setBetrag(betrag);
+        buchung.store();
+        
+        afa = (Abschreibung) db.createObject(Abschreibung.class,null);
+        afa.setAnlagevermoegen(av);
+        afa.setBuchung(buchung);
+        afa.store();
+      }
+      
+      jahr.transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      jahr.transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException ae)
+    {
+      jahr.transactionRollback();
+      throw ae;
+    }
+    
+    
+  }
+  
   /**
    * Bucht die uebergebene Buchung.
    * Die Funktion erkennt selbstaendig, ob weitere Hilfs-Buchungen noetig sind
@@ -100,6 +184,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.12  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.11  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

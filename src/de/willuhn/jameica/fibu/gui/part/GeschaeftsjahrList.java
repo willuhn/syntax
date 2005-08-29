@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,15 +15,22 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.TableItem;
+
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.menus.GeschaeftsjahrListMenu;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -42,11 +49,37 @@ public class GeschaeftsjahrList extends TablePart
   {
     super(init(m), action);
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    final I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Mandant"), "mandant_id");
     addColumn(i18n.tr("Kontenrahmen"), "kontenrahmen_id");
     addColumn(i18n.tr("Beginn"), "beginn", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Ende"), "ende", new DateFormatter(Fibu.DATEFORMAT));
+    addColumn(i18n.tr("Status"), "closed", new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null)
+          return null;
+        return ((Integer)o).intValue() == 1 ? i18n.tr("Geschlossen") : null;
+      }
+    });
+    setFormatter(new TableFormatter() {
+      public void format(TableItem item)
+      {
+        Object o = item.getData();
+        if (item == null || !(item instanceof Geschaeftsjahr))
+          return;
+        try
+        {
+          Geschaeftsjahr jahr = (Geschaeftsjahr) o;
+          if (jahr.isClosed())
+            item.setForeground(Color.COMMENT.getSWTColor());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while reading gj status",e);
+        }
+      }
+    });
     setContextMenu(new GeschaeftsjahrListMenu(m));
   }
   
@@ -67,6 +100,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.3  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.2  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

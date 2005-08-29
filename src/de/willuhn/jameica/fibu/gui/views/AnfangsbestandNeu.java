@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
 import de.willuhn.jameica.fibu.gui.controller.AnfangsbestandControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -51,16 +52,22 @@ public class AnfangsbestandNeu extends AbstractView
     group.addLabelPair(i18n.tr("Konto"),         control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Anfangsbestand"),control.getBetrag());
 
-    ButtonArea buttonArea = group.createButtonArea(3);
+    boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
+    if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+
+    ButtonArea buttonArea = group.createButtonArea(closed ? 1 : 3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
-    buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    if (!closed)
     {
-      public void handleAction(Object context) throws ApplicationException
+      buttonArea.addButton(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
+      buttonArea.addButton(i18n.tr("Speichern"), new Action()
       {
-        control.handleStore();
-      }
-    },null,true);
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleStore();
+        }
+      },null,true);
+    }
     
   }
 
@@ -74,6 +81,9 @@ public class AnfangsbestandNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.4  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.3  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

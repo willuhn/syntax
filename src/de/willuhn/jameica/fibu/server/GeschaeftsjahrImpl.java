@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 16:43:14 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -338,26 +338,37 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#isAbgeschlossen()
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#isClosed()
    */
-  public boolean isAbgeschlossen() throws RemoteException
+  public boolean isClosed() throws RemoteException
   {
-    Integer i = (Integer) getAttribute("abgeschlossen");
+    Integer i = (Integer) getAttribute("closed");
     return i != null && i.intValue() == 1;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setAbgeschlossen(boolean)
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#close()
    */
-  public void setAbgeschlossen(boolean b) throws RemoteException
+  public void close() throws RemoteException
   {
-    setAttribute("abgeschlossen", b ? new Integer(1) : null);
+    try
+    {
+      BuchungsEngine.close(this);
+      setAttribute("closed", new Integer(1));
+    }
+    catch (ApplicationException e)
+    {
+      throw new RemoteException(e.getMessage());
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.3  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.2  2005/08/29 16:43:14  willuhn
  * @B bugfixing
  *

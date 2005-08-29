@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/29 15:20:51 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -241,6 +242,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   public void insertCheck() throws ApplicationException
   {
     try {
+      if (Settings.getActiveGeschaeftsjahr().isClosed())
+        throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+
       if (getBetrag() == 0.0d)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ungleich 0 ein."));
 
@@ -306,6 +310,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.10  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.9  2005/08/29 15:20:51  willuhn
  * @B bugfixing
  *

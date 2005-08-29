@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.19 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class Settings
       {
         settings.setAttribute("gj.acive",jahr.getID());
         Mandant m = jahr.getMandant();
-        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)jahr.getAttribute("name")}));
+        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)jahr.getAttribute(jahr.getPrimaryAttribute())}));
       }
       catch (RemoteException e)
       {
@@ -115,7 +115,7 @@ public class Settings
       }
       setActiveGeschaeftsjahr(jahr);
       Mandant m = jahr.getMandant();
-      GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)jahr.getAttribute("name")}));
+      GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)jahr.getAttribute(jahr.getPrimaryAttribute())}));
       return jahr;
     }
     catch (Exception e)
@@ -128,6 +128,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.19  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.18  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

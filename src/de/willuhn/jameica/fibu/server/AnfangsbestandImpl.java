@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -68,6 +69,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     
     try
     {
+      if (Settings.getActiveGeschaeftsjahr().isClosed())
+        throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+
       Konto k = getKonto();
       Geschaeftsjahr jahr = getGeschaeftsjahr();
       
@@ -174,6 +178,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.7  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.6  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

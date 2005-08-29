@@ -91,7 +91,7 @@ CREATE TABLE geschaeftsjahr (
   beginn date NOT NULL,
   ende date NOT NULL,
   kontenrahmen_id int(10) NOT NULL,
-  abgeschlossen int(1) NULL,
+  closed int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

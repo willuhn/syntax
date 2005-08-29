@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 17:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -110,6 +111,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   {
     try
     {
+      if (Settings.getActiveGeschaeftsjahr().isClosed())
+        throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+
       if (getAnlagevermoegen() == null)
         throw new ApplicationException(i18n.tr("Kein Anlage-Gegenstand zugeordnet"));
       if (getBuchung() == null)
@@ -135,6 +139,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.2  2005/08/29 17:46:14  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *
