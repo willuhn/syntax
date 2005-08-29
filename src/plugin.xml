@@ -17,11 +17,12 @@
   </menu>
 
   <navigation>
-	  <item id="fibu.navi" 									name="Fibu" 						icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
-	    <item id="fibu.navi.buchungen" 			name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
-	    <item id="fibu.navi.konten" 				name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
-	    <item id="fibu.navi.anfangsbestand" name="Anfangsbestände"  icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
-	    <item id="fibu.navi.mandanten"			name="Mandanten" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
+	  <item id="fibu.navi" 									 name="Fibu" 						  icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
+	    <item id="fibu.navi.buchungen" 			 name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
+	    <item id="fibu.navi.konten" 				 name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
+	    <item id="fibu.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
+	    <item id="fibu.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
+	    <item id="fibu.navi.mandanten"			 name="Mandanten" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
 	  </item>
   </navigation>
 

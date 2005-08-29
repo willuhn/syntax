@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/29 14:26:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,18 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
+import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -60,6 +64,10 @@ public class MandantNeu extends AbstractView
     finanzGroup.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     finanzGroup.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
+    new Headline(getParent(),i18n.tr("Vorhandene Geschäftsjahre"));
+    TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
+    jahre.paint(getParent());
+    
     ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 3 : 2);
     buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
@@ -85,6 +93,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.17  2005/08/29 14:26:57  willuhn
+ * @N Anlagevermoegen, Abschreibungen
+ *
  * Revision 1.16  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

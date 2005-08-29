@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/08/29 14:26:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,27 +10,30 @@
  * All rights reserved
  *
  **********************************************************************/
+
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
-import de.willuhn.jameica.fibu.gui.controller.AnfangsbestandControl;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
+import de.willuhn.jameica.fibu.gui.controller.AnlagevermoegenControl;
+import de.willuhn.jameica.fibu.gui.part.AbschreibungList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Legt einen neuen Anfangsbestand an oder bearbeitet einen existierenden.
- * @author willuhn
+ * View zum Bearbeiten eines Anlage-Gutes.
  */
-public class AnfangsbestandNeu extends AbstractView
+public class AnlagevermoegenNeu extends AbstractView
 {
 
   /**
@@ -38,22 +41,29 @@ public class AnfangsbestandNeu extends AbstractView
    */
   public void bind() throws Exception
   {
-
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Anfangsbestand"));
+    GUI.getView().setTitle(i18n.tr("Anlagevermögen"));
 
-    final AnfangsbestandControl control = new AnfangsbestandControl(this);
+    final AnlagevermoegenControl control = new AnlagevermoegenControl(this);
     
     Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-    group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getGeschaeftsjahr());
-    group.addLabelPair(i18n.tr("Konto"),         control.getKontoAuswahl());
-    group.addLabelPair(i18n.tr("Anfangsbestand"),control.getBetrag());
+    group.addLabelPair(i18n.tr("Mandant"),                      control.getMandant());
+    group.addLabelPair(i18n.tr("Bezeichnung"),                  control.getName());
+    group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
+    group.addLabelPair(i18n.tr("Anschaffungskosten"),           control.getKosten());
+    group.addLabelPair(i18n.tr("Laufzeit für Abschreibungen"),  control.getLaufzeit());
+    group.addSeparator();
+    group.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
 
+    new Headline(getParent(),i18n.tr("Abschreibungen"));
+    TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
+    table.paint(getParent());
+    
     ButtonArea buttonArea = group.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -61,7 +71,6 @@ public class AnfangsbestandNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    
   }
 
   /**
@@ -70,17 +79,13 @@ public class AnfangsbestandNeu extends AbstractView
   public void unbind() throws ApplicationException
   {
   }
+
 }
 
+
 /*********************************************************************
- * $Log: AnfangsbestandNeu.java,v $
- * Revision 1.3  2005/08/29 14:26:57  willuhn
+ * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.2  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.1  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
  *
  **********************************************************************/

@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnlagevermoegenNeu.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/08/29 14:26:56 $
  * $Author: willuhn $
  * $Locker:  $
@@ -15,21 +15,18 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
- * Action zum Anlegen eines neuen Geschaeftsjahres.
+ * Action zum Anlegen eines neuen Anlagevermoegens.
  */
-public class GeschaeftsjahrNeu implements Action
+public class AnlagevermoegenNeu implements Action
 {
 
   /**
@@ -37,41 +34,35 @@ public class GeschaeftsjahrNeu implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
-    Geschaeftsjahr jahr = null;
+    Anlagevermoegen a = null;
     if (context != null)
     {
       if (context instanceof Mandant)
       {
         try
         {
-          jahr = (Geschaeftsjahr) Settings.getDBService().createObject(Geschaeftsjahr.class,null);
-          jahr.setMandant((Mandant)context);
+          a = (Anlagevermoegen) Settings.getDBService().createObject(Anlagevermoegen.class,null);
+          a.setMandant((Mandant)context);
         }
         catch (RemoteException e)
         {
-          Logger.error("error while creating gj",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Geschäftsjahres"));
+          Logger.error("error while creating anlagevermoegen",e);
         }
       }
       else
       {
-        jahr = (Geschaeftsjahr) context;
+        a = (Anlagevermoegen) context;
       }
     }
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.GeschaeftsjahrNeu.class,context);
+    
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.AnlagevermoegenNeu.class,a);
   }
-
 }
 
 
 /*********************************************************************
- * $Log: GeschaeftsjahrNeu.java,v $
- * Revision 1.2  2005/08/29 14:26:56  willuhn
+ * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.1  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
  *
  **********************************************************************/

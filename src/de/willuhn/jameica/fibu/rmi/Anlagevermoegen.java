@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 00:20:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:26:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.fibu.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
@@ -94,18 +95,11 @@ public interface Anlagevermoegen extends DBObject
   public void setLaufzeit(int laufzeit) throws RemoteException;
   
   /**
-   * Liefert den Restwert des Anlagegutes.
+   * Liefert den aktuellen Restwert des Anlagegutes.
    * @return Restwert.
    * @throws RemoteException
    */
   public double getRestwert() throws RemoteException;
-  
-  /**
-   * Speichert den Restwert des Anlagegutes.
-   * @param restwert
-   * @throws RemoteException
-   */
-  public void setRestwert(double restwert) throws RemoteException;
   
   /**
    * Liefert den Mandanten.
@@ -120,11 +114,30 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setMandant(Mandant mandant) throws RemoteException;
+  
+  /**
+   * Liefert die Abschreibungsbuchungen zu diesem Anlagevermoegen.
+   * @return Abschreibungsbuchungen.
+   * @throws RemoteException
+   */
+  public DBIterator getAbschreibungen() throws RemoteException;
+  
+  /**
+   * Prueft, ob das Anlagegut noch geaendert werden darf.
+   * Sowie bereits Abschreibungen vorliegen, duerfen abschreibungsrelevante
+   * Daten nicht mehr geaendert werden.
+   * @return true, wenn das Anlagevermoegen nocht geaendert werden darf.
+   * @throws RemoteException
+   */
+  public boolean canChange() throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.2  2005/08/29 14:26:57  willuhn
+ * @N Anlagevermoegen, Abschreibungen
+ *
  * Revision 1.1  2005/08/29 00:20:29  willuhn
  * @N anlagevermoegen
  *

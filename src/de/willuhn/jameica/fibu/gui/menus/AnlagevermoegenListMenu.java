@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnfangsbestandListMenu.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnlagevermoegenListMenu.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/08/29 14:26:57 $
  * $Author: willuhn $
  * $Locker:  $
@@ -14,8 +14,8 @@
 package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
-import de.willuhn.jameica.fibu.gui.action.AnfangsbestandNeu;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -24,26 +24,26 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Vorkonfiguriertes Kontext-Menu fuer AB-Listen.
+ * Vorkonfiguriertes Kontext-Menu fuer das Anlagevermoegen.
  */
-public class AnfangsbestandListMenu extends ContextMenu
+public class AnlagevermoegenListMenu extends ContextMenu
 {
   /**
    * ct.
    */
-  public AnfangsbestandListMenu()
+  public AnlagevermoegenListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnfangsbestandNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new AnfangsbestandDelete()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new AnlagevermoegenDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neuer Anfangsbestand"), new ABNeu()));
+    this.addItem(new ContextMenuItem(i18n.tr("Anlagevermögen hinzufügen"), new ANeu()));
   }
   
   /**
-   * Erzeugt immer einen neuen Anfangsbestand - unabhaengig vom Kontext.
+   * Erzeugt immer ein neues Anlagevermoegen - unabhaengig vom Kontext.
    */
-  private static class ABNeu extends AnfangsbestandNeu
+  private static class ANeu extends AnlagevermoegenNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -58,17 +58,8 @@ public class AnfangsbestandListMenu extends ContextMenu
 
 
 /*********************************************************************
- * $Log: AnfangsbestandListMenu.java,v $
- * Revision 1.4  2005/08/29 14:26:57  willuhn
+ * $Log: AnlagevermoegenListMenu.java,v $
+ * Revision 1.1  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.3  2005/08/25 21:58:57  willuhn
- * @N SKR04
- *
- * Revision 1.2  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.1  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
  *
  **********************************************************************/

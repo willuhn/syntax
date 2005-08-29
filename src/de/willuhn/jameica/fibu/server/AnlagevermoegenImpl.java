@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 14:26:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,16 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Anlagevermoegen-Postens.
@@ -27,12 +34,16 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermoegen
 {
 
+  private I18N i18n = null;
+  private Boolean canChange = null;
+  
   /**
    * @throws java.rmi.RemoteException
    */
   public AnlagevermoegenImpl() throws RemoteException
   {
     super();
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -138,16 +149,15 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public double getRestwert() throws RemoteException
   {
-    Double restwert = (Double) getAttribute("restwert");
-    return restwert == null ? 0.0d : restwert.doubleValue();
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setRestwert(double)
-   */
-  public void setRestwert(double restwert) throws RemoteException
-  {
-    setAttribute("restwert",new Double(restwert));
+    double restwert = getAnschaffungskosten();
+    DBIterator abschreibungen = getAbschreibungen();
+    while (abschreibungen.hasNext())
+    {
+      Abschreibung a = (Abschreibung) abschreibungen.next();
+      Buchung b = a.getBuchung();
+      restwert -= b.getBetrag();
+    }
+    return restwert;
   }
 
   /**
@@ -178,11 +188,146 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     
     return super.getForeignObject(arg0);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAbschreibungen()
+   */
+  public DBIterator getAbschreibungen() throws RemoteException
+  {
+    DBIterator list = getService().createList(Abschreibung.class);
+    list.addFilter("av_id = " + getID());
+    return list;
+  }
+  
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      transactionBegin();
+
+      DBIterator abschreibungen = getAbschreibungen();
+      while (abschreibungen.hasNext())
+      {
+        Abschreibung a = (Abschreibung) abschreibungen.next();
+        Buchung b = a.getBuchung();
+        if (b != null)
+          b.delete();
+        a.delete();
+      }
+      
+      super.delete();
+      
+      transactionCommit();
+    }
+    catch (ApplicationException e)
+    {
+      transactionRollback();
+      throw e;
+    }
+    catch (RemoteException e2)
+    {
+      transactionRollback();
+      throw e2;
+    }
+    catch (Throwable t)
+    {
+      Logger.error("unable to delete av",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Anlage-Gegenstandes"));
+    }
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
+   */
+  protected void insertCheck() throws ApplicationException
+  {
+    try
+    {
+      if (getAnschaffungsDatum() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Anschaffungsdatum an"));
+      if (getAnschaffungskosten() == 0.0d)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Betrag für die Anschaffungskosten an"));
+      if (getLaufzeit() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Laufzeit (in Jahren) zur Abschreibung an"));
+      if (getMandant() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Mandanten an"));
+      if (getName() == null || getName().length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein"));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking av",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Anlage-Gegenstandes"));
+    }
+    super.insertCheck();
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  protected void updateCheck() throws ApplicationException
+  {
+    insertCheck();
+    
+    // Jetzt muessen wir noch pruefen, ob abschreibungsrelevante Daten geaendert wurden
+    try
+    {
+      if (!canChange())
+      {
+        if (hasChanged("anschaffungsdatum"))
+          throw new ApplicationException(i18n.tr("Anschaffungsdatum darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+        
+        if (hasChanged("anschaffungskosten"))
+          throw new ApplicationException(i18n.tr("Anschaffungskosten dürfen nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+
+        if (hasChanged("laufzeit"))
+          throw new ApplicationException(i18n.tr("Laufzeit darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+
+        if (hasChanged("mandant_id"))
+          throw new ApplicationException(i18n.tr("Mandant darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+
+      }
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking av",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Anlage-Gegenstandes"));
+    }
+  }
+
+  /**
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("restwert".equals(arg0))
+      return new Double(getRestwert());
+    return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#canChange()
+   */
+  public boolean canChange() throws RemoteException
+  {
+    if (canChange == null)
+    {
+      DBIterator list = getAbschreibungen();
+      this.canChange = Boolean.valueOf(!list.hasNext());
+    }
+    return canChange.booleanValue();
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.3  2005/08/29 14:26:56  willuhn
+ * @N Anlagevermoegen, Abschreibungen
+ *
  * Revision 1.2  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

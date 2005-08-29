@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.35 $
+ * $Date: 2005/08/29 14:26:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,6 +76,8 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
           hbs[i].store();
         }
       }
+      
+      // TODO: Ggf. Anlagevermoegen anlegen/aendern!
 
       transactionCommit();
     }
@@ -147,6 +149,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.35  2005/08/29 14:26:56  willuhn
+ * @N Anlagevermoegen, Abschreibungen
+ *
  * Revision 1.34  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *
