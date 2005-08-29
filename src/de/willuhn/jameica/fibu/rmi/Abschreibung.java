@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Abschreibung.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,11 +49,28 @@ public interface Abschreibung extends DBObject
    * @throws RemoteException
    */
   public void setBuchung(Buchung b) throws RemoteException;
+  
+  /**
+   * Liefert das Geschaeftsjahr, in dem die Abschreibung vorgenommen wurde.
+   * @return Geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException;
+  
+  /**
+   * Speichert das Geschaeftsjahr, in dem die Abschreibung vorgenommen wurde.
+   * @param jahr Geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Abschreibung.java,v $
+ * Revision 1.2  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.1  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

@@ -114,6 +114,7 @@ CREATE TABLE abschreibung (
   id NUMERIC default UNIQUEKEY('abschreibung'),
   av_id int(10) NOT NULL,
   buchung_id int(10) NOT NULL,
+  geschaeftsjahr_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -143,6 +144,7 @@ ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id)
 
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id) DEFERRABLE;
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
 
 
 CREATE INDEX idx_gj_mandant           ON geschaeftsjahr(mandant_id);

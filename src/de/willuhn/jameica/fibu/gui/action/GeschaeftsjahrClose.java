@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrClose.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,9 @@ import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.server.BuchungsEngine;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -89,7 +91,8 @@ public class GeschaeftsjahrClose implements Action
     
     try
     {
-      jahr.close();
+      BuchungsEngine.close(jahr);
+      GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr erfolgreich abgeschlossen"));
     }
     catch (RemoteException e)
     {
@@ -103,6 +106,9 @@ public class GeschaeftsjahrClose implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrClose.java,v $
+ * Revision 1.2  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.1  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 15:20:51 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.AnlagevermoegenListMenu;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -45,38 +44,20 @@ public class AnlagevermoegenList extends TablePart
     super(Settings.getDBService().createList(Anlagevermoegen.class), action);
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    addColumn(i18n.tr("Konto"),"buchung_id", new Formatter() {
+    addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
       public String format(Object o)
       {
-        if (o == null || !(o instanceof Buchung))
+        if (o == null || !(o instanceof Konto))
           return null;
         try
         {
-          Buchung b = (Buchung) o;
-          Konto k = b.getSollKonto();
+          Konto k = (Konto) o;
           return k.getKontonummer() + " [" + k.getName() + "]";
         }
         catch (RemoteException e)
         {
           Logger.error("unable to read konto",e);
           return "nicht ermittelbar";
-        }
-      }
-    });
-    addColumn(i18n.tr("Belegnummer"),"buchung_id",new Formatter() {
-      public String format(Object o)
-      {
-        if (o == null || !(o instanceof Buchung))
-          return null;
-        try
-        {
-          Buchung b = (Buchung) o;
-          return "" + b.getBelegnummer();
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to read buchung",e);
-          return null;
         }
       }
     });
@@ -92,6 +73,9 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.3  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.2  2005/08/29 15:20:51  willuhn
  * @B bugfixing
  *

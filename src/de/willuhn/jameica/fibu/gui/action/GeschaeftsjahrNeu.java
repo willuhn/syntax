@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 16:43:14 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,7 @@ public class GeschaeftsjahrNeu implements Action
           throw new ApplicationException(i18n.tr("Fehler beim Erzeugen des Geschäftsjahres"));
         }
       }
-      else
+      else if (context instanceof Geschaeftsjahr)
       {
         jahr = (Geschaeftsjahr) context;
       }
@@ -78,6 +78,9 @@ public class GeschaeftsjahrNeu implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.5  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.4  2005/08/29 16:43:14  willuhn
  * @B bugfixing
  *

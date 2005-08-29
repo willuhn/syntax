@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.34 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,9 +57,10 @@ public class BuchungNeu extends AbstractView
     kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
     kontoGroup.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
 
-    LabelGroup avGroup = new LabelGroup(getParent(),i18n.tr("Anlagevermögen"));
-    avGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("Zur Abschreibung in Anlagevermögen übernehmen"));
-    avGroup.addLabelPair(i18n.tr("Laufzeit"),           control.getLaufzeit());
+    kontoGroup.addHeadline(i18n.tr("Anlagevermögen"));
+    kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("Zur Abschreibung in Anlagevermögen übernehmen"));
+    kontoGroup.addLabelPair(i18n.tr("Laufzeit"),           control.getLaufzeit());
+    kontoGroup.addLabelPair(i18n.tr("Abschreibungskonto"), control.getAbschreibungsKonto());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
@@ -68,7 +69,7 @@ public class BuchungNeu extends AbstractView
     if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),closed ? 1 : 4);
+    ButtonArea buttonArea = kontoGroup.createButtonArea(closed ? 1 : 4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     if (!closed)
     {
@@ -99,6 +100,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.34  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.33  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *

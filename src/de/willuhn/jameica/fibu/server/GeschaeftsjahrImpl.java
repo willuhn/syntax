@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -308,6 +309,13 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     {
       transactionBegin();
 
+      DBIterator afa = getAbschreibungen();
+      while (afa.hasNext())
+      {
+        Abschreibung a = (Abschreibung) afa.next();
+        a.delete();
+      }
+      
       DBIterator buchungen = getBuchungen();
       while (buchungen.hasNext())
       {
@@ -356,15 +364,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public void close() throws RemoteException
   {
-    try
-    {
-      BuchungsEngine.close(this);
-      setAttribute("closed", new Integer(1));
-    }
-    catch (ApplicationException e)
-    {
-      throw new RemoteException(e.getMessage());
-    }
+    setAttribute("closed", new Integer(1));
   }
 
   /**
@@ -389,11 +389,24 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     }
     return count;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getAbschreibungen()
+   */
+  public DBIterator getAbschreibungen() throws RemoteException
+  {
+    DBIterator list = getService().createList(Abschreibung.class);
+    list.addFilter("geschaeftsjahr_id = " + this.getID());
+    return list;
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.5  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.4  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

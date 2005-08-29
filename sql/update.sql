@@ -31,3 +31,12 @@ ALTER CREATE TABLE kontenrahmen (
   UNIQUE (name),
   PRIMARY KEY (id)
 );
+
+ALTER CREATE TABLE abschreibung (
+  id NUMERIC default UNIQUEKEY('abschreibung'),
+  av_id int(10) NOT NULL,
+  buchung_id int(10) NOT NULL,
+  geschaeftsjahr_id int(10) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);

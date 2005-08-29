@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.util.Calendar;
+import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
@@ -68,6 +69,15 @@ public class BuchungsEngine
       DBService db     = Settings.getDBService();
 
       // Abschreibungen buchen
+      Calendar cal1 = Calendar.getInstance();
+      
+      // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch _vor_ dem Ende gdes Geschaeftsjahres liegt
+      cal1.setTime(jahr.getEnde());
+      cal1.set(Calendar.HOUR,0);
+      cal1.set(Calendar.MINUTE,0);
+      cal1.set(Calendar.SECOND,1);
+      Date end = cal1.getTime();
+
       Logger.info("Buche Abschreibungen für Anlagevermögen");
       DBIterator list = m.getAnlagevermoegen();
       while (list.hasNext())
@@ -84,12 +94,13 @@ public class BuchungsEngine
           rest = true;
         }
         
-        Logger.info("  Buchung fuer " + av.getName());
+        Logger.info("  Abschreibung fuer " + av.getName());
         Buchung buchung = (Buchung) db.createObject(Buchung.class,null);
-        buchung.setDatum(jahr.getEnde());
+        buchung.setDatum(end);
         buchung.setGeschaeftsjahr(jahr);
         buchung.setSollKonto(av.getAbschreibungskonto());
         buchung.setHabenKonto(av.getKonto());
+        buchung.setBelegnummer(buchung.getBelegnummer());
         if (rest)
           buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
         else
@@ -101,6 +112,7 @@ public class BuchungsEngine
         Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
         afa.setAnlagevermoegen(av);
         afa.setBuchung(buchung);
+        afa.setGeschaeftsjahr(jahr);
         afa.store();
       }
       
@@ -121,6 +133,7 @@ public class BuchungsEngine
       
       // Ende
       cal.add(Calendar.MONTH,jahr.getMonate());
+      cal.add(Calendar.DATE,-1); // Ein Tag wieder abziehen
       jahrNeu.setEnde(cal.getTime());
 
       Logger.info("  Beginn: " + jahrNeu.getBeginn().toString());
@@ -145,6 +158,10 @@ public class BuchungsEngine
         ab.store();
       }
       
+      Logger.info("Schliesse altes Geschaeftsjahr");
+      jahr.close();
+      jahr.store();
+
       jahr.transactionCommit();
     }
     catch (RemoteException e)
@@ -229,6 +246,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.14  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.13  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

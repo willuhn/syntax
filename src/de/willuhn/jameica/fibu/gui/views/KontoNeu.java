@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/15 23:38:27 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmen());
     group.addLabelPair(i18n.tr("Saldo"),        control.getSaldo());
     
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+    ButtonArea buttons = group.createButtonArea(3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
     buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
     buttons.addButton(i18n.tr("Speichern"), new Action()
@@ -83,6 +83,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.13  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.12  2005/08/15 23:38:27  willuhn
  * *** empty log message ***
  *

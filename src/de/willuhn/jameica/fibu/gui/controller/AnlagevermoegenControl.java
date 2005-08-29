@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -281,7 +281,7 @@ public class AnlagevermoegenControl extends AbstractControl
     Konto k = getAnlagevermoegen().getAbschreibungskonto();
     afaKonto = new DialogInput(k == null ? null : k.getKontonummer(),d);
     afaKonto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
-    return konto;
+    return afaKonto;
   }
 
   /**
@@ -355,6 +355,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.5  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.4  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

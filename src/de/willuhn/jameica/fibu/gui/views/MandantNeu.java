@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.19 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,26 +49,22 @@ public class MandantNeu extends AbstractView
 
     final MandantControl control = new MandantControl(this);
 
-    Container contactGroup = new LabelGroup(getParent(),i18n.tr("Kontaktdaten"));
+    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-    contactGroup.addLabelPair(i18n.tr("Name 1")  , control.getName1());
-    contactGroup.addLabelPair(i18n.tr("Name 2")  , control.getName2());
-    contactGroup.addLabelPair(i18n.tr("Firma")   , control.getFirma());
-    contactGroup.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
-    contactGroup.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
-    contactGroup.addLabelPair(i18n.tr("Ort")     , control.getOrt());
+    group.addLabelPair(i18n.tr("Name 1")  , control.getName1());
+    group.addLabelPair(i18n.tr("Name 2")  , control.getName2());
+    group.addLabelPair(i18n.tr("Firma")   , control.getFirma());
+    group.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
+    group.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
+    group.addLabelPair(i18n.tr("Ort")     , control.getOrt());
 
-    Container finanzGroup = new LabelGroup(getParent(),i18n.tr("Buchhalterische Daten"));
-
-    finanzGroup.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
-    finanzGroup.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
-    finanzGroup.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
-
-    new Headline(getParent(),i18n.tr("Vorhandene Geschäftsjahre"));
-    TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
-    jahre.paint(getParent());
+    group.addHeadline(i18n.tr("Buchhalterische Daten"));
     
-    ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 4 : 2);
+    group.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
+    group.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
+    group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
+
+    ButtonArea buttonArea = group.createButtonArea(control.storeAllowed() ? 4 : 2);
     buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
     if (control.storeAllowed())
@@ -87,6 +83,11 @@ public class MandantNeu extends AbstractView
         }
       },null,control.storeAllowed());
     }
+
+    new Headline(getParent(),i18n.tr("Vorhandene Geschäftsjahre"));
+    TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
+    jahre.paint(getParent());
+
   }
 
   /**
@@ -99,6 +100,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.19  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.18  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

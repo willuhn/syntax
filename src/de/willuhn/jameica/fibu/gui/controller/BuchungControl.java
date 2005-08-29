@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.40 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.41 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,6 +67,7 @@ public class BuchungControl extends AbstractControl
   
   private CheckboxInput anlageVermoegen = null;
   private Input laufzeit                = null;
+  private DialogInput afaKonto          = null;
   
   private I18N i18n;
 
@@ -239,10 +240,23 @@ public class BuchungControl extends AbstractControl
     this.anlageVermoegen.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (anlageVermoegen.isEnabled())
-          getLaufzeit().enable();
-        else
-          getLaufzeit().disable();
+        try
+        {
+          if (anlageVermoegen.isEnabled())
+          {
+            getLaufzeit().enable();
+            getAbschreibungsKonto().enable();
+          }
+          else
+          {
+            getLaufzeit().disable();
+            getAbschreibungsKonto().disable();
+          }
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while enabling/disabling afa controls",e);
+        }
       }
     });
     return this.anlageVermoegen;
@@ -262,6 +276,44 @@ public class BuchungControl extends AbstractControl
     return this.laufzeit;
   }
   
+  /**
+   * Liefert das Eingabe-Feld zur Auswahl des Abschreibungskontos.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public DialogInput getAbschreibungsKonto() throws RemoteException
+  {
+    if (afaKonto != null)
+      return afaKonto;
+    
+    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUSGABE);
+    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(new Listener() {
+      public void handleEvent(Event event) {
+        Konto k = (Konto) event.data;
+        if (k == null)
+          return;
+        try {
+          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          afaKonto.setValue(k.getKontonummer());
+          afaKonto.setText(k.getKontonummer());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to load konto",e);
+        }
+
+      }
+    });
+    
+    afaKonto = new DialogInput(null,d);
+    afaKonto.setComment("");
+    afaKonto.disable();
+    return afaKonto;
+  }
+
   /**
 	 * Liefert das Eingabe-Feld fuer die Belegnummer.
 	 * @return Eingabe-Feld.
@@ -447,6 +499,26 @@ public class BuchungControl extends AbstractControl
           throw new ApplicationException(i18n.tr("Bitte geben Sie eine Laufzeit für die Abschreibung ein"));
         
         Anlagevermoegen av = (Anlagevermoegen) Settings.getDBService().createObject(Anlagevermoegen.class,null);
+
+        //////////////////////////////////////////////////////////////////////////
+        // Abschreibungskonto checken
+        s = (String) getAbschreibungsKonto().getText();
+        if (s == null || s.length() == 0)
+        {
+          GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
+          return;
+        }
+        konten = Settings.getDBService().createList(Konto.class);
+        konten.addFilter("kontonummer = '" + s + "'");
+        if (!konten.hasNext())
+        {
+          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+          return;
+        }
+        av.setAbschreibungskonto((Konto) konten.next());
+        //
+        //////////////////////////////////////////////////////////////////////////
+
         av.setAnschaffungsDatum(getBuchung().getDatum());
         av.setAnschaffungskosten(getBuchung().getBetrag());
         av.setBuchung(getBuchung());
@@ -560,11 +632,13 @@ public class BuchungControl extends AbstractControl
           getAnlageVermoegen().enable();
           getAnlageVermoegen().setValue(Boolean.TRUE);
           getLaufzeit().enable();
+          getAbschreibungsKonto().enable();
         }
         else
         {
           getAnlageVermoegen().disable();
           getLaufzeit().disable();
+          getAbschreibungsKonto().disable();
         }
         ////////////////////////////////////////////////////////////////////////
 
@@ -661,6 +735,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.41  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.40  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

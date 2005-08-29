@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 22:26:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,6 +103,13 @@ public interface Geschaeftsjahr extends DBObject
   public DBIterator getAnfangsbestaende() throws RemoteException;
   
   /**
+   * Liefert eine Liste der Abschreibungen des Jahres.
+   * @return Abschreibungen.
+   * @throws RemoteException
+   */
+  public DBIterator getAbschreibungen() throws RemoteException;
+  
+  /**
    * Prueft, ob das Geschaeftsjahr bereits geschlossen ist.
    * @return true, wenn es geschlossen ist.
    * @throws RemoteException
@@ -126,6 +133,9 @@ public interface Geschaeftsjahr extends DBObject
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
+ * Revision 1.5  2005/08/29 22:26:19  willuhn
+ * @N Jahresabschluss
+ *
  * Revision 1.4  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *
