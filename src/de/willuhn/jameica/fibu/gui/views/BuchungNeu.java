@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.35 $
+ * $Date: 2005/08/29 22:52:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class BuchungNeu extends AbstractView
 
     kontoGroup.addHeadline(i18n.tr("Anlagevermögen"));
     kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("Zur Abschreibung in Anlagevermögen übernehmen"));
-    kontoGroup.addLabelPair(i18n.tr("Laufzeit"),           control.getLaufzeit());
+    kontoGroup.addLabelPair(i18n.tr("Nutzungsdauer"),      control.getLaufzeit());
     kontoGroup.addLabelPair(i18n.tr("Abschreibungskonto"), control.getAbschreibungsKonto());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
@@ -100,6 +100,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.35  2005/08/29 22:52:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.34  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

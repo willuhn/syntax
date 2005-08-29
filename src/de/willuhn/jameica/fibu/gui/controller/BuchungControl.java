@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.41 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.42 $
+ * $Date: 2005/08/29 22:52:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -271,7 +271,7 @@ public class BuchungControl extends AbstractControl
     if (this.laufzeit != null)
       return this.laufzeit;
     this.laufzeit = new IntegerInput(1);
-    this.laufzeit.setComment(i18n.tr("Laufzeit der Abschreibung in Jahren"));
+    this.laufzeit.setComment(i18n.tr("Nutzungsdauer des Anlagegutes in Jahren"));
     this.laufzeit.disable();
     return this.laufzeit;
   }
@@ -735,6 +735,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.42  2005/08/29 22:52:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.41  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

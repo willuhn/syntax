@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 22:52:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class AnlagevermoegenNeu extends AbstractView
 
     Container afa = new LabelGroup(getParent(),i18n.tr("Abschreibung"));
     afa.addLabelPair(i18n.tr("Abschreibungskonto"),           control.getAbschreibungsKonto());
-    afa.addLabelPair(i18n.tr("Laufzeit für Abschreibungen"),  control.getLaufzeit());
+    afa.addLabelPair(i18n.tr("Nutzungsdauer in Jahren"),      control.getLaufzeit());
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
 
     new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
@@ -88,6 +88,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.4  2005/08/29 22:52:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *
