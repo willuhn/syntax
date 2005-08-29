@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/GeschaeftsjahrAuswahlDialog.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,9 +28,9 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
-import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -47,7 +47,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 	private I18N i18n;
   
   private TablePart jahre = null;
-  private Input ma        = null;
+  private DialogInput ma          = null;
 
   private Mandant mandant         = null;
 	private Geschaeftsjahr choosen  = null;
@@ -110,6 +110,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
     ma = new DialogInput(mandant == null ? "" : mandant.getFirma(),d);
     ma.setComment(mandant == null ? "" : i18n.tr("Steuernummer: {0}",mandant.getSteuernummer()));
+    ma.disableClientControl();
     group.addLabelPair(i18n.tr("Mandant"),ma);
     
 
@@ -123,6 +124,8 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
       }
     };    
 
+    new Headline(parent,i18n.tr("Geschäftsjahre"));
+    
     jahre = new GeschaeftsjahrList(mandant,a);
     jahre.setContextMenu(null);
     jahre.setMulti(false);
@@ -166,6 +169,9 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: GeschaeftsjahrAuswahlDialog.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

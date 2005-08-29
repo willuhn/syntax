@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,6 @@ public class AnlagevermoegenNeu extends AbstractView
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
     group.addLabelPair(i18n.tr("Anschaffungskosten"),           control.getKosten());
     group.addLabelPair(i18n.tr("Laufzeit für Abschreibungen"),  control.getLaufzeit());
-    group.addSeparator();
     group.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
 
     new Headline(getParent(),i18n.tr("Abschreibungen"));
@@ -85,6 +84,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

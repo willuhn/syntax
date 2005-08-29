@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -32,11 +33,15 @@ import de.willuhn.util.I18N;
  */
 public class GeschaeftsjahrListMenu extends ContextMenu
 {
+  private Mandant mandant = null;
+  
   /**
    * ct.
+   * @param m Mandant.
    */
-  public GeschaeftsjahrListMenu()
+  public GeschaeftsjahrListMenu(Mandant m)
   {
+    this.mandant = m;
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new GeschaeftsjahrNeu()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new GeschaeftsjahrDelete()));
@@ -58,14 +63,14 @@ public class GeschaeftsjahrListMenu extends ContextMenu
   /**
    * Erzeugt immer ein neues Geschaeftsjahr - unabhaengig vom Kontext.
    */
-  private static class GNeu extends GeschaeftsjahrNeu
+  private class GNeu extends GeschaeftsjahrNeu
   {
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      super.handleAction(null);
+      super.handleAction(mandant);
     }
     
   }
@@ -74,6 +79,9 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

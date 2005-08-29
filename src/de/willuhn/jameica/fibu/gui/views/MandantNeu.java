@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,11 +68,17 @@ public class MandantNeu extends AbstractView
     TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
     jahre.paint(getParent());
     
-    ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 3 : 2);
+    ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 4 : 2);
     buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
     if (control.storeAllowed())
     {
+      buttonArea.addButton(i18n.tr("Geschäftsjahr anlegen"), new Action() {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          control.handleNewGJ();
+        }
+      });
       buttonArea.addButton(i18n.tr("Speichern"), new Action()
       {
         public void handleAction(Object context) throws ApplicationException
@@ -93,6 +99,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.18  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.17  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

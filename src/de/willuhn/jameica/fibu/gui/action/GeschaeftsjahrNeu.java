@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class GeschaeftsjahrNeu implements Action
         jahr = (Geschaeftsjahr) context;
       }
     }
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.GeschaeftsjahrNeu.class,context);
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.GeschaeftsjahrNeu.class,jahr);
   }
 
 }
@@ -68,6 +68,9 @@ public class GeschaeftsjahrNeu implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.3  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.2  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

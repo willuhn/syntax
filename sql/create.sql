@@ -20,6 +20,7 @@ CREATE TABLE konto (
   kontoart_id int(10) NOT NULL,
   kontonummer varchar(4) NOT NULL,
   name varchar(255) NOT NULL,
+  kontenrahmen_id int(10) NOT NULL,
   steuer_id int(10),
   UNIQUE (id),
   UNIQUE (kontenrahmen_id,kontonummer),
@@ -79,7 +80,6 @@ CREATE TABLE mandant (
   plz varchar(7) NOT NULL,
   ort varchar(255) NOT NULL,
   steuernummer varchar(100) NOT NULL,
-  kontenrahmen_id int(10) NOT NULL,
   finanzamt_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)

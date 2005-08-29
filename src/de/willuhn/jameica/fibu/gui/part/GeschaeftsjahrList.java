@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:28 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.menus.GeschaeftsjahrListMenu;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
@@ -46,6 +47,7 @@ public class GeschaeftsjahrList extends TablePart
     addColumn(i18n.tr("Kontenrahmen"), "kontenrahmen_id");
     addColumn(i18n.tr("Beginn"), "beginn", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Ende"), "ende", new DateFormatter(Fibu.DATEFORMAT));
+    setContextMenu(new GeschaeftsjahrListMenu(m));
   }
   
   /**
@@ -65,6 +67,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:28  willuhn
  * @N Geschaeftsjahr
  *

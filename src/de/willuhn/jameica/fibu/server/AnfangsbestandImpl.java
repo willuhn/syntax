@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,6 +76,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+      
+      if (getBetrag() == 0.0d)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
         
       DBIterator list = getService().createList(Anfangsbestand.class);
       list.addFilter("konto_id = " + k.getID());
@@ -171,6 +174,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.6  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.5  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

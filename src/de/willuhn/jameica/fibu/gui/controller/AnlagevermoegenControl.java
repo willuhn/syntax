@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -158,6 +158,8 @@ public class AnlagevermoegenControl extends AbstractControl
       return this.datum;
     
     Date date = getAnlagevermoegen().getAnschaffungsDatum();
+    if (date == null)
+      date = new Date();
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     d.setTitle(i18n.tr("Anschaffungsdatum"));
     d.setText(i18n.tr("Bitte wählen Sie das Anschaffungsdatum"));
@@ -232,6 +234,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

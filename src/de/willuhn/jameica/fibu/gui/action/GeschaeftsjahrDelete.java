@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public class GeschaeftsjahrDelete implements Action
     {
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       d.setTitle(i18n.tr("Geschäftsjahr wirklich löschen?"));
-      d.setText(i18n.tr("Wollen Sie dieses geschäftsjahr wirklich löschen?\n" +
+      d.setText(i18n.tr("Wollen Sie dieses Geschäftsjahr wirklich löschen?\n" +
                         "Hierbei werden auch die Buchungen und Anfangsbestände gelöscht."));
       
       if (!((Boolean) d.open()).booleanValue())
@@ -67,6 +67,9 @@ public class GeschaeftsjahrDelete implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrDelete.java,v $
+ * Revision 1.2  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

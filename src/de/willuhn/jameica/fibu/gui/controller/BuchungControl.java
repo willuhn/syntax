@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.37 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.38 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -233,6 +233,7 @@ public class BuchungControl extends AbstractControl
     if (this.anlageVermoegen != null)
       return this.anlageVermoegen;
     this.anlageVermoegen = new CheckboxInput(false);
+    this.anlageVermoegen.disable();
     return this.anlageVermoegen;
   }
   
@@ -611,6 +612,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.38  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.37  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

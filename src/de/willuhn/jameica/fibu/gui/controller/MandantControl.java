@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/29 14:54:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -234,6 +235,7 @@ public class MandantControl extends AbstractControl
    */
   public void handleStore()
   {
+    stored = false;
     try {
 
       //////////////////////////////////////////////////////////////////////////
@@ -253,6 +255,7 @@ public class MandantControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getMandant().store();
+      stored = true;
       GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gespeichert."));
     }
     catch (ApplicationException e1)
@@ -264,12 +267,40 @@ public class MandantControl extends AbstractControl
 			Logger.error("unable to store mandant",e);
       GUI.getView().setErrorText("Fehler beim Speichern des Mandanten.");
     }
-    
+  }
+  
+  private boolean stored = false;
+  
+  /**
+   * Speichert den Mandanten und legt ein neues Geschaeftsjahr an.
+   */
+  public void handleNewGJ()
+  {
+    handleStore();
+    if (stored)
+    {
+      try
+      {
+        new GeschaeftsjahrNeu().handleAction(this.getMandant());
+      }
+      catch (ApplicationException e1)
+      {
+        GUI.getView().setErrorText(e1.getLocalizedMessage());
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to load mandant",e);
+        GUI.getView().setErrorText("Fehler beim Laden des Mandanten.");
+      }
+    }
   }
 }
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.23  2005/08/29 14:54:28  willuhn
+ * @B bugfixing
+ *
  * Revision 1.22  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *
