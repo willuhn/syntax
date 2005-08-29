@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,11 +130,42 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public boolean canChange() throws RemoteException;
+  
+  /**
+   * Liefert das Konto.
+   * @return Konto.
+   * @throws RemoteException
+   */
+  public Konto getKonto() throws RemoteException;
+  
+  /**
+   * Speichert das Konto.
+   * @param k Konto.
+   * @throws RemoteException
+   */
+  public void setKonto(Konto k) throws RemoteException;
+  
+  /**
+   * Liefert das Konto, auf dem die Abschreibungen gebucht werden sollen.
+   * @return Abschreibungskonto.
+   * @throws RemoteException
+   */
+  public Konto getAbschreibungskonto() throws RemoteException;
+  
+  /**
+   * Speichert das Konto, auf dem die Abschreibungen gebucht werden sollen.
+   * @param k Abschreibungskonto.
+   * @throws RemoteException
+   */
+  public void setAbschreibungskonto(Konto k) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.3  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

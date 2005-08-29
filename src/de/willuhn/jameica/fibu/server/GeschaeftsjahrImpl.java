@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,10 +210,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       if (getKontenrahmen() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
 
-      // Das rufen wir nur auf, damit die Daten automatisch gefuellt werden,
-      // falls sie noch fehlen.
-      getBeginn();
-      getEnde();
+      Date beginn = getBeginn();
+      Date ende = getEnde();
+      
+      if (!beginn.before(ende))
+        throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres muss sich nach dessen Beginn befinden"));
+      
+      int monate = getMonate();
+      if (monate < 1 || monate > 12)
+        throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht weniger als 1 und nicht mehr als 12 Monaten lang sein"));
     }
     catch (RemoteException e)
     {
@@ -361,11 +366,37 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       throw new RemoteException(e.getMessage());
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getMonate()
+   */
+  public int getMonate() throws RemoteException
+  {
+    Date start = getBeginn();
+    Date end   = getEnde();
+    
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(start);
+    int count = 0;
+    while (true)
+    {
+      if (++count > 13)
+        break;
+      cal.add(Calendar.MONTH,1);
+      Date test = cal.getTime();
+      if (test.after(end))
+        break;
+    }
+    return count;
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.4  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *

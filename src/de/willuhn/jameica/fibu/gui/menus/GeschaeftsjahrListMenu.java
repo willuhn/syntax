@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -58,6 +59,7 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
     }));
+    this.addItem(new ContextMenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
   }
   
   /**
@@ -79,6 +81,9 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.3  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

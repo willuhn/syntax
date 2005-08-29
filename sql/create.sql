@@ -102,6 +102,8 @@ CREATE TABLE anlagevermoegen (
   name varchar(255) NOT NULL,
   anschaffungskosten double NOT NULL,
   anschaffungsdatum date NOT NULL,
+  k_abschreibung_id int(10) NOT NULL,
+  konto_id int(10) NULL,
   buchung_id int(10) NULL,
   laufzeit int(2) NOT NULL,
   UNIQUE (id),
@@ -133,6 +135,8 @@ ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_gj FOREIGN KEY (geschaeftsjahr_id
 
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;

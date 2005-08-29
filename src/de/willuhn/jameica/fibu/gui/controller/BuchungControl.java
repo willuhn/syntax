@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.39 $
- * $Date: 2005/08/29 15:20:51 $
+ * $Revision: 1.40 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -450,6 +450,7 @@ public class BuchungControl extends AbstractControl
         av.setAnschaffungsDatum(getBuchung().getDatum());
         av.setAnschaffungskosten(getBuchung().getBetrag());
         av.setBuchung(getBuchung());
+        av.setKonto(getBuchung().getSollKonto());
         av.setName(getBuchung().getText());
         av.setLaufzeit(laufzeit);
         av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
@@ -660,6 +661,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.40  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2005/08/29 15:20:51  willuhn
  * @B bugfixing
  *

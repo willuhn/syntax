@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -185,6 +186,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
       return Mandant.class;
     if ("buchung_id".equals(arg0))
       return Buchung.class;
+    if ("konto_id".equals(arg0))
+      return Konto.class;
+    if ("k_abschreibung_id".equals(arg0))
+      return Konto.class;
     
     return super.getForeignObject(arg0);
   }
@@ -246,6 +251,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     try
     {
+      if (getKonto() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Bestandskonto an"));
+      if (getAbschreibungskonto() == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Aufwandskonto an, auf dem die Abschreibungen gebucht werden"));
       if (getAnschaffungsDatum() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Anschaffungsdatum an"));
       if (getAnschaffungskosten() == 0.0d)
@@ -256,6 +265,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Mandanten an"));
       if (getName() == null || getName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein"));
+      
     }
     catch (RemoteException e)
     {
@@ -289,6 +299,12 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
         if (hasChanged("mandant_id"))
           throw new ApplicationException(i18n.tr("Mandant darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
 
+        if (hasChanged("k_abschreibung_id"))
+          throw new ApplicationException(i18n.tr("Abschreibungskonto darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+
+        if (hasChanged("konto_id"))
+          throw new ApplicationException(i18n.tr("Bestandskonto darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+
       }
     }
     catch (RemoteException e)
@@ -320,11 +336,46 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     }
     return canChange.booleanValue();
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getKonto()
+   */
+  public Konto getKonto() throws RemoteException
+  {
+    return (Konto) getAttribute("konto_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setKonto(Konto k) throws RemoteException
+  {
+    setAttribute("konto_id",k);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAbschreibungskonto()
+   */
+  public Konto getAbschreibungskonto() throws RemoteException
+  {
+    return (Konto) getAttribute("k_abschreibung_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setAbschreibungskonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setAbschreibungskonto(Konto k) throws RemoteException
+  {
+    setAttribute("k_abschreibung_id",k);
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.4  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

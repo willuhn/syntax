@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,12 +51,16 @@ public class AnlagevermoegenNeu extends AbstractView
 
     group.addLabelPair(i18n.tr("Mandant"),                      control.getMandant());
     group.addLabelPair(i18n.tr("Bezeichnung"),                  control.getName());
+    group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
     group.addLabelPair(i18n.tr("Anschaffungskosten"),           control.getKosten());
-    group.addLabelPair(i18n.tr("Laufzeit für Abschreibungen"),  control.getLaufzeit());
-    group.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
 
-    new Headline(getParent(),i18n.tr("Abschreibungen"));
+    Container afa = new LabelGroup(getParent(),i18n.tr("Abschreibung"));
+    afa.addLabelPair(i18n.tr("Abschreibungskonto"),           control.getAbschreibungsKonto());
+    afa.addLabelPair(i18n.tr("Laufzeit für Abschreibungen"),  control.getLaufzeit());
+    afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
+
+    new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
     table.paint(getParent());
     
@@ -84,6 +88,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.3  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

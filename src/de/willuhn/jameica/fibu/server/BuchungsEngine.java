@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/29 21:37:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,14 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.util.Calendar;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -64,9 +66,9 @@ public class BuchungsEngine
       
       Mandant m        = jahr.getMandant();
       DBService db     = Settings.getDBService();
-      Buchung buchung  = null;
-      Abschreibung afa = null;
 
+      // Abschreibungen buchen
+      Logger.info("Buche Abschreibungen für Anlagevermögen");
       DBIterator list = m.getAnlagevermoegen();
       while (list.hasNext())
       {
@@ -82,10 +84,11 @@ public class BuchungsEngine
           rest = true;
         }
         
-        buchung = (Buchung) db.createObject(Buchung.class,null);
+        Logger.info("  Buchung fuer " + av.getName());
+        Buchung buchung = (Buchung) db.createObject(Buchung.class,null);
         buchung.setDatum(jahr.getEnde());
         buchung.setGeschaeftsjahr(jahr);
-        buchung.setSollKonto(jahr.getKontenrahmen().getAbschreibungskonto());
+        buchung.setSollKonto(av.getAbschreibungskonto());
         buchung.setHabenKonto(av.getKonto());
         if (rest)
           buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
@@ -94,10 +97,52 @@ public class BuchungsEngine
         buchung.setBetrag(betrag);
         buchung.store();
         
-        afa = (Abschreibung) db.createObject(Abschreibung.class,null);
+        Logger.info("  Abschreibung fuer " + av.getName());
+        Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
         afa.setAnlagevermoegen(av);
         afa.setBuchung(buchung);
         afa.store();
+      }
+      
+      // Neues geschaeftsjahr erzeugen
+      Logger.info("Erzeuge neues Geschaeftsjahr");
+      Geschaeftsjahr jahrNeu = (Geschaeftsjahr) db.createObject(Geschaeftsjahr.class,null);
+      jahrNeu.setMandant(m);
+      jahrNeu.setKontenrahmen(jahr.getKontenrahmen());
+      
+      Logger.info("  Berechne Dauer des Geschaeftsjahres");
+      
+      Calendar cal = Calendar.getInstance();
+
+      // Beginn
+      cal.setTime(jahr.getEnde());
+      cal.add(Calendar.DATE,1); // Ein Tag drauf.
+      jahrNeu.setBeginn(cal.getTime());
+      
+      // Ende
+      cal.add(Calendar.MONTH,jahr.getMonate());
+      jahrNeu.setEnde(cal.getTime());
+
+      Logger.info("  Beginn: " + jahrNeu.getBeginn().toString());
+      Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
+
+      jahrNeu.store();
+      
+      // Anfangsbestaende erzeugen
+      Logger.info("Erzeuge neue Anfangsbestaende");
+      list = db.createList(Konto.class);
+      while (list.hasNext())
+      {
+        Konto k = (Konto) list.next();
+        double saldo = k.getSaldo();
+        if (saldo == 0.0)
+          continue;
+        
+        Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
+        ab.setBetrag(saldo);
+        ab.setKonto(k);
+        ab.setGeschaeftsjahr(jahrNeu);
+        ab.store();
       }
       
       jahr.transactionCommit();
@@ -184,6 +229,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.13  2005/08/29 21:37:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *
