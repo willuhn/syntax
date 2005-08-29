@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 22:44:05 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 22:59:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,8 +56,8 @@ public class GeschaeftsjahrNeu extends AbstractView
     ButtonArea buttonArea = new ButtonArea(getParent(),5);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new GeschaeftsjahrDelete());
-    buttonArea.addButton(i18n.tr("Überschuss-Rechnung exportieren"), new GeschaeftsjahrExport());
-    buttonArea.addButton(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose());
+    buttonArea.addButton(i18n.tr("Überschuss-Rechnung exportieren"), new GeschaeftsjahrExport(), control.getCurrentObject());
+    buttonArea.addButton(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -79,6 +79,9 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.4  2005/08/29 22:59:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 22:44:05  willuhn
  * @N added templates
  *

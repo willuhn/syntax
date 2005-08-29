@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 22:59:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,7 +66,7 @@ public class GeschaeftsjahrList extends TablePart
       public void format(TableItem item)
       {
         Object o = item.getData();
-        if (item == null || !(item instanceof Geschaeftsjahr))
+        if (o == null || !(o instanceof Geschaeftsjahr))
           return;
         try
         {
@@ -100,6 +100,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.4  2005/08/29 22:59:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *
