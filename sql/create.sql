@@ -17,7 +17,7 @@ CREATE TABLE steuer (
 
 CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
-  kontoart_id int(2) NOT NULL,
+  kontoart_id int(10) NOT NULL,
   kontonummer varchar(4) NOT NULL,
   name varchar(255) NOT NULL,
   kontenrahmen_id int(10) NOT NULL,
@@ -88,6 +88,19 @@ CREATE TABLE mandant (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE anlagevermoegen (
+  id NUMERIC default UNIQUEKEY('anlagevermoegen'),
+  mandant_id int(10) NOT NULL,
+  name varchar(255) NOT NULL,
+  anschaffungskosten double NOT NULL,
+  anschaffungsdatum date NOT NULL,
+  buchung_id int(10) NOT NULL,
+  laufzeit int(2) NOT NULL,
+  restwert double NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 ALTER TABLE steuer ADD CONSTRAINT fk_steuerkonto FOREIGN KEY (steuerkonto_id) REFERENCES konto (id) DEFERRABLE;
 
 ALTER TABLE konto ADD CONSTRAINT fk_kontoart FOREIGN KEY (kontoart_id) REFERENCES kontoart (id) DEFERRABLE;
@@ -104,6 +117,9 @@ ALTER TABLE mandant ADD CONSTRAINT fk_finanzamt FOREIGN KEY (finanzamt_id) REFER
 ALTER TABLE konto_ab ADD CONSTRAINT fk_konto2 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE konto_ab ADD CONSTRAINT fk_mandant2 FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_konto3 FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_mandant3 FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+
 CREATE INDEX idx_belegnummer ON buchung(belegnummer);
 CREATE INDEX idx_mandant ON buchung(mandant_id);
 CREATE INDEX idx_steuerkonto ON steuer(steuerkonto_id);
@@ -111,3 +127,6 @@ CREATE INDEX idx_kontonummer ON konto(kontonummer);
 CREATE INDEX idx_kontoart ON konto(kontoart_id);
 CREATE INDEX idx_kontenrahmen ON konto(kontenrahmen_id);
 CREATE INDEX idx_steuer ON konto(steuer_id);
+CREATE INDEX idx_anlagevermoegen ON anlagevermoegen(mandant_id);
+CREATE INDEX idx_konto_ab ON konto_ab(konto_id);
+CREATE INDEX idx_konto_ab ON konto_ab(mandant_id);

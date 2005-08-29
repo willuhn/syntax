@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/08/25 21:58:57 $
+ * $Revision: 1.36 $
+ * $Date: 2005/08/29 00:20:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,12 +27,14 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -61,6 +63,8 @@ public class BuchungControl extends AbstractControl
   private DialogInput datum             = null;
   private DialogInput sollKontoAuswahl  = null;
   private DialogInput habenKontoAuswahl = null;
+  
+  private CheckboxInput anlageVermoegen = null;
   
   private I18N i18n;
 
@@ -217,7 +221,20 @@ public class BuchungControl extends AbstractControl
 		return text;
 	}
 
-	/**
+  /**
+   * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob zu der Buchung
+   * gleich ein Datensatz im Anlagevermoegen angelegt werden soll.
+   * @return Checkbox.
+   */
+  public CheckboxInput getAnlageVermoegen()
+  {
+    if (this.anlageVermoegen != null)
+      return this.anlageVermoegen;
+    this.anlageVermoegen = new CheckboxInput(false);
+    return this.anlageVermoegen;
+  }
+  
+  /**
 	 * Liefert das Eingabe-Feld fuer die Belegnummer.
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
@@ -483,6 +500,24 @@ public class BuchungControl extends AbstractControl
           return;
         }
         Konto k = (Konto) konten.next();
+        
+        
+        ////////////////////////////////////////////////////////////////////////
+        // AV checken
+        Kontoart ka = k.getKontoArt();
+        if (ka != null && getBuchung().isNewObject() && ka.getKontoArt() == Kontoart.KONTOART_ANLAGE)
+        {
+          getAnlageVermoegen().enable();
+          getAnlageVermoegen().setValue(Boolean.TRUE);
+        }
+        else
+        {
+          getAnlageVermoegen().disable();
+        }
+        ////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////
+        // Steuer anpassen
         Steuer ss = k.getSteuer();
         if (ss == null)
         {
@@ -499,6 +534,7 @@ public class BuchungControl extends AbstractControl
         getSteuer().enable();
         GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
         getSteuer().setValue(new Double(satz));
+        ////////////////////////////////////////////////////////////////////////
       }
       catch (RemoteException e)
       {
@@ -573,6 +609,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.36  2005/08/29 00:20:29  willuhn
+ * @N anlagevermoegen
+ *
  * Revision 1.35  2005/08/25 21:58:57  willuhn
  * @N SKR04
  *
