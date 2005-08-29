@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.16 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,12 +56,9 @@ public class MandantNeu extends AbstractView
 
     Container finanzGroup = new LabelGroup(getParent(),i18n.tr("Buchhalterische Daten"));
 
-		finanzGroup.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
     finanzGroup.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
     finanzGroup.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     finanzGroup.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
-    finanzGroup.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getGJStart());
-    finanzGroup.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getGJEnd());
 
     ButtonArea buttonArea = new ButtonArea(getParent(),control.storeAllowed() ? 3 : 2);
     buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
@@ -88,6 +85,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.16  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.15  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

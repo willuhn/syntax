@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnfangsbestandNeu;
 import de.willuhn.jameica.fibu.gui.part.AnfangsbestandList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -41,7 +40,7 @@ public class AnfangsbestandListe extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Anfangsbestände"));
 
-    Part p = new AnfangsbestandList(Settings.getActiveMandant(),new AnfangsbestandNeu());
+    Part p = new AnfangsbestandList(new AnfangsbestandNeu());
     p.paint(getParent());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
@@ -61,6 +60,9 @@ public class AnfangsbestandListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
+ * Revision 1.3  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.2  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

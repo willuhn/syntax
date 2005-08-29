@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,9 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -133,11 +132,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getMandant()
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getGeschaeftsjahr()
    */
-  public Mandant getMandant() throws RemoteException
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
   {
-    return (Mandant) getAttribute("mandant_id");
+    return (Geschaeftsjahr) getAttribute("geschaeftsjahr_id");
   }
 
   /**
@@ -165,11 +164,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeschaeftsjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public void setMandant(Mandant m) throws RemoteException
+  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
   {
-    setAttribute("mandant_id",m);
+    setAttribute("geschaeftsjahr_id",jahr);
   }
 
   /**
@@ -211,10 +210,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   private int createBelegnummer() throws RemoteException
   {
-		// wir koennen hier keine Sequence oder aehnliches verwenden
-		// weil sie die fachlichen Anforderungen entsprechend getListQuery()
-		// nicht beachten wuerde. Ausserdem schneiden wir uns sonst die
-		// Kompatibilitaet zu MySQL ab.
     DBIterator iterator = this.getList();
     iterator.setOrder("order by id desc");
     if (!iterator.hasNext())
@@ -234,8 +229,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     if ("habenkonto_id".equals(field))
       return Konto.class;
 
-    if ("mandant_id".equals(field))
-      return Mandant.class;
+    if ("geschaeftsjahr_id".equals(field))
+      return Geschaeftsjahr.class;
 
     return null;
   }
@@ -259,11 +254,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       if (d == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Datum ein."));
 
-      Mandant m = getMandant();
-      if (m == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Mandanten aus."));
+      Geschaeftsjahr jahr = getGeschaeftsjahr();
+      if (jahr == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus."));
 
-      if (!m.checkGeschaeftsJahr(d))
+      if (!jahr.check(d))
         throw new ApplicationException(i18n.tr("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres."));
 
       // ich muss hier deshalb getAttribute() aufrufen, weil getBelegnummer automatisch eine erzeugt
@@ -307,38 +302,13 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     SaldenCache.remove(getSollKonto().getKontonummer());
     SaldenCache.remove(getHabenKonto().getKontonummer());
   }
-
-  /**
-   * Ueberschrieben von AbstractDBObject weil wir nur die Buchungen:
-   *  - vom aktiven Mandanten
-   *  - aus dem aktuellen Geschaeftsjahr haben wollen.
-   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
-   */
-  protected String getListQuery()
-  {
-    try
-    {
-      Mandant m = Settings.getActiveMandant();
-
-      Date start = m.getGeschaeftsjahrVon();
-      Date end   = m.getGeschaeftsjahrBis();
-
-      String s = "select " + getIDField() + " from " + getTableName() +
-        " where TONUMBER(datum) >= " + start.getTime() +  // TODO Eigentlich nicht notwendig, da wir jedes Jahr einen neuen Mandanten haben
-        " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
-        " and mandant_id = " + m.getID();
-      return s;
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to create list query",e);
-      return super.getListQuery();
-    }
-  }
 }
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.8  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.7  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *

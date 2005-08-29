@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 00:20:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,9 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.logging.Logger;
 
 /**
  * Implementierung eines Anlagevermoegen-Postens.
@@ -180,28 +178,14 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     
     return super.getForeignObject(arg0);
   }
-  
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
-   */
-  protected String getListQuery()
-  {
-    try
-    {
-      return "select " + getIDField() + " from " + getTableName() +
-             " where mandant_id = " + Settings.getActiveMandant().getID();
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to load av by mandant",e);
-      return super.getListQuery();
-    }
-  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.2  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.1  2005/08/29 00:20:29  willuhn
  * @N anlagevermoegen
  *

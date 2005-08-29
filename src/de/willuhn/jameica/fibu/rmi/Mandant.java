@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/29 12:17:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,8 @@
 package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
-import java.util.Date;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
@@ -76,26 +76,19 @@ public interface Mandant extends DBObject
   public String getSteuernummer() throws RemoteException;
   
   /**
-   * Liefert den ausgewaehlten Kontenrahmen des Mandanten.
-   * @return Kontenrahmen des Mandanten.
+   * Liefert eine Liste der Geschaeftsjahre.
+   * @return Liste der Geschaeftsjahre.
    * @throws RemoteException
    */
-  public Kontenrahmen getKontenrahmen() throws RemoteException;
+  public DBIterator getGeschaeftsjahre() throws RemoteException; 
 
   /**
-   * Liefert den Beginn des Geschaeftsjahres.
-   * @return geschaeftsjahr.
+   * Liefert das Anlagevermoegen des Mandanten.
+   * @return Anlagevermoegen.
    * @throws RemoteException
    */
-  public Date getGeschaeftsjahrVon() throws RemoteException; 
-
-  /**
-   * Liefert das Ende des Geschaeftsjahres.
-   * @return geschaeftsjahr.
-   * @throws RemoteException
-   */
-  public Date getGeschaeftsjahrBis() throws RemoteException; 
-
+  public DBIterator getAnlagevermoegen() throws RemoteException;
+  
   /**
    * Liefert das zugehoerige Finanzamt.
    * @return das Finanzamt des Mandanten.
@@ -153,32 +146,11 @@ public interface Mandant extends DBObject
   public void setSteuernummer(String steuernummer) throws RemoteException;
   
   /**
-   * Speichert den ausgewaehlten Kontenrahmen des Mandanten.
-   * @param kontenrahmen Kontenrahmen des Mandanten.
-   * @throws RemoteException
-   */
-  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException;
-
-  /**
    * Speichert das Finanzamt des Mandanten.
    * @param finanzamt Finanzamt des Mandanten.
    * @throws RemoteException
    */
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException;
-
-  /**
-   * Speichert den Beginn des Geschaeftsjahres.
-   * @param von Beginn des Geschaeftsjahres.
-   * @throws RemoteException
-   */
-  public void setGeschaeftsjahrVon(Date von) throws RemoteException;
-  
-  /**
-   * Speichert das Ende des Geschaeftsjahres.
-   * @param bis Ende des Geschaeftsjahres.
-   * @throws RemoteException
-   */
-  public void setGeschaeftsjahrBis(Date bis) throws RemoteException;
 
   /**
    * Liefert die Waehrung.
@@ -193,19 +165,14 @@ public interface Mandant extends DBObject
    * @throws RemoteException
    */
   public void setWaehrung(String waehrung) throws RemoteException;
-
-  /**
-   * Prueft, ob sich das uebergebene Datum innerhalb des Geschaeftsjahres des Mandanten befindet.
-   * @param d das zu pruefende Datum.
-   * @return true, wenn es im Geschaeftsjahr liegt, sonst false.
-   * @throws RemoteException
-   */
-  public boolean checkGeschaeftsJahr(Date d) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.9  2005/08/29 12:17:28  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.8  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

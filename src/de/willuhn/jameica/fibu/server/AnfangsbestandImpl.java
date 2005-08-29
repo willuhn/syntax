@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,9 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -70,17 +69,17 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     try
     {
       Konto k = getKonto();
-      Mandant m = getMandant();
+      Geschaeftsjahr jahr = getGeschaeftsjahr();
       
-      if (m == null || m.isNewObject())
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Mandanten aus"));
+      if (jahr == null || jahr.isNewObject())
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
       
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
         
       DBIterator list = getService().createList(Anfangsbestand.class);
       list.addFilter("konto_id = " + k.getID());
-      list.addFilter("mandant_id = " + m.getID());
+      list.addFilter("geschaeftsjahr_id = " + jahr.getID());
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Für das Konto und Geschäftsjahr existiert bereits ein Anfangsbestand"));
     }
@@ -100,19 +99,19 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anfangsbestand#getMandant()
+   * @see de.willuhn.jameica.fibu.rmi.Anfangsbestand#getGeschaeftsjahr()
    */
-  public Mandant getMandant() throws RemoteException
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
   {
-    return (Mandant) getAttribute("mandant_id");
+    return (Geschaeftsjahr) getAttribute("geschaeftsjahr_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anfangsbestand#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
+   * @see de.willuhn.jameica.fibu.rmi.Anfangsbestand#setGeschaeftsjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public void setMandant(Mandant m) throws RemoteException
+  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
   {
-    setAttribute("mandant_id",m);
+    setAttribute("geschaeftsjahr_id",jahr);
   }
 
   /**
@@ -161,34 +160,20 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   protected Class getForeignObject(String arg0) throws RemoteException
   {
-    if ("mandant_id".equals(arg0))
-      return Mandant.class;
+    if ("geschaeftsjahr_id".equals(arg0))
+      return Geschaeftsjahr.class;
     if ("konto_id".equals(arg0))
       return Konto.class;
     return super.getForeignObject(arg0);
-  }
-  
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
-   */
-  protected String getListQuery()
-  {
-    try
-    {
-      Mandant m = Settings.getActiveMandant();
-      return "select " + getIDField() + " from " + getTableName() + " where mandant_id = " + m.getID();
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to create list query",e);
-      return super.getListQuery();
-    }
   }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.5  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.4  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *

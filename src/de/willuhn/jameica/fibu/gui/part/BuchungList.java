@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/08/25 21:58:58 $
+ * $Revision: 1.10 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,8 +74,8 @@ public class BuchungList extends TablePart
     addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Haben-Lonto"),"habenkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(), Fibu.DECIMALFORMAT));
-    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
     setContextMenu(new BuchungListMenu());
     setMulti(true);
   }
@@ -138,6 +138,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.10  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.9  2005/08/25 21:58:58  willuhn
  * @N SKR04
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/08/24 23:02:31 $
+ * $Revision: 1.34 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,14 +92,12 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
   }
 
   /**
-   * Ueberschrieben von AbstractDBObject weil wir nur die Buchungen:
-   *  - vom aktiven Mandanten
-   *  - aus dem aktuellen Geschaeftsjahr haben wollen.
+   * Ueberschrieben, um Hilfsbuchungen auszublenden.
    * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
   protected String getListQuery()
   {
-    return super.getListQuery() + " and buchung_id is NULL";          // keine Hilfs-Buchungen
+    return "select " + getIDField() + " from " + getTableName() + " where buchung_id is NULL";
   }
 
   /**
@@ -149,6 +147,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.34  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.33  2005/08/24 23:02:31  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.logging.Logger;
@@ -46,7 +46,7 @@ public class AnfangsbestandNeu implements Action
         {
           a = (Anfangsbestand) Settings.getDBService().createObject(Anfangsbestand.class,null);
           a.setKonto((Konto)context);
-          a.setMandant(Settings.getActiveMandant());
+          a.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
         }
         catch (RemoteException e)
         {
@@ -54,12 +54,12 @@ public class AnfangsbestandNeu implements Action
           a = null;
         }
       }
-      else if (context instanceof Mandant)
+      else if (context instanceof Geschaeftsjahr)
       {
         try
         {
           a = (Anfangsbestand) Settings.getDBService().createObject(Anfangsbestand.class,null);
-          a.setMandant((Mandant)context);
+          a.setGeschaeftsjahr((Geschaeftsjahr)context);
         }
         catch (RemoteException e)
         {
@@ -76,6 +76,9 @@ public class AnfangsbestandNeu implements Action
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.2  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.1  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

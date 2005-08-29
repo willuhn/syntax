@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.11 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,12 +86,12 @@ public class BuchungsEngine
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
-    hb.setBetrag(sBetrag); // Steuer-Betrag
-    hb.setDatum(buchung.getDatum());        // Datum
-    hb.setHabenKonto(hKonto);               // Haben-Konto
-    hb.setMandant(buchung.getMandant());    // Mandant
-    hb.setText(buchung.getText());          // Text identisch mit Haupt-Buchung
-    hb.setSollKonto(s.getSteuerKonto());    // Das Steuer-Konto
+    hb.setBetrag(sBetrag);                              // Steuer-Betrag
+    hb.setDatum(buchung.getDatum());                    // Datum
+    hb.setHabenKonto(hKonto);                           // Haben-Konto
+    hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());  // Geschaeftsjahr
+    hb.setText(buchung.getText());                      // Text identisch mit Haupt-Buchung
+    hb.setSollKonto(s.getSteuerKonto());                // Das Steuer-Konto
      
     return new HilfsBuchung[]{hb};
   }
@@ -100,6 +100,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.11  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.10  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

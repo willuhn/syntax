@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/08/29 00:20:29 $
+ * $Revision: 1.37 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,6 +142,7 @@ public class BuchungControl extends AbstractControl
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
 		
+		final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
     final KontoListener kl = new KontoListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
@@ -151,7 +152,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          sollKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+          sollKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
           sollKontoAuswahl.setValue(k.getKontonummer());
           sollKontoAuswahl.setText(k.getKontonummer());
           kl.handleEvent(event);
@@ -166,7 +167,7 @@ public class BuchungControl extends AbstractControl
 		
     Konto k = getBuchung().getSollKonto();
     sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
     return sollKontoAuswahl;
 	}
 
@@ -181,6 +182,7 @@ public class BuchungControl extends AbstractControl
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
+    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
@@ -189,7 +191,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          habenKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+          habenKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
           habenKontoAuswahl.setValue(k.getKontonummer());
           habenKontoAuswahl.setText(k.getKontonummer());
         }
@@ -203,7 +205,7 @@ public class BuchungControl extends AbstractControl
     
     Konto k = getBuchung().getHabenKonto();
     habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveMandant().getWaehrung(), k.getName()}));
+    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
     return habenKontoAuswahl;
 	}
 
@@ -259,7 +261,7 @@ public class BuchungControl extends AbstractControl
 			return betrag;
 		
 		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
-		betrag.setComment(Settings.getActiveMandant().getWaehrung());
+		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     betrag.addListener(new SteuerListener());
 		return betrag;
 	}
@@ -351,7 +353,7 @@ public class BuchungControl extends AbstractControl
           try {
             // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
             Calendar cal = Calendar.getInstance();
-            cal.setTime(Settings.getActiveMandant().getGeschaeftsjahrVon());
+            cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
 						getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d + "" + cal.get(Calendar.YEAR)));
           }
           catch (ParseException e3)
@@ -407,7 +409,7 @@ public class BuchungControl extends AbstractControl
 			getBuchung().setText((String)getText().getValue());
       
       // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
-			getBuchung().setMandant(Settings.getActiveMandant());
+			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
 
       // und jetzt speichern wir.
 			getBuchung().store();
@@ -458,7 +460,7 @@ public class BuchungControl extends AbstractControl
         double brutto = betrag == null ? getBuchung().getBetrag() : betrag.doubleValue();
         double netto  = math.netto(brutto,satz);
         double steuer = math.steuer(brutto,satz);
-        String curr = Settings.getActiveMandant().getWaehrung();
+        String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
         getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
       }
@@ -575,7 +577,7 @@ public class BuchungControl extends AbstractControl
 					try {
             // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
             Calendar cal = Calendar.getInstance();
-            cal.setTime(Settings.getActiveMandant().getGeschaeftsjahrVon());
+            cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
             d = Fibu.FASTDATEFORMAT.parse(datum + "" + cal.get(Calendar.YEAR));
 					}
 					catch (Exception e3)
@@ -609,6 +611,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.37  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.36  2005/08/29 00:20:29  willuhn
  * @N anlagevermoegen
  *

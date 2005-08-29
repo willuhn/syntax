@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class VelocityExporter
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
-    context.put("mandant",        Settings.getActiveMandant());
+    context.put("jahr",           Settings.getActiveGeschaeftsjahr());
     context.put("math",           new Math());
     context.put("datum",          new Date());
     context.put("dateformat",     Fibu.DATEFORMAT);
@@ -126,6 +126,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.4  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.3  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *

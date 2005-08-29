@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.22 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,22 +13,15 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
-import java.util.Date;
-
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -56,11 +49,8 @@ public class MandantControl extends AbstractControl
 	private Input ort									= null;
 	private Input steuernummer				= null;
   private Input waehrung            = null;
-	private Input kontenrahmenAuswahl	= null;
 	private Input finanzamtAuswahl		= null;
 
-  private DialogInput gjStart        			= null;
-  private DialogInput gjEnd               = null;
 
 	private boolean storeAllowed      = false;
   
@@ -191,65 +181,6 @@ public class MandantControl extends AbstractControl
 		return ort;
 	}
 
-	/**
-	 * Liefert das Eingabe-Feld fuer den Beginn des Geschaeftsjahres.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public Input getGJStart() throws RemoteException
-	{
-		if (gjStart != null)
-			return gjStart;
-		
-    Date start = getMandant().getGeschaeftsjahrVon();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
-    d.setText(i18n.tr("Bitte wählen Sie den Beginn des Geschäftsjahres"));
-    d.setDate(start);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        gjStart.setValue(event.data);
-        gjStart.setText(Fibu.DATEFORMAT.format((Date)event.data));
-      }
-    });
-		gjStart = new DialogInput(Fibu.DATEFORMAT.format(start),d);
-    gjStart.setValue(start);
-    gjStart.disableClientControl();
-		return gjStart;
-	}
-
-  /**
-   * Liefert das Eingabe-Feld fuer das Ende des Geschaeftsjahres.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getGJEnd() throws RemoteException
-  {
-    if (gjEnd != null)
-      return gjEnd;
-    
-    Date end = getMandant().getGeschaeftsjahrBis();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Ende des Geschäftsjahres"));
-    d.setText(i18n.tr("Bitte wählen Sie das Ende des Geschäftsjahres"));
-    d.setDate(end);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        gjEnd.setValue(event.data);
-        gjEnd.setText(Fibu.DATEFORMAT.format((Date)event.data));
-      }
-    });
-    gjEnd = new DialogInput(Fibu.DATEFORMAT.format(end),d);
-    gjEnd.setValue(end);
-    gjEnd.disableClientControl();
-    return gjEnd;
-  }
 
   /**
 	 * Liefert das Eingabe-Feld fuer die Steuernummer.
@@ -263,20 +194,6 @@ public class MandantControl extends AbstractControl
 		
 		steuernummer = new TextInput(getMandant().getSteuernummer());
 		return steuernummer;
-	}
-
-	/**
-	 * Liefert das Eingabe-Feld zur Auswahl des Kontenrahmens.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getKontenrahmenAuswahl() throws RemoteException
-	{
-		if (kontenrahmenAuswahl != null)
-			return kontenrahmenAuswahl;
-
-		kontenrahmenAuswahl = new SelectInput(Settings.getDBService().createList(Kontenrahmen.class),getMandant().getKontenrahmen());
-		return kontenrahmenAuswahl;
 	}
 
 	/**
@@ -313,25 +230,11 @@ public class MandantControl extends AbstractControl
 	}
 
   /**
-   * 
+   * Speichert den Mandanten.
    */
   public void handleStore()
   {
     try {
-
-      //////////////////////////////////////////////////////////////////////////
-      // Kontenrahmen checken
-      getMandant().setKontenrahmen((Kontenrahmen) getKontenrahmenAuswahl().getValue());
-      //
-      //////////////////////////////////////////////////////////////////////////
-
-      //////////////////////////////////////////////////////////////////////////
-      // Geschaeftsjahr checken
-
-			getMandant().setGeschaeftsjahrVon((Date)getGJStart().getValue());
-      getMandant().setGeschaeftsjahrBis((Date)getGJEnd().getValue());
-      //
-      //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Finanzamt checken
@@ -367,6 +270,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.22  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.21  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

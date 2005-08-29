@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/08/25 23:00:02 $
+ * $Revision: 1.26 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -23,11 +22,11 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -106,14 +105,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
       stmt = service.getConnection().createStatement();
 
-      Mandant m = Settings.getActiveMandant();
-      Date start = m.getGeschaeftsjahrVon();
-      Date end   = m.getGeschaeftsjahrBis();
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 
       String sql = "select sum(betrag) as b from buchung " +
-        " where TONUMBER(datum) >= " + start.getTime() +
-        " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
-        " and mandant_id = "+ m.getID() + 
+        " where geschaeftsjahr_id = "+ jahr.getID() + 
         " and sollkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
@@ -122,9 +117,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       }
 
       sql = "select sum(betrag) as b from buchung " +
-      " where TONUMBER(datum) >= " + start.getTime() +
-      " and TONUMBER(datum) <= " + end.getTime() + // nur aktuelles Geschaeftsjahr
-      " and mandant_id = "+ m.getID() + 
+      " where geschaeftsjahr_id = "+ jahr.getID() + 
       " and habenkonto_id = " + this.getID();
     rs = stmt.executeQuery(sql);
     if (rs.next())
@@ -261,29 +254,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
-   */
-  protected String getListQuery()
-  {
-    try
-    {
-      // ueberschreiben wir, weil wir nur die Konten des Kontenrahmens des aktiven Mandanten haben wollen
-      Mandant m = Settings.getActiveMandant();
-      
-      Kontenrahmen k = m.getKontenrahmen();
-      if (k == null)
-        throw new RemoteException("no kontenrahmen defined.");
-
-      return "select " + getIDField() + " from " + getTableName() + " where kontenrahmen_id = " + k.getID();
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("unable to load list query",e);
-      return null;
-    }
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#setKontonummer(java.lang.String)
    */
   public void setKontonummer(String kontonummer) throws RemoteException
@@ -371,7 +341,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     DBIterator ab = getService().createList(Anfangsbestand.class);
     ab.addFilter("konto_id = " + this.getID());
-    ab.addFilter("mandant_id = " + Settings.getActiveMandant().getID());
+    ab.addFilter("geschaeftsjahr_id = " + Settings.getActiveGeschaeftsjahr().getID());
     if (!ab.hasNext())
       return null;
     return (Anfangsbestand) ab.next();
@@ -381,6 +351,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.26  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.25  2005/08/25 23:00:02  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.13 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,19 +85,21 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   }
 
   /**
-   * Ueberschrieben von AbstractBaseBuchungImpl weil die Funktion in AbstractBaseBuchungImpl alle Buchungen
-   * _ausser_ Hilfs-Buchungen findet. Wir wollen aber genau die ;).
+   * Ueberschrieben, um nur Hilfsbuchungen zu laden.
    * @see de.willuhn.datasource.db.AbstractDBObject#getListQuery()
    */
   protected String getListQuery()
   {
-    return super.getListQuery() + " and buchung_id is NOT NULL";          // nur Hilfs-Buchungen
+    return "select " + getIDField() + " from " + getTableName() + " where buchung_id is NOT NULL";
   }
 
 }
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.13  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.12  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

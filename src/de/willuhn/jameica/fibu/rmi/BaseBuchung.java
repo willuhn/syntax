@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 12:17:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,11 +47,11 @@ public interface BaseBuchung extends DBObject
   public Konto getHabenKonto() throws RemoteException;
   
   /**
-   * Liefert den Mandanten zu dieser Buchung.
-   * @return Mandant der Buchung.
+   * Liefert das Geschaeftsjahr zu dieser Buchung.
+   * @return Geschaeftsjahr der Buchung.
    * @throws RemoteException
    */
-  public Mandant getMandant() throws RemoteException;
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException;
 
   /**
    * Liefert den Text der Buchung.
@@ -131,16 +131,19 @@ public interface BaseBuchung extends DBObject
   public void setSteuer(double steuer) throws RemoteException;
 
   /**
-   * Setzt den Mandanten der Buchung.
-   * @param mandant Mandant der Buchung.
+   * Setzt das Geschaeftsjahr der Buchung.
+   * @param jahr Geschaeftsjahr der Buchung.
    * @throws RemoteException
    */
-  public void setMandant(Mandant mandant) throws RemoteException;
+  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
+ * Revision 1.5  2005/08/29 12:17:28  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.4  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/25 21:58:58 $
+ * $Revision: 1.18 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,14 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
-import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -62,14 +60,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public String getPrimaryAttribute() throws RemoteException
   {
     return "firma";
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#getKontenrahmen()
-   */
-  public Kontenrahmen getKontenrahmen() throws RemoteException
-  {
-    return (Kontenrahmen) getAttribute("kontenrahmen_id");
   }
 
   /**
@@ -129,24 +119,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * Ueberschrieben, um ein synthetisches Attribut "geschaeftsjahr" zu erzeugen.
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
-  public Object getAttribute(String arg0) throws RemoteException
-  {
-    if ("geschaeftsjahr".equals(arg0))
-      return Fibu.DATEFORMAT.format(getGeschaeftsjahrVon()) + " - " + Fibu.DATEFORMAT.format(getGeschaeftsjahrBis());
-
-    return super.getAttribute(arg0);
-  }
-  
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("kontenrahmen_id".equals(field))
-      return Kontenrahmen.class;
     if ("finanzamt_id".equals(field))
       return Finanzamt.class;
     return null;
@@ -209,14 +185,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
-   */
-  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
-  {
-    setAttribute("kontenrahmen_id",kontenrahmen);
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.Mandant#getFinanzamt()
    */
   public Finanzamt getFinanzamt() throws RemoteException
@@ -230,84 +198,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public void setFinanzamt(Finanzamt finanzamt) throws RemoteException
   {
     setAttribute("finanzamt_id",finanzamt);
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahrVon()
-   */
-  public Date getGeschaeftsjahrVon() throws RemoteException
-  {
-    Date d = (Date) getAttribute("gj_von");
-
-    Calendar cal = Calendar.getInstance();
-
-    if (d == null)
-    {
-      // Wir erstellen automatisch ein neues, wenn keins existiert.
-      Logger.info("no geschaeftsjahr start given, using current year");
-      cal.set(Calendar.MONTH,Calendar.JANUARY);
-      cal.set(Calendar.DAY_OF_MONTH,1);
-    }
-    else
-    {
-      cal.setTime(d);
-    }
-
-    // Jetzt noch auf den Anfang des Tages setzen.
-    cal.set(Calendar.HOUR_OF_DAY,0);
-    cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,1);
-
-    d = cal.getTime();
-    setGeschaeftsjahrVon(d);
-    return d;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#setGeschaeftsjahrVon(java.util.Date)
-   */
-  public void setGeschaeftsjahrVon(Date von) throws RemoteException
-  {
-    setAttribute("gj_von",von);
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahrBis()
-   */
-  public Date getGeschaeftsjahrBis() throws RemoteException
-  {
-    Date d = (Date) getAttribute("gj_bis");
-
-    Calendar cal = Calendar.getInstance();
-
-    if (d == null)
-    {
-      // Wir erstellen automatisch ein neues, wenn keins existiert.
-      Logger.info("no geschaeftsjahr start given, using current year");
-      cal.set(Calendar.MONTH,Calendar.DECEMBER);
-      cal.set(Calendar.DAY_OF_MONTH,31);
-    }
-    else
-    {
-      cal.setTime(d);
-    }
-
-    // Jetzt noch auf das Ende des Tages setzen
-    cal.set(Calendar.HOUR_OF_DAY,23);
-    cal.set(Calendar.MINUTE,59);
-    cal.set(Calendar.SECOND,59);
-
-    d = cal.getTime();
-    setGeschaeftsjahrBis(d);
-    return d;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#setGeschaeftsjahrBis(java.util.Date)
-   */
-  public void setGeschaeftsjahrBis(Date bis) throws RemoteException
-  {
-    setAttribute("gj_bis",bis);
   }
 
   /**
@@ -327,13 +217,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
       if (getFinanzamt() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Finanzamt aus."));
 
-      if (getKontenrahmen() == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
 
-      // Das rufen wir nur auf, damit die Daten automatisch gefuellt werden,
-      // falls sie noch fehlen.
-      getGeschaeftsjahrVon();
-      getGeschaeftsjahrBis();
     }
     catch (RemoteException e)
     {
@@ -349,23 +233,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   public void updateCheck() throws ApplicationException
   {
     insertCheck();
-    
-    // Wir muessen pruefen, ob sich der Kontenrahmen geaendert hat und dies
-    // verbieten, wenn wir schon Buchungen haben.
-    if (hasChanged("kontenrahmen_id"))
-    {
-      try
-      {
-        DBIterator list = getService().createList(Buchung.class);
-        if (list.size() > 0)
-          throw new ApplicationException(i18n.tr("Wechsel des Kontenrahmens nicht mehr möglich, da für das Geschäftsjahr schon Buchungen vorliegen"));
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("error while checking mandant",e);
-        throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."));
-      }
-    }
   }
 
   /**
@@ -388,17 +255,76 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#checkGeschaeftsJahr(java.util.Date)
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahre()
    */
-  public boolean checkGeschaeftsJahr(Date d) throws RemoteException
+  public DBIterator getGeschaeftsjahre() throws RemoteException
   {
-    return getGeschaeftsjahrVon().before(d) && getGeschaeftsjahrBis().after(d);
+    DBIterator list = getService().createList(Geschaeftsjahr.class);
+    list.addFilter("mandant_id = " + this.getID());
+    return list;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getAnlagevermoegen()
+   */
+  public DBIterator getAnlagevermoegen() throws RemoteException
+  {
+    DBIterator list = getService().createList(Anlagevermoegen.class);
+    list.addFilter("mandant_id = " + this.getID());
+    return list;
+  }
+
+  /**
+   * Ueberschrieben, um alle Geschaeftsjahre inclusive aller Buchungen und Anfangsbestaende zu loeschen.
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      transactionBegin();
+
+      DBIterator jahre = getGeschaeftsjahre();
+      while (jahre.hasNext())
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) jahre.next();
+        jahr.delete();
+      }
+      
+      DBIterator av = getAnlagevermoegen();
+      while (av.hasNext())
+      {
+        Anlagevermoegen a = (Anlagevermoegen) av.next();
+        a.delete();
+      }
+      super.delete();
+      
+      transactionCommit();
+    }
+    catch (ApplicationException e)
+    {
+      transactionRollback();
+      throw e;
+    }
+    catch (RemoteException e2)
+    {
+      transactionRollback();
+      throw e2;
+    }
+    catch (Throwable t)
+    {
+      Logger.error("unable to delete mandant",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.18  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.17  2005/08/25 21:58:58  willuhn
  * @N SKR04
  *

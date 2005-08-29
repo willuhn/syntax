@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anfangsbestand.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 12:17:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,18 +23,18 @@ import de.willuhn.datasource.rmi.DBObject;
 public interface Anfangsbestand extends DBObject
 {
   /**
-   * Liefert den Mandanten des Anfangsbestandes.
-   * @return Mandant.
+   * Liefert das Geschaeftsjahr des Anfangsbestandes.
+   * @return Geschaeftsjahr.
    * @throws RemoteException
    */
-  public Mandant getMandant() throws RemoteException;
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException;
   
   /**
-   * Legt den Mandanten des Anfangsbestandes fest.
-   * @param m Mandant.
+   * Legt das Geschaeftsjahr des Anfangsbestandes fest.
+   * @param jahr Geschaeftsjahr.
    * @throws RemoteException
    */
-  public void setMandant(Mandant m) throws RemoteException;
+  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException;
 
   /**
    * Liefert das Konto des Anfangsbestandes.
@@ -68,6 +68,9 @@ public interface Anfangsbestand extends DBObject
 
 /*********************************************************************
  * $Log: Anfangsbestand.java,v $
+ * Revision 1.2  2005/08/29 12:17:28  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.1  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

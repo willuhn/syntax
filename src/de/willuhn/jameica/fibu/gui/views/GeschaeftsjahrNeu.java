@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
@@ -10,11 +10,12 @@
  * All rights reserved
  *
  **********************************************************************/
+
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
-import de.willuhn.jameica.fibu.gui.controller.AnfangsbestandControl;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
+import de.willuhn.jameica.fibu.gui.controller.GeschaeftsjahrControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -27,10 +28,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Legt einen neuen Anfangsbestand an oder bearbeitet einen existierenden.
- * @author willuhn
+ * View zum Bearbeiten eines Geschaeftsjahres.
  */
-public class AnfangsbestandNeu extends AbstractView
+public class GeschaeftsjahrNeu extends AbstractView
 {
 
   /**
@@ -41,20 +41,19 @@ public class AnfangsbestandNeu extends AbstractView
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		GUI.getView().setTitle(i18n.tr("Anfangsbestand"));
+    GUI.getView().setTitle(i18n.tr("Geschäftsjahr bearbeiten"));
 
-    final AnfangsbestandControl control = new AnfangsbestandControl(this);
-    
-    // Gruppe Kontaktdaten erzeugen
-    Container contactGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+    final GeschaeftsjahrControl control = new GeschaeftsjahrControl(this);
 
-    contactGroup.addLabelPair(i18n.tr("Geschäftsjahr"), control.getGeschaeftsjahr());
-    contactGroup.addLabelPair(i18n.tr("Konto"),         control.getKontoAuswahl());
-    contactGroup.addLabelPair(i18n.tr("Anfangsbestand"),control.getBetrag());
+    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
-    ButtonArea buttonArea = contactGroup.createButtonArea(3);
+    group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
+    group.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getBeginn());
+    group.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getEnde());
+
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Löschen"), new GeschaeftsjahrDelete());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -62,7 +61,6 @@ public class AnfangsbestandNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    
   }
 
   /**
@@ -71,14 +69,13 @@ public class AnfangsbestandNeu extends AbstractView
   public void unbind() throws ApplicationException
   {
   }
+
 }
 
+
 /*********************************************************************
- * $Log: AnfangsbestandNeu.java,v $
- * Revision 1.2  2005/08/29 12:17:29  willuhn
+ * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
- *
- * Revision 1.1  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
  *
  **********************************************************************/

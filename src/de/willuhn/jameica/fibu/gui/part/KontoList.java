@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/25 23:00:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,7 @@ public class KontoList extends TablePart
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontoart"),"kontoart_id");
     addColumn(i18n.tr("Steuer"),"steuer_id");
-    addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new KontoListMenu());
     setMulti(true);
   }
@@ -78,6 +78,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.5  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.4  2005/08/25 23:00:02  willuhn
  * *** empty log message ***
  *

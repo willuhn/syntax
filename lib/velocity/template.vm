@@ -136,11 +136,12 @@
   </style>
   <body>
 
+  #set($mandant = $jahr.Mandant)
   <table>
     <tr>
       <td>
         <h1>$!{export.Title}</h1>
-        Geschäftsjahr: $!{dateformat.format(${mandant.GeschaeftsjahrVon})} - $!{dateformat.format(${mandant.GeschaeftsjahrBis})}
+        Geschäftsjahr: $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}
       </td>
       <td style="text-align:right;">Druck: $!{longdateformat.format(${datum})}</td>
     </tr>

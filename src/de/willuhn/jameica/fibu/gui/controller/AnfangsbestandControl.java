@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -46,9 +47,9 @@ public class AnfangsbestandControl extends AbstractControl
 	private Anfangsbestand ab = null;
 
 	// Eingabe-Felder
-	private DialogInput konto	  = null;
-  private Input betrag        = null;
-  private Input mandant       = null;
+	private DialogInput konto	    = null;
+  private Input betrag          = null;
+  private Input geschaeftsjahr  = null;
 
   private I18N i18n;
 
@@ -76,7 +77,7 @@ public class AnfangsbestandControl extends AbstractControl
       return ab;
       
     ab = (Anfangsbestand) Settings.getDBService().createObject(Anfangsbestand.class,null);
-    ab.setMandant(Settings.getActiveMandant());
+    ab.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
     return ab;
   }
 
@@ -124,28 +125,34 @@ public class AnfangsbestandControl extends AbstractControl
     if (betrag != null)
       return betrag;
     betrag = new DecimalInput(getAnfangsbestand().getBetrag(), Fibu.DECIMALFORMAT);
-    Mandant m = getAnfangsbestand().getMandant();
+
+    Mandant m = null;
+    Geschaeftsjahr jahr = getAnfangsbestand().getGeschaeftsjahr();
+    if (jahr != null)
+      m = jahr.getMandant();
+    
     if (m == null)
-      m = Settings.getActiveMandant();
+      m = Settings.getActiveGeschaeftsjahr().getMandant();
     betrag.setComment(m.getWaehrung());
     return betrag;
   }
   
   /**
-   * Liefert ein Auswahl-Feld fuer den Mandanten.
+   * Liefert ein Auswahl-Feld fuer das Geschaeftsjahr.
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getMandant() throws RemoteException
+  public Input getGeschaeftsjahr() throws RemoteException
   {
-    if (mandant != null)
-      return mandant;
+    if (geschaeftsjahr != null)
+      return geschaeftsjahr;
     
-    Mandant m = getAnfangsbestand().getMandant();
-    if (m == null)
-      m = Settings.getActiveMandant();
-    mandant = new LabelInput(m.getFirma() + " [" + m.getAttribute("geschaeftsjahr") + "]");
-    return mandant;
+    Geschaeftsjahr jahr = getAnfangsbestand().getGeschaeftsjahr();
+    if (jahr == null)
+      jahr = Settings.getActiveGeschaeftsjahr();
+    Mandant m = jahr.getMandant();
+    geschaeftsjahr = new LabelInput(m.getFirma() + " [" + jahr.getAttribute("name") + "]");
+    return geschaeftsjahr;
   }
   
   /**
@@ -156,7 +163,7 @@ public class AnfangsbestandControl extends AbstractControl
     try {
 
       getAnfangsbestand().setBetrag(((Double)getBetrag().getValue()).doubleValue());
-      getAnfangsbestand().setMandant(Settings.getActiveMandant());
+      getAnfangsbestand().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
 
       String s = (String) getKontoAuswahl().getText();
       if (s == null || s.length() == 0)
@@ -193,6 +200,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.2  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.1  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

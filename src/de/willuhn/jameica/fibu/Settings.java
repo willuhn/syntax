@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.17 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,8 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.jameica.fibu.gui.dialogs.MandantAuswahlDialog;
+import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
@@ -36,7 +37,7 @@ public class Settings
   public final static String WAEHRUNG = settings.getString("currency.default","EUR");
 
   private static DBService db = null;
-	private static Mandant mandant = null;
+	private static Geschaeftsjahr jahr = null;
   
   /**
 	 * Liefert den Datenbank-Service.
@@ -65,17 +66,17 @@ public class Settings
 	}
 
   /**
-   * Legt den aktiven Mandanten manuell fest.
-   * @param m zu aktivierender Mandant.
+   * Legt das aktuelle Geschaeftsjahr manuell fest.
+   * @param j zu aktivierendes Geschaeftsjahr.
    */
-  public static void setActiveMandant(Mandant m)
+  public static void setActiveGeschaeftsjahr(Geschaeftsjahr j)
   {
-    if (m != null)
+    if (j != null)
     {
-      mandant = m;
+      jahr = j;
       try
       {
-        settings.setAttribute("mandant.acive",mandant.getID());
+        settings.setAttribute("gj.acive",jahr.getID());
       }
       catch (RemoteException e)
       {
@@ -85,33 +86,34 @@ public class Settings
   }
   
   /**
-   * Liefert den aktiven Mandanten oder einen Dialog zur Abfrage, falls dieser noch
+   * Liefert das aktuelle Geschaeftsjahr oder einen Dialog zur Abfrage, falls dieses noch
    * nicht ausgeaehlt ist.
-   * @return den aktiven Mandanten.
+   * @return das aktive Geschaeftsjahr.
    * @throws RemoteException
    */
-  public static Mandant getActiveMandant() throws RemoteException
+  public static Geschaeftsjahr getActiveGeschaeftsjahr() throws RemoteException
   {
-  	if (mandant != null && !mandant.isNewObject())
-  		return mandant;
+  	if (jahr != null && !jahr.isNewObject())
+  		return jahr;
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   	try
     {
-      String id = settings.getString("mandant.acive",null);
+      String id = settings.getString("gj.acive",null);
       if (id != null)
       {
-        mandant = (Mandant) getDBService().createObject(Mandant.class,id);
-        GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{mandant.getFirma(),(String)mandant.getAttribute("geschaeftsjahr")}));
-        return mandant;
+        jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,id);
       }
-
-      Logger.info("open mandant select dialog");
-      MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_CENTER);
-      mandant = (Mandant) d.open();
-      setActiveMandant(mandant);
-      GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{mandant.getFirma(),(String)mandant.getAttribute("geschaeftsjahr")}));
-      return mandant;
+      else
+      {
+        Logger.info("open gj select dialog");
+        GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
+        jahr = (Geschaeftsjahr) d.open();
+      }
+      setActiveGeschaeftsjahr(jahr);
+      Mandant m = jahr.getMandant();
+      GUI.getStatusBar().setStatusText(i18n.tr("Aktiver Mandant: {0}, Geschäftsjahr: {1}", new String[]{m.getFirma(),(String)jahr.getAttribute("name")}));
+      return jahr;
     }
     catch (Exception e)
     {
@@ -123,6 +125,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.17  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.16  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

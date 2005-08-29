@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/MandantListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/25 21:58:57 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,8 @@
 package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
 import de.willuhn.jameica.fibu.gui.action.MandantNeu;
-import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
@@ -42,17 +38,6 @@ public class MandantListMenu extends ContextMenu
     this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new MandantDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new ContextMenuItem(i18n.tr("Neuer Mandant"), new MNeu()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Als aktiven Mandanten festlegen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        if (context == null || !(context instanceof Mandant))
-          return;
-        Settings.setActiveMandant((Mandant)context);
-        // Seite aktualisieren
-        GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
-      }
-    }));
   }
   
   /**
@@ -74,6 +59,9 @@ public class MandantListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: MandantListMenu.java,v $
+ * Revision 1.3  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.2  2005/08/25 21:58:57  willuhn
  * @N SKR04
  *

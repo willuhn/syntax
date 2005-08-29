@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnfangsbestandList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,14 +15,11 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.AnfangsbestandListMenu;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -38,13 +35,12 @@ public class AnfangsbestandList extends TablePart
 {
 
   /**
-   * @param m
    * @param action
    * @throws RemoteException
    */
-  public AnfangsbestandList(Mandant m, Action action) throws RemoteException
+  public AnfangsbestandList(Action action) throws RemoteException
   {
-    super(init(m), action);
+    super(Settings.getDBService().createList(Anfangsbestand.class), action);
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
@@ -64,27 +60,17 @@ public class AnfangsbestandList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(m.getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new AnfangsbestandListMenu());
-  }
-
-  /**
-   * Liefert die Liste der Anfangsbestaende.
-   * @param m Mandant.
-   * @return Liste der Anfangsbestaende.
-   * @throws RemoteException
-   */
-  private static GenericIterator init(Mandant m) throws RemoteException
-  {
-    DBIterator list = Settings.getDBService().createList(Anfangsbestand.class);
-    list.addFilter("mandant_id = " + m.getID());
-    return list;
   }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandList.java,v $
+ * Revision 1.3  2005/08/29 12:17:29  willuhn
+ * @N Geschaeftsjahr
+ *
  * Revision 1.2  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

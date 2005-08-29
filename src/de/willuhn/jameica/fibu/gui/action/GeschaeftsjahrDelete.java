@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantDelete.java,v $
- * $Revision: 1.3 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrDelete.java,v $
+ * $Revision: 1.1 $
  * $Date: 2005/08/29 12:17:29 $
  * $Author: willuhn $
  * $Locker:  $
@@ -14,7 +14,7 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -24,9 +24,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action zum Loeschen eines Mandanten.
+ * Action zum Loeschen eines Geschaeftsjahres.
  */
-public class MandantDelete implements Action
+public class GeschaeftsjahrDelete implements Action
 {
 
   /**
@@ -34,7 +34,7 @@ public class MandantDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (context == null || !(context instanceof Mandant))
+    if (context == null || !(context instanceof Geschaeftsjahr))
       return;
     
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
@@ -42,9 +42,9 @@ public class MandantDelete implements Action
     try
     {
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Mandant wirklich löschen?"));
-      d.setText(i18n.tr("Wollen Sie diesen Mandanten wirklich löschen?\n" +
-                        "Hierbei werden auch die Geschäftsjahre sowie das Anlagevermögen gelöscht."));
+      d.setTitle(i18n.tr("Geschäftsjahr wirklich löschen?"));
+      d.setText(i18n.tr("Wollen Sie dieses geschäftsjahr wirklich löschen?\n" +
+                        "Hierbei werden auch die Buchungen und Anfangsbestände gelöscht."));
       
       if (!((Boolean) d.open()).booleanValue())
       {
@@ -52,13 +52,13 @@ public class MandantDelete implements Action
         return;
       }
 
-      ((Mandant)context).delete();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gelöscht"));
+      ((Geschaeftsjahr)context).delete();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr gelöscht"));
     }
     catch (Exception e)
     {
-      Logger.error("unable to delete mandant",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Daten des Mandanten"));
+      Logger.error("unable to delete gj",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Daten des Geschäftsjahres"));
     }
   }
 
@@ -66,14 +66,8 @@ public class MandantDelete implements Action
 
 
 /*********************************************************************
- * $Log: MandantDelete.java,v $
- * Revision 1.3  2005/08/29 12:17:29  willuhn
+ * $Log: GeschaeftsjahrDelete.java,v $
+ * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
- *
- * Revision 1.2  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.1  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
  *
  **********************************************************************/
