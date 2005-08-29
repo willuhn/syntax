@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.9 $
+ * $Date: 2005/08/29 15:20:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -242,7 +242,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   {
     try {
       if (getBetrag() == 0.0d)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ein."));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ungleich 0 ein."));
 
       if (getSollKonto() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto für die Soll-Buchung ein."));
@@ -306,6 +306,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.9  2005/08/29 15:20:51  willuhn
+ * @B bugfixing
+ *
  * Revision 1.8  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

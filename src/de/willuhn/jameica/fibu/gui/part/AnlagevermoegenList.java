@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 15:20:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,6 +63,23 @@ public class AnlagevermoegenList extends TablePart
         }
       }
     });
+    addColumn(i18n.tr("Belegnummer"),"buchung_id",new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null || !(o instanceof Buchung))
+          return null;
+        try
+        {
+          Buchung b = (Buchung) o;
+          return "" + b.getBelegnummer();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to read buchung",e);
+          return null;
+        }
+      }
+    });
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Anschaffungsdatum"),"anschaffungsdatum", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Anschaffungskosten"),"anschaffungskosten", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
@@ -75,6 +92,9 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.2  2005/08/29 15:20:51  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

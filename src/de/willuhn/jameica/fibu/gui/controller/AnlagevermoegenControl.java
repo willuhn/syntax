@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/29 15:20:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,6 +218,7 @@ public class AnlagevermoegenControl extends AbstractControl
         a.setLaufzeit(((Integer)getLaufzeit().getValue()).intValue());
       }
       a.store();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gespeichert"));
     }
     catch (RemoteException e)
     {
@@ -234,6 +235,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.3  2005/08/29 15:20:51  willuhn
+ * @B bugfixing
+ *
  * Revision 1.2  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

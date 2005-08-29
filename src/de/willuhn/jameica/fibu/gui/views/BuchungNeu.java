@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/08/29 00:20:29 $
+ * $Revision: 1.32 $
+ * $Date: 2005/08/29 15:20:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,13 +55,16 @@ public class BuchungNeu extends AbstractView
     kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
     kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
     kontoGroup.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
-    kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("Zur Abschreibung in Anlagevermögen übernehmen"));
+
+    LabelGroup avGroup = new LabelGroup(getParent(),i18n.tr("Anlagevermögen"));
+    avGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("Zur Abschreibung in Anlagevermögen übernehmen"));
+    avGroup.addLabelPair(i18n.tr("Laufzeit"),           control.getLaufzeit());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = kontoGroup.createButtonArea(4);
+    ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"),new Action() {
@@ -89,6 +92,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.32  2005/08/29 15:20:51  willuhn
+ * @B bugfixing
+ *
  * Revision 1.31  2005/08/29 00:20:29  willuhn
  * @N anlagevermoegen
  *

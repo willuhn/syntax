@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.39 $
+ * $Date: 2005/08/29 15:20:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -65,6 +66,7 @@ public class BuchungControl extends AbstractControl
   private DialogInput habenKontoAuswahl = null;
   
   private CheckboxInput anlageVermoegen = null;
+  private Input laufzeit                = null;
   
   private I18N i18n;
 
@@ -234,7 +236,30 @@ public class BuchungControl extends AbstractControl
       return this.anlageVermoegen;
     this.anlageVermoegen = new CheckboxInput(false);
     this.anlageVermoegen.disable();
+    this.anlageVermoegen.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        if (anlageVermoegen.isEnabled())
+          getLaufzeit().enable();
+        else
+          getLaufzeit().disable();
+      }
+    });
     return this.anlageVermoegen;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld fuer die Laufzeit.
+   * @return Eingabe-Feld.
+   */
+  public Input getLaufzeit()
+  {
+    if (this.laufzeit != null)
+      return this.laufzeit;
+    this.laufzeit = new IntegerInput(1);
+    this.laufzeit.setComment(i18n.tr("Laufzeit der Abschreibung in Jahren"));
+    this.laufzeit.disable();
+    return this.laufzeit;
   }
   
   /**
@@ -414,7 +439,28 @@ public class BuchungControl extends AbstractControl
 
       // und jetzt speichern wir.
 			getBuchung().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr.") + " " + getBuchung().getBelegnummer() + " " + i18n.tr("gespeichert."));
+      
+      if (((Boolean)getAnlageVermoegen().getValue()).booleanValue())
+      {
+        int laufzeit = ((Integer)getLaufzeit().getValue()).intValue();
+        if (laufzeit == 0)
+          throw new ApplicationException(i18n.tr("Bitte geben Sie eine Laufzeit für die Abschreibung ein"));
+        
+        Anlagevermoegen av = (Anlagevermoegen) Settings.getDBService().createObject(Anlagevermoegen.class,null);
+        av.setAnschaffungsDatum(getBuchung().getDatum());
+        av.setAnschaffungskosten(getBuchung().getBetrag());
+        av.setBuchung(getBuchung());
+        av.setName(getBuchung().getText());
+        av.setLaufzeit(laufzeit);
+        av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+        av.store();
+        
+        GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} und Anlagevermögen gespeichert.",""+getBuchung().getBelegnummer()));
+      }
+      else
+      {
+        GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
+      }
 
       if (startNew)
         new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
@@ -512,10 +558,12 @@ public class BuchungControl extends AbstractControl
         {
           getAnlageVermoegen().enable();
           getAnlageVermoegen().setValue(Boolean.TRUE);
+          getLaufzeit().enable();
         }
         else
         {
           getAnlageVermoegen().disable();
+          getLaufzeit().disable();
         }
         ////////////////////////////////////////////////////////////////////////
 
@@ -612,6 +660,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.39  2005/08/29 15:20:51  willuhn
+ * @B bugfixing
+ *
  * Revision 1.38  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *
