@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/29 22:44:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenExport;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.fibu.gui.part.AnlagevermoegenList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -43,8 +44,9 @@ public class AnlagevermoegenListe extends AbstractView
     Part p = new AnlagevermoegenList(new AnlagevermoegenNeu());
     p.paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),2);
+    ButtonArea buttons = new ButtonArea(getParent(),4);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Übersicht exportieren"), new AnlagevermoegenExport());
     buttons.addButton(i18n.tr("Anlagevermögen hinzufügen"), new AnlagevermoegenNeu(),null,true);
   }
 
@@ -60,6 +62,9 @@ public class AnlagevermoegenListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenListe.java,v $
+ * Revision 1.2  2005/08/29 22:44:05  willuhn
+ * @N added templates
+ *
  * Revision 1.1  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/25 23:00:02 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/29 22:44:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
+import de.willuhn.jameica.fibu.gui.action.SaldenExport;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -44,8 +45,9 @@ public class KontoListe extends AbstractView
     Part p = new KontoList(new KontoNeu());
     p.paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),2);
+    ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(i18n.tr("Summen- und Saldenliste exportieren"), new SaldenExport());
     buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
 
   }
@@ -61,6 +63,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.15  2005/08/29 22:44:05  willuhn
+ * @N added templates
+ *
  * Revision 1.14  2005/08/25 23:00:02  willuhn
  * *** empty log message ***
  *
