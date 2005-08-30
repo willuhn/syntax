@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/30 23:15:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,55 +77,66 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     return "kontonummer";
   }
-  
+
   /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo()
    */
   public double getSaldo() throws RemoteException
   {
-    // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
+    // das ist ein neues Konto. Da gibts noch keinen Umsatz.
     if (getID() == null || getID().length() == 0)
       return 0;
 
     Double d = SaldenCache.get(this.getKontonummer());
     if (d != null)
       return d.doubleValue();
+
+    double saldo = 0.0d;
+    Anfangsbestand a = getAnfangsbestand();
+    if (a != null)
+      saldo = a.getBetrag();
+
+    saldo += getUmsatz();
+    SaldenCache.put(this.getKontonummer(),new Double(saldo));
+    return saldo;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz()
+   */
+  public double getUmsatz() throws RemoteException
+  {
+    // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
+    if (getID() == null || getID().length() == 0)
+      return 0;
+
     
     Statement stmt = null;
     ResultSet rs   = null;
     try
     {
-      DBServiceImpl service = (DBServiceImpl) this.getService();
-      
-      double saldo = 0.0d;
-      Anfangsbestand a = getAnfangsbestand();
-      if (a != null)
-        saldo = a.getBetrag();
-     
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 
+      DBServiceImpl service = (DBServiceImpl) this.getService();
       stmt = service.getConnection().createStatement();
 
-      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      double saldo = 0.0d;
 
       String sql = "select sum(betrag) as b from buchung " +
         " where geschaeftsjahr_id = "+ jahr.getID() + 
         " and sollkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
-      {
-        saldo += rs.getDouble("b");
-      }
+        saldo = rs.getDouble("b");
 
       sql = "select sum(betrag) as b from buchung " +
       " where geschaeftsjahr_id = "+ jahr.getID() + 
       " and habenkonto_id = " + this.getID();
-    rs = stmt.executeQuery(sql);
-    if (rs.next())
-    {
-      saldo -= rs.getDouble("b");
-    }
-    SaldenCache.put(this.getKontonummer(),new Double(saldo));
-    return saldo;
+      rs = stmt.executeQuery(sql);
+      if (rs.next())
+        saldo -= rs.getDouble("b");
+
+      return saldo;
     }
     catch (Exception e)
     {
@@ -345,11 +356,13 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return null;
     return (Anfangsbestand) ab.next();
   }
-
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.28  2005/08/30 23:15:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

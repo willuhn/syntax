@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.14 $
+ * $Date: 2005/08/30 23:15:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,14 @@ public interface Konto extends DBObject
    */
   public double getSaldo() throws RemoteException;
 
-
+  /**
+   * Liefert den Umsatz auf dem Konto im aktuellen Geschaeftsjahr.
+   * Das entspricht der Summe der Buchungen auf dem Konto.
+   * @return Umsatz.
+   * @throws RemoteException
+   */
+  public double getUmsatz() throws RemoteException;
+  
   /**
    * Liefert den Namen des Kontos.
    * @return Liefert die Bezeichnung des Kontos.
@@ -130,6 +137,9 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.14  2005/08/30 23:15:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

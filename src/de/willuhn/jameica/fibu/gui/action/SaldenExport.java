@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/SaldenExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 22:44:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/30 23:15:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,8 +93,9 @@ public class SaldenExport implements Action
       while (i.hasNext())
       {
         Konto k = (Konto) i.next();
-        if (k.getSaldo() != 0.0d)
-          list.add(k);
+        if (k.getSaldo() == 0.0d && k.getUmsatz() == 0.0d && k.getAnfangsbestand() == null)
+          continue; // hier gibts nichts anzuzeigen
+        list.add(k);
       }
       
       Konto[] konten = (Konto[]) list.toArray(new Konto[list.size()]);
@@ -123,6 +124,9 @@ public class SaldenExport implements Action
 
 /*********************************************************************
  * $Log: SaldenExport.java,v $
+ * Revision 1.2  2005/08/30 23:15:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/29 22:44:05  willuhn
  * @N added templates
  *
