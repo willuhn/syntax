@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.7 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
-import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -241,7 +240,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     // verbieten, wenn wir schon Buchungen haben.
     try
     {
-      DBIterator list = getService().createList(Buchung.class);
+      DBIterator list = getBuchungen();
 
       if (list.size() > 0)
       {
@@ -297,7 +296,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public DBIterator getAnfangsbestaende() throws RemoteException
   {
-    DBIterator list = getService().createList(Anlagevermoegen.class);
+    DBIterator list = getService().createList(Anfangsbestand.class);
     list.addFilter("geschaeftsjahr_id = " + this.getID());
     return list;
   }
@@ -406,6 +405,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.7  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.6  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

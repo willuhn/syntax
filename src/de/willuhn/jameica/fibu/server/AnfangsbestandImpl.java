@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.8 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
@@ -84,11 +83,8 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       if (getBetrag() == 0.0d)
           throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
         
-      DBIterator list = getService().createList(Anfangsbestand.class);
-      list.addFilter("konto_id = " + k.getID());
-      list.addFilter("geschaeftsjahr_id = " + jahr.getID());
-      if (list.hasNext())
-        throw new ApplicationException(i18n.tr("Für das Konto und Geschäftsjahr existiert bereits ein Anfangsbestand"));
+      if (k.getAnfangsbestand() != null)
+        throw new ApplicationException(i18n.tr("Für das Konto existiert bereits ein Anfangsbestand"));
     }
     catch (RemoteException e)
     {
@@ -178,6 +174,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.8  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.7  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *

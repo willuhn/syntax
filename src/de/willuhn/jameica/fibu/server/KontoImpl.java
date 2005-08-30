@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.27 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -339,9 +339,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Anfangsbestand getAnfangsbestand() throws RemoteException
   {
-    DBIterator ab = getService().createList(Anfangsbestand.class);
+    DBIterator ab = Settings.getActiveGeschaeftsjahr().getAnfangsbestaende();
     ab.addFilter("konto_id = " + this.getID());
-    ab.addFilter("geschaeftsjahr_id = " + Settings.getActiveGeschaeftsjahr().getID());
     if (!ab.hasNext())
       return null;
     return (Anfangsbestand) ab.next();
@@ -351,6 +350,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.27  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.26  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

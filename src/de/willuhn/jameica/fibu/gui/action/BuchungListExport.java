@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -44,6 +45,7 @@ public class BuchungListExport implements Action
 {
 
   /**
+   * Erwartet null oder ein Geschaeftsjahr.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
@@ -88,7 +90,11 @@ public class BuchungListExport implements Action
     try
     {
 
-      DBIterator list = Settings.getDBService().createList(Buchung.class);
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      if (context != null && (context instanceof Geschaeftsjahr))
+        jahr = (Geschaeftsjahr) context;
+      
+      DBIterator list = jahr.getBuchungen();
       list.setOrder("order by datum");
       Buchung[] b = new Buchung[list.size()];
       int count = 0;
@@ -97,7 +103,7 @@ public class BuchungListExport implements Action
         b[count++] = (Buchung) list.next();
       }
       
-      list = Settings.getDBService().createList(Anfangsbestand.class);
+      list = jahr.getAnfangsbestaende();
       Anfangsbestand[] ab = new Anfangsbestand[list.size()];
       count = 0;
       while (list.hasNext())
@@ -131,6 +137,9 @@ public class BuchungListExport implements Action
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.2  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *

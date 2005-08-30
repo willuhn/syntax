@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/08/29 14:26:56 $
+ * $Revision: 1.36 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     try
     {
       // Checken, ob in die Belegnummer eindeutig ist
-      DBIterator list = getService().createList(Buchung.class);
+      DBIterator list = Settings.getActiveGeschaeftsjahr().getBuchungen();
       list.addFilter("belegnummer = " + getAttribute("belegnummer"));
       if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
         list.addFilter("id != " + this.getID());
@@ -149,6 +149,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.36  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.35  2005/08/29 14:26:56  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

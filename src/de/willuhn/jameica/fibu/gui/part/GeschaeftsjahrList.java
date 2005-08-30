@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.GeschaeftsjahrListMenu;
@@ -96,14 +97,19 @@ public class GeschaeftsjahrList extends TablePart
   private static GenericIterator init(Mandant m) throws RemoteException
   {
     if (m == null)
-      return PseudoIterator.fromArray(new Mandant[0]);
-    return m.getGeschaeftsjahre();
+      return PseudoIterator.fromArray(new Geschaeftsjahr[0]);
+    DBIterator list = m.getGeschaeftsjahre();
+    list.setOrder("order by beginn");
+    return list;
   }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.6  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.5  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

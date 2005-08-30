@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnfangsbestandList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/30 22:51:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,9 @@ package de.willuhn.jameica.fibu.gui.part;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.AnfangsbestandListMenu;
-import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -73,15 +71,16 @@ public class AnfangsbestandList extends TablePart
    */
   private static GenericIterator init() throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(Anfangsbestand.class);
-    list.addFilter("geschaeftsjahr_id = " + Settings.getActiveGeschaeftsjahr().getID());
-    return list;
+    return Settings.getActiveGeschaeftsjahr().getAnfangsbestaende();
   }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandList.java,v $
+ * Revision 1.5  2005/08/30 22:51:31  willuhn
+ * @B bugfixing
+ *
  * Revision 1.4  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *
