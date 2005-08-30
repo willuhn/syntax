@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.15 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,6 +142,8 @@ public class BuchungsEngine
       jahrNeu.store();
       
       // Anfangsbestaende erzeugen
+      // Existierende Anfangsbestaende aus dem Vorjahr brauchen wir nicht
+      // beruecksichtigen, weil sie in k.getSaldo bereits enthalten sind.
       Logger.info("Erzeuge neue Anfangsbestaende");
       list = db.createList(Konto.class);
       while (list.hasNext())
@@ -246,6 +248,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.15  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.14  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

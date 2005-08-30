@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnfangsbestandList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.AnfangsbestandListMenu;
@@ -40,7 +42,7 @@ public class AnfangsbestandList extends TablePart
    */
   public AnfangsbestandList(Action action) throws RemoteException
   {
-    super(Settings.getDBService().createList(Anfangsbestand.class), action);
+    super(init(), action);
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
@@ -63,11 +65,26 @@ public class AnfangsbestandList extends TablePart
     addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new AnfangsbestandListMenu());
   }
+  
+  /**
+   * Initialisiert die Liste der Anfangsbestaende.
+   * @return Liste der Anfangsbestaende.
+   * @throws RemoteException
+   */
+  private static GenericIterator init() throws RemoteException
+  {
+    DBIterator list = Settings.getDBService().createList(Anfangsbestand.class);
+    list.addFilter("geschaeftsjahr_id = " + Settings.getActiveGeschaeftsjahr().getID());
+    return list;
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandList.java,v $
+ * Revision 1.4  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 22:59:17 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -57,14 +58,20 @@ public class GeschaeftsjahrNeu extends AbstractView
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new GeschaeftsjahrDelete());
     buttonArea.addButton(i18n.tr("Überschuss-Rechnung exportieren"), new GeschaeftsjahrExport(), control.getCurrentObject());
-    buttonArea.addButton(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
-    buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    
+    Button close = new Button(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
+    close.setEnabled(!control.getGeschaeftsjahr().isClosed());
+    buttonArea.addButton(close);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,true);
+    store.setEnabled(!control.getGeschaeftsjahr().isClosed());
+    buttonArea.addButton(store);
   }
 
   /**
@@ -79,6 +86,9 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.5  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.4  2005/08/29 22:59:17  willuhn
  * *** empty log message ***
  *

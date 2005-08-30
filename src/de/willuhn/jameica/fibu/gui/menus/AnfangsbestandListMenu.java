@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnfangsbestandListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.fibu.gui.menus;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.AnfangsbestandDelete;
 import de.willuhn.jameica.fibu.gui.action.AnfangsbestandNeu;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -34,10 +33,10 @@ public class AnfangsbestandListMenu extends ContextMenu
   public AnfangsbestandListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnfangsbestandNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new AnfangsbestandDelete()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnfangsbestandNeu()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new AnfangsbestandDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neuer Anfangsbestand"), new ABNeu()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Anfangsbestand"), new ABNeu()));
   }
   
   /**
@@ -59,6 +58,9 @@ public class AnfangsbestandListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnfangsbestandListMenu.java,v $
+ * Revision 1.5  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.4  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *

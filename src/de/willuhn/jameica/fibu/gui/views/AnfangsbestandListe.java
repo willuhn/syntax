@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,14 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnfangsbestandNeu;
 import de.willuhn.jameica.fibu.gui.part.AnfangsbestandList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -45,7 +47,10 @@ public class AnfangsbestandListe extends AbstractView
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Neuer Anfangsbestand"), new AnfangsbestandNeu(),null,true);
+    
+    Button button = new Button(i18n.tr("Neuer Anfangsbestand"),new AnfangsbestandNeu(),null,true);
+    button.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
+    buttons.addButton(button);
   }
 
   /**
@@ -60,6 +65,9 @@ public class AnfangsbestandListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
+ * Revision 1.4  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

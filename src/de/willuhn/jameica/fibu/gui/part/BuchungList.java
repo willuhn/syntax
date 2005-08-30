@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.12 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,6 +101,7 @@ public class BuchungList extends TablePart
     if (konto != null)
       return konto.getBuchungen();
     DBIterator list = Settings.getDBService().createList(Buchung.class);
+    list.addFilter("geschaeftsjahr_id = " + Settings.getActiveGeschaeftsjahr().getID());
     list.setOrder("order by id desc");
     return list;
   }
@@ -138,6 +139,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.12  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.11  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/25 21:58:57 $
+ * $Revision: 1.3 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -37,15 +36,15 @@ public class BuchungListMenu extends ContextMenu
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new SingleItem(i18n.tr("Bearbeiten"), new BuchungNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new BuchungDelete()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new BuchungDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neue Buchung"), new BNeu()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung"), new BNeu()));
   }
   
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
    */
-  private static class SingleItem extends CheckedContextMenuItem
+  private static class SingleItem extends GJCheckedContextMenuItem
   {
     /**
      * @param text
@@ -85,6 +84,9 @@ public class BuchungListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungListMenu.java,v $
+ * Revision 1.3  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.2  2005/08/25 21:58:57  willuhn
  * @N SKR04
  *

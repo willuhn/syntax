@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,6 +12,8 @@
  **********************************************************************/
 
 package de.willuhn.jameica.fibu.gui.menus;
+
+import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -26,6 +28,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -49,7 +52,7 @@ public class GeschaeftsjahrListMenu extends ContextMenu
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new ContextMenuItem(i18n.tr("Neues Geschäftsjahr"), new GNeu()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Als aktives Geschäftsjahr festlegen"), new Action() {
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Als aktives Geschäftsjahr festlegen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         if (context == null || !(context instanceof Geschaeftsjahr))
@@ -59,7 +62,7 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
     }));
-    this.addItem(new ContextMenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
+    this.addItem(new MenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
   }
   
   /**
@@ -74,13 +77,52 @@ public class GeschaeftsjahrListMenu extends ContextMenu
     {
       super.handleAction(mandant);
     }
-    
+  }
+  
+  /**
+   * Hilfs-Item.
+   */
+  private class MenuItem extends CheckedContextMenuItem
+  {
+    /**
+     * @param text
+     * @param a
+     */
+    public MenuItem(String text, Action a)
+    {
+      super(text, a);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o != null && (o instanceof Geschaeftsjahr))
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) o;
+        try
+        {
+          if (jahr.isClosed())
+            return false;
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while checking gj status",e);
+        }
+      }
+        
+      return super.isEnabledFor(o);
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.4  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

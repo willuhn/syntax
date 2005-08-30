@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/08/29 22:52:04 $
+ * $Revision: 1.36 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
@@ -69,24 +70,30 @@ public class BuchungNeu extends AbstractView
     if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = kontoGroup.createButtonArea(closed ? 1 : 4);
+    ButtonArea buttonArea = kontoGroup.createButtonArea(4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    if (!closed)
-    {
-      buttonArea.addButton(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
-      buttonArea.addButton(i18n.tr("Speichern"),new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleStore(false);
-        }
-      },null);
-      buttonArea.addButton(i18n.tr("Speichern und Neue Buchung"),new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleStore(true);
-        }
-      },null,true);
-    }
+
+    Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
+    delete.setEnabled(!closed);
+    buttonArea.addButton(delete);
+
+    Button store = new Button(i18n.tr("Speichern"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore(false);
+      }
+    },null);
+    store.setEnabled(!closed);
+    buttonArea.addButton(store);
+
+    Button storeNew = new Button(i18n.tr("Speichern und Neue Buchung"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore(true);
+      }
+    },null,true);
+    storeNew.setEnabled(!closed);
+    buttonArea.addButton(storeNew);
 
   }
 
@@ -100,6 +107,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.36  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.35  2005/08/29 22:52:04  willuhn
  * *** empty log message ***
  *

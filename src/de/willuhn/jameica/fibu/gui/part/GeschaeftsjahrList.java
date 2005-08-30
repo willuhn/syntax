@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 22:59:17 $
+ * $Revision: 1.5 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TableItem;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.GeschaeftsjahrListMenu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -73,6 +74,9 @@ public class GeschaeftsjahrList extends TablePart
           Geschaeftsjahr jahr = (Geschaeftsjahr) o;
           if (jahr.isClosed())
             item.setForeground(Color.COMMENT.getSWTColor());
+          
+          if (jahr.equals(Settings.getActiveGeschaeftsjahr()))
+            item.setForeground(Color.SUCCESS.getSWTColor());
         }
         catch (RemoteException e)
         {
@@ -100,6 +104,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.5  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.4  2005/08/29 22:59:17  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.2 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class GeschaeftsjahrControl extends AbstractControl
    * @return Geschaeftsjahr.
    * @throws RemoteException
    */
-  private Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
   {
     if (this.jahr != null)
       return this.jahr;
@@ -192,6 +192,9 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
+ * Revision 1.2  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.1  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

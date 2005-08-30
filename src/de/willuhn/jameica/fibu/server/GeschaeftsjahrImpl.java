@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.6 $
+ * $Date: 2005/08/30 22:33:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -192,6 +192,8 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    if ("this".equals(arg0))
+      return this;
     if ("name".equals(arg0))
       return Fibu.DATEFORMAT.format(getBeginn()) + " - " + Fibu.DATEFORMAT.format(getEnde());
 
@@ -404,6 +406,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.6  2005/08/30 22:33:45  willuhn
+ * @B bugfixing
+ *
  * Revision 1.5  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *
