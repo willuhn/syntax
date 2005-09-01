@@ -87,6 +87,7 @@ CREATE TABLE mandant (
 
 CREATE TABLE geschaeftsjahr (
   id NUMERIC default UNIQUEKEY('geschaeftsjahr'),
+  vorjahr_id int(10) NULL,
   mandant_id int(10) NOT NULL,
   beginn date NOT NULL,
   ende date NOT NULL,
@@ -128,6 +129,7 @@ ALTER TABLE konto ADD CONSTRAINT fk_konto_steuer FOREIGN KEY (steuer_id) REFEREN
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
+ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;
 
@@ -141,6 +143,7 @@ ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (konto
 
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
+ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_self FOREIGN KEY (vorjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
 
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id) DEFERRABLE;
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
@@ -151,6 +154,7 @@ CREATE INDEX idx_gj_mandant           ON geschaeftsjahr(mandant_id);
 
 CREATE INDEX idx_buchung_belegnummer  ON buchung(belegnummer);
 CREATE INDEX idx_buchung_gj           ON buchung(geschaeftsjahr_id);
+CREATE INDEX idx_buchung_hilfe        ON buchung(buchung_id);
 
 CREATE INDEX idx_steuer_steuerkonto   ON steuer(steuerkonto_id);
 

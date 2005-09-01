@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.17 $
+ * $Date: 2005/09/01 23:28:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,6 +143,7 @@ public class BuchungsEngine
       Logger.info("  Beginn: " + jahrNeu.getBeginn().toString());
       Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
 
+      jahrNeu.setVorjahr(jahr);
       jahrNeu.store();
       Settings.setActiveGeschaeftsjahr(jahrNeu);
       
@@ -255,6 +256,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.17  2005/09/01 23:28:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

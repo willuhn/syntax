@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/01 23:28:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -182,6 +182,8 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       return Mandant.class;
     if ("kontenrahmen_id".equals(arg0))
       return Kontenrahmen.class;
+    if ("vorjahr_id".equals(arg0))
+      return Geschaeftsjahr.class;
     
     return super.getForeignObject(arg0);
   }
@@ -240,6 +242,10 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     // verbieten, wenn wir schon Buchungen haben.
     try
     {
+      Geschaeftsjahr vorjahr = getVorjahr();
+      if (vorjahr != null && vorjahr.getID().equals(this.getID()))
+        throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht auf sich selbst verweisen"));
+
       DBIterator list = getBuchungen();
 
       if (list.size() > 0)
@@ -255,7 +261,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
         if (hasChanged("ende"))
           throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
-
       }
     }
     catch (RemoteException e)
@@ -400,11 +405,30 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     list.addFilter("geschaeftsjahr_id = " + this.getID());
     return list;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getVorjahr()
+   */
+  public Geschaeftsjahr getVorjahr() throws RemoteException
+  {
+    return (Geschaeftsjahr) getAttribute("vorjahr_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setVorjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public void setVorjahr(Geschaeftsjahr vorjahr) throws RemoteException
+  {
+    setAttribute("vorjahr_id",vorjahr);
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.8  2005/09/01 23:28:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

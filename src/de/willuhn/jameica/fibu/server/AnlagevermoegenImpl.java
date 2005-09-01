@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/01 23:28:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -381,14 +381,16 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public double getJahresAbschreibung() throws RemoteException
   {
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    Geschaeftsjahr vorjahr = jahr.getVorjahr();
+    if (vorjahr == null)
+      return 0.0d; // Kein Vorjahr vorhanden
 
     DBIterator abschreibungen = getAbschreibungen();
     while (abschreibungen.hasNext())
     {
       Abschreibung a = (Abschreibung) abschreibungen.next();
       Buchung b = a.getBuchung();
-      Date date = b.getDatum();
-      if (date.after(jahr.getBeginn()) && date.before(jahr.getEnde()))
+      if (vorjahr.equals(a.getGeschaeftsjahr()))
         return b.getBetrag();
     }
     return 0.0d;
@@ -406,6 +408,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.6  2005/09/01 23:28:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

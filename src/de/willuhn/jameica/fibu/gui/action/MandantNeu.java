@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/01 23:28:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,13 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import java.rmi.RemoteException;
+
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -28,6 +33,17 @@ public class MandantNeu implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (context == null)
+    {
+      try
+      {
+        context = Settings.getDBService().createObject(Mandant.class,null);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to create mandant",e);
+      }
+    }
     GUI.startView(de.willuhn.jameica.fibu.gui.views.MandantNeu.class,context);
   }
 
@@ -36,6 +52,9 @@ public class MandantNeu implements Action
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.4  2005/09/01 23:28:16  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/01 23:28:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -128,11 +128,28 @@ public interface Geschaeftsjahr extends DBObject
    * @throws RemoteException
    */
   public int getMonate() throws RemoteException;
+  
+  /**
+   * Liefert das Vorjahr.
+   * @return Vorjahr.
+   * @throws RemoteException
+   */
+  public Geschaeftsjahr getVorjahr() throws RemoteException;
+  
+  /**
+   * Speichert das Vorjahr.
+   * @param vorjahr Vorjahr.
+   * @throws RemoteException
+   */
+  public void setVorjahr(Geschaeftsjahr vorjahr) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
+ * Revision 1.6  2005/09/01 23:28:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

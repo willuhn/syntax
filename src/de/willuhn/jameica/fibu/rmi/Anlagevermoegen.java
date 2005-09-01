@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/01 23:28:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -104,7 +104,7 @@ public interface Anlagevermoegen extends DBObject
   public double getRestwert() throws RemoteException;
   
   /**
-   * Liefert die Abschreibung des aktuellen Jahres insofern sie schon gebucht wurde.
+   * Liefert die Abschreibung des abgeschlossenen Jahres insofern es abgeschlossen wurde.
    * @return Abschreibung des aktuellen Geschaeftsjahres oder <code>0.0</code>.
    * @throws RemoteException
    */
@@ -182,6 +182,9 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.5  2005/09/01 23:28:15  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *
