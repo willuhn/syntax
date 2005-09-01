@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.21 $
+ * $Date: 2005/09/01 14:04:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,8 @@ public class Settings
     setStatus();
   }
   
+  private static boolean inProgress = false;
+  
   /**
    * Liefert das aktuelle Geschaeftsjahr oder einen Dialog zur Abfrage, falls dieses noch
    * nicht ausgeaehlt ist.
@@ -94,11 +96,14 @@ public class Settings
    */
   public static Geschaeftsjahr getActiveGeschaeftsjahr() throws RemoteException
   {
+    if (inProgress)
+      return null;
   	if (jahr != null && !jahr.isNewObject())
   		return jahr;
 
   	try
     {
+      inProgress = true;
       String id = settings.getString("gj.active",null);
       if (id != null)
       {
@@ -117,6 +122,10 @@ public class Settings
     {
       Logger.error("error while choosing mandant",e);
       throw new RemoteException("Fehler beim Auswählen des aktiven Mandanten");
+    }
+    finally
+    {
+      inProgress = false;
     }
   }
   
@@ -149,6 +158,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.21  2005/09/01 14:04:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *
