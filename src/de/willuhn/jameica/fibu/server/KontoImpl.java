@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/08/30 23:15:32 $
+ * $Revision: 1.29 $
+ * $Date: 2005/09/01 21:08:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,12 +30,16 @@ import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.Session;
 
 /**
  * @author willuhn
  */
 public class KontoImpl extends AbstractDBObject implements Konto
 {
+  // Cachen wir der Performance wegen
+  private final static Session kontoArtCache     = new Session();
+  private final static Session kontenRahmenCache = new Session();
   
   /**
    * Erzeugt ein neues Konto.
@@ -67,7 +71,16 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
-    return (Kontenrahmen) getAttribute("kontenrahmen_id");
+    Integer i = (Integer) super.getAttribute("kontenrahmen_id");
+    if (i == null)
+      return null;
+    Kontenrahmen kr = (Kontenrahmen) kontenRahmenCache.get(i);
+    if (kr == null)
+    {
+      kr = (Kontenrahmen) getService().createObject(Kontenrahmen.class,i.toString());
+      kontenRahmenCache.put(i,kr);
+    }
+    return kr;
   }
 
   /**
@@ -183,7 +196,16 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontoart getKontoArt() throws RemoteException
   {
-    return (Kontoart) getAttribute("kontoart_id");
+    Integer i = (Integer) super.getAttribute("kontoart_id");
+    if (i == null)
+      return null;
+    Kontoart ka = (Kontoart) kontoArtCache.get(i);
+    if (ka == null)
+    {
+      ka = (Kontoart) getService().createObject(Kontoart.class,i.toString());
+      kontoArtCache.put(i,ka);
+    }
+    return ka;
   }
 
   /**
@@ -199,12 +221,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("kontoart_id".equals(field))
-      return Kontoart.class;
     if ("steuer_id".equals(field))
       return Steuer.class;
-    if ("kontenrahmen_id".equals(field))
-      return Kontenrahmen.class;
     return null;
   }
 
@@ -277,7 +295,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontenrahmen(Kontenrahmen k) throws RemoteException
   {
-    setAttribute("kontenrahmen_id",k);
+    setAttribute("kontenrahmen_id",k == null ? null : new Integer(k.getID()));
   }
 
   /**
@@ -293,7 +311,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
-    setAttribute("kontoart_id",art);
+    setAttribute("kontoart_id",art == null ? null : new Integer(art.getID()));
   }
 
   /**
@@ -312,6 +330,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     if ("saldo".equals(arg0))
       return new Double(getSaldo());
+    if ("kontenrahmen_id".equals(arg0))
+      return getKontenrahmen();
+    if ("kontoart_id".equals(arg0))
+      return getKontoArt();
     return super.getAttribute(arg0);
   }
 
@@ -360,6 +382,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.29  2005/09/01 21:08:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2005/08/30 23:15:32  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/01 21:08:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
@@ -29,11 +30,21 @@ public interface Kontenrahmen extends DBObject
    * @throws RemoteException
    */
   public String getName() throws RemoteException;
+  
+  /**
+   * Liefert eine Liste aller Konten in diesem Kontenrahmen.
+   * @return Konten.
+   * @throws RemoteException
+   */
+  public DBIterator getKonten() throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.6  2005/09/01 21:08:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

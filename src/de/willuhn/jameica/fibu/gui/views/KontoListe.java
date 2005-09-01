@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.17 $
+ * $Date: 2005/09/01 21:08:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.action.SaldenExport;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
@@ -43,9 +44,10 @@ public class KontoListe extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     String kr = i18n.tr("unbekannt");
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     try
     {
-      kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getName();
+      kr = jahr.getKontenrahmen().getName();
     }
     catch (Exception e)
     {
@@ -53,7 +55,7 @@ public class KontoListe extends AbstractView
     }
     GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten. Kontenrahmen: {0}",kr));
 
-    Part p = new KontoList(new KontoNeu());
+    Part p = new KontoList(jahr.getKontenrahmen().getKonten(),new KontoNeu());
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),3);
@@ -74,6 +76,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.17  2005/09/01 21:08:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

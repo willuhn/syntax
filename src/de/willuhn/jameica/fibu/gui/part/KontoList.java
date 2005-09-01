@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/01 21:08:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.pseudo.PseudoIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
@@ -56,25 +54,13 @@ public class KontoList extends TablePart
   private ArrayList konten      = null;
 
   /**
-   * ct.
-   * @param action
-   * @throws RemoteException
-   */
-  public KontoList(Action action) throws RemoteException
-  {
-    this(null,action);
-  }
-  
-  /**
    * @param list
    * @param action
    * @throws RemoteException
    */
   public KontoList(GenericIterator list, Action action) throws RemoteException
   {
-    // Wir laden die Konten erst wenn wirklich gezeichnet wird. Und dann
-    // in einem separaten Thread.
-    super(PseudoIterator.fromArray(new Konto[0]), action);
+    super(list, action);
 
     this.list = list;
 
@@ -87,30 +73,6 @@ public class KontoList extends TablePart
     setMulti(true);
   }
   
-  /**
-   * initialisiert eine Default-Liste mit Konten.
-   * @throws RemoteException
-   */
-  private synchronized void init() throws RemoteException
-  {
-    if (this.list == null)
-    {
-      this.list = Settings.getDBService().createList(Konto.class);
-      ((DBIterator)this.list).setOrder("order by kontonummer");
-    }
-    
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    konten = new ArrayList();
-    list.begin();
-    while (list.hasNext())
-    {
-      Konto k = (Konto) list.next();
-      konten.add(k);
-      addItem(k);
-    }
-  }
-
   /**
    * Ueberschrieben, um noch weitere Details anzuzeigen.
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
@@ -125,12 +87,23 @@ public class KontoList extends TablePart
     group.addLabelPair(i18n.tr("Bezeichnung enthält"), this.search);
     group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Saldo anzeigen"));
     
+    long start = System.currentTimeMillis();
     super.paint(parent);
-    init();
 
+    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
+    // Objekte beim Filter geladen bleiben
+    konten = new ArrayList();
+    list.begin();
+    while (list.hasNext())
+    {
+      Konto k = (Konto) list.next();
+      konten.add(k);
+    }
+    
     KL kl = new KL();
     this.search.getControl().addKeyListener(kl);
     ((Button)this.filter.getControl()).addSelectionListener(kl);
+    System.out.println(System.currentTimeMillis() - start);
   }
   
   private class KL extends KeyAdapter implements SelectionListener
@@ -247,6 +220,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.7  2005/09/01 21:08:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/08 22:54:16 $
+ * $Revision: 1.11 $
+ * $Date: 2005/09/01 21:08:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,9 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -98,11 +100,25 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
     return (String) getAttribute("name");
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#getKonten()
+   */
+  public DBIterator getKonten() throws RemoteException
+  {
+    DBIterator list = getService().createList(Konto.class);
+    list.addFilter("kontenrahmen_id = " + this.getID());
+    list.setOrder("order by kontonummer");
+    return list;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.11  2005/09/01 21:08:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/08/08 22:54:16  willuhn
  * @N massive refactoring
  *
