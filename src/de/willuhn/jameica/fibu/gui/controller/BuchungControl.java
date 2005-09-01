@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.42 $
- * $Date: 2005/08/29 22:52:04 $
+ * $Revision: 1.43 $
+ * $Date: 2005/09/01 21:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -145,9 +146,12 @@ public class BuchungControl extends AbstractControl
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
 		
-		final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+		final String waehrung = jahr.getMandant().getWaehrung();
     final KontoListener kl = new KontoListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
 		d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -185,8 +189,11 @@ public class BuchungControl extends AbstractControl
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
-    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -286,9 +293,12 @@ public class BuchungControl extends AbstractControl
     if (afaKonto != null)
       return afaKonto;
     
-    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUSGABE);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -735,6 +745,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.43  2005/09/01 21:18:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.42  2005/08/29 22:52:04  willuhn
  * *** empty log message ***
  *

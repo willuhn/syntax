@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/01 21:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -218,9 +219,12 @@ public class AnlagevermoegenControl extends AbstractControl
     if (konto != null)
       return konto;
     
-    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_ANLAGE);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -256,9 +260,12 @@ public class AnlagevermoegenControl extends AbstractControl
     if (afaKonto != null)
       return afaKonto;
     
-    final String waehrung = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUSGABE);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -355,6 +362,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.6  2005/09/01 21:18:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

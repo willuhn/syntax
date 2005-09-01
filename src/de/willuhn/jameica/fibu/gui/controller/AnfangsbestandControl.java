@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/01 21:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,11 @@ public class AnfangsbestandControl extends AbstractControl
     if (konto != null)
       return konto;
     
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
+
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event) {
@@ -200,6 +204,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.3  2005/09/01 21:18:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/01 21:08:41 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/01 21:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,6 @@ public class KontoList extends TablePart
     group.addLabelPair(i18n.tr("Bezeichnung enthält"), this.search);
     group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Saldo anzeigen"));
     
-    long start = System.currentTimeMillis();
     super.paint(parent);
 
     // Wir kopieren den ganzen Kram in eine ArrayList, damit die
@@ -103,7 +102,6 @@ public class KontoList extends TablePart
     KL kl = new KL();
     this.search.getControl().addKeyListener(kl);
     ((Button)this.filter.getControl()).addSelectionListener(kl);
-    System.out.println(System.currentTimeMillis() - start);
   }
   
   private class KL extends KeyAdapter implements SelectionListener
@@ -220,6 +218,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.8  2005/09/01 21:18:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/09/01 21:08:41  willuhn
  * *** empty log message ***
  *

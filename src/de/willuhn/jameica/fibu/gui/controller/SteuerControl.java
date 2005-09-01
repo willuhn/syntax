@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.18 $
+ * $Date: 2005/09/01 21:18:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -118,8 +119,11 @@ public class SteuerControl extends AbstractControl
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
+    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
     d.addCloseListener(new Listener() {
       public void handleEvent(Event event)
@@ -131,7 +135,7 @@ public class SteuerControl extends AbstractControl
     });
     Konto k = getSteuer().getSteuerKonto();
 		kontoauswahl = new DialogInput(k == null ? null : (k.getKontonummer() + " [" + k.getName() + "]"),d);
-    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung()}));
+    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), jahr.getMandant().getWaehrung()}));
     kontoauswahl.disableClientControl();
 		return kontoauswahl;
 	}
@@ -179,6 +183,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.18  2005/09/01 21:18:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *
