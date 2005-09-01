@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.20 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -64,25 +65,28 @@ public class MandantNeu extends AbstractView
     group.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
-    ButtonArea buttonArea = group.createButtonArea(control.storeAllowed() ? 4 : 2);
+    ButtonArea buttonArea = group.createButtonArea(4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
     buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
-    if (control.storeAllowed())
-    {
-      buttonArea.addButton(i18n.tr("Geschäftsjahr anlegen"), new Action() {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleNewGJ();
-        }
-      });
-      buttonArea.addButton(i18n.tr("Speichern"), new Action()
+
+    Button button3 = new Button(i18n.tr("Geschäftsjahr anlegen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
       {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          control.handleStore();
-        }
-      },null,control.storeAllowed());
-    }
+        control.handleNewGJ();
+      }
+    });
+    button3.setEnabled(control.storeAllowed());
+    buttonArea.addButton(button3);
+    
+    Button button4 = new Button(i18n.tr("Speichern"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleStore();
+      }
+    },null,control.storeAllowed());
+    button4.setEnabled(control.storeAllowed());
+    buttonArea.addButton(button4);
 
     new Headline(getParent(),i18n.tr("Vorhandene Geschäftsjahre"));
     TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
@@ -100,6 +104,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.20  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.19  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

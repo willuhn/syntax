@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.16 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,9 +84,12 @@ public class BuchungsEngine
       {
         Anlagevermoegen av = (Anlagevermoegen) list.next();
         
-        double betrag      = av.getAnschaffungskosten() / (double) av.getLaufzeit();
+        double betrag      = av.getAnschaffungskosten() / (double) av.getNutzungsdauer();
         double restwert    = av.getRestwert();
         boolean rest       = false;
+
+        if (restwert == 0.0d)
+          continue;
         
         if (betrag > restwert)
         {
@@ -102,9 +105,9 @@ public class BuchungsEngine
         buchung.setHabenKonto(av.getKonto());
         buchung.setBelegnummer(buchung.getBelegnummer());
         if (rest)
-          buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
-        else
           buchung.setText(i18n.tr("Restwertbuchung {0}",av.getName()));
+        else
+          buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
         buchung.setBetrag(betrag);
         buchung.store();
         
@@ -119,6 +122,7 @@ public class BuchungsEngine
       // Neues geschaeftsjahr erzeugen
       Logger.info("Erzeuge neues Geschaeftsjahr");
       Geschaeftsjahr jahrNeu = (Geschaeftsjahr) db.createObject(Geschaeftsjahr.class,null);
+      
       jahrNeu.setMandant(m);
       jahrNeu.setKontenrahmen(jahr.getKontenrahmen());
       
@@ -140,12 +144,13 @@ public class BuchungsEngine
       Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
 
       jahrNeu.store();
+      Settings.setActiveGeschaeftsjahr(jahrNeu);
       
       // Anfangsbestaende erzeugen
       // Existierende Anfangsbestaende aus dem Vorjahr brauchen wir nicht
       // beruecksichtigen, weil sie in k.getSaldo bereits enthalten sind.
       Logger.info("Erzeuge neue Anfangsbestaende");
-      list = db.createList(Konto.class);
+      list = jahr.getKontenrahmen().getKonten();
       while (list.hasNext())
       {
         Konto k = (Konto) list.next();
@@ -169,11 +174,13 @@ public class BuchungsEngine
     catch (RemoteException e)
     {
       jahr.transactionRollback();
+      Settings.setActiveGeschaeftsjahr(jahr);
       throw e;
     }
     catch (ApplicationException ae)
     {
       jahr.transactionRollback();
+      Settings.setActiveGeschaeftsjahr(jahr);
       throw ae;
     }
     
@@ -248,6 +255,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.16  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.15  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

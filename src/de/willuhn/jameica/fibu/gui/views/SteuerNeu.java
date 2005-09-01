@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/12 00:10:59 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,12 +13,15 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -52,14 +55,28 @@ public class SteuerNeu extends AbstractView
 
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
-    buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    
+    Kontenrahmen soll = control.getSteuer().getSteuerKonto().getKontenrahmen();
+    Kontenrahmen ist  = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    
+    boolean canStore = soll.equals(ist);
+    
+    if (!canStore)
+      GUI.getView().setErrorText(i18n.tr("Steuer-Konto ist nicht Teil des aktiven Kontenrahmen und darf daher nicht geändert werden."));
+    
+    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
+    delete.setEnabled(canStore);
+    buttonArea.addButton(delete);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,true);
+    store.setEnabled(canStore);
+    buttonArea.addButton(store);
   }
 
   /**
@@ -72,6 +89,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.14  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.13  2005/08/12 00:10:59  willuhn
  * @B bugfixing
  *

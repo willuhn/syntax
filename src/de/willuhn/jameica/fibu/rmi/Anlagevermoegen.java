@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public interface Anlagevermoegen extends DBObject
    * @return Anschaffungsdatum.
    * @throws RemoteException
    */
-  public Date getAnschaffungsDatum() throws RemoteException;
+  public Date getAnschaffungsdatum() throws RemoteException;
   
   /**
    * Speichert das Anschaffungsdatum.
@@ -81,26 +81,44 @@ public interface Anlagevermoegen extends DBObject
   public void setBuchung(Buchung buchung) throws RemoteException;
   
   /**
-   * Liefert die Laufzeit fuer die Abschreibung in Jahren.
+   * Liefert die Nutzungsdauer fuer die Abschreibung in Jahren.
    * @return Laufzeit in Jahren.
    * @throws RemoteException
    */
-  public int getLaufzeit() throws RemoteException;
+  public int getNutzungsdauer() throws RemoteException;
   
   /**
-   * Speichert die Laufzeit fuer die Abschreibung in Jahren.
-   * @param laufzeit Laufzeit in Jahren.
+   * Speichert die Nutzungsdauer fuer die Abschreibung in Jahren.
+   * @param dauer Nutzungsdauer in Jahren.
    * @throws RemoteException
    */
-  public void setLaufzeit(int laufzeit) throws RemoteException;
+  public void setNutzungsdauer(int dauer) throws RemoteException;
   
   /**
    * Liefert den aktuellen Restwert des Anlagegutes.
+   * Wurde im aktuellen Geschaeftsjahr noch keine Abschreibungsbuchung vorgenommen,
+   * entspricht der Restwert dem Anfangsbestand.
    * @return Restwert.
    * @throws RemoteException
    */
   public double getRestwert() throws RemoteException;
   
+  /**
+   * Liefert die Abschreibung des aktuellen Jahres insofern sie schon gebucht wurde.
+   * @return Abschreibung des aktuellen Geschaeftsjahres oder <code>0.0</code>.
+   * @throws RemoteException
+   */
+  public double getJahresAbschreibung() throws RemoteException;
+
+  /**
+   * Liefert den Anfangsbestand der Anlage.
+   * Das entspricht den Anschaffungskosten abzueglich aller Abschreibungen der
+   * Vorjahre und somit dem Restwert <b>vor</b> der diesjaehrigen Abschreibung.
+   * @return Anfangsbestand im aktuellen Jahr.
+   * @throws RemoteException
+   */
+  public double getAnfangsbestand() throws RemoteException;
+
   /**
    * Liefert den Mandanten.
    * @return Mandant.
@@ -158,11 +176,15 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setAbschreibungskonto(Konto k) throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.4  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

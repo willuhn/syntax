@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,7 +84,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
           throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
         
       if (k.getAnfangsbestand() != null)
-        throw new ApplicationException(i18n.tr("Für das Konto existiert bereits ein Anfangsbestand"));
+        throw new ApplicationException(i18n.tr("Für das Konto {0} existiert bereits ein Anfangsbestand",k.getKontonummer()));
     }
     catch (RemoteException e)
     {
@@ -174,6 +174,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.9  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.8  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

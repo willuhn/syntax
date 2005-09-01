@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 21:37:02 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,11 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
@@ -97,9 +99,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAnschaffungsDatum()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAnschaffungsdatum()
    */
-  public Date getAnschaffungsDatum() throws RemoteException
+  public Date getAnschaffungsdatum() throws RemoteException
   {
     return (Date) getAttribute("anschaffungsdatum");
   }
@@ -129,20 +131,20 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getLaufzeit()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getNutzungsdauer()
    */
-  public int getLaufzeit() throws RemoteException
+  public int getNutzungsdauer() throws RemoteException
   {
-    Integer laufzeit = (Integer) getAttribute("laufzeit");
-    return laufzeit == null ? 0 : laufzeit.intValue();
+    Integer dauer = (Integer) getAttribute("nutzungsdauer");
+    return dauer == null ? 0 : dauer.intValue();
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setLaufzeit(int)
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setNutzungsdauer(int)
    */
-  public void setLaufzeit(int laufzeit) throws RemoteException
+  public void setNutzungsdauer(int dauer) throws RemoteException
   {
-    setAttribute("laufzeit",new Integer(laufzeit));
+    setAttribute("nutzungsdauer",new Integer(dauer));
   }
 
   /**
@@ -201,6 +203,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     DBIterator list = getService().createList(Abschreibung.class);
     list.addFilter("av_id = " + getID());
+    list.setOrder("order by id");
     return list;
   }
   
@@ -218,9 +221,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
       {
         Abschreibung a = (Abschreibung) abschreibungen.next();
         Buchung b = a.getBuchung();
+        a.delete();
         if (b != null)
           b.delete();
-        a.delete();
       }
       
       super.delete();
@@ -251,16 +254,19 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     try
     {
+
       if (getKonto() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Bestandskonto an"));
       if (getAbschreibungskonto() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Aufwandskonto an, auf dem die Abschreibungen gebucht werden"));
-      if (getAnschaffungsDatum() == null)
+      if (getAnschaffungsdatum() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Anschaffungsdatum an"));
       if (getAnschaffungskosten() == 0.0d)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Betrag für die Anschaffungskosten an"));
-      if (getLaufzeit() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Laufzeit (in Jahren) zur Abschreibung an"));
+      if (getNutzungsdauer() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Nutzunsdauer (in Jahren) zur Abschreibung an"));
+      if (getNutzungsdauer() > 99)
+        throw new ApplicationException(i18n.tr("Nutzunsdauer zu gross (max. 99 Jahre)"));
       if (getMandant() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Mandanten an"));
       if (getName() == null || getName().length() == 0)
@@ -293,8 +299,8 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
         if (hasChanged("anschaffungskosten"))
           throw new ApplicationException(i18n.tr("Anschaffungskosten dürfen nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
 
-        if (hasChanged("laufzeit"))
-          throw new ApplicationException(i18n.tr("Laufzeit darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
+        if (hasChanged("nutzungsdauer"))
+          throw new ApplicationException(i18n.tr("Nutzungsdauer darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
 
         if (hasChanged("mandant_id"))
           throw new ApplicationException(i18n.tr("Mandant darf nicht mehr geändert werden, wenn bereits Abschreibungen vorliegen"));
@@ -368,11 +374,41 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     setAttribute("k_abschreibung_id",k);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getJahresAbschreibung()
+   */
+  public double getJahresAbschreibung() throws RemoteException
+  {
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+
+    DBIterator abschreibungen = getAbschreibungen();
+    while (abschreibungen.hasNext())
+    {
+      Abschreibung a = (Abschreibung) abschreibungen.next();
+      Buchung b = a.getBuchung();
+      Date date = b.getDatum();
+      if (date.after(jahr.getBeginn()) && date.before(jahr.getEnde()))
+        return b.getBetrag();
+    }
+    return 0.0d;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAnfangsbestand()
+   */
+  public double getAnfangsbestand() throws RemoteException
+  {
+    return getRestwert() + getJahresAbschreibung();
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.5  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.4  2005/08/29 21:37:02  willuhn
  * *** empty log message ***
  *

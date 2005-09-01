@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/SaldenExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public class SaldenExport extends BaseAction
     {
       // Liste der Konten ermitteln
       ArrayList list = new ArrayList();
-      DBIterator i = de.willuhn.jameica.fibu.Settings.getDBService().createList(Konto.class);
+      DBIterator i = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
       while (i.hasNext())
       {
         Konto k = (Konto) i.next();
@@ -129,6 +129,9 @@ public class SaldenExport extends BaseAction
 
 /*********************************************************************
  * $Log: SaldenExport.java,v $
+ * Revision 1.4  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

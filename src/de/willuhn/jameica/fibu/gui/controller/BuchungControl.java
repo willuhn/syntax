@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.43 $
- * $Date: 2005/09/01 21:18:01 $
+ * $Revision: 1.44 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -379,6 +380,8 @@ public class BuchungControl extends AbstractControl
   public void handleStore(boolean startNew)
   {
     try {
+      
+      Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
 
       //////////////////////////////////////////////////////////////////////////
       // Belegnummer checken
@@ -463,7 +466,7 @@ public class BuchungControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Soll-Konto ein."));
         return;
       }
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
+      DBIterator konten = kr.getKonten();
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
@@ -483,7 +486,7 @@ public class BuchungControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Haben-Konto ein."));
         return;
       }
-      konten = Settings.getDBService().createList(Konto.class);
+      konten = kr.getKonten();
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
@@ -500,6 +503,7 @@ public class BuchungControl extends AbstractControl
 			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
 
       // und jetzt speichern wir.
+      getBuchung().transactionBegin();
 			getBuchung().store();
       
       if (((Boolean)getAnlageVermoegen().getValue()).booleanValue())
@@ -518,7 +522,7 @@ public class BuchungControl extends AbstractControl
           GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
           return;
         }
-        konten = Settings.getDBService().createList(Konto.class);
+        konten = kr.getKonten();
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
         {
@@ -534,7 +538,7 @@ public class BuchungControl extends AbstractControl
         av.setBuchung(getBuchung());
         av.setKonto(getBuchung().getSollKonto());
         av.setName(getBuchung().getText());
-        av.setLaufzeit(laufzeit);
+        av.setNutzungsdauer(laufzeit);
         av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
         av.store();
         
@@ -544,6 +548,7 @@ public class BuchungControl extends AbstractControl
       {
         GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
       }
+      getBuchung().transactionCommit();
 
       if (startNew)
         new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
@@ -551,10 +556,26 @@ public class BuchungControl extends AbstractControl
     }
     catch (ApplicationException e1)
     {
+      try
+      {
+        getBuchung().transactionRollback();
+      }
+      catch (RemoteException e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
       GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (RemoteException e)
     {
+      try
+      {
+        getBuchung().transactionRollback();
+      }
+      catch (RemoteException e2)
+      {
+        Logger.error("unable to rollback transaction",e2);
+      }
 			Logger.error("unable to store buchung",e);
       GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
     }
@@ -623,7 +644,7 @@ public class BuchungControl extends AbstractControl
           return;
         }
 
-        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
         {
@@ -745,6 +766,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.44  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.43  2005/09/01 21:18:01  willuhn
  * *** empty log message ***
  *

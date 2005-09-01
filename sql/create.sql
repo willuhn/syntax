@@ -105,7 +105,7 @@ CREATE TABLE anlagevermoegen (
   k_abschreibung_id int(10) NOT NULL,
   konto_id int(10) NULL,
   buchung_id int(10) NULL,
-  laufzeit int(2) NOT NULL,
+  nutzungsdauer int(2) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

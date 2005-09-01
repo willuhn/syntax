@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/09/01 21:18:01 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,6 +147,7 @@ public class KontoList extends TablePart
                   // Wir holen uns den aktuellen Text
                   String text = (String) search.getValue();
                   if (text.length() == 0) text = null;
+                  if (text != null) text = text.toLowerCase();
 
                   boolean checkSaldo = ((Boolean)filter.getValue()).booleanValue();
 
@@ -169,7 +170,7 @@ public class KontoList extends TablePart
                       continue;
                     }
                     
-                    if (name.indexOf(text) != -1)
+                    if (name.toLowerCase().indexOf(text) != -1)
                       addItem(k);
                     
                   }
@@ -218,6 +219,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.9  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.8  2005/09/01 21:18:01  willuhn
  * *** empty log message ***
  *

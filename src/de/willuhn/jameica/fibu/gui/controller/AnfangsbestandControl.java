@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/01 21:18:01 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,7 +175,7 @@ public class AnfangsbestandControl extends AbstractControl
         GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
         return;
       }
-      DBIterator konten = Settings.getDBService().createList(Konto.class);
+      DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
       {
@@ -204,6 +204,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.4  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.3  2005/09/01 21:18:01  willuhn
  * *** empty log message ***
  *

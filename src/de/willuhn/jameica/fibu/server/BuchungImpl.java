@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.37 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,11 +144,44 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
       return new Double(this.getBetrag());
     return super.getAttribute(arg0);
   }
+
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    try
+    {
+      transactionBegin();
+      DBIterator i = getHilfsBuchungen();
+      while (i.hasNext())
+      {
+        HilfsBuchung b = (HilfsBuchung) i.next();
+        b.delete();
+      }
+      super.delete();
+      transactionCommit();
+    }
+    catch (RemoteException e)
+    {
+      transactionRollback();
+      throw e;
+    }
+    catch (ApplicationException ae)
+    {
+      transactionRollback();
+      throw ae;
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.37  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.36  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

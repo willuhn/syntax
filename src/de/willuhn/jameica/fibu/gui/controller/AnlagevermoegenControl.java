@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/01 21:18:01 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/01 23:07:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,7 +164,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.datum != null)
       return this.datum;
     
-    Date date = getAnlagevermoegen().getAnschaffungsDatum();
+    Date date = getAnlagevermoegen().getAnschaffungsdatum();
     if (date == null)
       date = new Date();
     CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
@@ -200,7 +200,7 @@ public class AnlagevermoegenControl extends AbstractControl
   {
     if (this.laufzeit != null)
       return this.laufzeit;
-    this.laufzeit = new IntegerInput(getAnlagevermoegen().getLaufzeit());
+    this.laufzeit = new IntegerInput(getAnlagevermoegen().getNutzungsdauer());
     if (!getAnlagevermoegen().canChange())
     {
       this.laufzeit.disable();
@@ -310,7 +310,7 @@ public class AnlagevermoegenControl extends AbstractControl
           GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Bestandskonto ein."));
           return;
         }
-        DBIterator konten = Settings.getDBService().createList(Konto.class);
+        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
         {
@@ -329,7 +329,7 @@ public class AnlagevermoegenControl extends AbstractControl
           GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
           return;
         }
-        konten = Settings.getDBService().createList(Konto.class);
+        konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
         {
@@ -342,7 +342,7 @@ public class AnlagevermoegenControl extends AbstractControl
 
         a.setAnschaffungsDatum((Date) getDatum().getValue());
         a.setAnschaffungskosten(((Double)getKosten().getValue()).doubleValue());
-        a.setLaufzeit(((Integer)getLaufzeit().getValue()).intValue());
+        a.setNutzungsdauer(((Integer)getLaufzeit().getValue()).intValue());
       }
       a.store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gespeichert"));
@@ -362,6 +362,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.7  2005/09/01 23:07:17  willuhn
+ * @B bugfixing
+ *
  * Revision 1.6  2005/09/01 21:18:01  willuhn
  * *** empty log message ***
  *
