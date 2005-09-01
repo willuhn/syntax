@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/01 16:34:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -29,7 +28,7 @@ import de.willuhn.util.I18N;
 /**
  * Action zum Anlegen eines neuen Geschaeftsjahres.
  */
-public class GeschaeftsjahrNeu implements Action
+public class GeschaeftsjahrNeu extends BaseAction
 {
 
   /**
@@ -37,6 +36,12 @@ public class GeschaeftsjahrNeu implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     Geschaeftsjahr jahr = null;
@@ -78,6 +83,9 @@ public class GeschaeftsjahrNeu implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.6  2005/09/01 16:34:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

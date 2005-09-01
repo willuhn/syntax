@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoDelete;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
@@ -26,6 +27,7 @@ import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -46,7 +48,17 @@ public class KontoNeu extends AbstractView
 
     final KontoControl control = new KontoControl(this);
 
-		GUI.getView().setTitle(i18n.tr("Konto bearbeiten"));
+    String kr = i18n.tr("unbekannt");
+    try
+    {
+      kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getName();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while reading kr",e);
+    }
+
+    GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
     Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
 
@@ -83,6 +95,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.14  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 21:44:09 $
+ * $Revision: 1.2 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -26,7 +25,7 @@ import de.willuhn.util.I18N;
 /**
  * Action zum Loeschen eines Anfangsbestandes.
  */
-public class AnfangsbestandDelete implements Action
+public class AnfangsbestandDelete extends BaseAction
 {
 
   /**
@@ -34,6 +33,12 @@ public class AnfangsbestandDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     if (context == null || !(context instanceof Anfangsbestand))
       return;
     
@@ -66,6 +71,9 @@ public class AnfangsbestandDelete implements Action
 
 /*********************************************************************
  * $Log: AnfangsbestandDelete.java,v $
+ * Revision 1.2  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/22 21:44:09  willuhn
  * @N Anfangsbestaende
  *

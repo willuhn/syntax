@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.2 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,13 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Action zum Laden der Anfangsbestaende.
  */
-public class AnfangsbestandListe implements Action
+public class AnfangsbestandListe extends BaseAction
 {
 
   /**
@@ -28,6 +27,11 @@ public class AnfangsbestandListe implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
     GUI.startView(de.willuhn.jameica.fibu.gui.views.AnfangsbestandListe.class,context);
   }
 
@@ -36,6 +40,9 @@ public class AnfangsbestandListe implements Action
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
+ * Revision 1.2  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

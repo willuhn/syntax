@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/SaldenExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/30 23:15:32 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -40,7 +39,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer die Summen- und Saldenliste.
  */
-public class SaldenExport implements Action
+public class SaldenExport extends BaseAction
 {
 
   /**
@@ -48,6 +47,12 @@ public class SaldenExport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
@@ -124,6 +129,9 @@ public class SaldenExport implements Action
 
 /*********************************************************************
  * $Log: SaldenExport.java,v $
+ * Revision 1.3  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/30 23:15:32  willuhn
  * *** empty log message ***
  *

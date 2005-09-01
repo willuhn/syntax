@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandNeu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -27,7 +26,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action zum Anlegen eines neuen Anfangsbestandes.
  */
-public class AnfangsbestandNeu implements Action
+public class AnfangsbestandNeu extends BaseAction
 {
 
   /**
@@ -35,6 +34,12 @@ public class AnfangsbestandNeu implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     Anfangsbestand a = null;
     if (context != null)
     {
@@ -76,6 +81,9 @@ public class AnfangsbestandNeu implements Action
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.3  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

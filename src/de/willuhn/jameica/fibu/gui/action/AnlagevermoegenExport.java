@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 22:44:05 $
+ * $Revision: 1.2 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -40,7 +39,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer Uebersicht des Anlagevermoegens.
  */
-public class AnlagevermoegenExport implements Action
+public class AnlagevermoegenExport extends BaseAction
 {
 
   /**
@@ -48,6 +47,12 @@ public class AnlagevermoegenExport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     // TODO: Einzeluebersicht fehlt noch
@@ -124,6 +129,9 @@ public class AnlagevermoegenExport implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.2  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/08/29 22:44:05  willuhn
  * @N added templates
  *

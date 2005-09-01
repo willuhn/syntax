@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -38,7 +37,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer Konten.
  */
-public class KontoExport implements Action
+public class KontoExport extends BaseAction
 {
 
   /**
@@ -46,6 +45,12 @@ public class KontoExport implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
+    if (!check())
+    {
+      super.handleAction(context);
+      return;
+    }
+
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     if (context == null)
@@ -128,6 +133,9 @@ public class KontoExport implements Action
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.4  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/28 01:08:03  willuhn
  * @N buchungsjournal
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/29 22:44:05 $
+ * $Revision: 1.16 $
+ * $Date: 2005/09/01 16:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.action.SaldenExport;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
@@ -22,6 +23,7 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -40,7 +42,16 @@ public class KontoListe extends AbstractView
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-    GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten"));
+    String kr = i18n.tr("unbekannt");
+    try
+    {
+      kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getName();
+    }
+    catch (Exception e)
+    {
+      Logger.error("error while reading kr",e);
+    }
+    GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten. Kontenrahmen: {0}",kr));
 
     Part p = new KontoList(new KontoNeu());
     p.paint(getParent());
@@ -63,6 +74,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.16  2005/09/01 16:34:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/08/29 22:44:05  willuhn
  * @N added templates
  *
