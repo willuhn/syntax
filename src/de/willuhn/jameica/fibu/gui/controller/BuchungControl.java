@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.44 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.45 $
+ * $Date: 2005/09/02 11:26:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,7 +124,9 @@ public class BuchungControl extends AbstractControl
       {
         if (event == null || event.data == null)
           return;
-        datum.setText(Fibu.DATEFORMAT.format((Date)event.data));
+        String s = Fibu.DATEFORMAT.format((Date)event.data);
+        datum.setText(s);
+        datum.setValue(s);
       }
     });
     String s = Fibu.DATEFORMAT.format(d);
@@ -429,7 +431,8 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
-      String d = (String) getDatum().getValue();
+      Object o = getDatum().getValue();
+      String d = o.toString();
       try {
 				getBuchung().setDatum(Fibu.DATEFORMAT.parse(d));
       }
@@ -537,9 +540,9 @@ public class BuchungControl extends AbstractControl
         av.setAnschaffungskosten(getBuchung().getBetrag());
         av.setBuchung(getBuchung());
         av.setKonto(getBuchung().getSollKonto());
-        av.setName(getBuchung().getText());
-        av.setNutzungsdauer(laufzeit);
-        av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+        // av.setName(getBuchung().getText());
+        // av.setNutzungsdauer(laufzeit);
+        // av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
         av.store();
         
         GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} und Anlagevermögen gespeichert.",""+getBuchung().getBelegnummer()));
@@ -566,7 +569,7 @@ public class BuchungControl extends AbstractControl
       }
       GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
-    catch (RemoteException e)
+    catch (Throwable t)
     {
       try
       {
@@ -576,7 +579,7 @@ public class BuchungControl extends AbstractControl
       {
         Logger.error("unable to rollback transaction",e2);
       }
-			Logger.error("unable to store buchung",e);
+			Logger.error("unable to store buchung",t);
       GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
     }
     
@@ -753,7 +756,9 @@ public class BuchungControl extends AbstractControl
 				return;
 			try
       {
-        getDatum().setText(Fibu.DATEFORMAT.format(d));
+        String s = Fibu.DATEFORMAT.format(d);
+        getDatum().setText(s);
+        getDatum().setValue(s);
         getDatum().setComment(i18n.tr(Fibu.WEEKDAYS[i]));
       }
       catch (RemoteException e1)
@@ -766,6 +771,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.45  2005/09/02 11:26:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.44  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *
