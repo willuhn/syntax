@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.37 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.38 $
+ * $Date: 2005/09/02 11:26:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,9 +76,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
           hbs[i].store();
         }
       }
-      
-      // TODO: Ggf. Anlagevermoegen anlegen/aendern!
-
       transactionCommit();
     }
     catch (RemoteException e)
@@ -179,6 +176,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.38  2005/09/02 11:26:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.37  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *
