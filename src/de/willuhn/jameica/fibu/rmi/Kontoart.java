@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontoart.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,12 +31,12 @@ public interface Kontoart extends DBObject
   /**
    * Konto-Art Einnahme.
    */
-  public final static int KONTOART_EINNAHME   = 1; // E
+  public final static int KONTOART_ERLOES     = 1; // E
   
   /**
    * Konto-Art Ausgabe.
    */
-  public final static int KONTOART_AUSGABE    = 2; // A
+  public final static int KONTOART_AUFWAND    = 2; // A
   
   /**
    * Konto-Art Geld-Konto.
@@ -83,6 +83,10 @@ public interface Kontoart extends DBObject
 
 /*********************************************************************
  * $Log: Kontoart.java,v $
+ * Revision 1.7  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.6  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

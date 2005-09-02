@@ -1,2 +1,74 @@
 #set($eur = $!{mandant.Waehrung})
+
 #set($geschaeftsjahr = $!{export.getObjects("geschaeftsjahr")})
+#set($ergebnis       = $!{geschaeftsjahr.Betriebsergebnis})
+#set($einnahmen      = $!{ergebnis.Einnahmen})
+#set($ausgaben       = $!{ergebnis.Ausgaben})
+
+<h1>I. Aufteilung der Beträge nach Konten:</h1>
+
+$math.reset("einnahmen")
+$math.reset("ausgaben")
+
+<table class="data">
+  <tr>
+    <th>Kto-Nr.</th>
+    <th style="width:70%">Konto-Bezeichnung</th>
+    <th style="text-align:right">Einnahmen</th>
+    <th style="text-align:right">Ausgaben</th>
+  </tr>
+
+  #foreach($konto in $einnahmen)
+
+    #set($umsatz = $konto.Umsatz)
+    $math.add("einnahmen",${umsatz})
+
+    <tr>
+      <td>$!{konto.Kontonummer}</td>
+      <td>$!{konto.Name}</td>
+      <td style="text-align:right">$!{decimalformat.format(${umsatz})} ${eur}</td>
+      <td>&nbsp;</td>
+    </tr>
+
+  #end
+
+  #foreach($konto in $ausgaben)
+
+    #set($umsatz = $konto.Umsatz)
+    $math.add("ausgaben",${umsatz})
+
+    <tr>
+      <td>$!{konto.Kontonummer}</td>
+      <td>$!{konto.Name}</td>
+      <td>&nbsp;</td>
+      <td style="text-align:right">$!{decimalformat.format(${umsatz})} ${eur}</td>
+    </tr>
+
+  #end
+
+  <tr>
+    <td colspan="2" style="border-top:1px solid #000000">Summen:</td>
+    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("einnahmen"))} ${eur}</td>
+    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ausgaben"))} ${eur}</td>
+  </tr>
+</table>
+
+<h1>II.Ergebnis:</h1>
+
+<table class="data">
+  <tr>
+    <td>Betriebseinnahmen</td>
+    <td style="text-align:right">$!{decimalformat.format($math.get("einnahmen"))} ${eur}</td>
+  </tr>
+  <tr>
+    <td>- Betriebsausgaben</td>
+    <td style="text-align:right">$!{decimalformat.format($math.get("ausgaben"))} ${eur}</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="border-top:1px solid #000000;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td style="border-bottom:1px solid #000000;">Ergebnis</td>
+    <td style="border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($ergebnis.Betriebsergebnis)} ${eur}</td>
+  </tr>
+</table>

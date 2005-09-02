@@ -1,17 +1,20 @@
-INSERT INTO kontoart (id, name) VALUES (1, 'Einnahmen');
-INSERT INTO kontoart (id, name) VALUES (2, 'Ausgaben');
+INSERT INTO kontoart (id, name) VALUES (1, 'Erlöse');
+INSERT INTO kontoart (id, name) VALUES (2, 'Aufwände');
 INSERT INTO kontoart (id, name) VALUES (3, 'Geldkonto');
 INSERT INTO kontoart (id, name) VALUES (4, 'Anlagevermögen');
 INSERT INTO kontoart (id, name) VALUES (5, 'Privatkonto');
 INSERT INTO kontoart (id, name) VALUES (6, 'Steuer-Sammelkonto');
 
+INSERT INTO kontotyp (id, name) VALUES (1, 'Einnahmen');
+INSERT INTO kontotyp (id, name) VALUES (2, 'Ausgaben');
+
 INSERT INTO kontenrahmen (id,name) VALUES (1,'SKR 03');
 INSERT INTO kontenrahmen (id,name) VALUES (2,'SKR 04');
 
 -- Steuerkonten SKR03
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1, 6, '1570', 'Abziehbare Vorsteuer', 1, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (2, 6, '1571', 'Abziehbare Vorsteuer 7 %', 1, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (3, 6, '1770', 'Umsatzsteuer', 1, NULL);
+INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1, 6, 1, '1570', 'Abziehbare Vorsteuer', 1, NULL);
+INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (2, 6, 1, '1571', 'Abziehbare Vorsteuer 7 %', 1, NULL);
+INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (3, 6, 2, '1770', 'Umsatzsteuer', 1, NULL);
 
 -- Steuern SKR03
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 1);
@@ -137,9 +140,9 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 
 
 -- Steuerkonten SKR04
-INSERT INTO konto (id,kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1001, 6, '1400', 'Abziehbare Vorsteuer', 2, NULL);
-INSERT INTO konto (id,kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1002, 6, '1401', 'Abziehbare Vorsteuer 7 %', 2, NULL);
-INSERT INTO konto (id,kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1003, 6, '3800', 'Umsatzsteuer', 2, NULL);
+INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1001, 6, 1, '1400', 'Abziehbare Vorsteuer', 2, NULL);
+INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1002, 6, 1, '1401', 'Abziehbare Vorsteuer 7 %', 2, NULL);
+INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1003, 6, 2, '3800', 'Umsatzsteuer', 2, NULL);
 
 -- Steuern SKR04
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1001,'Vorsteuer 16%', '16', 1001);

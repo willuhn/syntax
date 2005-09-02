@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.47 $
- * $Date: 2005/09/02 13:27:35 $
+ * $Revision: 1.48 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -299,7 +299,7 @@ public class BuchungControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUSGABE);
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
@@ -756,6 +756,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.48  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.47  2005/09/02 13:27:35  willuhn
  * @C transaction behavior
  *

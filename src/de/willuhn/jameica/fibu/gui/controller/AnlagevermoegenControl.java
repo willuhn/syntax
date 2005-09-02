@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -263,7 +263,7 @@ public class AnlagevermoegenControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUSGABE);
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
@@ -362,6 +362,10 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.8  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.7  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/09/01 21:08:41 $
+ * $Revision: 1.30 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -39,6 +40,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
 {
   // Cachen wir der Performance wegen
   private final static Session kontoArtCache     = new Session();
+  private final static Session kontoTypCache     = new Session();
   private final static Session kontenRahmenCache = new Session();
   
   /**
@@ -334,6 +336,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return getKontenrahmen();
     if ("kontoart_id".equals(arg0))
       return getKontoArt();
+    if ("kontotyp_id".equals(arg0))
+      return getKontoTyp();
     return super.getAttribute(arg0);
   }
 
@@ -346,6 +350,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
     int art = Kontoart.KONTOART_UNGUELTIG;
     if (ka != null)
       art = ka.getKontoArt();
+    // TODO Solange Steuer-Buchungen nur automatisch als Hilfsbuchungen erzeugt werden, ist
+    // das ok. Falls Steuer-Buchungen aber manuell als Hauptbuchungen angelegt werden,
+    // muessen bei KONTOART_STEUR zwei Listen erzeugt werden. Eine, mit den Hilfsbuchungen,
+    // die andere mit den Hauptbuchungen.
     DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
     list.addFilter(" (sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
     list.setOrder("order by tonumber(datum)");
@@ -378,10 +386,39 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return null;
     return (Anfangsbestand) ab.next();
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getKontoTyp()
+   */
+  public Kontotyp getKontoTyp() throws RemoteException
+  {
+    Integer i = (Integer) super.getAttribute("kontotyp_id");
+    if (i == null)
+      return null;
+    Kontotyp kt = (Kontotyp) kontoTypCache.get(i);
+    if (kt == null)
+    {
+      kt = (Kontotyp) getService().createObject(Kontotyp.class,i.toString());
+      kontoTypCache.put(i,kt);
+    }
+    return kt;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setKontoTyp(de.willuhn.jameica.fibu.rmi.Kontotyp)
+   */
+  public void setKontoTyp(Kontotyp typ) throws RemoteException
+  {
+    setAttribute("kontotyp_id",typ == null ? null : new Integer(typ.getID()));
+  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.30  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.29  2005/09/01 21:08:41  willuhn
  * *** empty log message ***
  *

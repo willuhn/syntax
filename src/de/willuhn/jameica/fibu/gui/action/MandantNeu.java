@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/01 23:28:16 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,8 +12,6 @@
  **********************************************************************/
 
 package de.willuhn.jameica.fibu.gui.action;
-
-import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -52,6 +50,10 @@ public class MandantNeu implements Action
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.5  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.4  2005/09/01 23:28:16  willuhn
  * *** empty log message ***
  *

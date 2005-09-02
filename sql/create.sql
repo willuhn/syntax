@@ -18,6 +18,7 @@ CREATE TABLE steuer (
 CREATE TABLE konto (
   id NUMERIC default UNIQUEKEY('konto'),
   kontoart_id int(10) NOT NULL,
+  kontotyp_id int(10) NULL,
   kontonummer varchar(4) NOT NULL,
   name varchar(255) NOT NULL,
   kontenrahmen_id int(10) NOT NULL,
@@ -65,6 +66,14 @@ CREATE TABLE finanzamt (
 
 CREATE TABLE kontoart (
   id NUMERIC default UNIQUEKEY('kontoart'),
+  name varchar(255) NOT NULL,
+  UNIQUE (id),
+  UNIQUE (name),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE kontotyp (
+  id NUMERIC default UNIQUEKEY('kontotyp'),
   name varchar(255) NOT NULL,
   UNIQUE (id),
   UNIQUE (name),
@@ -126,6 +135,7 @@ ALTER TABLE steuer ADD CONSTRAINT fk_steuer_konto FOREIGN KEY (steuerkonto_id) R
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kontoart FOREIGN KEY (kontoart_id) REFERENCES kontoart (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_konto_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id) DEFERRABLE;
+ALTER TABLE konto ADD CONSTRAINT fk_konto_kontotyp FOREIGN KEY (kontotyp_id) REFERENCES kontotyp (id) DEFERRABLE;
 
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;

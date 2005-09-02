@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/08/30 23:15:32 $
+ * $Revision: 1.15 $
+ * $Date: 2005/09/02 17:35:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,6 +74,12 @@ public interface Konto extends DBObject
    */
   public Steuer getSteuer() throws RemoteException;
 
+  /**
+   * Liefert den Typ des Kontos.
+   * @return Typ des Kontos oder <code>null</code> wenn kein Typ angegeben ist.
+   * @throws RemoteException
+   */
+  public Kontotyp getKontoTyp() throws RemoteException;
 
 
 
@@ -99,11 +105,18 @@ public interface Konto extends DBObject
   public void setName(String name) throws RemoteException;
 
   /**
-   * Setzt den Typ des Kontos.
+   * Speichert die Art des Kontos.
    * @param art Art des Kontos.
    * @throws RemoteException
    */
   public void setKontoArt(Kontoart art) throws RemoteException;
+
+  /**
+   * Setzt den Typ des Kontos.
+   * @param typ Typ des Kontos.
+   * @throws RemoteException
+   */
+  public void setKontoTyp(Kontotyp typ) throws RemoteException;
 
   /**
    * Setzt den Steuersatz des Kontos.
@@ -137,6 +150,10 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.15  2005/09/02 17:35:07  willuhn
+ * @N Kontotyp
+ * @N Betriebsergebnis
+ *
  * Revision 1.14  2005/08/30 23:15:32  willuhn
  * *** empty log message ***
  *
