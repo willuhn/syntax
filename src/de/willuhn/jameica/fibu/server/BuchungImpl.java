@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.38 $
- * $Date: 2005/09/02 11:26:41 $
+ * $Revision: 1.39 $
+ * $Date: 2005/09/02 13:27:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,6 +87,12 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     {
       transactionRollback();
       throw ae;
+    }
+    catch (Throwable t)
+    {
+      transactionBegin();
+      Logger.error("error while saving buchung",t);
+      throw new RemoteException(i18n.tr("Fehler beim Speichern der Buchung"));
     }
   }
 
@@ -176,6 +182,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.39  2005/09/02 13:27:35  willuhn
+ * @C transaction behavior
+ *
  * Revision 1.38  2005/09/02 11:26:41  willuhn
  * *** empty log message ***
  *

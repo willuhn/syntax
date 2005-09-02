@@ -80,6 +80,7 @@ CREATE TABLE mandant (
   plz varchar(7) NOT NULL,
   ort varchar(255) NOT NULL,
   steuernummer varchar(100) NOT NULL,
+  waehrung varchar(10) NULL,
   finanzamt_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)

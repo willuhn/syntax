@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.46 $
- * $Date: 2005/09/02 11:26:54 $
+ * $Revision: 1.47 $
+ * $Date: 2005/09/02 13:27:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -382,6 +382,8 @@ public class BuchungControl extends AbstractControl
   public void handleStore(boolean startNew)
   {
     try {
+
+      getBuchung().transactionBegin();
       
       Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
 
@@ -393,8 +395,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set belegnummer",e);
-        GUI.getView().setErrorText(i18n.tr("Belegnummer ungültig."));
-        return;
+        throw new ApplicationException(i18n.tr("Belegnummer ungültig."));
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -407,8 +408,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set betrag",e);
-        GUI.getView().setErrorText(i18n.tr("Betrag ungültig."));
-        return;
+        throw new ApplicationException(i18n.tr("Betrag ungültig."));
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -422,8 +422,7 @@ public class BuchungControl extends AbstractControl
       catch (Exception e)
       {
         Logger.error("unable to set steuer",e);
-        GUI.getView().setErrorText(i18n.tr("Steuersatz ungültig."));
-        return;
+        throw new ApplicationException(i18n.tr("Steuersatz ungültig."));
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -452,8 +451,7 @@ public class BuchungControl extends AbstractControl
           }
           catch (ParseException e3)
           {
-            GUI.getView().setErrorText(i18n.tr("Datum ungültig."));
-            return;
+            throw new ApplicationException(i18n.tr("Datum ungültig."));
           }
         }
       }
@@ -465,17 +463,13 @@ public class BuchungControl extends AbstractControl
       
       String s = (String) getSollKontoAuswahl().getText();
       if (s == null || s.length() == 0)
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Soll-Konto ein."));
-        return;
-      }
+        throw new ApplicationException(i18n.tr("Bitten geben Sie ein Soll-Konto ein."));
+
       DBIterator konten = kr.getKonten();
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
-      {
-        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-        return;
-      }
+        throw new ApplicationException(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+
       getBuchung().setSollKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
@@ -485,17 +479,13 @@ public class BuchungControl extends AbstractControl
       
       s = (String) getHabenKontoAuswahl().getText();
       if (s == null || s.length() == 0)
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Haben-Konto ein."));
-        return;
-      }
+        throw new ApplicationException(i18n.tr("Bitten geben Sie ein Haben-Konto ein."));
+
       konten = kr.getKonten();
       konten.addFilter("kontonummer = '" + s + "'");
       if (!konten.hasNext())
-      {
-        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-        return;
-      }
+        throw new ApplicationException(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+
       getBuchung().setHabenKonto((Konto) konten.next());
       //
       //////////////////////////////////////////////////////////////////////////
@@ -506,7 +496,6 @@ public class BuchungControl extends AbstractControl
 			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
 
       // und jetzt speichern wir.
-      getBuchung().transactionBegin();
 			getBuchung().store();
       
       if (((Boolean)getAnlageVermoegen().getValue()).booleanValue())
@@ -521,17 +510,13 @@ public class BuchungControl extends AbstractControl
         // Abschreibungskonto checken
         s = (String) getAbschreibungsKonto().getText();
         if (s == null || s.length() == 0)
-        {
-          GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
-          return;
-        }
+          throw new ApplicationException(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
+
         konten = kr.getKonten();
         konten.addFilter("kontonummer = '" + s + "'");
         if (!konten.hasNext())
-        {
-          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-          return;
-        }
+          throw new ApplicationException(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+
         av.setAbschreibungskonto((Konto) konten.next());
         //
         //////////////////////////////////////////////////////////////////////////
@@ -771,6 +756,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.47  2005/09/02 13:27:35  willuhn
+ * @C transaction behavior
+ *
  * Revision 1.46  2005/09/02 11:26:54  willuhn
  * *** empty log message ***
  *
