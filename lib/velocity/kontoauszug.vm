@@ -29,7 +29,7 @@
       <th>Gegenkonto</th>
     </tr>
 
-    #set($buchungen      = $konto.BuchungList)
+    #set($buchungen = $!{export.getObjects("buchungen.${konto.Kontonummer}")})
     #foreach($buchung in $buchungen)
 
       #set($brutto  = $buchung.Betrag)

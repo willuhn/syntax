@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/09/02 13:27:35 $
+ * $Revision: 1.19 $
+ * $Date: 2005/09/04 23:10:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,21 +175,22 @@ public class BuchungsEngine
     catch (RemoteException e)
     {
       jahr.transactionRollback();
-      Settings.setActiveGeschaeftsjahr(jahr);
       throw e;
     }
     catch (ApplicationException ae)
     {
       jahr.transactionRollback();
-      Settings.setActiveGeschaeftsjahr(jahr);
       throw ae;
     }
     catch (Throwable t)
     {
       jahr.transactionRollback();
-      Settings.setActiveGeschaeftsjahr(jahr);
       Logger.error("error while closing gj");
       throw new RemoteException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
+    }
+    finally
+    {
+      Settings.setActiveGeschaeftsjahr(jahr);
     }
     
     
@@ -263,6 +264,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.19  2005/09/04 23:10:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/09/02 13:27:35  willuhn
  * @C transaction behavior
  *

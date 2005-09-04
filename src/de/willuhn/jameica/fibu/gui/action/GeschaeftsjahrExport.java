@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/GeschaeftsjahrExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/04 23:10:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class GeschaeftsjahrExport extends BaseAction
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
-    fd.setFileName(i18n.tr("fibu-uebershussrechnung-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
+    fd.setFileName(i18n.tr("fibu-ueberschussrechnung-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
     String s = fd.open();
     
     Settings settings = new Settings(this.getClass());
@@ -118,6 +118,9 @@ public class GeschaeftsjahrExport extends BaseAction
 
 /*********************************************************************
  * $Log: GeschaeftsjahrExport.java,v $
+ * Revision 1.3  2005/09/04 23:10:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

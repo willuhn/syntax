@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/04 23:10:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,14 +16,16 @@ package de.willuhn.jameica.fibu.gui.action;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.Vector;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
-import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -54,23 +56,11 @@ public class KontoExport extends BaseAction
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     if (context == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens einen Datensatz aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens ein Konto aus"));
 
-    if (!(context instanceof GenericObject) && !(context instanceof GenericObject[]))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Datensätze aus"));
+    if (!(context instanceof Konto) && !(context instanceof Konto[]))
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein oder mehrere Konten aus"));
 
-    GenericObject[] o = null;
-
-    if (context instanceof GenericObject)
-    {
-      o = new GenericObject[1];
-      o[0] = (GenericObject) context;
-    }
-    else if (context instanceof GenericObject[])
-    {
-      o = (GenericObject[]) context;
-    }
-  
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
     fd.setFileName(i18n.tr("fibu-kontoauszug-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
@@ -109,7 +99,29 @@ public class KontoExport extends BaseAction
     try
     {
       Export export = new Export();
-      export.addObject("konten",o);
+
+      Konto[] k = null;
+      if (context instanceof Konto)
+      {
+        k = new Konto[1];
+        k[0] = (Konto) context;
+      }
+      else if (context instanceof Konto[])
+      {
+        k = (Konto[]) context;
+      }
+      export.addObject("konten",k);
+      
+      for (int i=0;i<k.length;++i)
+      {
+        Vector buchungen = new Vector();
+        DBIterator list = k[i].getBuchungen();
+        while (list.hasNext())
+        {
+          buchungen.add(list.next());
+        }
+        export.addObject("buchungen." + k[i].getKontonummer(),buchungen);
+      }
       export.setTarget(new FileOutputStream(file));
       export.setTitle(i18n.tr("Konto-Auszug"));
       export.setTemplate("kontoauszug.vm");
@@ -133,6 +145,9 @@ public class KontoExport extends BaseAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.5  2005/09/04 23:10:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

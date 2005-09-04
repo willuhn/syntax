@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BetriebsergebnisImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.2 $
+ * $Date: 2005/09/04 23:10:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,7 +30,6 @@ import de.willuhn.jameica.fibu.rmi.Kontotyp;
 public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betriebsergebnis
 {
 
-  // TODO: Das muss pro Geschaeftsjahr gehen!
   /**
    * ct.
    * @throws RemoteException
@@ -83,8 +82,18 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
    */
   public double getBetriebsergebnis() throws RemoteException
   {
-    // TODO Auto-generated method stub
-    return 0;
+    double ergebnis = 0.0d;
+    Konto[] einnamen = getEinnahmen();
+    for (int i=0;i<einnamen.length;++i)
+    {
+      ergebnis += einnamen[i].getUmsatz();
+    }
+    Konto[] ausgaben = getAusgaben();
+    for (int i=0;i<ausgaben.length;++i)
+    {
+      ergebnis -= ausgaben[i].getUmsatz();
+    }
+    return ergebnis;
   }
 
 }
@@ -92,6 +101,9 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
 
 /*********************************************************************
  * $Log: BetriebsergebnisImpl.java,v $
+ * Revision 1.2  2005/09/04 23:10:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

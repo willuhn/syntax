@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.23 $
+ * $Date: 2005/09/04 23:10:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -103,18 +104,30 @@ public class Settings
 
   	try
     {
+      boolean ask = true;
       inProgress = true;
       String id = settings.getString("gj.active",null);
+
       if (id != null)
       {
-        jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,id);
+        try
+        {
+          jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,id);
+          ask = false;
+        }
+        catch (ObjectNotFoundException oe)
+        {
+          // ignore
+        }
       }
-      else
+
+      if (ask)
       {
         Logger.info("open gj select dialog");
         GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
         jahr = (Geschaeftsjahr) d.open();
       }
+
       setStatus();
       setActiveGeschaeftsjahr(jahr);
       return jahr;
@@ -159,6 +172,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.23  2005/09/04 23:10:14  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *
