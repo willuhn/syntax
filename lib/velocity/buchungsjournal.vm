@@ -24,7 +24,7 @@ $math.reset("brutto")
     #set($konto  = $ab.Konto)
     #set($count  = $count + 1)
     <tr>
-      <td>$!{dateformat.format(${mandant.GeschaeftsjahrVon})}</td>
+      <td>$!{dateformat.format(${jahr.Beginn})}</td>
       <td style="text-align:right">&nbsp;</td>
       <td>$!{konto.Kontonummer} [$!{konto.Name}]</td>
       <td style="width:70%">Anfangsbestands-Buchung</td>

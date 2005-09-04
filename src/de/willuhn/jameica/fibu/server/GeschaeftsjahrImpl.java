@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.10 $
+ * $Date: 2005/09/04 23:40:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
@@ -430,11 +431,28 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     return new BetriebsergebnisImpl();
   }
+
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    if (this.equals(Settings.getActiveGeschaeftsjahr()))
+    {
+      // Member aktualisieren
+      Settings.setActiveGeschaeftsjahr(this);
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.10  2005/09/04 23:40:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis
