@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.48 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.49 $
+ * $Date: 2005/09/05 13:47:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -351,7 +351,7 @@ public class BuchungControl extends AbstractControl
 		if (betrag != null)
 			return betrag;
 		
-		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
+		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Fibu.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     betrag.addListener(new SteuerListener());
 		return betrag;
@@ -401,20 +401,6 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
-      // Betrag checken
-      try {
-        getBuchung().setBetrag(((Double)getBetrag().getValue()).doubleValue());
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to set betrag",e);
-        throw new ApplicationException(i18n.tr("Betrag ungültig."));
-      }
-      //
-      //////////////////////////////////////////////////////////////////////////
-      
-
-      //////////////////////////////////////////////////////////////////////////
       // Steuer checken
       try {
 				getBuchung().setSteuer(((Double)getSteuer().getValue()).doubleValue());
@@ -423,6 +409,21 @@ public class BuchungControl extends AbstractControl
       {
         Logger.error("unable to set steuer",e);
         throw new ApplicationException(i18n.tr("Steuersatz ungültig."));
+      }
+      //
+      //////////////////////////////////////////////////////////////////////////
+
+      //////////////////////////////////////////////////////////////////////////
+      // Betrag checken
+      try {
+        double brutto = ((Double)getBetrag().getValue()).doubleValue();
+        Math m = new Math();
+        getBuchung().setBetrag(m.netto(brutto,getBuchung().getSteuer()));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to set betrag",e);
+        throw new ApplicationException(i18n.tr("Betrag ungültig."));
       }
       //
       //////////////////////////////////////////////////////////////////////////
@@ -596,7 +597,7 @@ public class BuchungControl extends AbstractControl
 
         Math math = new Math();
         Double betrag = (Double) getBetrag().getValue();
-        double brutto = betrag == null ? getBuchung().getBetrag() : betrag.doubleValue();
+        double brutto = betrag == null ? getBuchung().getBruttoBetrag() : betrag.doubleValue();
         double netto  = math.netto(brutto,satz);
         double steuer = math.steuer(brutto,satz);
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
@@ -756,6 +757,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.49  2005/09/05 13:47:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.48  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.39 $
- * $Date: 2005/09/02 13:27:35 $
+ * $Revision: 1.40 $
+ * $Date: 2005/09/05 13:47:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,9 +37,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
   }
   
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getBetrag()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getBruttoBetrag()
    */
-  public double getBetrag() throws RemoteException
+  public double getBruttoBetrag() throws RemoteException
   {
     double betrag = super.getBetrag();
     // jetzt muessen wir aber noch die Betraege der Hilfs-Buchungen drauf rechnen
@@ -144,7 +144,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("brutto".equals(arg0))
-      return new Double(this.getBetrag());
+      return new Double(getBruttoBetrag());
     return super.getAttribute(arg0);
   }
 
@@ -182,6 +182,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.40  2005/09/05 13:47:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2005/09/02 13:27:35  willuhn
  * @C transaction behavior
  *

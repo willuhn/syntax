@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/08/15 13:18:44 $
+ * $Revision: 1.16 $
+ * $Date: 2005/09/05 13:47:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,12 +29,22 @@ public interface Buchung extends BaseBuchung
    */
   public DBIterator getHilfsBuchungen() throws RemoteException;
   
+  /**
+   * Liefert den Brutto-Betrag (also incl. der Hilfsbuchungen).
+   * @return Brutto-Betrag.
+   * @throws RemoteException
+   */
+  public double getBruttoBetrag() throws RemoteException;
+  
 
 }
 
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.16  2005/09/05 13:47:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/08/15 13:18:44  willuhn
  * *** empty log message ***
  *

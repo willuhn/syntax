@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/29 12:17:28 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/05 13:47:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,7 @@ public interface BaseBuchung extends DBObject
 
   /**
    * Liefert den Netto-Betrag der Buchung.
-   * @return Brutto-Betrag der Buchung.
+   * @return Netto-Betrag der Buchung.
    * @throws RemoteException
    */
   public double getBetrag() throws RemoteException;
@@ -141,6 +141,9 @@ public interface BaseBuchung extends DBObject
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
+ * Revision 1.6  2005/09/05 13:47:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/08/29 12:17:28  willuhn
  * @N Geschaeftsjahr
  *
