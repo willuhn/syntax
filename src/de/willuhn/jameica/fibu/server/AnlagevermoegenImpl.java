@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/01 23:28:15 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/05 13:14:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -390,7 +390,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     {
       Abschreibung a = (Abschreibung) abschreibungen.next();
       Buchung b = a.getBuchung();
-      if (vorjahr.equals(a.getGeschaeftsjahr()))
+      if (vorjahr.equals(b.getGeschaeftsjahr()))
         return b.getBetrag();
     }
     return 0.0d;
@@ -408,6 +408,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.7  2005/09/05 13:14:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/09/01 23:28:15  willuhn
  * *** empty log message ***
  *

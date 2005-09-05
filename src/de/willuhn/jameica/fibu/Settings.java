@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/09/04 23:10:14 $
+ * $Revision: 1.24 $
+ * $Date: 2005/09/05 13:14:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,9 +75,9 @@ public class Settings
     if (j == null)
       return;
 
-    jahr = j;
     try
     {
+      jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,j.getID());
       settings.setAttribute("gj.active",jahr.getID());
     }
     catch (RemoteException e)
@@ -121,7 +121,7 @@ public class Settings
         }
       }
 
-      if (ask)
+      if (ask && !Application.inServerMode())
       {
         Logger.info("open gj select dialog");
         GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
@@ -148,7 +148,7 @@ public class Settings
    */
   private static void setStatus()
   {
-    if (jahr == null)
+    if (jahr == null || Application.inServerMode())
       return;
     try
     {
@@ -172,6 +172,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.24  2005/09/05 13:14:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/09/04 23:10:14  willuhn
  * *** empty log message ***
  *

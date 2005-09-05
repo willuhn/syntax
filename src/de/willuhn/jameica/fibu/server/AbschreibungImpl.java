@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 22:26:19 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/05 13:14:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -101,8 +100,6 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
       return Anlagevermoegen.class;
     if ("buchung_id".equals(arg0))
       return Buchung.class;
-    if ("geschaeftsjahr_id".equals(arg0))
-      return Geschaeftsjahr.class;
     
     return super.getForeignObject(arg0);
   }
@@ -121,8 +118,6 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
         throw new ApplicationException(i18n.tr("Kein Anlage-Gegenstand zugeordnet"));
       if (getBuchung() == null)
         throw new ApplicationException(i18n.tr("Keine Buchung zugeordnet"));
-      if (getGeschaeftsjahr() == null)
-        throw new ApplicationException(i18n.tr("Kein Geschäftsjahr zugeordnet"));
     }
     catch (RemoteException e)
     {
@@ -139,27 +134,14 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   {
     insertCheck();
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#getGeschaeftsjahr()
-   */
-  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
-  {
-    return (Geschaeftsjahr) getAttribute("geschaeftsjahr_id");
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#setGeschaeftsjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
-   */
-  public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
-  {
-    setAttribute("geschaeftsjahr_id", jahr);
-  }
 }
 
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.4  2005/09/05 13:14:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/08/29 22:26:19  willuhn
  * @N Jahresabschluss
  *

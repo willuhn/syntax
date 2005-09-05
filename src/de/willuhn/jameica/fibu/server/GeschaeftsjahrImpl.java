@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/09/04 23:40:00 $
+ * $Revision: 1.11 $
+ * $Date: 2005/09/05 13:14:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,10 +14,13 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -248,7 +251,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       if (vorjahr != null && vorjahr.getID().equals(this.getID()))
         throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht auf sich selbst verweisen"));
 
-      DBIterator list = getBuchungen();
+      GenericIterator list = getBuchungen();
 
       if (list.size() > 0)
       {
@@ -317,21 +320,21 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     {
       transactionBegin();
 
-      DBIterator afa = getAbschreibungen();
+      GenericIterator afa = getAbschreibungen();
       while (afa.hasNext())
       {
         Abschreibung a = (Abschreibung) afa.next();
         a.delete();
       }
       
-      DBIterator buchungen = getBuchungen();
+      GenericIterator buchungen = getBuchungen();
       while (buchungen.hasNext())
       {
         Buchung b = (Buchung) buchungen.next();
         b.delete();
       }
       
-      DBIterator ab = getAnfangsbestaende();
+      GenericIterator ab = getAnfangsbestaende();
       while (ab.hasNext())
       {
         Anfangsbestand a = (Anfangsbestand) ab.next();
@@ -401,11 +404,20 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   /**
    * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getAbschreibungen()
    */
-  public DBIterator getAbschreibungen() throws RemoteException
+  public GenericIterator getAbschreibungen() throws RemoteException
   {
+    ArrayList l = new ArrayList();
     DBIterator list = getService().createList(Abschreibung.class);
-    list.addFilter("geschaeftsjahr_id = " + this.getID());
-    return list;
+    while (list.hasNext())
+    {
+      Abschreibung a = (Abschreibung) list.next();
+      Buchung b = a.getBuchung();
+      if (b == null)
+        continue;
+      if (this.equals(b.getGeschaeftsjahr()))
+        l.add(a);
+    }
+    return PseudoIterator.fromArray((Abschreibung[]) l.toArray(new Abschreibung[l.size()]));
   }
 
   /**
@@ -438,7 +450,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    if (this.equals(Settings.getActiveGeschaeftsjahr()))
+    if (!Application.inServerMode() && this.equals(Settings.getActiveGeschaeftsjahr()))
     {
       // Member aktualisieren
       Settings.setActiveGeschaeftsjahr(this);
@@ -450,6 +462,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.11  2005/09/05 13:14:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/09/04 23:40:00  willuhn
  * *** empty log message ***
  *

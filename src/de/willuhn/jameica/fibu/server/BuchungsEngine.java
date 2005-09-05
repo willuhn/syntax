@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/09/04 23:10:14 $
+ * $Revision: 1.20 $
+ * $Date: 2005/09/05 13:14:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,7 @@ public class BuchungsEngine
           rest = true;
         }
         
-        Logger.info("  Abschreibung fuer " + av.getName());
+        Logger.info("  Abschreibungsbuchung fuer " + av.getName());
         Buchung buchung = (Buchung) db.createObject(Buchung.class,null);
         buchung.setDatum(end);
         buchung.setGeschaeftsjahr(jahr);
@@ -115,7 +115,6 @@ public class BuchungsEngine
         Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
         afa.setAnlagevermoegen(av);
         afa.setBuchung(buchung);
-        afa.setGeschaeftsjahr(jahr);
         afa.store();
       }
       
@@ -264,6 +263,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.20  2005/09/05 13:14:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2005/09/04 23:10:14  willuhn
  * *** empty log message ***
  *
