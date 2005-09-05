@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/09/05 13:47:19 $
+ * $Revision: 1.22 $
+ * $Date: 2005/09/05 14:19:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,9 +142,16 @@ public class BuchungsEngine
       Logger.info("  Beginn: " + jahrNeu.getBeginn().toString());
       Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
 
+      // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
+      DBIterator check = db.createList(Geschaeftsjahr.class);
+      check.addFilter(jahrNeu.getBeginn().getTime() + " < TO_NUMBER(ende)");
+      check.addFilter(jahrNeu.getEnde().getTime() + " > TO_NUMBER(beginn)");
+      check.addFilter("mandant_id = " + m.getID());
+      if (check.hasNext())
+        throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
+
       jahrNeu.setVorjahr(jahr);
       jahrNeu.store();
-      Settings.setActiveGeschaeftsjahr(jahrNeu);
       
       // Anfangsbestaende erzeugen
       // Existierende Anfangsbestaende aus dem Vorjahr brauchen wir nicht
@@ -163,6 +170,7 @@ public class BuchungsEngine
         ab.setKonto(k);
         ab.setGeschaeftsjahr(jahrNeu);
         ab.store();
+        Logger.info("  [" + k.getKontonummer() + "] " + k.getName() + ": " + saldo);
       }
       
       Logger.info("Schliesse altes Geschaeftsjahr");
@@ -187,12 +195,6 @@ public class BuchungsEngine
       Logger.error("error while closing gj");
       throw new RemoteException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
     }
-    finally
-    {
-      Settings.setActiveGeschaeftsjahr(jahr);
-    }
-    
-    
   }
   
   /**
@@ -261,6 +263,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.22  2005/09/05 14:19:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/09/05 13:47:19  willuhn
  * *** empty log message ***
  *
