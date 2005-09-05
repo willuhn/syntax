@@ -55,8 +55,8 @@ CREATE TABLE buchung (
 CREATE TABLE finanzamt (
   id NUMERIC default UNIQUEKEY('finanzamt'),
   name varchar(255) NOT NULL,
-  strasse varchar(255) NOT NULL,
-  postfach varchar(50) NOT NULL,
+  strasse varchar(255) NULL,
+  postfach varchar(50) NULL,
   plz varchar(7) NOT NULL,
   ort varchar(255) NOT NULL,
   UNIQUE (id),
