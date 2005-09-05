@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.12 $
+ * $Date: 2005/09/05 15:00:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -320,6 +320,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     {
       transactionBegin();
 
+      Logger.info("Lösche Abschreibungen");
       GenericIterator afa = getAbschreibungen();
       while (afa.hasNext())
       {
@@ -327,22 +328,41 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         a.delete();
       }
       
+      Logger.info("Lösche Buchungen");
       GenericIterator buchungen = getBuchungen();
       while (buchungen.hasNext())
       {
         Buchung b = (Buchung) buchungen.next();
         b.delete();
       }
-      
+
+      Logger.info("Lösche Anfangsbestände");
       GenericIterator ab = getAnfangsbestaende();
       while (ab.hasNext())
       {
         Anfangsbestand a = (Anfangsbestand) ab.next();
         a.delete();
       }
-      super.delete();
       
+      Geschaeftsjahr vorjahr = getVorjahr();
+      if (vorjahr != null)
+      {
+        Logger.info("Lösche Abschreibungen des Vorjahres");
+        afa = vorjahr.getAbschreibungen();
+        while (afa.hasNext())
+        {
+          Abschreibung a = (Abschreibung) afa.next();
+          Buchung b = a.getBuchung();
+          a.delete();
+          b.delete();
+        }
+        vorjahr.setClosed(false);
+        vorjahr.store();
+      }
+        
+      super.delete();
       transactionCommit();
+      Settings.setActiveGeschaeftsjahr(null);
     }
     catch (ApplicationException e)
     {
@@ -371,11 +391,11 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#close()
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setClosed(boolean)
    */
-  public void close() throws RemoteException
+  public void setClosed(boolean b) throws RemoteException
   {
-    setAttribute("closed", new Integer(1));
+    setAttribute("closed", new Integer(b ? 1 : 0));
   }
 
   /**
@@ -462,6 +482,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.12  2005/09/05 15:00:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *

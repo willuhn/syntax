@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/09/05 14:32:07 $
+ * $Revision: 1.24 $
+ * $Date: 2005/09/05 15:00:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,7 +178,7 @@ public class BuchungsEngine
       }
       
       Logger.info("Schliesse altes Geschaeftsjahr");
-      jahr.close();
+      jahr.setClosed(true);
       jahr.store();
 
       jahr.transactionCommit();
@@ -271,6 +271,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.24  2005/09/05 15:00:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/09/05 14:32:07  willuhn
  * *** empty log message ***
  *

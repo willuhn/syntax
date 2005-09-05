@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.40 $
- * $Date: 2005/09/05 13:47:19 $
+ * $Revision: 1.41 $
+ * $Date: 2005/09/05 15:00:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.logging.Logger;
@@ -162,6 +163,15 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
         HilfsBuchung b = (HilfsBuchung) i.next();
         b.delete();
       }
+      i = getService().createList(Anlagevermoegen.class);
+      i.addFilter("buchung_id = " + this.getID());
+      if (i.hasNext())
+      {
+        Anlagevermoegen av = (Anlagevermoegen) i.next();
+        av.setBuchung(null);
+        av.store();
+      }
+      
       super.delete();
       transactionCommit();
     }
@@ -182,6 +192,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.41  2005/09/05 15:00:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.40  2005/09/05 13:47:19  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/05 15:00:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -119,9 +119,10 @@ public interface Geschaeftsjahr extends DBObject
 
   /**
    * Schliesst das Geschaeftsjahr ab.
+   * @param closed Status des Geschaeftsjahres.
    * @throws RemoteException
    */
-  public void close() throws RemoteException;
+  public void setClosed(boolean closed) throws RemoteException;
   
   /**
    * Berechnet die Anzahl der Monate des Geschaeftsjahres.
@@ -155,6 +156,9 @@ public interface Geschaeftsjahr extends DBObject
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
+ * Revision 1.9  2005/09/05 15:00:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *

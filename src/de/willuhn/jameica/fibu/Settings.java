@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/09/05 14:32:07 $
+ * $Revision: 1.26 $
+ * $Date: 2005/09/05 15:00:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,10 @@ public class Settings
   public static void setActiveGeschaeftsjahr(Geschaeftsjahr j)
   {
     if (j == null)
+    {
+      jahr = null;
       return;
+    }
 
     try
     {
@@ -172,6 +175,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.26  2005/09/05 15:00:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/09/05 14:32:07  willuhn
  * *** empty log message ***
  *
