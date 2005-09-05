@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/09/05 14:19:07 $
+ * $Revision: 1.23 $
+ * $Date: 2005/09/05 14:32:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,8 +144,8 @@ public class BuchungsEngine
 
       // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
       DBIterator check = db.createList(Geschaeftsjahr.class);
-      check.addFilter(jahrNeu.getBeginn().getTime() + " < TO_NUMBER(ende)");
-      check.addFilter(jahrNeu.getEnde().getTime() + " > TO_NUMBER(beginn)");
+      check.addFilter(jahrNeu.getBeginn().getTime() + " < TONUMBER(ende)");
+      check.addFilter(jahrNeu.getEnde().getTime() + " > TONUMBER(beginn)");
       check.addFilter("mandant_id = " + m.getID());
       if (check.hasNext())
         throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
@@ -160,11 +160,15 @@ public class BuchungsEngine
       list = jahr.getKontenrahmen().getKonten();
       while (list.hasNext())
       {
+        // Wir wollen den Saldo des alten Jahres
+        Settings.setActiveGeschaeftsjahr(jahr);
         Konto k = (Konto) list.next();
         double saldo = k.getSaldo();
         if (saldo == 0.0)
           continue;
         
+        // Erzeugen aber einen Anfangsbestand fuers neue Jahr
+        Settings.setActiveGeschaeftsjahr(jahrNeu);
         Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
         ab.setBetrag(saldo);
         ab.setKonto(k);
@@ -194,6 +198,10 @@ public class BuchungsEngine
       jahr.transactionRollback();
       Logger.error("error while closing gj");
       throw new RemoteException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
+    }
+    finally
+    {
+      Settings.setActiveGeschaeftsjahr(jahr);
     }
   }
   
@@ -263,6 +271,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.23  2005/09/05 14:32:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/09/05 14:19:07  willuhn
  * *** empty log message ***
  *

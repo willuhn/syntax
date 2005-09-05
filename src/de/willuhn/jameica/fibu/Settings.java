@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.25 $
+ * $Date: 2005/09/05 14:32:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,7 +152,7 @@ public class Settings
       return;
     try
     {
-      Logger.info("aktives Geschaeftsjahr: " + jahr.getAttribute(jahr.getPrimaryAttribute()));
+      Logger.debug("aktives Geschaeftsjahr: " + jahr.getAttribute(jahr.getPrimaryAttribute()));
       Mandant m = jahr.getMandant();
       I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
       String[] params = 
@@ -172,6 +172,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.25  2005/09/05 14:32:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *
