@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/08/25 23:00:02 $
+ * $Revision: 1.27 $
+ * $Date: 2005/09/24 13:00:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,6 +53,11 @@ public class Fibu extends AbstractPlugin
    */
   public final static DateFormat FASTDATEFORMAT   = new SimpleDateFormat("ddMMyyyy");
   
+  /**
+   * Dateformatter fuer Buchungen.
+   */
+  public final static DateFormat BUCHUNGDATEFORMAT   = new SimpleDateFormat("ddMMyy");
+
   /**
    * Wochentage
    */
@@ -163,6 +168,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.27  2005/09/24 13:00:13  willuhn
+ * @B bugfixes according to bugzilla
+ *
  * Revision 1.26  2005/08/25 23:00:02  willuhn
  * *** empty log message ***
  *

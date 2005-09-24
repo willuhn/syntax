@@ -188,10 +188,10 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1133, 6, '1406', 'Abziehbare Vorsteuer 16%', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1134, 6, '1370', 'Durchlaufende Posten', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1135, 6, '3500', 'Sonstige Verbindlichkeiten', 2, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1136, 6, '3820', 'Umsatzsteuer-Vorauszahlungen', 2, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1137, 6, '3840', 'Umsatzsteuer laufendes Jahr', 2, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1138, 6, '3841', 'Umsatzsteuer Vorjahr', 2, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1139, 6, '3845', 'Umsatzsteuer frühere Jahre', 2, NULL);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1136, 2, '3820', 'Umsatzsteuer-Vorauszahlungen', 2, NULL);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1137, 2, '3840', 'Umsatzsteuer laufendes Jahr', 2, NULL);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1138, 2, '3841', 'Umsatzsteuer Vorjahr', 2, NULL);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1139, 2, '3845', 'Umsatzsteuer frühere Jahre', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1140, 5, '2100', 'Privatentnahmen', 2, 1003);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1141, 5, '2550', 'Privatsteuern', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1142, 5, '2200', 'Sonderausgaben', 2, 1001);

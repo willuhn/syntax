@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2005/09/05 15:00:43 $
+ * $Revision: 1.42 $
+ * $Date: 2005/09/24 13:00:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,21 +121,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   public void insertCheck() throws ApplicationException
   {
-    try
-    {
-      // Checken, ob in die Belegnummer eindeutig ist
-      DBIterator list = Settings.getActiveGeschaeftsjahr().getBuchungen();
-      list.addFilter("belegnummer = " + getAttribute("belegnummer"));
-      if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
-        list.addFilter("id != " + this.getID());
-      if (list.hasNext())
-        throw new ApplicationException(i18n.tr("Im aktuellen Geschäftsjahr existiert bereits eine Buchung mit dieser Nummer"));
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while checking buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
-    }
+    checkBelegnummer();
     super.insertCheck();
   }
 
@@ -186,12 +172,14 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
       throw ae;
     }
   }
-
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.42  2005/09/24 13:00:13  willuhn
+ * @B bugfixes according to bugzilla
+ *
  * Revision 1.41  2005/09/05 15:00:43  willuhn
  * *** empty log message ***
  *

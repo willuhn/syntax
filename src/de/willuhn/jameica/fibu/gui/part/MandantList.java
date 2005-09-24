@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/MandantList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/24 13:00:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class MandantList extends TablePart
     addColumn(i18n.tr("Firma"),"firma");
     addColumn(i18n.tr("Ort"),"ort");
     addColumn(i18n.tr("Steuernummer"),"steuernummer");
-    addColumn(i18n.tr("Kontenrahmen"),"kontenrahmen_id");
+    // BUGZILLA 120
     setContextMenu(new MandantListMenu());
   }
 
@@ -66,6 +66,9 @@ public class MandantList extends TablePart
 
 /*********************************************************************
  * $Log: MandantList.java,v $
+ * Revision 1.4  2005/09/24 13:00:13  willuhn
+ * @B bugfixes according to bugzilla
+ *
  * Revision 1.3  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

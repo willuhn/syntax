@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.49 $
- * $Date: 2005/09/05 13:47:19 $
+ * $Revision: 1.50 $
+ * $Date: 2005/09/24 13:00:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +55,9 @@ import de.willuhn.util.I18N;
 public class BuchungControl extends AbstractControl
 {
 	
-	// Fachobjekte
+  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
+
+  // Fachobjekte
 	private Buchung buchung 		= null;
 
 	// Eingabe-Felder
@@ -113,7 +116,25 @@ public class BuchungControl extends AbstractControl
 		
     Date d = getBuchung().getDatum();
     if (d == null)
-      d = new Date();
+    {
+      // BUGZILLA 122
+      String s = settings.getString("buchung.date.last." + Settings.getActiveGeschaeftsjahr().getID(),null);
+      if (s != null && s.length() > 0)
+      {
+        try
+        {
+          d = Fibu.DATEFORMAT.parse(s);
+        }
+        catch (ParseException e)
+        {
+          Logger.error("unable to parse date",e);
+        }
+      }
+      else
+      {
+        d = new Date();
+      }
+    }
 
     CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
     cd.setTitle(i18n.tr("Datum"));
@@ -162,7 +183,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          sollKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          sollKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
           sollKontoAuswahl.setValue(k.getKontonummer());
           sollKontoAuswahl.setText(k.getKontonummer());
           kl.handleEvent(event);
@@ -177,7 +198,7 @@ public class BuchungControl extends AbstractControl
 		
     Konto k = getBuchung().getSollKonto();
     sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
     return sollKontoAuswahl;
 	}
 
@@ -204,9 +225,17 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          habenKontoAuswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          habenKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
           habenKontoAuswahl.setValue(k.getKontonummer());
           habenKontoAuswahl.setText(k.getKontonummer());
+          // BUGZILLA 122
+          Kontoart ka = k.getKontoArt();
+          String s = settings.getString("buchung.text.last." + Settings.getActiveGeschaeftsjahr().getID(),null);
+          String text = (String) getText().getValue();
+          if (s != null && (text == null || text.length() == 0) && (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES))
+          {
+            getText().setValue(s);
+          }
         }
         catch (RemoteException e)
         {
@@ -218,7 +247,7 @@ public class BuchungControl extends AbstractControl
     
     Konto k = getBuchung().getHabenKonto();
     habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
     return habenKontoAuswahl;
 	}
 
@@ -296,7 +325,7 @@ public class BuchungControl extends AbstractControl
     if (afaKonto != null)
       return afaKonto;
     
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
@@ -309,7 +338,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          afaKonto.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
           afaKonto.setValue(k.getKontonummer());
           afaKonto.setText(k.getKontonummer());
         }
@@ -432,30 +461,51 @@ public class BuchungControl extends AbstractControl
       // Datum checken
       
       Object o = getDatum().getValue();
-      String d = o.toString();
-      try {
-				getBuchung().setDatum(Fibu.DATEFORMAT.parse(d));
-      }
-      catch (ParseException e)
+      Date   d = null;
+      if (o instanceof Date)
       {
-        // ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
-        try {
-					getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d));
-        }
-        catch (ParseException e2)
+        d = (Date) o;
+      }
+      else
+      {
+        String s = o.toString();
+        // BUGZILLA 122
+        DateFormat df = null;
+        switch (s.length())
         {
-          try {
-            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
+          case 10:
+            df = Fibu.DATEFORMAT;
+            break;
+          case 8:
+            df = Fibu.FASTDATEFORMAT;
+            break;
+          case 6:
+            df = Fibu.BUCHUNGDATEFORMAT;
+            break;
+          case 4:
             Calendar cal = Calendar.getInstance();
             cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
-						getBuchung().setDatum(Fibu.FASTDATEFORMAT.parse(d + "" + cal.get(Calendar.YEAR)));
-          }
-          catch (ParseException e3)
-          {
-            throw new ApplicationException(i18n.tr("Datum ungültig."));
-          }
+            s += cal.get(Calendar.YEAR);
+            df = Fibu.FASTDATEFORMAT;
+            break;
+          default:
+            throw new ApplicationException(i18n.tr("Unbekanntes Datumsformat {0}",s));
+        }
+        try {
+          d = df.parse(s);
+        }
+        catch (ParseException e)
+        {
+          throw new ApplicationException(i18n.tr("Datum ungültig."));
         }
       }
+      if (d == null)
+      {
+        Logger.warn("no date given, using actual date");
+        d = new Date();
+      }
+      getBuchung().setDatum(d);
+      settings.setAttribute("buchung.date.last." + Settings.getActiveGeschaeftsjahr().getID(),Fibu.DATEFORMAT.format(d));
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -475,6 +525,8 @@ public class BuchungControl extends AbstractControl
       //
       //////////////////////////////////////////////////////////////////////////
       
+      String text = (String)getText().getValue();
+
       //////////////////////////////////////////////////////////////////////////
       // Haben-Konto checken
       
@@ -487,11 +539,18 @@ public class BuchungControl extends AbstractControl
       if (!konten.hasNext())
         throw new ApplicationException(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
 
-      getBuchung().setHabenKonto((Konto) konten.next());
+      Konto k = (Konto) konten.next();
+      getBuchung().setHabenKonto(k);
+
+      // BUGZILLA 122
+      Kontoart ka = k.getKontoArt();
+      if (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES)
+        settings.setAttribute("buchung.text.last." + Settings.getActiveGeschaeftsjahr().getID(),text);
+
       //
       //////////////////////////////////////////////////////////////////////////
 
-			getBuchung().setText((String)getText().getValue());
+			getBuchung().setText(text);
       
       // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
 			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
@@ -757,6 +816,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.50  2005/09/24 13:00:13  willuhn
+ * @B bugfixes according to bugzilla
+ *
  * Revision 1.49  2005/09/05 13:47:19  willuhn
  * *** empty log message ***
  *

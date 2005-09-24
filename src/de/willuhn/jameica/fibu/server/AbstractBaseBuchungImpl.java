@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/08/29 17:46:14 $
+ * $Revision: 1.11 $
+ * $Date: 2005/09/24 13:00:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,6 +217,30 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       return 1;
     return ((BaseBuchung) iterator.next()).getBelegnummer() + 1;
   }
+  
+  /**
+   * Prueft, ob die Belegnummer eindeutig ist.
+   * @throws ApplicationException
+   */
+  void checkBelegnummer() throws ApplicationException
+  {
+    try
+    {
+      // Checken, ob in die Belegnummer eindeutig ist
+      DBIterator list = Settings.getActiveGeschaeftsjahr().getBuchungen();
+      list.addFilter("belegnummer = " + this.getAttribute("belegnummer"));
+      if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
+        list.addFilter("id != " + this.getID());
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Im aktuellen Geschäftsjahr existiert bereits eine Buchung mit dieser Nummer"));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking buchung",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Belegnummer."),e);
+    }
+    
+  }
 
 
   /**
@@ -235,6 +259,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
     return null;
   }
+  
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
@@ -293,7 +318,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public void updateCheck() throws ApplicationException
   {
-    insertCheck();
+    this.insertCheck();
   }
 
   /**
@@ -310,6 +335,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.11  2005/09/24 13:00:13  willuhn
+ * @B bugfixes according to bugzilla
+ *
  * Revision 1.10  2005/08/29 17:46:14  willuhn
  * @N Jahresabschluss
  *
