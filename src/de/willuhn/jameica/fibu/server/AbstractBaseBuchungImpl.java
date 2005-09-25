@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/09/24 13:00:13 $
+ * $Revision: 1.12 $
+ * $Date: 2005/09/25 22:05:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -219,6 +219,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
   
   /**
+   * BUGZILLA 121
+   * @deprecated
    * Prueft, ob die Belegnummer eindeutig ist.
    * @throws ApplicationException
    */
@@ -335,6 +337,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.12  2005/09/25 22:05:09  willuhn
+ * @B bug 121
+ *
  * Revision 1.11  2005/09/24 13:00:13  willuhn
  * @B bugfixes according to bugzilla
  *

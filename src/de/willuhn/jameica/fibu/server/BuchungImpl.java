@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.42 $
- * $Date: 2005/09/24 13:00:13 $
+ * $Revision: 1.43 $
+ * $Date: 2005/09/25 22:05:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,15 +117,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
-  public void insertCheck() throws ApplicationException
-  {
-    checkBelegnummer();
-    super.insertCheck();
-  }
-
-  /**
    * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
   public Object getAttribute(String arg0) throws RemoteException
@@ -177,6 +168,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.43  2005/09/25 22:05:09  willuhn
+ * @B bug 121
+ *
  * Revision 1.42  2005/09/24 13:00:13  willuhn
  * @B bugfixes according to bugzilla
  *
