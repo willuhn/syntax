@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.50 $
- * $Date: 2005/09/24 13:00:13 $
+ * $Revision: 1.51 $
+ * $Date: 2005/09/25 22:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -230,11 +230,10 @@ public class BuchungControl extends AbstractControl
           habenKontoAuswahl.setText(k.getKontonummer());
           // BUGZILLA 122
           Kontoart ka = k.getKontoArt();
-          String s = settings.getString("buchung.text.last." + Settings.getActiveGeschaeftsjahr().getID(),null);
           String text = (String) getText().getValue();
-          if (s != null && (text == null || text.length() == 0) && (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES))
+          if ((text == null || text.length() == 0) && (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES))
           {
-            getText().setValue(s);
+            getText().setValue(k.getName());
           }
         }
         catch (RemoteException e)
@@ -541,12 +540,6 @@ public class BuchungControl extends AbstractControl
 
       Konto k = (Konto) konten.next();
       getBuchung().setHabenKonto(k);
-
-      // BUGZILLA 122
-      Kontoart ka = k.getKontoArt();
-      if (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES)
-        settings.setAttribute("buchung.text.last." + Settings.getActiveGeschaeftsjahr().getID(),text);
-
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -816,6 +809,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.51  2005/09/25 22:18:22  willuhn
+ * @B bug 122
+ *
  * Revision 1.50  2005/09/24 13:00:13  willuhn
  * @B bugfixes according to bugzilla
  *

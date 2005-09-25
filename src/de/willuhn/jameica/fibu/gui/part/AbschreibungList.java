@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AbschreibungList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 15:20:51 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/25 22:18:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
@@ -53,6 +54,9 @@ public class AbschreibungList extends TablePart
         try
         {
           Buchung b = (Buchung) o;
+          Date d = b.getDatum();
+          if (d == null)
+            return null;
           return Fibu.DATEFORMAT.format(b.getDatum());
         }
         catch (RemoteException e)
@@ -89,6 +93,9 @@ public class AbschreibungList extends TablePart
 
 /*********************************************************************
  * $Log: AbschreibungList.java,v $
+ * Revision 1.3  2005/09/25 22:18:22  willuhn
+ * @B bug 122
+ *
  * Revision 1.2  2005/08/29 15:20:51  willuhn
  * @B bugfixing
  *

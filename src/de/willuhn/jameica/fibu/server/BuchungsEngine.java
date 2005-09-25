@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/09/05 15:00:43 $
+ * $Revision: 1.25 $
+ * $Date: 2005/09/25 22:18:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -253,6 +253,10 @@ public class BuchungsEngine
     
     if (steuer == 0.0 || brutto == netto)
       return null; // keine Steuer zu buchen
+    
+    if (buchung.getDatum() == null)
+      buchung.setDatum(new Date());
+    
 
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
@@ -271,6 +275,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.25  2005/09/25 22:18:23  willuhn
+ * @B bug 122
+ *
  * Revision 1.24  2005/09/05 15:00:43  willuhn
  * *** empty log message ***
  *

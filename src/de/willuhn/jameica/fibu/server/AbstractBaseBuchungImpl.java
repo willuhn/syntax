@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/09/25 22:05:09 $
+ * $Revision: 1.13 $
+ * $Date: 2005/09/25 22:18:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,8 +66,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public Date getDatum() throws RemoteException
   {
-    Date d = (Date) getAttribute("datum");
-    return (d == null ? new Date() : d);
+    return (Date) getAttribute("datum");
   }
 
   /**
@@ -337,6 +336,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.13  2005/09/25 22:18:23  willuhn
+ * @B bug 122
+ *
  * Revision 1.12  2005/09/25 22:05:09  willuhn
  * @B bug 121
  *
