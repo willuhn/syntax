@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/GeschaeftsjahrExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,7 +89,7 @@ public class GeschaeftsjahrExport implements Action
     try
     {
       Export export = new Export();
-      export.addObject("geschaeftsjahr",context);
+      export.addObject("jahr",context);
       export.setTarget(new FileOutputStream(file));
       export.setTitle(i18n.tr("Überschuss-Rechnung"));
       export.setTemplate("ueberschussrechnung.vm");
@@ -113,6 +113,9 @@ public class GeschaeftsjahrExport implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrExport.java,v $
+ * Revision 1.5  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

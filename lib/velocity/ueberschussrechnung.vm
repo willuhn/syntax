@@ -1,7 +1,4 @@
-#set($eur = $!{mandant.Waehrung})
-
-#set($geschaeftsjahr = $!{export.getObjects("geschaeftsjahr")})
-#set($ergebnis       = $!{geschaeftsjahr.Betriebsergebnis})
+#set($ergebnis       = $!{jahr.Betriebsergebnis})
 #set($einnahmen      = $!{ergebnis.Einnahmen})
 #set($ausgaben       = $!{ergebnis.Ausgaben})
 
@@ -20,7 +17,7 @@ $math.reset("ausgaben")
 
   #foreach($konto in $einnahmen)
 
-    #set($umsatz = $konto.Umsatz)
+    #set($umsatz = $konto.getUmsatz(${jahr}))
     $math.add("einnahmen",${umsatz})
 
     <tr>
@@ -34,7 +31,7 @@ $math.reset("ausgaben")
 
   #foreach($konto in $ausgaben)
 
-    #set($umsatz = $konto.Umsatz)
+    #set($umsatz = $konto.getUmsatz(${jahr}))
     $math.add("ausgaben",${umsatz})
 
     <tr>

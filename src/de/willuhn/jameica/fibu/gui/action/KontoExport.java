@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -51,10 +52,7 @@ public class KontoExport implements Action
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     if (context == null)
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens ein Konto aus"));
-
-    if (!(context instanceof Konto) && !(context instanceof Konto[]))
-      throw new ApplicationException(i18n.tr("Bitte wählen Sie ein oder mehrere Konten aus"));
+      throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens ein Konto/Geschäftsjahr aus"));
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
@@ -95,6 +93,8 @@ public class KontoExport implements Action
     {
       Export export = new Export();
 
+      Geschaeftsjahr jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+
       Konto[] k = null;
       if (context instanceof Konto)
       {
@@ -105,12 +105,25 @@ public class KontoExport implements Action
       {
         k = (Konto[]) context;
       }
+      else if (context instanceof Geschaeftsjahr)
+      {
+        jahr = (Geschaeftsjahr) context;
+        DBIterator konten = jahr.getKontenrahmen().getKonten();
+        k = new Konto[konten.size()];
+        int i = 0;
+        while (konten.hasNext())
+        {
+          k[i++] = (Konto) konten.next();
+        }
+      }
+        
       export.addObject("konten",k);
-      
+      export.addObject("jahr",jahr);
+
       for (int i=0;i<k.length;++i)
       {
         Vector buchungen = new Vector();
-        DBIterator list = k[i].getBuchungen();
+        DBIterator list = k[i].getBuchungen(jahr);
         while (list.hasNext())
         {
           buchungen.add(list.next());
@@ -140,6 +153,9 @@ public class KontoExport implements Action
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.7  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

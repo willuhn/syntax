@@ -75,7 +75,10 @@
   </style>
   <body>
 
-  #set($mandant = $jahr.Mandant)
+  #set($jahr    = ${export.getObjects("jahr")})
+  #set($mandant = ${jahr.Mandant})
+  #set($eur     = ${mandant.Waehrung})
+
   <table>
     <tr>
       <td>

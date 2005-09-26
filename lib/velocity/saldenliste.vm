@@ -1,4 +1,3 @@
-#set($eur = $!{mandant.Waehrung})
 #set($konten = $!{export.getObjects("konten")})
 
 <table class="data">
@@ -14,15 +13,15 @@
     <tr>
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
-      #set($ab = $konto.Anfangsbestand)
+      #set($ab = $konto.getAnfangsbestand(${jahr}))
       #if($!{ab.toString()} != "")
         <td style="text-align:right">$!{decimalformat.format(${ab.Betrag})} ${eur}</td>
       #else
         <td>&nbsp;</td>
       #end
        
-      <td style="text-align:right">$!{decimalformat.format(${konto.Umsatz})} ${eur}</td>
-      <td style="text-align:right">$!{decimalformat.format(${konto.Saldo})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${konto.getUmsatz(${jahr})})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${konto.getSaldo(${jahr})})} ${eur}</td>
     </tr>
 	#end
 	<tr>

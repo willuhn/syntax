@@ -1,4 +1,3 @@
-#set($eur = $!{mandant.Waehrung})
 #set($anlagevermoegen = $!{export.getObjects("anlagevermoegen")})
 
 $math.reset("anschaffungskosten")
@@ -19,9 +18,9 @@ $math.reset("restwert")
 
   #foreach($av in $anlagevermoegen)
     #set($anschaffungskosten = $av.Anschaffungskosten)
-    #set($anfangsbestand     = $av.Anfangsbestand)
-    #set($jahresabschreibung = $av.JahresAbschreibung)
-    #set($restwert           = $av.Restwert)
+    #set($anfangsbestand     = $av.getAnfangsbestand(${jahr}))
+    #set($jahresabschreibung = $av.getJahresAbschreibung(${jahr}))
+    #set($restwert           = $av.getRestwert(${jahr}))
 
     $math.add("anschaffungskosten",${anschaffungskosten})
     $math.add("anfangsbestand",${anfangsbestand})

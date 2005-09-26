@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.31 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
-import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
@@ -94,32 +93,32 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public double getSaldo() throws RemoteException
+  public double getSaldo(Geschaeftsjahr jahr) throws RemoteException
   {
     // das ist ein neues Konto. Da gibts noch keinen Umsatz.
     if (getID() == null || getID().length() == 0)
       return 0;
 
-    Double d = SaldenCache.get(this.getKontonummer());
+    Double d = SaldenCache.get(jahr.getID() + "." + this.getKontonummer());
     if (d != null)
       return d.doubleValue();
 
     double saldo = 0.0d;
-    Anfangsbestand a = getAnfangsbestand();
+    Anfangsbestand a = getAnfangsbestand(jahr);
     if (a != null)
       saldo = a.getBetrag();
 
-    saldo += getUmsatz();
-    SaldenCache.put(this.getKontonummer(),new Double(saldo));
+    saldo += getUmsatz(jahr);
+    SaldenCache.put(jahr.getID() + "." + this.getKontonummer(),new Double(saldo));
     return saldo;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public double getUmsatz() throws RemoteException
+  public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException
   {
     // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
     if (getID() == null || getID().length() == 0)
@@ -130,8 +129,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     ResultSet rs   = null;
     try
     {
-      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-
       DBServiceImpl service = (DBServiceImpl) this.getService();
       stmt = service.getConnection().createStatement();
 
@@ -331,7 +328,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("saldo".equals(arg0))
-      return new Double(getSaldo());
+      return new Double(getSaldo(Settings.getActiveGeschaeftsjahr()));
     if ("kontenrahmen_id".equals(arg0))
       return getKontenrahmen();
     if ("kontoart_id".equals(arg0))
@@ -342,9 +339,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public DBIterator getBuchungen() throws RemoteException
+  public DBIterator getBuchungen(Geschaeftsjahr jahr) throws RemoteException
   {
     Kontoart ka = getKontoArt();
     int art = Kontoart.KONTOART_UNGUELTIG;
@@ -352,35 +349,21 @@ public class KontoImpl extends AbstractDBObject implements Konto
       art = ka.getKontoArt();
     // TODO Solange Steuer-Buchungen nur automatisch als Hilfsbuchungen erzeugt werden, ist
     // das ok. Falls Steuer-Buchungen aber manuell als Hauptbuchungen angelegt werden,
-    // muessen bei KONTOART_STEUR zwei Listen erzeugt werden. Eine, mit den Hilfsbuchungen,
+    // muessen bei KONTOART_STEUER zwei Listen erzeugt werden. Eine, mit den Hilfsbuchungen,
     // die andere mit den Hauptbuchungen.
     DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
     list.addFilter(" (sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
+    list.addFilter("geschaeftsjahr_id = " + jahr.getID());
     list.setOrder("order by tonumber(datum)");
     return list;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungList()
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getAnfangsbestand(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public BaseBuchung[] getBuchungList() throws RemoteException
+  public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException
   {
-    DBIterator l = getBuchungen();
-    BaseBuchung[] list = new BaseBuchung[l.size()];
-    int count = 0;
-    while (l.hasNext())
-    {
-      list[count++] = (BaseBuchung) l.next();
-    }
-    return list;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getAnfangsbestand()
-   */
-  public Anfangsbestand getAnfangsbestand() throws RemoteException
-  {
-    DBIterator ab = Settings.getActiveGeschaeftsjahr().getAnfangsbestaende();
+    DBIterator ab = jahr.getAnfangsbestaende();
     ab.addFilter("konto_id = " + this.getID());
     if (!ab.hasNext())
       return null;
@@ -415,6 +398,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.31  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.30  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

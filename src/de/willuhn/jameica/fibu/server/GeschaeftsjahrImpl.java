@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/09/05 15:00:43 $
+ * $Revision: 1.13 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -461,7 +461,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public Betriebsergebnis getBetriebsergebnis() throws RemoteException
   {
-    return new BetriebsergebnisImpl();
+    return new BetriebsergebnisImpl(this);
   }
 
   /**
@@ -482,6 +482,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.13  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2005/09/05 15:00:43  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/09/25 22:18:23 $
+ * $Revision: 1.26 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class BuchungsEngine
         Anlagevermoegen av = (Anlagevermoegen) list.next();
         
         double betrag      = av.getAnschaffungskosten() / (double) av.getNutzungsdauer();
-        double restwert    = av.getRestwert();
+        double restwert    = av.getRestwert(jahr);
         boolean rest       = false;
 
         if (restwert == 0.0d)
@@ -161,14 +161,12 @@ public class BuchungsEngine
       while (list.hasNext())
       {
         // Wir wollen den Saldo des alten Jahres
-        Settings.setActiveGeschaeftsjahr(jahr);
         Konto k = (Konto) list.next();
-        double saldo = k.getSaldo();
+        double saldo = k.getSaldo(jahr);
         if (saldo == 0.0)
           continue;
         
         // Erzeugen aber einen Anfangsbestand fuers neue Jahr
-        Settings.setActiveGeschaeftsjahr(jahrNeu);
         Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
         ab.setBetrag(saldo);
         ab.setKonto(k);
@@ -275,6 +273,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.26  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2005/09/25 22:18:23  willuhn
  * @B bug 122
  *

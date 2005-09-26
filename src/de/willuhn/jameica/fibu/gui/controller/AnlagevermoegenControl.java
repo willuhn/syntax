@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,7 +149,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.restwert != null)
       return this.restwert;
     Mandant m = getAnlagevermoegen().getMandant();
-    this.restwert = new LabelInput(Fibu.DECIMALFORMAT.format(getAnlagevermoegen().getRestwert()));
+    this.restwert = new LabelInput(Fibu.DECIMALFORMAT.format(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr())));
     this.restwert.setComment(m.getWaehrung());
     return this.restwert;
   }
@@ -219,7 +219,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (konto != null)
       return konto;
     
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_ANLAGE);
@@ -232,7 +232,7 @@ public class AnlagevermoegenControl extends AbstractControl
         if (k == null)
           return;
         try {
-          konto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          konto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           konto.setValue(k.getKontonummer());
           konto.setText(k.getKontonummer());
         }
@@ -246,7 +246,7 @@ public class AnlagevermoegenControl extends AbstractControl
     
     Konto k = getAnlagevermoegen().getKonto();
     konto = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    konto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    konto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
     return konto;
   }
 
@@ -260,7 +260,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (afaKonto != null)
       return afaKonto;
     
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
@@ -273,7 +273,7 @@ public class AnlagevermoegenControl extends AbstractControl
         if (k == null)
           return;
         try {
-          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           afaKonto.setValue(k.getKontonummer());
           afaKonto.setText(k.getKontonummer());
         }
@@ -287,7 +287,7 @@ public class AnlagevermoegenControl extends AbstractControl
     
     Konto k = getAnlagevermoegen().getAbschreibungskonto();
     afaKonto = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    afaKonto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    afaKonto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
     return afaKonto;
   }
 
@@ -362,6 +362,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.9  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

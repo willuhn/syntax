@@ -1,4 +1,3 @@
-#set($eur = $!{mandant.Waehrung})
 #set($konten = $!{export.getObjects("konten")})
 
 #foreach($konto in $konten)

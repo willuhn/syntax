@@ -1,4 +1,3 @@
-#set($eur              = $!{mandant.Waehrung})
 #set($buchungen        = $!{export.getObjects("buchungen")})
 #set($anfangsbestaende = $!{export.getObjects("anfangsbestaende")})
 #set($count            = 0)

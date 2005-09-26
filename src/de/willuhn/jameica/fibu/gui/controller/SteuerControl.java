@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/09/01 21:18:01 $
+ * $Revision: 1.19 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,7 @@ public class SteuerControl extends AbstractControl
     });
     Konto k = getSteuer().getSteuerKonto();
 		kontoauswahl = new DialogInput(k == null ? null : (k.getKontonummer() + " [" + k.getName() + "]"),d);
-    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo()), jahr.getMandant().getWaehrung()}));
+    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1}",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), jahr.getMandant().getWaehrung()}));
     kontoauswahl.disableClientControl();
 		return kontoauswahl;
 	}
@@ -183,6 +183,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.19  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/09/01 21:18:01  willuhn
  * *** empty log message ***
  *

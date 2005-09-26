@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,12 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 
+import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -148,12 +151,12 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getRestwert()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getRestwert(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public double getRestwert() throws RemoteException
+  public double getRestwert(Geschaeftsjahr jahr) throws RemoteException
   {
     double restwert = getAnschaffungskosten();
-    DBIterator abschreibungen = getAbschreibungen();
+    GenericIterator abschreibungen = getAbschreibungen(jahr);
     while (abschreibungen.hasNext())
     {
       Abschreibung a = (Abschreibung) abschreibungen.next();
@@ -197,14 +200,24 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAbschreibungen()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAbschreibungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public DBIterator getAbschreibungen() throws RemoteException
+  public GenericIterator getAbschreibungen(Geschaeftsjahr jahr) throws RemoteException
   {
     DBIterator list = getService().createList(Abschreibung.class);
     list.addFilter("av_id = " + getID());
     list.setOrder("order by id");
-    return list;
+    ArrayList l = new ArrayList();
+    Date end = jahr.getEnde();
+    while (list.hasNext())
+    {
+      Abschreibung a = (Abschreibung) list.next();
+      Buchung b = a.getBuchung();
+      Date d = b.getDatum();
+      if (d.before(end) || d.equals(end))
+        l.add(a);
+    }
+    return PseudoIterator.fromArray((Abschreibung[]) l.toArray(new Abschreibung[l.size()]));
   }
   
   /**
@@ -216,7 +229,8 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     {
       transactionBegin();
 
-      DBIterator abschreibungen = getAbschreibungen();
+      DBIterator abschreibungen = getService().createList(Abschreibung.class);
+      abschreibungen.addFilter("av_id = " + getID());
       while (abschreibungen.hasNext())
       {
         Abschreibung a = (Abschreibung) abschreibungen.next();
@@ -326,7 +340,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("restwert".equals(arg0))
-      return new Double(getRestwert());
+      return new Double(getRestwert(Settings.getActiveGeschaeftsjahr()));
     return super.getAttribute(arg0);
   }
 
@@ -337,7 +351,8 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     if (canChange == null)
     {
-      DBIterator list = getAbschreibungen();
+      DBIterator list = getService().createList(Abschreibung.class);
+      list.addFilter("av_id = " + getID());
       this.canChange = Boolean.valueOf(!list.hasNext());
     }
     return canChange.booleanValue();
@@ -376,38 +391,39 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getJahresAbschreibung()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getJahresAbschreibung(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public double getJahresAbschreibung() throws RemoteException
+  public double getJahresAbschreibung(Geschaeftsjahr jahr) throws RemoteException
   {
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    Geschaeftsjahr vorjahr = jahr.getVorjahr();
-    if (vorjahr == null)
-      return 0.0d; // Kein Vorjahr vorhanden
-
-    DBIterator abschreibungen = getAbschreibungen();
-    while (abschreibungen.hasNext())
+    DBIterator list = getService().createList(Abschreibung.class);
+    list.addFilter("av_id = " + getID());
+    list.setOrder("order by id");
+    while (list.hasNext())
     {
-      Abschreibung a = (Abschreibung) abschreibungen.next();
+      Abschreibung a = (Abschreibung) list.next();
       Buchung b = a.getBuchung();
-      if (vorjahr.equals(b.getGeschaeftsjahr()))
+      Geschaeftsjahr j = b.getGeschaeftsjahr();
+      if (j.equals(jahr))
         return b.getBetrag();
     }
     return 0.0d;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAnfangsbestand()
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getAnfangsbestand(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public double getAnfangsbestand() throws RemoteException
+  public double getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException
   {
-    return getRestwert() + getJahresAbschreibung();
+    return getRestwert(jahr) + getJahresAbschreibung(jahr);
   }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.8  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *

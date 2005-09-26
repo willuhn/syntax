@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.51 $
- * $Date: 2005/09/25 22:18:22 $
+ * $Revision: 1.52 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,7 +170,7 @@ public class BuchungControl extends AbstractControl
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
 		
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 		final String waehrung = jahr.getMandant().getWaehrung();
     final KontoListener kl = new KontoListener();
 		DBIterator list = Settings.getDBService().createList(Konto.class);
@@ -183,7 +183,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
 				try {
-          sollKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          sollKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           sollKontoAuswahl.setValue(k.getKontonummer());
           sollKontoAuswahl.setText(k.getKontonummer());
           kl.handleEvent(event);
@@ -198,7 +198,7 @@ public class BuchungControl extends AbstractControl
 		
     Konto k = getBuchung().getSollKonto();
     sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
     return sollKontoAuswahl;
 	}
 
@@ -213,7 +213,7 @@ public class BuchungControl extends AbstractControl
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
@@ -225,7 +225,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          habenKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          habenKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           habenKontoAuswahl.setValue(k.getKontonummer());
           habenKontoAuswahl.setText(k.getKontonummer());
           // BUGZILLA 122
@@ -246,7 +246,7 @@ public class BuchungControl extends AbstractControl
     
     Konto k = getBuchung().getHabenKonto();
     habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
     return habenKontoAuswahl;
 	}
 
@@ -337,7 +337,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          afaKonto.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo()), waehrung, k.getName()}));
+          afaKonto.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           afaKonto.setValue(k.getKontonummer());
           afaKonto.setText(k.getKontonummer());
         }
@@ -809,6 +809,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.52  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.51  2005/09/25 22:18:22  willuhn
  * @B bug 122
  *

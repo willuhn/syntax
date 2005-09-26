@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.23 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,7 @@ public class KontoControl extends AbstractControl
   {
     if (this.saldo != null)
       return this.saldo;
-    saldo = new LabelInput(Fibu.DECIMALFORMAT.format(getKonto().getSaldo()));
+    saldo = new LabelInput(Fibu.DECIMALFORMAT.format(getKonto().getSaldo(Settings.getActiveGeschaeftsjahr())));
     saldo.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     return saldo;
   }
@@ -222,6 +222,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.23  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

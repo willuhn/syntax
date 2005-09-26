@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.16 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,18 +40,20 @@ public interface Konto extends DBObject
 
   /**
    * Liefert den Saldo des Kontos.
+   * @param jahr das Geschaeftsjahr.
    * @return Saldo.
    * @throws RemoteException
    */
-  public double getSaldo() throws RemoteException;
+  public double getSaldo(Geschaeftsjahr jahr) throws RemoteException;
 
   /**
    * Liefert den Umsatz auf dem Konto im aktuellen Geschaeftsjahr.
    * Das entspricht der Summe der Buchungen auf dem Konto.
+   * @param jahr das Geschaeftsjahr.
    * @return Umsatz.
    * @throws RemoteException
    */
-  public double getUmsatz() throws RemoteException;
+  public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException;
   
   /**
    * Liefert den Namen des Kontos.
@@ -127,29 +129,27 @@ public interface Konto extends DBObject
   
   /**
    * Liefert eine Liste aller Buchungen auf dem Konto.
+   * @param jahr das Geschaeftsjahr.
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getBuchungen() throws RemoteException;
+  public DBIterator getBuchungen(Geschaeftsjahr jahr) throws RemoteException;
 
   /**
-   * Liefert eine Liste aller Buchungen auf dem Konto in Form eines Arays.
-   * @return Liste der Buchungen.
-   * @throws RemoteException
-   */
-  public BaseBuchung[] getBuchungList() throws RemoteException;
-  
-  /**
    * Liefert den Anfangsbestand des Kontos oder null wenn keiner existiert.
+   * @param jahr das Geschaeftsjahr.
    * @return Anfangsbestand.
    * @throws RemoteException
    */
-  public Anfangsbestand getAnfangsbestand() throws RemoteException;
+  public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.16  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

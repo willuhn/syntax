@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
@@ -97,12 +98,14 @@ public class BuchungList extends TablePart
    */
   private static GenericIterator init(Konto konto) throws RemoteException
   {
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
-      return konto.getBuchungen();
+      return konto.getBuchungen(jahr);
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = Settings.getActiveGeschaeftsjahr().getBuchungen();
+    DBIterator list = jahr.getBuchungen();
     list.setOrder("order by id desc");
     return list;
   }
@@ -140,6 +143,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.14  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

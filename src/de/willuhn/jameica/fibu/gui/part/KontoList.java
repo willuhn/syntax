@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.10 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -158,7 +158,7 @@ public class KontoList extends TablePart
                   {
                     k = (Konto) konten.get(i);
                     
-                    if (checkSaldo && k.getSaldo() == 0.0d)
+                    if (checkSaldo && k.getSaldo(Settings.getActiveGeschaeftsjahr()) == 0.0d)
                       continue;
 
                     name = k.getName();
@@ -219,6 +219,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.10  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

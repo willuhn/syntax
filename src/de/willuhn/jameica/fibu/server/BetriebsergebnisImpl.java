@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BetriebsergebnisImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/09/04 23:10:14 $
+ * $Revision: 1.3 $
+ * $Date: 2005/09/26 23:51:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
@@ -30,12 +31,17 @@ import de.willuhn.jameica.fibu.rmi.Kontotyp;
 public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betriebsergebnis
 {
 
+  private Geschaeftsjahr jahr = null;
+  
   /**
    * ct.
+   * @param jahr Geschaeftsjahr.
    * @throws RemoteException
    */
-  public BetriebsergebnisImpl() throws RemoteException {
+  public BetriebsergebnisImpl(Geschaeftsjahr jahr) throws RemoteException
+  {
     super();
+    this.jahr = jahr;
   }
 
   /**
@@ -51,7 +57,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getUmsatz() == 0.0d)
+      if (k.getUmsatz(jahr) == 0.0d)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
@@ -69,7 +75,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getUmsatz() == 0.0d)
+      if (k.getUmsatz(jahr) == 0.0d)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
@@ -86,12 +92,12 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     Konto[] einnamen = getEinnahmen();
     for (int i=0;i<einnamen.length;++i)
     {
-      ergebnis += einnamen[i].getUmsatz();
+      ergebnis += einnamen[i].getUmsatz(jahr);
     }
     Konto[] ausgaben = getAusgaben();
     for (int i=0;i<ausgaben.length;++i)
     {
-      ergebnis -= ausgaben[i].getUmsatz();
+      ergebnis -= ausgaben[i].getUmsatz(jahr);
     }
     return ergebnis;
   }
@@ -101,6 +107,9 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
 
 /*********************************************************************
  * $Log: BetriebsergebnisImpl.java,v $
+ * Revision 1.3  2005/09/26 23:51:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/09/04 23:10:14  willuhn
  * *** empty log message ***
  *

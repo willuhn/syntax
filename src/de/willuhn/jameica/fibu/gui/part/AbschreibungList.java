@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AbschreibungList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/25 22:18:22 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -42,7 +43,7 @@ public class AbschreibungList extends TablePart
    */
   public AbschreibungList(Anlagevermoegen a, Action action) throws RemoteException
   {
-    super(a.getAbschreibungen(), action);
+    super(a.getAbschreibungen(Settings.getActiveGeschaeftsjahr()), action);
     
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
@@ -93,6 +94,9 @@ public class AbschreibungList extends TablePart
 
 /*********************************************************************
  * $Log: AbschreibungList.java,v $
+ * Revision 1.4  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/25 22:18:22  willuhn
  * @B bug 122
  *

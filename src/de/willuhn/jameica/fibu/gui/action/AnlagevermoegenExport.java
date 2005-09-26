@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,6 +27,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -50,6 +52,25 @@ public class AnlagevermoegenExport implements Action
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
+    Geschaeftsjahr jahr = null;
+    if (context != null && context instanceof Geschaeftsjahr)
+    {
+      jahr = (Geschaeftsjahr) context;
+      
+    }
+    else
+    {
+      try
+      {
+        jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to determine active geschaeftsjahr",e);
+        throw new ApplicationException(i18n.tr("Aktuelles Geschäftsjahr kann nicht ermittelt werden"));
+      }
+    }
+    
     // TODO: Einzeluebersicht fehlt noch
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
     fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
@@ -94,13 +115,14 @@ public class AnlagevermoegenExport implements Action
       while (i.hasNext())
       {
         Anlagevermoegen av = (Anlagevermoegen) i.next();
-        if (av.getRestwert() > 0.0d)
+        if (av.getRestwert(jahr) > 0.0d)
           list.add(av);
       }
       
       Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
       Export export = new Export();
       export.addObject("anlagevermoegen",av);
+      export.addObject("jahr",jahr);
       export.setTarget(new FileOutputStream(file));
       export.setTitle(i18n.tr("Gesamtübersicht des Anlagevermögens"));
       export.setTemplate("anlagevermoegen.vm");
@@ -124,6 +146,9 @@ public class AnlagevermoegenExport implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.4  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

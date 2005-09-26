@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.6 $
+ * $Date: 2005/09/26 23:52:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.fibu.io;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.OutputStreamWriter;
-import java.rmi.RemoteException;
 import java.util.Date;
 
 import org.apache.velocity.Template;
@@ -24,7 +23,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
@@ -73,9 +71,8 @@ public class VelocityExporter
    * Exportiert die Daten in den angegebenen OutputStream.
    * @param export der zu druckende Export.
    * @throws ApplicationException
-   * @throws RemoteException
    */
-  public static synchronized void export(Export export) throws ApplicationException, RemoteException
+  public static synchronized void export(Export export) throws ApplicationException
   {
     if (export == null || export.getTarget() == null)
       throw new ApplicationException(i18n.tr("Kein Ausgabe-Ziel für die Datei angegeben"));
@@ -87,7 +84,6 @@ public class VelocityExporter
     Logger.debug("preparing velocity context");
     VelocityContext context = new VelocityContext();
 
-    context.put("jahr",           Settings.getActiveGeschaeftsjahr());
     context.put("math",           new Math());
     context.put("datum",          new Date());
     context.put("dateformat",     Fibu.DATEFORMAT);
@@ -133,6 +129,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.6  2005/09/26 23:52:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *
