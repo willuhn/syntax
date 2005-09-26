@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.22 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,11 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -129,7 +133,25 @@ public class KontoControl extends AbstractControl
 			return steuer;
 
 		if (getKonto().getKontoArt().isSteuerpflichtig())
-			steuer = new SelectInput(Settings.getDBService().createList(Steuer.class),getKonto().getSteuer());
+    {
+      DBIterator list = Settings.getDBService().createList(Steuer.class);
+      Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+      ArrayList found = new ArrayList();
+      while (list.hasNext())
+      {
+        Steuer s = (Steuer) list.next();
+        Konto k = s.getSteuerKonto();
+        if (k == null)
+          continue;
+        Kontenrahmen kr2 = k.getKontenrahmen();
+        if (kr2 == null)
+          continue;
+        if (kr2.equals(kr))
+          found.add(s);
+      }
+      GenericIterator i = PseudoIterator.fromArray((Steuer[])found.toArray(new Steuer[found.size()]));
+      steuer = new SelectInput(i,getKonto().getSteuer());
+    }
 		else
 			steuer = new LabelInput(i18n.tr("Konto besitzt keinen Steuersatz."));
 		return steuer;
@@ -200,6 +222,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.22  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

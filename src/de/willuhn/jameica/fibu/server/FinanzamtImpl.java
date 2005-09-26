@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/10 17:48:02 $
+ * $Revision: 1.12 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,22 +171,6 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
       if (name == null || "".equals(name)) {
         throw new ApplicationException("Bitte geben Sie den Namen des Finanzamtes ein.");
       }
-  
-      String plz = getPLZ();
-      if (plz == null || "".equals(plz)) {
-        throw new ApplicationException("Bitte geben Sie die Postleitzahl des Finanzamtes ein.");
-      }
-  
-      String ort = getOrt();
-      if (ort == null || "".equals(ort)) {
-        throw new ApplicationException("Bitte geben Sie den Ort des Finanzamtes ein.");
-      }
-  
-      String strasse  = getStrasse();
-      String postfach = getPostfach();
-      if ((strasse == null || "".equals(strasse)) && (postfach == null || "".equals(postfach))) {
-        throw new ApplicationException("Bitte geben Sie entweder Postfach oder die Strasse des Finanzamtes ein.");
-      }
     }
     catch (RemoteException e)
     {
@@ -199,6 +183,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
+ * Revision 1.12  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/08/10 17:48:02  willuhn
  * @C refactoring
  *

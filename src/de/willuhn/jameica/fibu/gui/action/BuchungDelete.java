@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -25,7 +26,7 @@ import de.willuhn.util.I18N;
 /**
  * Aktion zum Loeschen einer einzelnen oder einer Liste von Buchungen.
  */
-public class BuchungDelete extends BaseAction
+public class BuchungDelete implements Action
 {
 
   /**
@@ -33,12 +34,6 @@ public class BuchungDelete extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
-    
     if (context == null || (!(context instanceof BaseBuchung) && !(context instanceof BaseBuchung[])))
       return;
     
@@ -111,6 +106,9 @@ public class BuchungDelete extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungDelete.java,v $
+ * Revision 1.7  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

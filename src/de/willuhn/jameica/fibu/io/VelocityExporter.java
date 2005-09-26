@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,8 @@ import org.apache.velocity.app.Velocity;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -93,6 +95,11 @@ public class VelocityExporter
     context.put("decimalformat",  Fibu.DECIMALFORMAT);
     context.put("export",         export);
 
+    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(Fibu.class);
+    Manifest manifest = plugin.getManifest();
+    String version = manifest.getName() + " " + manifest.getVersion() + " [Build: " + plugin.getBuildnumber() + " - " + plugin.getBuildDate() + "]";
+    context.put("version",        version);
+
     BufferedWriter writer = null;
     try
     {
@@ -126,6 +133,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.5  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

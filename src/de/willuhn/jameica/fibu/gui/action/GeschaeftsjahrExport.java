@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/GeschaeftsjahrExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/04 23:10:14 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -37,7 +38,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer Uebersicht die Uberschuss-Rechnung.
  */
-public class GeschaeftsjahrExport extends BaseAction
+public class GeschaeftsjahrExport implements Action
 {
 
   /**
@@ -45,12 +46,6 @@ public class GeschaeftsjahrExport extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
-
     if (context == null || !(context instanceof Geschaeftsjahr))
       return;
     
@@ -118,6 +113,9 @@ public class GeschaeftsjahrExport extends BaseAction
 
 /*********************************************************************
  * $Log: GeschaeftsjahrExport.java,v $
+ * Revision 1.4  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/04 23:10:14  willuhn
  * *** empty log message ***
  *

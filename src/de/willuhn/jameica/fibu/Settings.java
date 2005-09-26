@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/09/05 15:00:43 $
+ * $Revision: 1.27 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,10 +14,13 @@ package de.willuhn.jameica.fibu;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
@@ -124,11 +127,69 @@ public class Settings
         }
       }
 
-      if (ask && !Application.inServerMode())
+      if (ask)
       {
-        Logger.info("open gj select dialog");
-        GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
-        jahr = (Geschaeftsjahr) d.open();
+        DBIterator list = getDBService().createList(Geschaeftsjahr.class);
+        if (list.size() > 0 && !Application.inServerMode())
+        {
+          // TODO Das funktioniert im Client/Server-Mode noch nicht.
+          Logger.info("open gj select dialog");
+          GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
+          jahr = (Geschaeftsjahr) d.open();
+        }
+        else
+        {
+          Logger.info("auto creating new mandant/geschaeftsjahr");
+          Finanzamt fa = null;
+          try
+          {
+            DBIterator faList = getDBService().createList(Finanzamt.class);
+            if (faList.size() > 0)
+            {
+              Logger.info("reusing existing finanzamt");
+              fa = (Finanzamt) faList.next();
+              fa.transactionBegin();
+            }
+            else
+            {
+              fa = (Finanzamt) getDBService().createObject(Finanzamt.class,null);
+              fa.setName("default");
+              fa.transactionBegin();
+              fa.store();
+            }
+            
+            Mandant m = null;
+            DBIterator mList = getDBService().createList(Mandant.class);
+            if (mList.size() > 0)
+            {
+              Logger.info("reusing existing mandant");
+              m = (Mandant) mList.next();
+            }
+            else
+            {
+              m = (Mandant) getDBService().createObject(Mandant.class,null);
+              m.setFinanzamt(fa);
+              m.setFirma("default");
+              m.store();
+            }
+            
+            jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,null);
+            jahr.setKontenrahmen((Kontenrahmen) getDBService().createObject(Kontenrahmen.class,"2"));
+            jahr.setMandant(m);
+            jahr.store();
+            
+            fa.transactionCommit();
+            Logger.info("finanzamt, mandant, geschaeftsjahr created");
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
+            if (fa != null)
+              fa.transactionRollback();
+            throw e;
+          }
+          
+        }
       }
 
       setStatus();
@@ -138,7 +199,7 @@ public class Settings
     catch (Exception e)
     {
       Logger.error("error while choosing mandant",e);
-      throw new RemoteException("Fehler beim Auswählen des aktiven Mandanten");
+      throw new RemoteException("Fehler beim Auswählen/Erstellen des aktiven Geschäftsjahres");
     }
     finally
     {
@@ -175,6 +236,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.27  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.26  2005/09/05 15:00:43  willuhn
  * *** empty log message ***
  *

@@ -53,6 +53,7 @@ $math.reset("ausgaben")
   </tr>
 </table>
 
+<br/><br/>
 <h1>II.Ergebnis:</h1>
 
 <table class="data">
@@ -68,7 +69,7 @@ $math.reset("ausgaben")
     <td colspan="2" style="border-top:1px solid #000000;">&nbsp;</td>
   </tr>
   <tr>
-    <td style="border-bottom:1px solid #000000;">Ergebnis</td>
-    <td style="border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($ergebnis.Betriebsergebnis)} ${eur}</td>
+    <td style="font-weight:bold;border-bottom:1px solid #000000;">Ergebnis</td>
+    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($ergebnis.Betriebsergebnis)} ${eur}</td>
   </tr>
 </table>

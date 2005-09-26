@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
@@ -40,7 +41,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer das Buchungsjournal.
  */
-public class BuchungListExport extends BaseAction
+public class BuchungListExport implements Action
 {
 
   /**
@@ -49,12 +50,6 @@ public class BuchungListExport extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
-
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
@@ -142,6 +137,9 @@ public class BuchungListExport extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.4  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *

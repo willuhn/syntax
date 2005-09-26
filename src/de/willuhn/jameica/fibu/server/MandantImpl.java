@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.19 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,10 +210,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
       if (firma == null || "".equals(firma))
         throw new ApplicationException(i18n.tr("Bitte geben Sie die Firma ein."));
   
-      String steuernummer = getSteuernummer();
-      if (steuernummer == null || "".equals(steuernummer))
-        throw new ApplicationException(i18n.tr("Bitte geben Sie die Steuernummer ein."));
-  
       if (getFinanzamt() == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Finanzamt aus."));
 
@@ -322,6 +318,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.19  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

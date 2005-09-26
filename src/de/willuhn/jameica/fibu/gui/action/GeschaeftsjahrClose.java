@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrClose.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/01 16:34:44 $
+ * $Revision: 1.4 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Date;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.server.BuchungsEngine;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -30,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * Action zum Schliessen des Geschaeftsjahres.
  */
-public class GeschaeftsjahrClose extends BaseAction
+public class GeschaeftsjahrClose implements Action
 {
 
   /**
@@ -38,12 +39,6 @@ public class GeschaeftsjahrClose extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
-
     if (context == null || !(context instanceof Geschaeftsjahr))
       return;
     
@@ -111,6 +106,9 @@ public class GeschaeftsjahrClose extends BaseAction
 
 /*********************************************************************
  * $Log: GeschaeftsjahrClose.java,v $
+ * Revision 1.4  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/01 16:34:44  willuhn
  * *** empty log message ***
  *

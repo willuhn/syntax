@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
@@ -20,7 +21,7 @@ import de.willuhn.util.ApplicationException;
  * Action zum Laden der Liste der Buchungen.
  * @author willuhn
  */
-public class BuchungListe extends BaseAction
+public class BuchungListe implements Action
 {
 
   /**
@@ -28,11 +29,6 @@ public class BuchungListe extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
     GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungListe.class,context);
   }
 
@@ -41,6 +37,9 @@ public class BuchungListe extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.5  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

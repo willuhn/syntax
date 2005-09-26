@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/09/24 13:00:13 $
+ * $Revision: 1.28 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -148,14 +148,6 @@ public class Fibu extends AbstractPlugin
       Logger.error("unable to create sql tables",e);
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
     }
-
-    String welcome = getResources().getI18N().tr("Fibu für Jameica");
-    welcome += "\n";
-    welcome += getResources().getI18N().tr("Beachten Sie bitte folgende erste Schritte in dieser Reihenfolge:\n" +
-      "   - Legen Sie zuerst ein Finanzamt an (Menü: Plugins/Fibu/Finanzämter)\n" +
-      "   - Erstellen Sie anschliessend einen neuen Mandanten (Navigation: Fibu/Mandanten)\n");
-
-    Application.addWelcomeMessage(welcome);
   }
 
   /**
@@ -168,6 +160,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.28  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/09/24 13:00:13  willuhn
  * @B bugfixes according to bugzilla
  *

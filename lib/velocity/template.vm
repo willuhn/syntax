@@ -13,7 +13,7 @@
     p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
       font-family              : Verdana, Helvetica, Arial;
       color                    : #000000;
-      font-size                : 8pt;
+      font-size                : 9pt;
     }
 
     table {
@@ -37,7 +37,7 @@
       border-bottom            : 1px solid #000000;
     }
     table.data td {
-      font-size                : 7pt;
+      font-size                : 8pt;
       white-space              : nowrap;
     }
 
@@ -60,79 +60,18 @@
 
     h2 {
       font-weight              : bold;
-      font-size                : 8pt;
+      font-size                : 10pt;
       margin-top               : 1px;
       margin-bottom            : 3px;
     }
 
     h3 {
-      font-weight              : normal;
-      font-size                : 7pt;
+      font-weight              : bold;
+      font-size                : 9pt;
       margin-top               : 5px;
       margin-bottom            : 0px;
     }
 
-    div.comment {
-      margin-top               : 4px;
-      margin-bottom            : 4px;
-      padding-left             : 4px;
-      padding-top              : 2px;
-      border                   : 1px solid #E0E0E0;
-      font-size                : 7pt;
-      color                    : #707070;
-    }
-
-    div.box {
-      margin-top               : 4px;
-      margin-bottom            : 4px;
-      padding-left             : 4px;
-      padding-top              : 2px;
-      border                   : 1px solid #E0E0E0;
-      color                    : #404040;
-    }
-
-    pre {
-      margin-top               : 4px;
-      margin-bottom            : 4px;
-      padding                  : 4px;
-      border                   : 1px solid #E0E0E0;
-      font-family              : BitStream Vera Sans Mono, Terminal [DEC], Courier New, Courier;
-      font-size                : 8pt;
-      color                    : #505050;
-    }
-
-    select,input,textarea,file {
-      font-family             : Verdana, Helvetica, Arial;
-      background-color        : #ffffff;
-      border-style            : none;
-      border                   : solid 1px #909090;
-      font-size               : 8pt;
-    }
-
-    a:link  {
-      color                    : #000088;
-      text-decoration          : none;
-    }
-
-    a:visited  {
-      color                    : #808080;
-      text-decoration          : none;
-    }
-
-    a:hover {
-      color                    : #0000dd;
-      text-decoration          : none;
-    }
-
-    a:active {
-      color                    : #0000dd;
-      text-decoration          : none;
-    }
-
-    a:focus {
-      color                    : #0000dd;
-      text-decoration          : none;
-    }
   </style>
   <body>
 
@@ -143,27 +82,29 @@
         <h1>$!{export.Title}</h1>
         Geschäftsjahr: $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}
       </td>
-      <td style="text-align:right;">Druck: $!{longdateformat.format(${datum})}</td>
+      <td style="text-align:right;">
+      	Druck: $!{longdateformat.format(${datum})}
+      	<br/>
+      	Version: $!{version}
+      </td>
     </tr>
   </table>
 
   <table>
     <tr>
       <td>
-        <b>
-          $!{mandant.Name1} $!{mandant.Name2}
-          <br/>
-          $!{mandant.Firma}
-          <br/>
-          $!{mandant.Strasse}
-          <br/>
-          $!{mandant.PLZ} $!{mandant.Ort}
-        </b>
+        $!{mandant.Name1} $!{mandant.Name2}
+        <br/>
+        $!{mandant.Firma}
+        <br/>
+        $!{mandant.Strasse}
+        <br/>
+        $!{mandant.PLZ} $!{mandant.Ort}
       </td>
       <td>
-        <b>Steuer-Nr.:</b> $!{mandant.Steuernummer}
+        Steuer-Nr.: $!{mandant.Steuernummer}
         <br/>
-        <b>Finanzamt:</b> $!{mandant.Finanzamt.Name}
+        Finanzamt: $!{mandant.Finanzamt.Name}
       </td>
     </tr>
     <tr>

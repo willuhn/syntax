@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,14 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenExport;
+import de.willuhn.jameica.fibu.gui.action.BuchungListExport;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrExport;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
+import de.willuhn.jameica.fibu.gui.action.KontoExport;
+import de.willuhn.jameica.fibu.gui.action.SaldenExport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
@@ -63,6 +68,12 @@ public class GeschaeftsjahrListMenu extends ContextMenu
       }
     }));
     this.addItem(new MenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Anlagevermögen"), new AnlagevermoegenExport()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Buchungsjournal"), new BuchungListExport()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Konto-Auszüge"), new KontoExport()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Summen- und Saldenliste"), new SaldenExport()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Überschuss-Rechnung"), new GeschaeftsjahrExport()));
   }
   
   /**
@@ -120,6 +131,9 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.5  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

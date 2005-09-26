@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/22 23:13:26 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -27,7 +28,7 @@ import de.willuhn.util.I18N;
 /**
  * Action zum Anlegen einer neuen Buchung.
  */
-public class BuchungNeu extends BaseAction
+public class BuchungNeu implements Action
 {
 
   /**
@@ -35,11 +36,6 @@ public class BuchungNeu extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
     Buchung b = null;
     if (context != null)
     {
@@ -67,6 +63,9 @@ public class BuchungNeu extends BaseAction
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.9  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/08/22 23:13:26  willuhn
  * *** empty log message ***
  *

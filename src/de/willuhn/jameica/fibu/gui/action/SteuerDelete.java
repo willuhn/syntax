@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/SteuerDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/26 15:15:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -25,7 +26,7 @@ import de.willuhn.util.I18N;
 /**
  * Action zum Loeschen eines Steuersatzes.
  */
-public class SteuerDelete extends BaseAction
+public class SteuerDelete implements Action
 {
 
   /**
@@ -33,12 +34,6 @@ public class SteuerDelete extends BaseAction
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (!check())
-    {
-      super.handleAction(context);
-      return;
-    }
-
     if (context == null || !(context instanceof Steuer))
       return;
     
@@ -71,6 +66,9 @@ public class SteuerDelete extends BaseAction
 
 /*********************************************************************
  * $Log: SteuerDelete.java,v $
+ * Revision 1.5  2005/09/26 15:15:39  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *
