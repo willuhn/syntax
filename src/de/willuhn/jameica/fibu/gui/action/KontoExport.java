@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/26 23:57:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
@@ -109,12 +110,15 @@ public class KontoExport implements Action
       {
         jahr = (Geschaeftsjahr) context;
         DBIterator konten = jahr.getKontenrahmen().getKonten();
-        k = new Konto[konten.size()];
-        int i = 0;
+        ArrayList l = new ArrayList();
         while (konten.hasNext())
         {
-          k[i++] = (Konto) konten.next();
+          Konto k1 = (Konto) konten.next();
+          if (k1.getUmsatz(jahr) == 0.0d)
+            continue;
+          l.add(k1);
         }
+        k = (Konto[]) l.toArray(new Konto[l.size()]);
       }
         
       export.addObject("konten",k);
@@ -153,6 +157,9 @@ public class KontoExport implements Action
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.8  2005/09/26 23:57:19  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *
