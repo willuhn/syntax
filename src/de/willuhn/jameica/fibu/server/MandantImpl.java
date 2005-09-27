@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.20 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.util.I18N;
  */
 public class MandantImpl extends AbstractDBObject implements Mandant
 {
-  private I18N i18n = null;
+  private transient I18N i18n = null;
 
   /**
    * Erzeugt einen neuen Mandanten.
@@ -318,6 +318,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.20  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

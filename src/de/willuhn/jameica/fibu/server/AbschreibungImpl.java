@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.5 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ import de.willuhn.util.I18N;
 public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 {
 
-  private I18N i18n = null;
+  private transient I18N i18n = null;
   
   /**
    * @throws java.rmi.RemoteException
@@ -139,6 +139,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.5  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *

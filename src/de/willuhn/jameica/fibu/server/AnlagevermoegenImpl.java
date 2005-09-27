@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ import de.willuhn.util.I18N;
 public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermoegen
 {
 
-  private I18N i18n = null;
+  private transient I18N i18n = null;
   private Boolean canChange = null;
   
   /**
@@ -421,6 +421,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.9  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *

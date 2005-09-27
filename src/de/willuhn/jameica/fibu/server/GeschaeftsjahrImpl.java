@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,8 +42,7 @@ import de.willuhn.util.I18N;
 public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsjahr
 {
 
-  private I18N i18n       = null;
-  private Mandant mandant = null;
+  private transient I18N i18n  = null;
   
   /**
    * @throws java.rmi.RemoteException
@@ -162,10 +161,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public Mandant getMandant() throws RemoteException
   {
-    if (this.mandant == null)
-      this.mandant = (Mandant) getAttribute("mandant_id");
-    return this.mandant;
-
+    return (Mandant) this.getAttribute("mandant_id");
   }
 
   /**
@@ -173,7 +169,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public void setMandant(Mandant m) throws RemoteException
   {
-    this.mandant = m;
     setAttribute("mandant_id",m);
   }
   
@@ -482,6 +477,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.14  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *

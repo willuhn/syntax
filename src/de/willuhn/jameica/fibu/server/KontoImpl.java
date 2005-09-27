@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.32 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,9 +38,9 @@ import de.willuhn.util.Session;
 public class KontoImpl extends AbstractDBObject implements Konto
 {
   // Cachen wir der Performance wegen
-  private final static Session kontoArtCache     = new Session();
-  private final static Session kontoTypCache     = new Session();
-  private final static Session kontenRahmenCache = new Session();
+  private final transient static Session kontoArtCache     = new Session();
+  private final transient static Session kontoTypCache     = new Session();
+  private final transient static Session kontenRahmenCache = new Session();
   
   /**
    * Erzeugt ein neues Konto.
@@ -398,6 +398,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.32  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.31  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/09/25 22:18:23 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/27 17:41:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implements BaseBuchung
 {
-  I18N i18n = null;
+  transient I18N i18n = null;
   
   /**
    * Erzeugt eine neue BaseBuchung.
@@ -336,6 +336,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.14  2005/09/27 17:41:27  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2005/09/25 22:18:23  willuhn
  * @B bug 122
  *
