@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.28 $
+ * $Date: 2005/09/28 17:25:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,6 +169,7 @@ public class Settings
             {
               m = (Mandant) getDBService().createObject(Mandant.class,null);
               m.setFinanzamt(fa);
+              m.setSteuernummer("");
               m.setFirma("default");
               m.store();
             }
@@ -236,6 +237,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.28  2005/09/28 17:25:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.27  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *
