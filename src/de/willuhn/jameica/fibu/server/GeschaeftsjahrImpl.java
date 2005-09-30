@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/09/27 17:41:27 $
+ * $Revision: 1.15 $
+ * $Date: 2005/09/30 17:12:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,7 +94,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     // Jetzt noch auf den Anfang des Tages setzen.
     cal.set(Calendar.HOUR_OF_DAY,0);
     cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,1);
+    cal.set(Calendar.SECOND,0);
 
     d = cal.getTime();
     setBeginn(d);
@@ -153,7 +153,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public boolean check(Date d) throws RemoteException
   {
-    return getBeginn().before(d) && getEnde().after(d);
+    if (d == null)
+      return false;
+    return ((d.after(getBeginn()) || d.equals(getBeginn()))  && d.before(getEnde()));
   }
 
   /**
@@ -477,6 +479,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.15  2005/09/30 17:12:06  willuhn
+ * @B bug 122
+ *
  * Revision 1.14  2005/09/27 17:41:27  willuhn
  * *** empty log message ***
  *

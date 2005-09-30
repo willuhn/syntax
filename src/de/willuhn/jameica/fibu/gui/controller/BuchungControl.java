@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.52 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.53 $
+ * $Date: 2005/09/30 17:12:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,37 +170,30 @@ public class BuchungControl extends AbstractControl
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
 		
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-		final String waehrung = jahr.getMandant().getWaehrung();
-    final KontoListener kl = new KontoListener();
-		DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    DBIterator list = Settings.getDBService().createList(Konto.class);
+    list.addFilter("kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-		d.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
-        if (k == null)
-          return;
-				try {
-          sollKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
-          sollKontoAuswahl.setValue(k.getKontonummer());
-          sollKontoAuswahl.setText(k.getKontonummer());
-          kl.handleEvent(event);
-				}
-				catch (RemoteException e)
-				{
-					Logger.error("unable to load konto",e);
-				}
 
-      }
-    });
-		
     Konto k = getBuchung().getSollKonto();
-    sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    sollKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
+
+    sollKontoAuswahl      = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    KontoListener kl      = new KontoListener(sollKontoAuswahl,true);
+    SollKontoListener skl = new SollKontoListener();
+
+    sollKontoAuswahl.addListener(kl);
+    sollKontoAuswahl.addListener(skl);
+    sollKontoAuswahl.setComment("");
+
+    d.addCloseListener(kl);
+    d.addCloseListener(skl);
+    
+    // Einmal ausloesen, damit das Ding sofort beim Oeffnen aktiv wird.
+    kl.handleEvent(new Event());
+
     return sollKontoAuswahl;
-	}
+
+  }
 
 
 	/**
@@ -213,40 +206,24 @@ public class BuchungControl extends AbstractControl
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    final String waehrung = jahr.getMandant().getWaehrung();
     DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.addFilter("kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
-        if (k == null)
-          return;
-        try {
-          habenKontoAuswahl.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
-          habenKontoAuswahl.setValue(k.getKontonummer());
-          habenKontoAuswahl.setText(k.getKontonummer());
-          // BUGZILLA 122
-          Kontoart ka = k.getKontoArt();
-          String text = (String) getText().getValue();
-          if ((text == null || text.length() == 0) && (ka.getKontoArt() == Kontoart.KONTOART_AUFWAND || ka.getKontoArt() == Kontoart.KONTOART_ERLOES))
-          {
-            getText().setValue(k.getName());
-          }
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load konto",e);
-        }
 
-      }
-    });
-    
     Konto k = getBuchung().getHabenKonto();
-    habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    habenKontoAuswahl.setComment(k == null ? "" : i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
+
+    habenKontoAuswahl     = new DialogInput(k == null ? null : k.getKontonummer(),d);
+    KontoListener kl      = new KontoListener(habenKontoAuswahl,false);
+
+    habenKontoAuswahl.addListener(kl);
+    habenKontoAuswahl.setComment("");
+
+    d.addCloseListener(kl);
+    
+    // Einmal ausloesen, damit das Ding sofort beim Oeffnen aktiv wird.
+    kl.handleEvent(new Event());
+
     return habenKontoAuswahl;
 	}
 
@@ -467,31 +444,8 @@ public class BuchungControl extends AbstractControl
       }
       else
       {
-        String s = o.toString();
-        // BUGZILLA 122
-        DateFormat df = null;
-        switch (s.length())
-        {
-          case 10:
-            df = Fibu.DATEFORMAT;
-            break;
-          case 8:
-            df = Fibu.FASTDATEFORMAT;
-            break;
-          case 6:
-            df = Fibu.BUCHUNGDATEFORMAT;
-            break;
-          case 4:
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
-            s += cal.get(Calendar.YEAR);
-            df = Fibu.FASTDATEFORMAT;
-            break;
-          default:
-            throw new ApplicationException(i18n.tr("Unbekanntes Datumsformat {0}",s));
-        }
         try {
-          d = df.parse(s);
+          d = parse(o.toString());
         }
         catch (ParseException e)
         {
@@ -524,8 +478,6 @@ public class BuchungControl extends AbstractControl
       //
       //////////////////////////////////////////////////////////////////////////
       
-      String text = (String)getText().getValue();
-
       //////////////////////////////////////////////////////////////////////////
       // Haben-Konto checken
       
@@ -543,7 +495,7 @@ public class BuchungControl extends AbstractControl
       //
       //////////////////////////////////////////////////////////////////////////
 
-			getBuchung().setText(text);
+			getBuchung().setText((String)getText().getValue());
       
       // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
 			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
@@ -668,7 +620,7 @@ public class BuchungControl extends AbstractControl
   /**
    * Listener, der das Feld fuer die Steuer aktualisiert.
    */
-  private class KontoListener implements Listener
+  private class SollKontoListener implements Listener
   {
 
     /**
@@ -744,6 +696,104 @@ public class BuchungControl extends AbstractControl
   }
 
   /**
+   * Listener, der fuer beide Konto-Auswahlfelder taugt.
+   * @author willuhn
+   */
+  private class KontoListener implements Listener
+  {
+    private DialogInput input = null;
+    private boolean soll = true;
+    
+    /**
+     * ct.
+     * @param input
+     * @param soll
+     */
+    private KontoListener(DialogInput input, boolean soll)
+    {
+      this.input = input;
+      this.soll = soll;
+    }
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try {
+        Konto k = readKonto(event.data);
+
+        if (k == null)
+          return;
+
+        Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+
+        input.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), jahr.getMandant().getWaehrung(), k.getName()}));
+        input.setValue(k.getKontonummer());
+        input.setText(k.getKontonummer());
+        
+        // BUGZILLA 122 (Text-Vervollstaendigung)
+        try
+        {
+          String text = (String) getText().getValue();
+          if (text != null && text.length() > 0)
+            return;
+
+          Kontoart ka = k.getKontoArt();
+          if (ka.getKontoArt() != Kontoart.KONTOART_GELD)
+            return;
+          
+          DialogInput di = getSollKontoAuswahl();
+          if (soll)
+            di = getHabenKontoAuswahl();
+          
+          Konto gegen = readKonto(di.getText());
+          if (gegen == null)
+            return;
+          getText().setValue(gegen.getName());
+        }
+        catch (Exception e2)
+        {
+          Logger.error("unable to autocomplete text",e2);
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to load konto",e);
+      }
+
+    }
+    
+    private Konto readKonto(Object o) throws RemoteException
+    {
+      if (o != null && (o instanceof Konto))
+      {
+        return (Konto) o;
+      }
+      else
+      {
+        String s = null;
+        if (o != null)
+          s = o.toString();
+        else
+          s = input.getText();
+        
+        if (s == null || s.length() == 0)
+          return null;
+       
+        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+        konten.addFilter("kontonummer = '" + s + "'");
+        if (!konten.hasNext())
+        {
+          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+          return null;
+        }
+        return (Konto) konten.next();
+      }
+      
+    }
+  }
+
+  /**
    * Listener, der hinter dem Buchungsdatum den Wochentag anzeigt.
    */
   private class WochentagListener implements Listener
@@ -753,62 +803,77 @@ public class BuchungControl extends AbstractControl
 		 */
 		public void handleEvent(Event event)
 		{
-			Text t = (Text) event.widget;
-			if (t == null)
-				return;
-			String datum = t.getText();
-
-			Date d = null;
-			try {
-				d = Fibu.DATEFORMAT.parse(datum);
-			}
-			catch (ParseException e)
-			{
-				// ok, evtl. ein Datum in Kurzformat, wir versuchen's mal
-				try {
-					d = Fibu.FASTDATEFORMAT.parse(datum);
-				}
-				catch (ParseException e2)
-				{
-					try {
-            // ok, evtl. 4-stelliges Datum mit GJ vom Mandanten
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
-            d = Fibu.FASTDATEFORMAT.parse(datum + "" + cal.get(Calendar.YEAR));
-					}
-					catch (Exception e3)
-					{
-            Logger.warn("unable to parse entered date");
-						return;
-					}
-				}
-			}
-
-			if (d == null)
-				return;
-
-			Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-			cal.setTime(d);
-			int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
-			if (i < 0 || i >= Fibu.WEEKDAYS.length)
-				return;
-			try
+      try
       {
+        Text t = (Text) event.widget;
+        if (t == null)
+          return;
+
+        // Parsen
+        Date d = parse(t.getText());
+
+        // Wochentag ergaenzen
+        Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+        cal.setTime(d);
+        int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (i < 0 || i >= Fibu.WEEKDAYS.length)
+          return;
+
         String s = Fibu.DATEFORMAT.format(d);
         getDatum().setText(s);
         getDatum().setValue(s);
         getDatum().setComment(i18n.tr(Fibu.WEEKDAYS[i]));
       }
-      catch (RemoteException e1)
+      catch (Exception e)
       {
-      	Logger.error("unable to update week day",e1);
+        Logger.error("unable to update week day",e);
       }
 		}
 	}
+
+  /**
+   * Parst ein Datum.
+   * @param datum
+   * @return das Datum.
+   * @throws ParseException
+   * @throws RemoteException
+   */
+  private Date parse(String datum) throws ParseException, RemoteException
+  {
+    // BUGZILLA 122
+    DateFormat df = null;
+    switch (datum.length())
+    {
+      case 10:
+        df = Fibu.DATEFORMAT;
+        break;
+      case 8:
+        df = Fibu.FASTDATEFORMAT;
+        break;
+      case 6:
+        df = Fibu.BUCHUNGDATEFORMAT;
+        break;
+      case 4:
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
+        datum += cal.get(Calendar.YEAR);
+        df = Fibu.FASTDATEFORMAT;
+        break;
+      default:
+        throw new ParseException("unknown date format: " + datum,0);
+    }
+
+    // Parsen
+    return df.parse(datum);
+    
+  }
 }
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.53  2005/09/30 17:12:06  willuhn
+ * @B bug 122
+ *
  * Revision 1.52  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *
