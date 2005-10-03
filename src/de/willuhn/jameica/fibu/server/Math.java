@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/08/24 23:02:31 $
+ * $Revision: 1.9 $
+ * $Date: 2005/10/03 21:55:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,12 +78,27 @@ public class Math
   {
     Double d = (Double) this.table.get(name);
     if (d == null)
-      d = new Double(value);
-    else
-      d = new Double(d.doubleValue() + value);
+      d = new Double(0d);
+
+    d = new Double(d.doubleValue() + value);
     this.table.put(name,d);
   }
   
+  /**
+   * Substrahiert den Betrag von Summe mit diesem Namen.
+   * @param name Name der Summe.
+   * @param value zu substrahierender Betrag.
+   */
+  public void subtract(String name, double value)
+  {
+    Double d = (Double) this.table.get(name);
+    if (d == null)
+      d = new Double(0d);
+
+    d = new Double(d.doubleValue() - value);
+    this.table.put(name,d);
+  }
+
   /**
    * Liefert den aufsummierten Betrag fuer diesen Namen.
    * @param name Name der Summe.
@@ -109,6 +124,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.9  2005/10/03 21:55:24  willuhn
+ * @B bug 128, 129
+ *
  * Revision 1.8  2005/08/24 23:02:31  willuhn
  * *** empty log message ***
  *

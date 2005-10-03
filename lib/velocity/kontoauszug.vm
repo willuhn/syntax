@@ -2,9 +2,8 @@
 
 #foreach($konto in $konten)
 
-  $math.reset("netto")
-  $math.reset("steuer")
-  $math.reset("brutto")
+  $math.reset("soll")
+  $math.reset("haben")
 
   <table>
     <tr>
@@ -19,12 +18,12 @@
 
   <table class="data">
     <tr>
-      <th style="text-align:right">Beleg</th>
       <th>Datum</th>
+      <th style="text-align:right">Beleg</th>
       <th>Buchungstext</th>
-      <th style="text-align:right">Netto</th>
+      <th style="text-align:right">Soll</th>
+      <th style="text-align:right">Haben</th>
       <th style="text-align:right">Steuer</th>
-      <th style="text-align:right">Brutto</th>
       <th>Gegenkonto</th>
     </tr>
 
@@ -33,46 +32,47 @@
 
       #set($brutto  = $buchung.Betrag)
       #set($netto   = $math.netto($brutto,$buchung.Steuer))
-      #set($steuer  = $math.steuer($brutto,$buchung.Steuer))
       <tr>
-        <td style="text-align:right">$!{buchung.Belegnummer}</td>
         <td>$!{dateformat.format(${buchung.Datum})}</td>
+        <td style="text-align:right">$!{buchung.Belegnummer}</td>
         <td style="width:70%">$!{buchung.Text}</td>
-        <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-        <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
-        <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+
         #set($gegen = $buchung.SollKonto)
         #if ($gegen.Kontonummer == $konto.Kontonummer)
+          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+          <td>&nbsp;</td>
           #set($gegen = $buchung.HabenKonto)
+          $math.add("soll",${netto})
+        #else
+          <td>&nbsp;</td>
+          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+          $math.add("haben",${netto})
         #end
+        <td style="text-align:right">$!{decimalformat.format($buchung.Steuer)} %</td>
         <td>$!{gegen.Kontonummer} [$!{gegen.Name}]</td>
-
-        $math.add("netto",${netto})
-        $math.add("steuer",${steuer})
-        $math.add("brutto",${brutto})
       </tr>
     #end
 
     <tr>
-      <td colspan="3" style="border-top:1px solid #000000"><b>Gesamt:</b></td>
-      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
-      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("steuer"))} ${eur}</td>
-      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("brutto"))} ${eur}</td>
-      <td style="border-top:1px solid #000000">&nbsp;</td>
+      <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
+      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
+      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("haben"))} ${eur}</td>
+      <td colspan="2">&nbsp;</td>
     </tr>
   </table>
+  $math.subtract("haben",$math.get("soll"))
 
 	<br/>
 	<table>
 		<tr>
 		  <td>Summe der Umsätze:</td>
-      <td style="text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format($math.get("haben"))} ${eur}</td>
 		</tr>
 		#set($anfangsbestand = "")
-    #set($anfangsbestand = $!{konto.Anfangsbestand.Betrag})
+    #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
     #set($ab = $!{anfangsbestand.toString()})
     #if($ab != "")
-      $math.add("netto",${anfangsbestand})
+      $math.add("haben",${anfangsbestand})
 	    <tr>
 	      <td>+ Anfangsbestand:</td>
         <td style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
@@ -80,7 +80,7 @@
     #end
 		<tr>
 		  <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
-      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right"><b>$!{decimalformat.format($math.get("netto"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right"><b>$!{decimalformat.format($math.get("haben"))} ${eur}</b></td>
 		</tr>
   </table>
 

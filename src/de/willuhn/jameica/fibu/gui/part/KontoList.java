@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/03 21:55:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class KontoList extends TablePart
     this.search = new TextInput("");
     
     group.addLabelPair(i18n.tr("Bezeichnung enthält"), this.search);
-    group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Saldo anzeigen"));
+    group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
     
     super.paint(parent);
 
@@ -157,8 +157,9 @@ public class KontoList extends TablePart
                   for (int i=0;i<konten.size();++i)
                   {
                     k = (Konto) konten.get(i);
-                    
-                    if (checkSaldo && k.getSaldo(Settings.getActiveGeschaeftsjahr()) == 0.0d)
+
+                    // BUGZILLA 128
+                    if (checkSaldo && k.getBuchungen(Settings.getActiveGeschaeftsjahr()).size() == 0)
                       continue;
 
                     name = k.getName();
@@ -219,6 +220,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.11  2005/10/03 21:55:24  willuhn
+ * @B bug 128, 129
+ *
  * Revision 1.10  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *
