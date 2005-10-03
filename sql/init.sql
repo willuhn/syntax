@@ -174,7 +174,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1119, 4, '0520', 'Pkw', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1120, 4, '0540', 'Lkw', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1121, 4, '0560', 'Sonstige Transportmittel', 2, 1001);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1122, 2, '6220', 'Abschreibungen', 2, 1001);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1122, 2, '6220', 'Abschreibungen', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1123, 4, '0650', 'Büroeinrichtung', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1124, 4, '0640', 'Ladeneinrichtung', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1125, 4, '0620', 'Werkzeuge', 2, 1001);
@@ -225,7 +225,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1170, 2, '6430', 'Sonstige Abgaben', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1171, 2, '6500', 'Fahrzeugkosten', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1172, 2, '7685', 'Kfz-Steuern', 2, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1173, 2, '6520', 'Kfz-Versicherungen', 2, 1001);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1173, 2, '6520', 'Kfz-Versicherungen', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1174, 2, '6530', 'Laufende Kfz-Betriebskosten', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1175, 2, '6540', 'Kfz-Reparaturen', 2, 1001);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1176, 2, '6550', 'Garagenmieten', 2, 1001);

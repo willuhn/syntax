@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.53 $
- * $Date: 2005/09/30 17:12:06 $
+ * $Revision: 1.54 $
+ * $Date: 2005/10/03 14:22:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -314,7 +314,7 @@ public class BuchungControl extends AbstractControl
         if (k == null)
           return;
         try {
-          afaKonto.setComment(i18n.tr("[{0}] Saldo: {1} {2} [{3}]",new String[]{k.getKontenrahmen().getName(),Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
+          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
           afaKonto.setValue(k.getKontonummer());
           afaKonto.setText(k.getKontonummer());
         }
@@ -766,30 +766,25 @@ public class BuchungControl extends AbstractControl
     private Konto readKonto(Object o) throws RemoteException
     {
       if (o != null && (o instanceof Konto))
-      {
         return (Konto) o;
-      }
+
+      String s = null;
+      if (o != null)
+        s = o.toString();
       else
-      {
-        String s = null;
-        if (o != null)
-          s = o.toString();
-        else
-          s = input.getText();
-        
-        if (s == null || s.length() == 0)
-          return null;
-       
-        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-        konten.addFilter("kontonummer = '" + s + "'");
-        if (!konten.hasNext())
-        {
-          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-          return null;
-        }
-        return (Konto) konten.next();
-      }
+        s = input.getText();
       
+      if (s == null || s.length() == 0)
+        return null;
+     
+      DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+      konten.addFilter("kontonummer = '" + s + "'");
+      if (!konten.hasNext())
+      {
+        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
+        return null;
+      }
+      return (Konto) konten.next();
     }
   }
 
@@ -871,6 +866,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.54  2005/10/03 14:22:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.53  2005/09/30 17:12:06  willuhn
  * @B bug 122
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/09/27 17:41:27 $
+ * $Revision: 1.33 $
+ * $Date: 2005/10/03 14:22:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,7 +101,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
     if (getID() == null || getID().length() == 0)
       return 0;
 
-    Double d = SaldenCache.get(jahr.getID() + "." + this.getKontonummer());
+    Double d = SaldenCache.get(jahr,this.getKontonummer());
     if (d != null)
       return d.doubleValue();
 
@@ -111,7 +111,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
       saldo = a.getBetrag();
 
     saldo += getUmsatz(jahr);
-    SaldenCache.put(jahr.getID() + "." + this.getKontonummer(),new Double(saldo));
+    SaldenCache.put(jahr,this.getKontonummer(),new Double(saldo));
     return saldo;
   }
 
@@ -398,6 +398,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.33  2005/10/03 14:22:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.32  2005/09/27 17:41:27  willuhn
  * *** empty log message ***
  *
