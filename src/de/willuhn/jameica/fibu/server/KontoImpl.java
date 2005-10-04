@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/10/03 14:22:11 $
+ * $Revision: 1.34 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,14 +136,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
       String sql = "select sum(betrag) as b from buchung " +
         " where geschaeftsjahr_id = "+ jahr.getID() + 
-        " and sollkonto_id = " + this.getID();
+        " and habenkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
         saldo = rs.getDouble("b");
 
       sql = "select sum(betrag) as b from buchung " +
       " where geschaeftsjahr_id = "+ jahr.getID() + 
-      " and habenkonto_id = " + this.getID();
+      " and sollkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
         saldo -= rs.getDouble("b");
@@ -398,6 +398,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.34  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/10/03 14:22:11  willuhn
  * *** empty log message ***
  *

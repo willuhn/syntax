@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.54 $
- * $Date: 2005/10/03 14:22:11 $
+ * $Revision: 1.55 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -169,24 +169,20 @@ public class BuchungControl extends AbstractControl
 	{
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
-		
+
+    KontoListener kl = new KontoListener(true);
+
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(kl);
 
     Konto k = getBuchung().getSollKonto();
 
-    sollKontoAuswahl      = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    KontoListener kl      = new KontoListener(sollKontoAuswahl,true);
-    SollKontoListener skl = new SollKontoListener();
-
+    sollKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     sollKontoAuswahl.addListener(kl);
-    sollKontoAuswahl.addListener(skl);
     sollKontoAuswahl.setComment("");
-
-    d.addCloseListener(kl);
-    d.addCloseListener(skl);
     
     // Einmal ausloesen, damit das Ding sofort beim Oeffnen aktiv wird.
     kl.handleEvent(new Event());
@@ -206,20 +202,19 @@ public class BuchungControl extends AbstractControl
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
+    KontoListener kl = new KontoListener(false);
+
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
     KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
+    d.addCloseListener(kl);
 
     Konto k = getBuchung().getHabenKonto();
 
-    habenKontoAuswahl     = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    KontoListener kl      = new KontoListener(habenKontoAuswahl,false);
-
+    habenKontoAuswahl = new DialogInput(k == null ? null : k.getKontonummer(),d);
     habenKontoAuswahl.addListener(kl);
     habenKontoAuswahl.setComment("");
-
-    d.addCloseListener(kl);
     
     // Einmal ausloesen, damit das Ding sofort beim Oeffnen aktiv wird.
     kl.handleEvent(new Event());
@@ -618,161 +613,167 @@ public class BuchungControl extends AbstractControl
   }
 
   /**
-   * Listener, der das Feld fuer die Steuer aktualisiert.
-   */
-  private class SollKontoListener implements Listener
-  {
-
-    /**
-     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-     */
-    public void handleEvent(Event event)
-    {
-      try
-      {
-        String s = (String) getSollKontoAuswahl().getText();
-        if (s == null || s.length() == 0)
-        {
-          getSteuer().disable();
-          return;
-        }
-
-        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-        konten.addFilter("kontonummer = '" + s + "'");
-        if (!konten.hasNext())
-        {
-          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-          getSteuer().disable();
-          return;
-        }
-        Konto k = (Konto) konten.next();
-        
-        
-        ////////////////////////////////////////////////////////////////////////
-        // AV checken
-        Kontoart ka = k.getKontoArt();
-        if (ka != null && getBuchung().isNewObject() && ka.getKontoArt() == Kontoart.KONTOART_ANLAGE)
-        {
-          getAnlageVermoegen().enable();
-          getAnlageVermoegen().setValue(Boolean.TRUE);
-          getLaufzeit().enable();
-          getAbschreibungsKonto().enable();
-        }
-        else
-        {
-          getAnlageVermoegen().disable();
-          getLaufzeit().disable();
-          getAbschreibungsKonto().disable();
-        }
-        ////////////////////////////////////////////////////////////////////////
-
-        ////////////////////////////////////////////////////////////////////////
-        // Steuer anpassen
-        Steuer ss = k.getSteuer();
-        if (ss == null)
-        {
-          getSteuer().disable();
-          return;
-        }
-
-        double satz = ss.getSatz();
-        if (satz == 0.0d)
-        {
-          getSteuer().disable();
-          return;
-        }
-        getSteuer().enable();
-        GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
-        getSteuer().setValue(new Double(satz));
-        ////////////////////////////////////////////////////////////////////////
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("unable to determine steuer",e);
-        GUI.getView().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
-      }
-    }
-    
-  }
-
-  /**
-   * Listener, der fuer beide Konto-Auswahlfelder taugt.
+   * Listener, der fuer beide Konto-Auswahlfelder taugt und jeweils nach Auswahl
+   * des Kontos den Kommentar, Saldo und Text erzeugt.
    * @author willuhn
    */
   private class KontoListener implements Listener
   {
-    private DialogInput input = null;
-    private boolean soll = true;
+    private boolean isSoll = true;
     
     /**
      * ct.
-     * @param input
-     * @param soll
+     * @param isSoll
      */
-    private KontoListener(DialogInput input, boolean soll)
+    private KontoListener(boolean isSoll)
     {
-      this.input = input;
-      this.soll = soll;
+      this.isSoll = isSoll;
     }
+    
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event)
     {
+      // Texte und Kommentare ergaenzen
       try {
-        Konto k = readKonto(event.data);
 
-        if (k == null)
-          return;
-
+        DialogInput si = getSollKontoAuswahl();
+        DialogInput hi = getHabenKontoAuswahl();
+        
+        String st = si.getText();
+        String ht = hi.getText();
+        
+        Konto sk = readKonto(st);
+        Konto hk = readKonto(ht);
+        
+        Kontoart ska = null;
+        Kontoart hka = null;
+        
+        Steuer ss = null;
+        Steuer hs = null;
+        
         Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 
-        input.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), jahr.getMandant().getWaehrung(), k.getName()}));
-        input.setValue(k.getKontonummer());
-        input.setText(k.getKontonummer());
+        // Kontonummer in Text uebernehmen
+        DialogInput input = hi;
+        if (isSoll) input = si;
+        Object o = event.data;
+        if (input != null && o != null)
+        {
+          String se = null;
+          if (o instanceof Konto)
+            se = ((Konto)o).getKontonummer();
+          else
+            se = o.toString();
+          input.setValue(se);
+          input.setText(se);
+        }
+
+        // Kommentare anzeigen
+        if (sk != null)
+        {
+          si.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(sk.getSaldo(jahr)), jahr.getMandant().getWaehrung(), sk.getName()}));
+          ska = sk.getKontoArt();
+          ss = sk.getSteuer();
+        }
+        if (hk != null)
+        {
+          hi.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(hk.getSaldo(jahr)), jahr.getMandant().getWaehrung(), hk.getName()}));
+          hka = hk.getKontoArt();
+          hs = hk.getSteuer();
+        }
         
-        // BUGZILLA 122 (Text-Vervollstaendigung)
+        // Text-Vervollstaendigung
+        // BUGZILLA 122
         try
         {
           String text = (String) getText().getValue();
-          if (text != null && text.length() > 0)
-            return;
-
-          Kontoart ka = k.getKontoArt();
-          if (ka.getKontoArt() != Kontoart.KONTOART_GELD)
-            return;
-          
-          DialogInput di = getSollKontoAuswahl();
-          if (soll)
-            di = getHabenKontoAuswahl();
-          
-          Konto gegen = readKonto(di.getText());
-          if (gegen == null)
-            return;
-          getText().setValue(gegen.getName());
+          if (text == null || text.length() == 0)
+          {
+            String t = null;
+            if (ska != null && ska.getKontoArt() != Kontoart.KONTOART_GELD)
+              t = sk.getName();
+            else if (hka != null && hka.getKontoArt() != Kontoart.KONTOART_GELD)
+              t = hk.getName();
+            if (t != null)
+            getText().setValue(t);
+          }
         }
         catch (Exception e2)
         {
           Logger.error("unable to autocomplete text",e2);
         }
+
+        // Steuerkonto checken
+        try
+        {
+          Steuer s = (ss != null ? ss : hs);
+          if (s == null)
+          {
+            // keines der Konten hat einen Steuersatz
+            getSteuer().disable();
+          }
+          else
+          {
+            double satz = s.getSatz();
+            if (satz == 0.0d)
+            {
+              getSteuer().disable();
+            }
+            else
+            {
+              getSteuer().enable();
+              getSteuer().setValue(new Double(satz));
+              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
+            }
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to determine steuer",e);
+          GUI.getView().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
+        }
+        
+        // Anlagevermoegen (nur Soll-Konto)
+        try
+        {
+          if (sk != null && ska != null && getBuchung().isNewObject() && ska.getKontoArt() == Kontoart.KONTOART_ANLAGE)
+          {
+            getAnlageVermoegen().enable();
+            getAnlageVermoegen().setValue(Boolean.TRUE);
+            getLaufzeit().enable();
+            getAbschreibungsKonto().enable();
+          }
+          else
+          {
+            getAnlageVermoegen().disable();
+            getLaufzeit().disable();
+            getAbschreibungsKonto().disable();
+          }
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to determine anlagekonto",e);
+          GUI.getView().setErrorText(i18n.tr("Fehler beim Prüfen auf Anlagevermögen"));
+        }
       }
       catch (Exception e)
       {
-        Logger.error("unable to load konto",e);
+        Logger.error("unable to execute kontolistener",e);
       }
 
     }
     
     private Konto readKonto(Object o) throws RemoteException
     {
+      if (o == null)
+        return null;
+      
       if (o != null && (o instanceof Konto))
         return (Konto) o;
 
-      String s = null;
-      if (o != null)
-        s = o.toString();
-      else
-        s = input.getText();
+      String s = o.toString();
       
       if (s == null || s.length() == 0)
         return null;
@@ -821,6 +822,7 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
+        GUI.getView().setErrorText(i18n.tr("Datumsformat ungültig"));
         Logger.error("unable to update week day",e);
       }
 		}
@@ -866,6 +868,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.55  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.54  2005/10/03 14:22:11  willuhn
  * *** empty log message ***
  *

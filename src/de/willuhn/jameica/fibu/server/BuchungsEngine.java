@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.27 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
@@ -162,6 +163,13 @@ public class BuchungsEngine
       {
         // Wir wollen den Saldo des alten Jahres
         Konto k = (Konto) list.next();
+        Kontoart ka = k.getKontoArt();
+        if (ka.getKontoArt() == Kontoart.KONTOART_PRIVAT)
+        {
+          Logger.info("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto");
+          continue;
+        }
+          
         double saldo = k.getSaldo(jahr);
         if (saldo == 0.0)
           continue;
@@ -234,6 +242,14 @@ public class BuchungsEngine
 
     // Der zu verwendende Steuersatz
     Steuer s = sKonto.getSteuer();
+    boolean steuerSoll = true;
+
+    // wir nehmen das Steuerkonto vom Haben-Konto
+    if (s == null)
+    {
+      s = hKonto.getSteuer();
+      steuerSoll = false;
+    }
     
     if (s == null)
     {
@@ -245,11 +261,15 @@ public class BuchungsEngine
     Math math = new Math();
 
     double steuer  = buchung.getSteuer();
+    
+    if (steuer == 0.0d)
+      return null; // keine Steuer zu buchen
+    
     double netto   = buchung.getBetrag();
     double brutto  = math.brutto(netto,steuer);
     double sBetrag = math.steuer(brutto,steuer);
     
-    if (steuer == 0.0 || brutto == netto)
+    if (brutto == netto || sBetrag == 0.0d)
       return null; // keine Steuer zu buchen
     
     if (buchung.getDatum() == null)
@@ -259,12 +279,12 @@ public class BuchungsEngine
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
-    hb.setBetrag(sBetrag);                              // Steuer-Betrag
-    hb.setDatum(buchung.getDatum());                    // Datum
-    hb.setHabenKonto(hKonto);                           // Haben-Konto
-    hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());  // Geschaeftsjahr
-    hb.setText(buchung.getText());                      // Text identisch mit Haupt-Buchung
-    hb.setSollKonto(s.getSteuerKonto());                // Das Steuer-Konto
+    hb.setBetrag(sBetrag);                                        // Steuer-Betrag
+    hb.setDatum(buchung.getDatum());                              // Datum
+    hb.setSollKonto(steuerSoll ? s.getSteuerKonto() : hKonto);    // Das Steuer-Konto
+    hb.setHabenKonto(steuerSoll ? hKonto : sKonto);               // Haben-Konto
+    hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
+    hb.setText(buchung.getText());                                // Text identisch mit Haupt-Buchung
      
     return new HilfsBuchung[]{hb};
   }
@@ -273,6 +293,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.27  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.26  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *

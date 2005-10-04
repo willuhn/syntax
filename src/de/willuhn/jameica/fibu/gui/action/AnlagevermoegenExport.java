@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,22 +19,16 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -42,7 +36,7 @@ import de.willuhn.util.I18N;
 /**
  * Exporter fuer Uebersicht des Anlagevermoegens.
  */
-public class AnlagevermoegenExport implements Action
+public class AnlagevermoegenExport extends AbstractExportAction
 {
 
   /**
@@ -72,39 +66,15 @@ public class AnlagevermoegenExport implements Action
     }
     
     // TODO: Einzeluebersicht fehlt noch
-    FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
-    fd.setText(i18n.tr("Bitte geben Sie eine Datei ein, in die die Daten exportiert werden sollen."));
-    fd.setFileName(i18n.tr("fibu-anlagevermoegen-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
-    String s = fd.open();
-    
-    Settings settings = new Settings(this.getClass());
-    settings.setStoreWhenRead(true);
-    String path = settings.getString("lastdir",System.getProperty("user.home"));
-    if (path != null && path.length() > 0)
-      fd.setFilterPath(path);
-
-    if (s == null || s.length() == 0)
-      throw new OperationCanceledException(i18n.tr("Export abgebrochen"));
-
-    File file = new File(s);
-    if (file.exists())
+    File file = null;
+    try
     {
-      try
-      {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Datei existiert bereits"));
-        d.setText(i18n.tr("Möchten Sie die Datei überschreiben?"));
-        Boolean choice = (Boolean) d.open();
-        if (!choice.booleanValue())
-        {
-          return;
-        }
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while saving export file",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Speichern der Export-Datei in {0}",s),e);
-      }
+      file = storeTo(i18n.tr("fibu-anlagevermoegen-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info("operation cancelled");
+      return;
     }
     
     try
@@ -129,16 +99,13 @@ public class AnlagevermoegenExport implements Action
 
       VelocityExporter.export(export);
 
-      // Wir merken uns noch das Verzeichnis vom letzten mal
-      settings.setAttribute("lastdir",file.getParent());
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",s));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
       new Program().handleAction(file);
     }
     catch (Exception e)
     {
-      Logger.error("error while writing objects to " + s,e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",s),e);
+      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
+      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
     }
   }
 }
@@ -146,6 +113,9 @@ public class AnlagevermoegenExport implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.5  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

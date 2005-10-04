@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontoart.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.8 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public interface Kontoart extends DBObject
   public final static int KONTOART_ANLAGE     = 4; // V
   
   /**
-   * Konot-Art Privat-Konto.
+   * Konto-Art Privat-Konto.
    */
   public final static int KONTOART_PRIVAT     = 5; // P // bedeutet, dass dessen Bestand zum Jahreswechsel nicht uebernommen wird
   
@@ -83,6 +83,9 @@ public interface Kontoart extends DBObject
 
 /*********************************************************************
  * $Log: Kontoart.java,v $
+ * Revision 1.8  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

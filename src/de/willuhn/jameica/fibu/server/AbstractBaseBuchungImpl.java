@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/09/30 17:12:06 $
+ * $Revision: 1.16 $
+ * $Date: 2005/10/04 23:36:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -285,7 +286,19 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
       if (soll.equals(haben))
         throw new ApplicationException(i18n.tr("Soll- und Haben-Konto dürfen nicht identisch sein."));
+      
+      // BUGZILLA 131
+      Kontoart kaSoll  = soll.getKontoArt();
+      Kontoart kaHaben = haben.getKontoArt();
+      boolean gpSoll   = kaSoll.getKontoArt() == Kontoart.KONTOART_GELD || kaSoll.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      boolean gpHaben  = kaHaben.getKontoArt() == Kontoart.KONTOART_GELD || kaHaben.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      if (!gpSoll && !gpHaben)
+        throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
 
+      double steuer = getSteuer();
+      if (steuer > 0.0d && (soll.getSteuer() != null || haben.getSteuer() != null))
+        throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Kontoen ausgewählt wurden"));
+      
       Date d = getDatum();
       if (d == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Datum ein."));
@@ -342,6 +355,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.16  2005/10/04 23:36:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/09/30 17:12:06  willuhn
  * @B bug 122
  *
