@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2005/10/05 17:52:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,13 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBObject;
 
 /**
- * Diese Klasse bildet die verschiedenen Steuersätze in Fibu ab.
+ * Diese Klasse bildet die verschiedenen Steuersaetze in Fibu ab.
+ * Es werden zwei verschiedene Arten von Steuersaetzen unterschieden.
+ * Initiale Steuersaetze gelten fuer alle Mandanten und koennen nicht
+ * geaendert werden. Zusaetzlich existieren noch benutzerspezifische
+ * Steuersaetze, die jeweils nur fuer den Mandanten gelten, der sie
+ * angelegt hat. Wird eine Liste von Steuersaetzen geladen, so werden
+ * immer auch nur die initialen sowie die des aktuellen Mandanten geladen.
  * @author willuhn
  */
 public interface Steuer extends DBObject
@@ -65,10 +71,27 @@ public interface Steuer extends DBObject
    * @throws RemoteException
    */
   public void setSteuerKonto(Konto k) throws RemoteException;
+  
+  /**
+   * Prueft, ob der Steuersatz zum initialen Datenbestand gehoert.
+   * @return true, wenn er zum initialen Datenbestand gehoert und damit nicht aenderbar ist.
+   * @throws RemoteException
+   */
+  public boolean isInitial() throws RemoteException;
+  
+  /**
+   * Liefert den Mandanten zu dem Steuersatz.
+   * @return Liefert genau den Mandanten, der den Steuersatz angelegt hat.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.7  2005/10/05 17:52:33  willuhn
+ * @N steuer behaviour
+ *
  * Revision 1.6  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

@@ -8,9 +8,11 @@ CREATE TABLE kontenrahmen (
 
 CREATE TABLE steuer (
   id NUMERIC default UNIQUEKEY('steuer'),
+  mandant_id int(10) NULL,
   name varchar(255) NOT NULL,
   satz double NOT NULL,
   steuerkonto_id int(10) NOT NULL,
+  initial int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -130,6 +132,7 @@ CREATE TABLE abschreibung (
 );
 
 ALTER TABLE steuer ADD CONSTRAINT fk_steuer_konto FOREIGN KEY (steuerkonto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE steuer ADD CONSTRAINT fk_steuer_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kontoart FOREIGN KEY (kontoart_id) REFERENCES kontoart (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;

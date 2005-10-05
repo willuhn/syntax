@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/08/22 16:37:22 $
+ * $Revision: 1.12 $
+ * $Date: 2005/10/05 17:52:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,17 +16,22 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
 public class SteuerImpl extends AbstractDBObject implements Steuer
 {
+  private I18N i18n = null;
 
   /**
    * Erzeugt einen neuen Steuersatz.
@@ -35,6 +40,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   public SteuerImpl() throws RemoteException
   {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -96,6 +102,8 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   {
     if ("steuerkonto_id".equals(field))
       return Konto.class;
+    if ("mandant_id".equals(field))
+      return Mandant.class;
     return null;
   }
 
@@ -104,18 +112,21 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   protected void deleteCheck() throws ApplicationException
   {
-    // wir checken ob vielleicht ein Konto diesen Steuersatz besitzt.
     try {
+      if (isInitial())
+        throw new ApplicationException(i18n.tr("Der Steuersatz gehört zum initialen Datenbestand und darf nicht gelöscht werden."));
+
+      // wir checken ob vielleicht ein Konto diesen Steuersatz besitzt.
       DBIterator list = Settings.getDBService().createList(Konto.class);
       list.addFilter("steuer_id = " + this.getID());
       if (list.hasNext())
-        throw new ApplicationException("Der Steuersatz ist einem Konto zugewiesen.\n" +
-          "Bitte ändern oder löschen zu Sie zunächst das Konto.");
+        throw new ApplicationException(i18n.tr("Der Steuersatz ist einem Konto zugewiesen.\n" +
+          "Bitte ändern oder löschen zu Sie zunächst das Konto."));
     }
     catch (RemoteException e)
     {
 			Logger.error("error while checking dependencies",e);
-      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Abhängigkeiten."));
     }
   }
 
@@ -125,14 +136,19 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   public void insertCheck() throws ApplicationException
   {
     try {
+      if (isInitial())
+        throw new ApplicationException(i18n.tr("Der Steuersatz gehört zum initialen Datenbestand und darf nicht geändert werden."));
 
       if (getName() == null || "".equals(getName()))
-        throw new ApplicationException("Bitte geben Sie eine Bezeichnung für den Steuersatz ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung für den Steuersatz ein."));
+
+      if (getMandant() == null)
+        setAttribute("mandant_id",Settings.getActiveGeschaeftsjahr().getMandant());
     }
     catch (RemoteException e)
     {
       Logger.error("error while checking dependencies",e);
-      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."),e);
     }
     super.insertCheck();
   }
@@ -160,10 +176,30 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   {
     setAttribute("steuerkonto_id",k);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#isInitial()
+   */
+  public boolean isInitial() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("initial");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getMandant()
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    return (Mandant) getAttribute("mandant_id");
+  }
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.12  2005/10/05 17:52:33  willuhn
+ * @N steuer behaviour
+ *
  * Revision 1.11  2005/08/22 16:37:22  willuhn
  * @N Anfangsbestaende
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.15 $
+ * $Date: 2005/10/05 17:52:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,10 +13,8 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -49,6 +47,7 @@ public class SteuerNeu extends AbstractView
 
     Container steuerGroup = new LabelGroup(getParent(),i18n.tr("Steuersatz"));
 
+    steuerGroup.addLabelPair(i18n.tr("Mandant"),            control.getMandant());
     steuerGroup.addLabelPair(i18n.tr("Name")      , 				control.getName());
     steuerGroup.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
     steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
@@ -56,16 +55,13 @@ public class SteuerNeu extends AbstractView
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     
-    Kontenrahmen soll = control.getSteuer().getSteuerKonto().getKontenrahmen();
-    Kontenrahmen ist  = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    boolean initial = control.getSteuer().isInitial();
     
-    boolean canStore = soll.equals(ist);
+    if (initial)
+      GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
     
-    if (!canStore)
-      GUI.getView().setErrorText(i18n.tr("Steuer-Konto ist nicht Teil des aktiven Kontenrahmen und darf daher nicht geändert werden."));
-    
-    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),getCurrentObject());
-    delete.setEnabled(canStore);
+    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer());
+    delete.setEnabled(!initial);
     buttonArea.addButton(delete);
     
     Button store = new Button(i18n.tr("Speichern"), new Action()
@@ -75,7 +71,7 @@ public class SteuerNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    store.setEnabled(canStore);
+    store.setEnabled(!initial);
     buttonArea.addButton(store);
   }
 
@@ -89,6 +85,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.15  2005/10/05 17:52:33  willuhn
+ * @N steuer behaviour
+ *
  * Revision 1.14  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

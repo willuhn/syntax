@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.55 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.56 $
+ * $Date: 2005/10/05 17:52:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -725,6 +725,7 @@ public class BuchungControl extends AbstractControl
             {
               getSteuer().enable();
               getSteuer().setValue(new Double(satz));
+              getSteuer().setComment(i18n.tr("% [{0}]",s.getName()));
               GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
             }
           }
@@ -868,6 +869,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.56  2005/10/05 17:52:33  willuhn
+ * @N steuer behaviour
+ *
  * Revision 1.55  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *

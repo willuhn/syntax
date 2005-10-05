@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/SteuerList.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.4 $
+ * $Date: 2005/10/05 17:52:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,18 +14,25 @@
 package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.SteuerListMenu;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -65,6 +72,27 @@ public class SteuerList extends TablePart
         }
       }
     });
+    setFormatter(new TableFormatter()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
+      public void format(TableItem item)
+      {
+        try
+        {
+          if (item == null)
+            return;
+          Steuer s = (Steuer) item.getData();
+          if (s.isInitial())
+            item.setForeground(Color.COMMENT.getSWTColor());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to check steuer",e);
+        }
+      }
+    });
     setContextMenu(new SteuerListMenu());
   }
   
@@ -75,9 +103,21 @@ public class SteuerList extends TablePart
    */
   private static GenericIterator init() throws RemoteException
   {
-    DBIterator list = Settings.getDBService().createList(Steuer.class);
-    list.setOrder("order by steuerkonto_id");
-    return list;
+    DBIterator list = Settings.getActiveGeschaeftsjahr().getMandant().getSteuer();
+    list.setOrder("order by name");
+    ArrayList al = new ArrayList();
+    Kontenrahmen soll = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    while (list.hasNext())
+    {
+      Steuer s = (Steuer) list.next();
+      Konto k = s.getSteuerKonto();
+      if (k == null)
+        continue;
+      Kontenrahmen ist = k.getKontenrahmen();
+      if (soll.equals(ist))
+        al.add(s);
+    }
+    return PseudoIterator.fromArray((Steuer[]) al.toArray(new Steuer[al.size()]));
   }
 
 }
@@ -85,6 +125,9 @@ public class SteuerList extends TablePart
 
 /*********************************************************************
  * $Log: SteuerList.java,v $
+ * Revision 1.4  2005/10/05 17:52:33  willuhn
+ * @N steuer behaviour
+ *
  * Revision 1.3  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *
