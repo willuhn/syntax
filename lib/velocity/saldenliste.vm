@@ -14,7 +14,7 @@
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
       #set($ab = $konto.getAnfangsbestand(${jahr}))
-      #if($!{ab.toString()} != "")
+      #if($ab)
         <td style="text-align:right">$!{decimalformat.format(${ab.Betrag})} ${eur}</td>
       #else
         <td>&nbsp;</td>

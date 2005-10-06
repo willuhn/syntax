@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.35 $
+ * $Date: 2005/10/06 16:00:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -359,6 +361,32 @@ public class KontoImpl extends AbstractDBObject implements Konto
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
+   */
+  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
+  {
+    // Uhrzeiten noch zurueckdrehen
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(von);
+    cal.set(Calendar.HOUR_OF_DAY,0);
+    cal.set(Calendar.MINUTE,0);
+    cal.set(Calendar.SECOND,0);
+
+    Date start = cal.getTime();
+
+    cal.setTime(bis);
+    cal.set(Calendar.HOUR_OF_DAY,23);
+    cal.set(Calendar.MINUTE,59);
+    cal.set(Calendar.SECOND,59);
+
+    Date end = cal.getTime();
+    
+    DBIterator list = this.getBuchungen(jahr);
+    list.addFilter("tonumber(datum) >= " + start.getTime() + " AND tonumber(datum) <=" + end.getTime());
+    return list;
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getAnfangsbestand(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
   public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException
@@ -398,6 +426,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.35  2005/10/06 16:00:37  willuhn
+ * @B bug 135
+ *
  * Revision 1.34  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *
