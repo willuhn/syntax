@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/10/06 13:19:22 $
+ * $Revision: 1.18 $
+ * $Date: 2005/10/06 14:32:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,7 +292,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       Kontoart kaHaben = haben.getKontoArt();
       boolean gpSoll   = kaSoll.getKontoArt() == Kontoart.KONTOART_GELD || kaSoll.getKontoArt() == Kontoart.KONTOART_PRIVAT;
       boolean gpHaben  = kaHaben.getKontoArt() == Kontoart.KONTOART_GELD || kaHaben.getKontoArt() == Kontoart.KONTOART_PRIVAT;
-      if (!gpSoll && !gpHaben)
+      boolean isAbschreibung = kaSoll.getKontoArt() == Kontoart.KONTOART_AUFWAND && kaHaben.getKontoArt() == Kontoart.KONTOART_ANLAGE;
+      
+      if (!gpSoll && !gpHaben && !isAbschreibung)
         throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
 
       double steuer = getSteuer();
@@ -355,6 +357,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.18  2005/10/06 14:32:22  willuhn
+ * @B check auf abschreibung in insertCheck
+ *
  * Revision 1.17  2005/10/06 13:19:22  willuhn
  * @B bug 133
  *
