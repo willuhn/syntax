@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/10/03 21:55:24 $
+ * $Revision: 1.10 $
+ * $Date: 2005/10/06 13:19:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@ package de.willuhn.jameica.fibu.server;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.willuhn.logging.Logger;
 
 /**
  * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
@@ -28,22 +30,31 @@ public class Math
    * Ermittelt den Netto-Betrag basierend auf der uebergebenen Steuer.
    * @param bruttoBetrag Brutto-Betrag.
    * @param steuerSatz Steuersatz.
-   * @return Netto-Betrag.
+   * @return ungerundeter Netto-Betrag.
    */
   public double netto(double bruttoBetrag, double steuerSatz)
   {
-    return round((100d * bruttoBetrag) / (100d + steuerSatz));
+    return (100d * bruttoBetrag) / (100d + steuerSatz);
   }
   
   /**
    * Ermittelt den Brutto-Betrag basierend auf der uebergebenen Steuer.
    * @param nettoBetrag Netto-Betrag.
    * @param steuerSatz Steuersatz.
-   * @return Brutto-Betrag.
+   * @return ungerundeter Brutto-Betrag.
    */
   public double brutto(double nettoBetrag, double steuerSatz)
   {
-    return round((nettoBetrag * (100d + steuerSatz)) / 100d);
+    double brutto = (nettoBetrag * (100d + steuerSatz)) / 100d;
+    
+    // Vergleich
+    double steuer = steuer(brutto,steuerSatz);
+    double diff = (nettoBetrag + steuer) - brutto;
+    
+    if (diff != 0.0d)
+      Logger.warn("diff " + diff + ": netto: " + nettoBetrag + ", steuersatz: " + steuerSatz + ", brutto: " + brutto);
+    return brutto + diff; 
+    
   }
 
   /**
@@ -55,20 +66,9 @@ public class Math
   public double steuer(double bruttoBetrag, double steuerSatz)
   {
     double netto = netto(bruttoBetrag,steuerSatz);
-    return round(bruttoBetrag - netto);
+    return bruttoBetrag - netto;
   }
 
-  /**
-   * Rundet den uebergebenen Betrag auf 2 Stellen hinter dem Komma.
-   * @param betrag der zu rundende Betrag.
-   * @return der gerundete Betrag.
-   */
-  public double round(double betrag)
-  {
-    int i = (int) ((betrag + 0.005d) * 100d);
-    return i / 100d;
-  }
-  
   /**
    * Addiert den Betrag zur Summe mit diesem Namen.
    * @param name Name der Summe.
@@ -124,6 +124,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.10  2005/10/06 13:19:22  willuhn
+ * @B bug 133
+ *
  * Revision 1.9  2005/10/03 21:55:24  willuhn
  * @B bug 128, 129
  *

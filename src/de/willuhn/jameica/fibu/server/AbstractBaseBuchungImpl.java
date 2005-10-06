@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.17 $
+ * $Date: 2005/10/06 13:19:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -296,8 +296,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
         throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
 
       double steuer = getSteuer();
-      if (steuer > 0.0d && (soll.getSteuer() != null || haben.getSteuer() != null))
-        throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Kontoen ausgewählt wurden"));
+      if (steuer > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
+        throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Konten ausgewählt wurden"));
       
       Date d = getDatum();
       if (d == null)
@@ -355,6 +355,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.17  2005/10/06 13:19:22  willuhn
+ * @B bug 133
+ *
  * Revision 1.16  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *
