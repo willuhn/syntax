@@ -1,0 +1,76 @@
+/**********************************************************************
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2005/10/06 22:50:32 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn.webdesign
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.fibu.gui.views;
+
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.controller.AuswertungControl;
+import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
+
+/**
+ * View fuer die Auswertungen.
+ */
+public class Auswertungen extends AbstractView
+{
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#bind()
+   */
+  public void bind() throws Exception
+  {
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+    GUI.getView().setTitle(i18n.tr("Auswertungen"));
+
+    final AuswertungControl control = new AuswertungControl(this);
+    
+    Container group = new LabelGroup(getParent(),i18n.tr("Auswertungen"));
+    group.addLabelPair(i18n.tr("Auswertung"), control.getAuswertungen());
+    
+    ButtonArea buttonArea = group.createButtonArea(3);
+    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(i18n.tr("Erstellen"), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleExecute();
+      }
+    },null,true);
+
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+  }
+
+}
+
+
+/*********************************************************************
+ * $Log: Auswertungen.java,v $
+ * Revision 1.1  2005/10/06 22:50:32  willuhn
+ * @N auswertungen
+ *
+ **********************************************************************/

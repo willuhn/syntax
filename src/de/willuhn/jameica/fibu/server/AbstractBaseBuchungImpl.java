@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/10/06 14:48:40 $
+ * $Revision: 1.20 $
+ * $Date: 2005/10/06 22:50:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -347,6 +346,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.20  2005/10/06 22:50:32  willuhn
+ * @N auswertungen
+ *
  * Revision 1.19  2005/10/06 14:48:40  willuhn
  * @N Sonderregelung fuer Abschreibunsgbuchungen
  *

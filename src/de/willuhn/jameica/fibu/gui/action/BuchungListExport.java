@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.7 $
+ * $Date: 2005/10/06 22:50:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,15 +38,22 @@ import de.willuhn.util.I18N;
  */
 public class BuchungListExport extends AbstractExportAction
 {
-
+  private I18N i18n = null;
+  
+  /**
+   * ct.
+   */
+  public BuchungListExport()
+  {
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  }
+  
   /**
    * Erwartet null oder ein Geschaeftsjahr.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     Geschaeftsjahr jahr = null;
     if (context != null && context instanceof Geschaeftsjahr)
     {
@@ -102,7 +109,7 @@ public class BuchungListExport extends AbstractExportAction
       export.addObject("anfangsbestaende",ab);
       export.addObject("jahr",jahr);
       export.setTarget(new FileOutputStream(file));
-      export.setTitle(i18n.tr("Buchungsjournal"));
+      export.setTitle(getName());
       export.setTemplate("buchungsjournal.vm");
 
       VelocityExporter.export(export);
@@ -116,11 +123,22 @@ public class BuchungListExport extends AbstractExportAction
       throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getName()
+   */
+  public String getName()
+  {
+    return i18n.tr("Buchungsjournal");
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.7  2005/10/06 22:50:32  willuhn
+ * @N auswertungen
+ *
  * Revision 1.6  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *

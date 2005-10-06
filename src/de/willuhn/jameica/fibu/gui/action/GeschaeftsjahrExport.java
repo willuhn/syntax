@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/GeschaeftsjahrExport.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.7 $
+ * $Date: 2005/10/06 22:50:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,15 @@ import de.willuhn.util.I18N;
  */
 public class GeschaeftsjahrExport extends AbstractExportAction
 {
+  private I18N i18n;
+  
+  /**
+   * ct.
+   */
+  public GeschaeftsjahrExport()
+  {
+    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  }
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -43,8 +52,6 @@ public class GeschaeftsjahrExport extends AbstractExportAction
     if (context == null || !(context instanceof Geschaeftsjahr))
       return;
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     File file = null;
     try
     {
@@ -61,7 +68,7 @@ public class GeschaeftsjahrExport extends AbstractExportAction
       Export export = new Export();
       export.addObject("jahr",context);
       export.setTarget(new FileOutputStream(file));
-      export.setTitle(i18n.tr("Überschuss-Rechnung"));
+      export.setTitle(getName());
       export.setTemplate("ueberschussrechnung.vm");
 
       VelocityExporter.export(export);
@@ -75,11 +82,22 @@ public class GeschaeftsjahrExport extends AbstractExportAction
       throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getName()
+   */
+  public String getName()
+  {
+    return i18n.tr("Überschuss-Rechnung");
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrExport.java,v $
+ * Revision 1.7  2005/10/06 22:50:32  willuhn
+ * @N auswertungen
+ *
  * Revision 1.6  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *
