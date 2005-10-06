@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/27 17:41:27 $
+ * $Revision: 1.6 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,8 +19,8 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -70,9 +70,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   /**
    * @see de.willuhn.jameica.fibu.rmi.Abschreibung#getBuchung()
    */
-  public Buchung getBuchung() throws RemoteException
+  public AbschreibungsBuchung getBuchung() throws RemoteException
   {
-    return (Buchung) getAttribute("buchung_id");
+    return (AbschreibungsBuchung) getAttribute("buchung_id");
   }
 
   /**
@@ -84,9 +84,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#setBuchung(de.willuhn.jameica.fibu.rmi.Buchung)
+   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#setBuchung(de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung)
    */
-  public void setBuchung(Buchung b) throws RemoteException
+  public void setBuchung(AbschreibungsBuchung b) throws RemoteException
   {
     setAttribute("buchung_id",b);
   }
@@ -99,7 +99,7 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
     if ("av_id".equals(arg0))
       return Anlagevermoegen.class;
     if ("buchung_id".equals(arg0))
-      return Buchung.class;
+      return AbschreibungsBuchung.class;
     
     return super.getForeignObject(arg0);
   }
@@ -117,7 +117,7 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
       if (getAnlagevermoegen() == null)
         throw new ApplicationException(i18n.tr("Kein Anlage-Gegenstand zugeordnet"));
       if (getBuchung() == null)
-        throw new ApplicationException(i18n.tr("Keine Buchung zugeordnet"));
+        throw new ApplicationException(i18n.tr("Keine Abschreibungs-Buchung zugeordnet"));
     }
     catch (RemoteException e)
     {
@@ -139,6 +139,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.6  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/09/27 17:41:27  willuhn
  * *** empty log message ***
  *

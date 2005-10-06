@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungsBuchungImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/06 14:48:40 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * @author willuhn
  */
-public class AbschreibungsBuchungImpl extends BuchungImpl implements
+public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
     AbschreibungsBuchung
 {
 
@@ -69,6 +69,9 @@ public class AbschreibungsBuchungImpl extends BuchungImpl implements
 
 /*********************************************************************
  * $Log: AbschreibungsBuchungImpl.java,v $
+ * Revision 1.2  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2005/10/06 14:48:40  willuhn
  * @N Sonderregelung fuer Abschreibunsgbuchungen
  *

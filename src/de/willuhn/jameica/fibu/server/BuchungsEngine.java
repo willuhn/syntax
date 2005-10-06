@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/10/06 14:48:40 $
+ * $Revision: 1.29 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,7 +167,7 @@ public class BuchungsEngine
         Kontoart ka = k.getKontoArt();
         if (ka.getKontoArt() == Kontoart.KONTOART_PRIVAT)
         {
-          Logger.info("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto");
+          Logger.debug("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto");
           continue;
         }
           
@@ -294,6 +294,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.29  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.28  2005/10/06 14:48:40  willuhn
  * @N Sonderregelung fuer Abschreibunsgbuchungen
  *

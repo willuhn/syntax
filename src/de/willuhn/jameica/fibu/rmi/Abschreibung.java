@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Abschreibung.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/05 13:14:27 $
+ * $Revision: 1.4 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ public interface Abschreibung extends DBObject
    * @return Buchung.
    * @throws RemoteException
    */
-  public Buchung getBuchung() throws RemoteException;
+  public AbschreibungsBuchung getBuchung() throws RemoteException;
   
   /**
    * Speichert das Anlagevermoegen zu dieser Abschreibung.
@@ -48,13 +48,16 @@ public interface Abschreibung extends DBObject
    * @param b Buchung.
    * @throws RemoteException
    */
-  public void setBuchung(Buchung b) throws RemoteException;
+  public void setBuchung(AbschreibungsBuchung b) throws RemoteException;
   
 }
 
 
 /*********************************************************************
  * $Log: Abschreibung.java,v $
+ * Revision 1.4  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/09/05 13:14:27  willuhn
  * *** empty log message ***
  *

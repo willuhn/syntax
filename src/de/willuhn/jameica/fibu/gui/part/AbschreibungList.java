@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AbschreibungList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,8 @@ import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -50,11 +50,11 @@ public class AbschreibungList extends TablePart
     addColumn(i18n.tr("Datum"),"buchung_id", new Formatter() {
       public String format(Object o)
       {
-        if (o == null || !(o instanceof Buchung))
+        if (o == null || !(o instanceof AbschreibungsBuchung))
           return null;
         try
         {
-          Buchung b = (Buchung) o;
+          AbschreibungsBuchung b = (AbschreibungsBuchung) o;
           Date d = b.getDatum();
           if (d == null)
             return null;
@@ -73,11 +73,11 @@ public class AbschreibungList extends TablePart
     addColumn(i18n.tr("Betrag"),"buchung_id", new CurrencyFormatter(m.getWaehrung(), Fibu.DECIMALFORMAT) {
       public String format(Object o)
       {
-        if (o == null || !(o instanceof Buchung))
+        if (o == null || !(o instanceof AbschreibungsBuchung))
           return null;
         try
         {
-          Buchung b = (Buchung) o;
+          AbschreibungsBuchung b = (AbschreibungsBuchung) o;
           return super.format(new Double(b.getBetrag()));
         }
         catch (RemoteException e)
@@ -94,6 +94,9 @@ public class AbschreibungList extends TablePart
 
 /*********************************************************************
  * $Log: AbschreibungList.java,v $
+ * Revision 1.5  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

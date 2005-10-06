@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/10/06 13:19:22 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,8 +14,6 @@ package de.willuhn.jameica.fibu.server;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import de.willuhn.logging.Logger;
 
 /**
  * Hilfs-Klasse die ein paar mathematische Berechnungen enthaelt.
@@ -51,8 +49,8 @@ public class Math
     double steuer = steuer(brutto,steuerSatz);
     double diff = (nettoBetrag + steuer) - brutto;
     
-    if (diff != 0.0d)
-      Logger.warn("diff " + diff + ": netto: " + nettoBetrag + ", steuersatz: " + steuerSatz + ", brutto: " + brutto);
+//    if (diff != 0.0d)
+//      Logger.warn("diff " + diff + ": netto: " + nettoBetrag + ", steuersatz: " + steuerSatz + ", brutto: " + brutto);
     return brutto + diff; 
     
   }
@@ -124,6 +122,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.11  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2005/10/06 13:19:22  willuhn
  * @B bug 133
  *

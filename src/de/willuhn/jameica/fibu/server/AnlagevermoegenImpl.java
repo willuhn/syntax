@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/09/27 17:41:27 $
+ * $Revision: 1.10 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -160,7 +161,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     while (abschreibungen.hasNext())
     {
       Abschreibung a = (Abschreibung) abschreibungen.next();
-      Buchung b = a.getBuchung();
+      AbschreibungsBuchung b = a.getBuchung();
       restwert -= b.getBetrag();
     }
     return restwert;
@@ -212,7 +213,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     while (list.hasNext())
     {
       Abschreibung a = (Abschreibung) list.next();
-      Buchung b = a.getBuchung();
+      AbschreibungsBuchung b = a.getBuchung();
       Date d = b.getDatum();
       if (d.before(end) || d.equals(end))
         l.add(a);
@@ -234,7 +235,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
       while (abschreibungen.hasNext())
       {
         Abschreibung a = (Abschreibung) abschreibungen.next();
-        Buchung b = a.getBuchung();
+        AbschreibungsBuchung b = a.getBuchung();
         a.delete();
         if (b != null)
           b.delete();
@@ -401,7 +402,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     while (list.hasNext())
     {
       Abschreibung a = (Abschreibung) list.next();
-      Buchung b = a.getBuchung();
+      AbschreibungsBuchung b = a.getBuchung();
       Geschaeftsjahr j = b.getGeschaeftsjahr();
       if (j.equals(jahr))
         return b.getBetrag();
@@ -421,6 +422,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.10  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/09/27 17:41:27  willuhn
  * *** empty log message ***
  *

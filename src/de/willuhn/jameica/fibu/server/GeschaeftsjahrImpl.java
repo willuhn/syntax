@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/09/30 17:12:06 $
+ * $Revision: 1.16 $
+ * $Date: 2005/10/06 15:15:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -349,7 +350,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         while (afa.hasNext())
         {
           Abschreibung a = (Abschreibung) afa.next();
-          Buchung b = a.getBuchung();
+          AbschreibungsBuchung b = a.getBuchung();
           a.delete();
           b.delete();
         }
@@ -428,7 +429,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     while (list.hasNext())
     {
       Abschreibung a = (Abschreibung) list.next();
-      Buchung b = a.getBuchung();
+      AbschreibungsBuchung b = a.getBuchung();
       if (b == null)
         continue;
       if (this.equals(b.getGeschaeftsjahr()))
@@ -479,6 +480,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.16  2005/10/06 15:15:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2005/09/30 17:12:06  willuhn
  * @B bug 122
  *
