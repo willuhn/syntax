@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/01 23:28:15 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/06 22:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,7 @@ public class AnlagevermoegenList extends TablePart
     addColumn(i18n.tr("Anschaffungsdatum"),"anschaffungsdatum", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Anschaffungskosten"),"anschaffungskosten", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     addColumn(i18n.tr("Nutzungsdauer"),"nutzungsdauer");
-    addColumn(i18n.tr("Restwert"),"restwert");
+    addColumn(i18n.tr("Restwert"),"restwert",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new AnlagevermoegenListMenu());
   }
 }
@@ -73,6 +73,9 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.5  2005/10/06 22:27:17  willuhn
+ * @N KontoInput
+ *
  * Revision 1.4  2005/09/01 23:28:15  willuhn
  * *** empty log message ***
  *

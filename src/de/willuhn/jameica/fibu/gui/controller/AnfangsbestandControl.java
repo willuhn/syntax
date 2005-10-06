@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.6 $
+ * $Date: 2005/10/06 22:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,13 +14,9 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -29,7 +25,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.system.Application;
@@ -47,7 +42,7 @@ public class AnfangsbestandControl extends AbstractControl
 	private Anfangsbestand ab = null;
 
 	// Eingabe-Felder
-	private DialogInput konto	    = null;
+	private KontoInput konto	    = null;
   private Input betrag          = null;
   private Input geschaeftsjahr  = null;
 
@@ -86,37 +81,13 @@ public class AnfangsbestandControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getKontoAuswahl() throws RemoteException
+  public KontoInput getKontoAuswahl() throws RemoteException
   {
-    // TODO Neues KontoInput
     if (konto != null)
       return konto;
     
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    DBIterator list = Settings.getDBService().createList(Konto.class);
-    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
-    list.setOrder("order by kontonummer");
-
-    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
-        if (k == null)
-          return;
-        try {
-          konto.setValue(k.getKontonummer());
-          konto.setText(k.getKontonummer());
-          konto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), jahr.getMandant().getWaehrung(), k.getName()}));
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load konto",e);
-        }
-      }
-    });
-    Konto k = getAnfangsbestand().getKonto();
-    konto = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    konto.setComment(k == null ? "" : k.getName());
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    konto = new KontoInput(jahr.getKontenrahmen().getKonten(),getAnfangsbestand().getKonto());
     return konto;
   }
 
@@ -169,22 +140,7 @@ public class AnfangsbestandControl extends AbstractControl
 
       getAnfangsbestand().setBetrag(((Double)getBetrag().getValue()).doubleValue());
       getAnfangsbestand().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
-
-      String s = (String) getKontoAuswahl().getText();
-      if (s == null || s.length() == 0)
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto ein."));
-        return;
-      }
-      DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-      konten.addFilter("kontonummer = '" + s + "'");
-      if (!konten.hasNext())
-      {
-        GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-        return;
-      }
-      getAnfangsbestand().setKonto((Konto) konten.next());
-
+      getAnfangsbestand().setKonto((Konto)getKontoAuswahl().getValue());
       
       // und jetzt speichern wir.
       getAnfangsbestand().store();
@@ -205,6 +161,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.6  2005/10/06 22:27:17  willuhn
+ * @N KontoInput
+ *
  * Revision 1.5  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

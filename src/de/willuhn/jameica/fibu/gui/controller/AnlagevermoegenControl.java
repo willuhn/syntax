@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/06 22:27:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -59,9 +59,9 @@ public class AnlagevermoegenControl extends AbstractControl
   private Input laufzeit    = null;
   private Input restwert    = null;
   
-  private DialogInput konto       = null;
-  private DialogInput afaKonto    = null;
-  private DialogInput datum       = null;
+  private KontoInput konto       = null;
+  private KontoInput afaKonto    = null;
+  private DialogInput datum      = null;
   
   /**
    * @param view
@@ -214,40 +214,16 @@ public class AnlagevermoegenControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getKonto() throws RemoteException
+  public KontoInput getKonto() throws RemoteException
   {
-    // TODO Neues KontoInput
     if (konto != null)
       return konto;
     
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    final String waehrung = jahr.getMandant().getWaehrung();
-    DBIterator list = Settings.getDBService().createList(Konto.class);
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_ANLAGE);
-    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
-    list.setOrder("order by kontonummer");
-    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
-        if (k == null)
-          return;
-        try {
-          konto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
-          konto.setValue(k.getKontonummer());
-          konto.setText(k.getKontonummer());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load konto",e);
-        }
 
-      }
-    });
-    
-    Konto k = getAnlagevermoegen().getKonto();
-    konto = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    konto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
+    konto = new KontoInput(list,getAnlagevermoegen().getKonto());
     return konto;
   }
 
@@ -256,40 +232,17 @@ public class AnlagevermoegenControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getAbschreibungsKonto() throws RemoteException
+  public KontoInput getAbschreibungsKonto() throws RemoteException
   {
-    // TODO Neues KontoInput
     if (afaKonto != null)
       return afaKonto;
     
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    final String waehrung = jahr.getMandant().getWaehrung();
-    DBIterator list = Settings.getDBService().createList(Konto.class);
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
-    list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
-    list.setOrder("order by kontonummer");
-    KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event) {
-        Konto k = (Konto) event.data;
-        if (k == null)
-          return;
-        try {
-          afaKonto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
-          afaKonto.setValue(k.getKontonummer());
-          afaKonto.setText(k.getKontonummer());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load konto",e);
-        }
+    list.addFilter("steuer_id is null");
 
-      }
-    });
-    
-    Konto k = getAnlagevermoegen().getAbschreibungskonto();
-    afaKonto = new DialogInput(k == null ? null : k.getKontonummer(),d);
-    afaKonto.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), waehrung, k.getName()}));
+    afaKonto = new KontoInput(list,getAnlagevermoegen().getAbschreibungskonto());
     return afaKonto;
   }
 
@@ -304,44 +257,8 @@ public class AnlagevermoegenControl extends AbstractControl
       a.setName((String) getName().getValue());
       if (a.canChange())
       {
-        //////////////////////////////////////////////////////////////////////////
-        // Konto checken
-        String s = (String) getKonto().getText();
-        if (s == null || s.length() == 0)
-        {
-          GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Bestandskonto ein."));
-          return;
-        }
-        DBIterator konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-        konten.addFilter("kontonummer = '" + s + "'");
-        if (!konten.hasNext())
-        {
-          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-          return;
-        }
-        getAnlagevermoegen().setKonto((Konto) konten.next());
-        //
-        //////////////////////////////////////////////////////////////////////////
-
-        //////////////////////////////////////////////////////////////////////////
-        // Abschreibungskonto checken
-        s = (String) getAbschreibungsKonto().getText();
-        if (s == null || s.length() == 0)
-        {
-          GUI.getView().setErrorText(i18n.tr("Bitten geben Sie ein Konto für die Abschreibungen ein."));
-          return;
-        }
-        konten = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-        konten.addFilter("kontonummer = '" + s + "'");
-        if (!konten.hasNext())
-        {
-          GUI.getView().setErrorText(i18n.tr("Das Konto \"{0}\" existiert nicht.",s));
-          return;
-        }
-        getAnlagevermoegen().setAbschreibungskonto((Konto) konten.next());
-        //
-        //////////////////////////////////////////////////////////////////////////
-
+        getAnlagevermoegen().setKonto((Konto)getKonto().getValue());
+        getAnlagevermoegen().setAbschreibungskonto((Konto)getAbschreibungsKonto().getValue());
         a.setAnschaffungsDatum((Date) getDatum().getValue());
         a.setAnschaffungskosten(((Double)getKosten().getValue()).doubleValue());
         a.setNutzungsdauer(((Integer)getLaufzeit().getValue()).intValue());
@@ -364,6 +281,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.11  2005/10/06 22:27:16  willuhn
+ * @N KontoInput
+ *
  * Revision 1.10  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

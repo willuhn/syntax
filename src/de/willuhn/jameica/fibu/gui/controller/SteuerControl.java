@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.22 $
+ * $Date: 2005/10/06 22:27:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,15 +14,11 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.dialogs.KontoAuswahlDialog;
+import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -31,7 +27,6 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -54,7 +49,7 @@ public class SteuerControl extends AbstractControl
 	private Input name					= null;
 	private Input satz    			= null;
 
-  private Input kontoauswahl	= null;
+  private KontoInput kontoauswahl	= null;
   
   private I18N i18n;
   
@@ -142,52 +137,16 @@ public class SteuerControl extends AbstractControl
 	 * @return Eingabe-Feld.
 	 * @throws RemoteException
 	 */
-	public Input getKontoAuswahl() throws RemoteException
+	public KontoInput getKontoAuswahl() throws RemoteException
 	{
-    // TODO Neues KontoInput
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
-    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    final Kontenrahmen kr = jahr.getKontenrahmen();
-    final Mandant mandant = jahr.getMandant();
-    Konto k = getSteuer().getSteuerKonto();
-
-    if (getSteuer().isInitial())
-    {
-      kontoauswahl = new LabelInput(k == null ? null : k.getKontonummer());
-    }
-    else
-    {
-      DBIterator list = kr.getKonten();
-      list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
-      KontoAuswahlDialog d = new KontoAuswahlDialog(list,KontoAuswahlDialog.POSITION_MOUSE);
-      d.addCloseListener(new Listener() {
-        public void handleEvent(Event event)
-        {
-          if (event == null || event.data == null)
-            return;
-
-          try
-          {
-            Konto k = (Konto) event.data;
-              
-            kontoauswahl.setValue(k);
-            ((DialogInput)kontoauswahl).setText(k.getKontonummer());
-            kontoauswahl.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), mandant.getWaehrung(), k.getName()}));
-          }
-          catch (RemoteException e)
-          {
-            Logger.error("unable to load konto",e);
-          }
-        }
-      });
-      kontoauswahl = new DialogInput(k == null ? null : (k.getKontonummer() + " [" + k.getName() + "]"),d);
-      ((DialogInput) kontoauswahl).disableClientControl();
-    }
-    kontoauswahl.setValue(k);
-    kontoauswahl.setComment(k == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), mandant.getWaehrung(), k.getName()}));
-		return kontoauswahl;
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    DBIterator list = jahr.getKontenrahmen().getKonten();
+    list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
+    kontoauswahl = new KontoInput(list,getSteuer().getSteuerKonto());
+    return kontoauswahl;
 	}
 
 
@@ -206,19 +165,7 @@ public class SteuerControl extends AbstractControl
 
       getSteuer().setName((String)  getName().getValue());
       getSteuer().setSatz(((Double) getSatz().getValue()).doubleValue());
-
-      //////////////////////////////////////////////////////////////////////////
-      // Steuerkonto checken
-      
-      Object o = getKontoAuswahl().getValue();
-      if (o == null || !(o instanceof Konto))
-      {
-        GUI.getView().setErrorText(i18n.tr("Bitte wählen Sie ein Steuerkonto aus."));
-        return;
-      }
-      getSteuer().setSteuerKonto((Konto)o);
-      //
-      //////////////////////////////////////////////////////////////////////////
+      getSteuer().setSteuerKonto((Konto)getKontoAuswahl().getValue());
 
       // und jetzt speichern wir.
       getSteuer().store();
@@ -239,6 +186,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.22  2005/10/06 22:27:16  willuhn
+ * @N KontoInput
+ *
  * Revision 1.21  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen
