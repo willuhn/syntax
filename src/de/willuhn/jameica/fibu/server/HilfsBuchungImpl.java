@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.14 $
+ * $Date: 2005/10/06 14:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -64,16 +65,27 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
    */
   public void insertCheck() throws ApplicationException
   {
+    super.insertCheck();
     try {
+
       if (getHauptBuchung() == null)
         throw new ApplicationException("Keine Haupt-Buchung zugewiesen.");
+
+      // BUGZILLA 131
+      Kontoart kaSoll  = getSollKonto().getKontoArt();
+      Kontoart kaHaben = getHabenKonto().getKontoArt();
+      boolean gpSoll   = kaSoll.getKontoArt() == Kontoart.KONTOART_GELD || kaSoll.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      boolean gpHaben  = kaHaben.getKontoArt() == Kontoart.KONTOART_GELD || kaHaben.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      boolean isAbschreibung = kaSoll.getKontoArt() == Kontoart.KONTOART_AUFWAND && kaHaben.getKontoArt() == Kontoart.KONTOART_ANLAGE;
+      
+      if (!gpSoll && !gpHaben && !isAbschreibung)
+        throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
     }
     catch (RemoteException e)
     {
 			Logger.error("error while reading hilfsbuchung",e);
       throw new ApplicationException("Fehler bei der Prüfung der Hilfs-Buchung.",e);
     }
-    super.insertCheck();
   }
   
   /**
@@ -81,7 +93,7 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
    */
   public void updateCheck() throws ApplicationException
   {
-    insertCheck();
+    this.insertCheck();
   }
 
   /**
@@ -97,6 +109,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.14  2005/10/06 14:48:40  willuhn
+ * @N Sonderregelung fuer Abschreibunsgbuchungen
+ *
  * Revision 1.13  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/10/06 14:32:22 $
+ * $Revision: 1.19 $
+ * $Date: 2005/10/06 14:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -287,16 +287,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       if (soll.equals(haben))
         throw new ApplicationException(i18n.tr("Soll- und Haben-Konto dürfen nicht identisch sein."));
       
-      // BUGZILLA 131
-      Kontoart kaSoll  = soll.getKontoArt();
-      Kontoart kaHaben = haben.getKontoArt();
-      boolean gpSoll   = kaSoll.getKontoArt() == Kontoart.KONTOART_GELD || kaSoll.getKontoArt() == Kontoart.KONTOART_PRIVAT;
-      boolean gpHaben  = kaHaben.getKontoArt() == Kontoart.KONTOART_GELD || kaHaben.getKontoArt() == Kontoart.KONTOART_PRIVAT;
-      boolean isAbschreibung = kaSoll.getKontoArt() == Kontoart.KONTOART_AUFWAND && kaHaben.getKontoArt() == Kontoart.KONTOART_ANLAGE;
-      
-      if (!gpSoll && !gpHaben && !isAbschreibung)
-        throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
-
       double steuer = getSteuer();
       if (steuer > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
         throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Konten ausgewählt wurden"));
@@ -357,6 +347,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.19  2005/10/06 14:48:40  willuhn
+ * @N Sonderregelung fuer Abschreibunsgbuchungen
+ *
  * Revision 1.18  2005/10/06 14:32:22  willuhn
  * @B check auf abschreibung in insertCheck
  *

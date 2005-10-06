@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.43 $
- * $Date: 2005/09/25 22:05:09 $
+ * $Revision: 1.44 $
+ * $Date: 2005/10/06 14:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -163,11 +164,48 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
       throw ae;
     }
   }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
+   */
+  public void insertCheck() throws ApplicationException
+  {
+    super.insertCheck();
+    try
+    {
+      // BUGZILLA 131
+      Kontoart kaSoll  = getSollKonto().getKontoArt();
+      Kontoart kaHaben = getHabenKonto().getKontoArt();
+      boolean gpSoll   = kaSoll.getKontoArt() == Kontoart.KONTOART_GELD || kaSoll.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      boolean gpHaben  = kaHaben.getKontoArt() == Kontoart.KONTOART_GELD || kaHaben.getKontoArt() == Kontoart.KONTOART_PRIVAT;
+      boolean isAbschreibung = kaSoll.getKontoArt() == Kontoart.KONTOART_AUFWAND && kaHaben.getKontoArt() == Kontoart.KONTOART_ANLAGE;
+      
+      if (!gpSoll && !gpHaben && !isAbschreibung)
+        throw new ApplicationException(i18n.tr("Mindestens eines der beiden Konten muss ein Geld- oder Privat-Konto sein"));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking buchung",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
+    }
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  public void updateCheck() throws ApplicationException
+  {
+    this.insertCheck();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.44  2005/10/06 14:48:40  willuhn
+ * @N Sonderregelung fuer Abschreibunsgbuchungen
+ *
  * Revision 1.43  2005/09/25 22:05:09  willuhn
  * @B bug 121
  *

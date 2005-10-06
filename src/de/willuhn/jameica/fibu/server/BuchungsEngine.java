@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/10/04 23:36:13 $
+ * $Revision: 1.28 $
+ * $Date: 2005/10/06 14:48:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -99,7 +100,7 @@ public class BuchungsEngine
         }
         
         Logger.info("  Abschreibungsbuchung fuer " + av.getName());
-        Buchung buchung = (Buchung) db.createObject(Buchung.class,null);
+        AbschreibungsBuchung buchung = (AbschreibungsBuchung) db.createObject(AbschreibungsBuchung.class,null);
         buchung.setDatum(end);
         buchung.setGeschaeftsjahr(jahr);
         buchung.setSollKonto(av.getAbschreibungskonto());
@@ -293,6 +294,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.28  2005/10/06 14:48:40  willuhn
+ * @N Sonderregelung fuer Abschreibunsgbuchungen
+ *
  * Revision 1.27  2005/10/04 23:36:13  willuhn
  * *** empty log message ***
  *
