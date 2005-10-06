@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/06 17:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,10 +88,11 @@ public class AnfangsbestandControl extends AbstractControl
    */
   public DialogInput getKontoAuswahl() throws RemoteException
   {
+    // TODO Neues KontoInput
     if (konto != null)
       return konto;
     
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = Settings.getDBService().createList(Konto.class);
     list.addFilter("kontenrahmen_id = " + jahr.getKontenrahmen().getID());
     list.setOrder("order by kontonummer");
@@ -105,7 +106,7 @@ public class AnfangsbestandControl extends AbstractControl
         try {
           konto.setValue(k.getKontonummer());
           konto.setText(k.getKontonummer());
-          konto.setComment(k.getName());
+          konto.setComment(i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(k.getSaldo(jahr)), jahr.getMandant().getWaehrung(), k.getName()}));
         }
         catch (RemoteException e)
         {
@@ -204,6 +205,10 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.5  2005/10/06 17:27:59  willuhn
+ * @N KontoInput
+ * @N Einstellungen
+ *
  * Revision 1.4  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

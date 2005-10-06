@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/09/28 17:25:28 $
+ * $Revision: 1.29 $
+ * $Date: 2005/10/06 17:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,15 @@ public class Settings
   private static DBService db = null;
 	private static Geschaeftsjahr jahr = null;
   
+  /**
+   * Liefert weitere Einstellungen.
+   * @return Einstellungen.
+   */
+  public static de.willuhn.jameica.system.Settings getSettings()
+  {
+    return settings;
+  }
+
   /**
 	 * Liefert den Datenbank-Service.
 	 * @return Datenbank.
@@ -237,6 +246,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.29  2005/10/06 17:27:59  willuhn
+ * @N KontoInput
+ * @N Einstellungen
+ *
  * Revision 1.28  2005/09/28 17:25:28  willuhn
  * *** empty log message ***
  *

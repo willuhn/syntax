@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.10 $
+ * $Date: 2005/10/06 17:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -216,6 +216,7 @@ public class AnlagevermoegenControl extends AbstractControl
    */
   public DialogInput getKonto() throws RemoteException
   {
+    // TODO Neues KontoInput
     if (konto != null)
       return konto;
     
@@ -257,6 +258,7 @@ public class AnlagevermoegenControl extends AbstractControl
    */
   public DialogInput getAbschreibungsKonto() throws RemoteException
   {
+    // TODO Neues KontoInput
     if (afaKonto != null)
       return afaKonto;
     
@@ -362,6 +364,10 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.10  2005/10/06 17:27:59  willuhn
+ * @N KontoInput
+ * @N Einstellungen
+ *
  * Revision 1.9  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

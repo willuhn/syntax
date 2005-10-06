@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.21 $
+ * $Date: 2005/10/06 17:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,6 +144,7 @@ public class SteuerControl extends AbstractControl
 	 */
 	public Input getKontoAuswahl() throws RemoteException
 	{
+    // TODO Neues KontoInput
 		if (kontoauswahl != null)
 			return kontoauswahl;
 
@@ -238,6 +239,10 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.21  2005/10/06 17:27:59  willuhn
+ * @N KontoInput
+ * @N Einstellungen
+ *
  * Revision 1.20  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

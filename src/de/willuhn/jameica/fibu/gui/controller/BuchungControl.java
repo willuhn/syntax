@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.56 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.57 $
+ * $Date: 2005/10/06 17:27:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -167,6 +167,7 @@ public class BuchungControl extends AbstractControl
    */
   public DialogInput getSollKontoAuswahl() throws RemoteException
 	{
+    // TODO Neues KontoInput
 		if (sollKontoAuswahl != null)
 			return sollKontoAuswahl;
 
@@ -199,6 +200,7 @@ public class BuchungControl extends AbstractControl
 	 */
 	public DialogInput getHabenKontoAuswahl() throws RemoteException
 	{
+    // TODO Neues KontoInput
 		if (habenKontoAuswahl != null)
 			return habenKontoAuswahl;
 		
@@ -293,6 +295,7 @@ public class BuchungControl extends AbstractControl
    */
   public DialogInput getAbschreibungsKonto() throws RemoteException
   {
+    // TODO Neues KontoInput
     if (afaKonto != null)
       return afaKonto;
     
@@ -869,6 +872,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.57  2005/10/06 17:27:59  willuhn
+ * @N KontoInput
+ * @N Einstellungen
+ *
  * Revision 1.56  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *
