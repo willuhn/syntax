@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.30 $
+ * $Date: 2005/10/13 15:44:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,10 +21,13 @@ import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -44,14 +47,83 @@ public class Settings
 	private static Geschaeftsjahr jahr = null;
   
   /**
-   * Liefert weitere Einstellungen.
-   * @return Einstellungen.
+   * Liefert das Abschreibungskonto fuer das Geschaeftsjahr.
+   * @param jahr Geschaeftsjahr
+   * @return das Konto oder <code>null</code> wenn noch keines definiert ist.
+   * @throws RemoteException
    */
-  public static de.willuhn.jameica.system.Settings getSettings()
+  public static Konto getAbschreibunsgKonto(Geschaeftsjahr jahr) throws RemoteException
   {
-    return settings;
+    if (jahr == null)
+      return null;
+    
+    String id = settings.getString("jahr." + jahr.getID() + ".afakonto",null);
+    if (id != null && id.length() > 0)
+      return (Konto) getDBService().createObject(Konto.class,id);
+    return null;
   }
 
+  /**
+   * Speichert das Abschreibungskonto fuer das Geschaeftsjahr.
+   * @param jahr Geschaeftsjahr.
+   * @param k Konto.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static void setAbschreibungsKonto(Geschaeftsjahr jahr, Konto k) throws RemoteException, ApplicationException
+  {
+    if (jahr == null)
+      return;
+
+    if (k == null)
+    {
+      settings.setAttribute("jahr." + jahr.getID() + ".afakonto",(String)null);
+      return;
+    }
+
+    Kontoart ka = k.getKontoArt();
+    if (ka.getKontoArt() != Kontoart.KONTOART_AUFWAND)
+    {
+      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+      throw new ApplicationException(i18n.tr("Konto {0} ist kein gültiges Aufwandskonto",k.getKontonummer()));
+    }
+    settings.setAttribute("jahr." + jahr.getID() + ".afakonto",k.getID());
+    
+  }
+  
+  /**
+   * Liefert die Nettogrenze fuer GWG (Geringwertige Wirtschaftsgueter).
+   * @param jahr Geschaeftsjahr.
+   * @return Nettogrenze.
+   * @throws RemoteException
+   */
+  public static double getGwgWert(Geschaeftsjahr jahr) throws RemoteException
+  {
+    double gwgDef = 410d;
+    
+    if (jahr == null)
+      return gwgDef;
+
+    return settings.getDouble("jahr." + jahr.getID() + ".gwg",gwgDef);
+  }
+  
+  /**
+   * Speichert die Nettogrenze fuer GWG.
+   * @param jahr Geschaeftsjahr.
+   * @param gwg Nettogrenze.
+   * @throws RemoteException
+   */
+  public static void setGwgWert(Geschaeftsjahr jahr, double gwg) throws RemoteException
+  {
+    if (jahr == null)
+      return;
+    
+    if (gwg < 0d)
+      gwg = 410d;
+
+    settings.setAttribute("jahr." + jahr.getID() + ".gwg",gwg);
+  }
+  
   /**
 	 * Liefert den Datenbank-Service.
 	 * @return Datenbank.
@@ -246,6 +318,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.30  2005/10/13 15:44:33  willuhn
+ * @B bug 139
+ *
  * Revision 1.29  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Einstellungen.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/13 15:44:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public class Einstellungen extends AbstractView
 
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Buchungsrelevante Einstellungen"));
     group.addLabelPair(i18n.tr("Standard-Abschreibunsgkonto"),control.getAbschreibungsKonto());
+    group.addLabelPair(i18n.tr("Nettogrenze GWG"),control.getGwgWert());
 
     ButtonArea buttonArea = group.createButtonArea(2);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
@@ -71,6 +72,9 @@ public class Einstellungen extends AbstractView
 
 /*********************************************************************
  * $Log: Einstellungen.java,v $
+ * Revision 1.2  2005/10/13 15:44:33  willuhn
+ * @B bug 139
+ *
  * Revision 1.1  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

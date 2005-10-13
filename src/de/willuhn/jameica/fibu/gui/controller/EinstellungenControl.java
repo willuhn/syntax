@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/EinstellungenControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/13 15:44:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,8 +26,11 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -39,6 +42,7 @@ public class EinstellungenControl extends AbstractControl
   private I18N i18n = null;
 
   private KontoInput afaKonto = null;
+  private Input gwgWert       = null;
   
   /**
    * ct.
@@ -60,18 +64,30 @@ public class EinstellungenControl extends AbstractControl
       return afaKonto;
     
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    Mandant m = jahr.getMandant();
-    Konto konto = null;
-    
-    String id = Settings.getSettings().getString("mandant." + m.getID() + ".afakonto",null);
-    if (id != null && id.length() > 0)
-      konto = (Konto) Settings.getDBService().createObject(Konto.class,id);
-    
+
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
-    afaKonto = new KontoInput(konten,konto);
+    afaKonto = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr));
     return afaKonto;
+  }
+  
+  /**
+   * Liefert ein Eingabe-Feld zur Definition des GWG-Wertes.
+   * @return GWG-Wert.
+   * @throws RemoteException
+   */
+  public Input getGwgWert() throws RemoteException
+  {
+    if (gwgWert != null)
+      return this.gwgWert;
+
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    Mandant m = jahr.getMandant();
+
+    gwgWert = new DecimalInput(Settings.getGwgWert(jahr),Fibu.DECIMALFORMAT);
+    gwgWert.setComment(m.getWaehrung() + " [" + i18n.tr("Geringwertige Wirtschaftsgüter") + "]");
+    return gwgWert;
   }
   
   /**
@@ -82,19 +98,11 @@ public class EinstellungenControl extends AbstractControl
     try
     {
       Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-      Mandant m = jahr.getMandant();
-      Konto k = (Konto) getAbschreibungsKonto().getValue();
-      if (k != null)
-      {
-        Kontoart ka = k.getKontoArt();
-        if (ka.getKontoArt() != Kontoart.KONTOART_AUFWAND)
-        {
-          GUI.getView().setErrorText(i18n.tr("Konto {0} ist kein gültiges Aufwandskonto",k.getKontonummer()));
-          return;
-        }
-      }
-      String id = k == null ? null : k.getID();
-      Settings.getSettings().setAttribute("mandant." + m.getID() + ".afakonto",id);
+      Settings.setAbschreibungsKonto(jahr,(Konto)getAbschreibungsKonto().getValue());
+      
+      Double d = (Double) getGwgWert().getValue();
+      Settings.setGwgWert(jahr,d == null ? 0 : d.doubleValue());
+
       GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
     }
     catch (RemoteException e)
@@ -102,12 +110,19 @@ public class EinstellungenControl extends AbstractControl
       Logger.error("unable to store settings",e);
       GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
     }
+    catch (ApplicationException ae)
+    {
+      GUI.getStatusBar().setErrorText(ae.getMessage());
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: EinstellungenControl.java,v $
+ * Revision 1.2  2005/10/13 15:44:33  willuhn
+ * @B bug 139
+ *
  * Revision 1.1  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

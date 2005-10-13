@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.58 $
- * $Date: 2005/10/06 22:27:16 $
+ * $Revision: 1.59 $
+ * $Date: 2005/10/13 15:44:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,6 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -268,16 +267,10 @@ public class BuchungControl extends AbstractControl
       return afaKonto;
     
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    Mandant m = jahr.getMandant();
     
-    Konto k = null;
-    String id = Settings.getSettings().getString("mandant." + m.getID() + ".afakonto",null);
-    if (id != null && id.length() > 0)
-      k = (Konto) Settings.getDBService().createObject(Konto.class,id);
-
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
-    afaKonto = new KontoInput(list,k);
+    afaKonto = new KontoInput(list,Settings.getAbschreibunsgKonto(jahr));
     afaKonto.disable();
     return afaKonto;
   }
@@ -707,6 +700,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.59  2005/10/13 15:44:33  willuhn
+ * @B bug 139
+ *
  * Revision 1.58  2005/10/06 22:27:16  willuhn
  * @N KontoInput
  *
