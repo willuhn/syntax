@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/10/13 21:10:59 $
+ * $Revision: 1.33 $
+ * $Date: 2005/10/13 21:29:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,8 +110,9 @@ public class BuchungsEngine
           int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
           betrag = betrag / 12 * months;
         }
+        
         // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
-        else if (betrag >= restwert)
+        if (betrag >= restwert)
         {
           betrag = restwert;
           rest = true;
@@ -313,6 +314,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.33  2005/10/13 21:29:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.32  2005/10/13 21:10:59  willuhn
  * @B bug 137
  *
