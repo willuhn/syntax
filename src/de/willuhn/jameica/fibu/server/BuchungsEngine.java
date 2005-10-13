@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.30 $
+ * $Date: 2005/10/13 15:53:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,8 @@ public class BuchungsEngine
       {
         Anlagevermoegen av = (Anlagevermoegen) list.next();
         
-        double betrag      = av.getAnschaffungskosten() / (double) av.getNutzungsdauer();
+        double anschaffung = av.getAnschaffungskosten();
+        double betrag      = anschaffung / (double) av.getNutzungsdauer();
         double restwert    = av.getRestwert(jahr);
         boolean rest       = false;
 
@@ -98,7 +99,15 @@ public class BuchungsEngine
           betrag = restwert;
           rest = true;
         }
+
+        // GWGs voll abschreiben
+        if (anschaffung <= Settings.getGwgWert(jahr))
+        {
+          betrag = anschaffung;
+          rest = true;
+        }
         
+        // Abschreibungsbetrag monatsgenau berechnen
         Logger.info("  Abschreibungsbuchung fuer " + av.getName());
         AbschreibungsBuchung buchung = (AbschreibungsBuchung) db.createObject(AbschreibungsBuchung.class,null);
         buchung.setDatum(end);
@@ -294,6 +303,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.30  2005/10/13 15:53:15  willuhn
+ * @B bug 138
+ *
  * Revision 1.29  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *
