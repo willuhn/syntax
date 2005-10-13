@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/10/13 16:00:35 $
+ * $Revision: 1.32 $
+ * $Date: 2005/10/13 21:10:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,7 @@ public class BuchungsEngine
       while (list.hasNext())
       {
         Anlagevermoegen av = (Anlagevermoegen) list.next();
-        
+
         double anschaffung = av.getAnschaffungskosten();
         double betrag      = anschaffung / (double) av.getNutzungsdauer();
         double restwert    = av.getRestwert(jahr);
@@ -94,16 +94,26 @@ public class BuchungsEngine
         if (restwert == 0.0d)
           continue;
         
-        if (betrag > restwert)
-        {
-          betrag = restwert;
-          rest = true;
-        }
-
+        Date datum = av.getAnschaffungsdatum();
+        
         // GWGs voll abschreiben
         if (anschaffung <= Settings.getGwgWert(jahr))
         {
           betrag = anschaffung;
+          rest = true;
+        }
+        // Anteilig abschreiben
+        else if (jahr.check(datum))
+        {
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(datum);
+          int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
+          betrag = betrag / 12 * months;
+        }
+        // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
+        else if (betrag >= restwert)
+        {
+          betrag = restwert;
           rest = true;
         }
         
@@ -303,6 +313,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.32  2005/10/13 21:10:59  willuhn
+ * @B bug 137
+ *
  * Revision 1.31  2005/10/13 16:00:35  willuhn
  * *** empty log message ***
  *
