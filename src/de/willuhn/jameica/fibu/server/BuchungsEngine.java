@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/10/13 15:53:15 $
+ * $Revision: 1.31 $
+ * $Date: 2005/10/13 16:00:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -107,7 +107,7 @@ public class BuchungsEngine
           rest = true;
         }
         
-        // Abschreibungsbetrag monatsgenau berechnen
+        // TODO: Abschreibungsbetrag monatsgenau berechnen
         Logger.info("  Abschreibungsbuchung fuer " + av.getName());
         AbschreibungsBuchung buchung = (AbschreibungsBuchung) db.createObject(AbschreibungsBuchung.class,null);
         buchung.setDatum(end);
@@ -303,6 +303,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.31  2005/10/13 16:00:35  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.30  2005/10/13 15:53:15  willuhn
  * @B bug 138
  *
