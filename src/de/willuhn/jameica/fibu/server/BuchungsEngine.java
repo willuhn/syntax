@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/10/13 21:29:02 $
+ * $Revision: 1.34 $
+ * $Date: 2005/10/14 17:24:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,22 +89,26 @@ public class BuchungsEngine
         double anschaffung = av.getAnschaffungskosten();
         double betrag      = anschaffung / (double) av.getNutzungsdauer();
         double restwert    = av.getRestwert(jahr);
-        boolean rest       = false;
+        String name        = i18n.tr("Abschreibung");
 
         if (restwert == 0.0d)
           continue;
-        
+
+        Logger.info("  Abschreibungsbuchung fuer " + av.getName());
+
         Date datum = av.getAnschaffungsdatum();
         
         // GWGs voll abschreiben
         if (anschaffung <= Settings.getGwgWert(jahr))
         {
+          Logger.info("    GWG: Schreibe voll ab");
           betrag = anschaffung;
-          rest = true;
+          name = i18n.tr("GWG-Abschreibung");
         }
-        // Anteilig abschreiben
+        // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
         else if (jahr.check(datum))
         {
+          Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
           Calendar cal = Calendar.getInstance();
           cal.setTime(datum);
           int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
@@ -114,22 +118,18 @@ public class BuchungsEngine
         // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
         if (betrag >= restwert)
         {
+          Logger.info("    Restwertbuchung");
           betrag = restwert;
-          rest = true;
+          name = i18n.tr("restwertbuchung");
         }
         
-        // TODO: Abschreibungsbetrag monatsgenau berechnen
-        Logger.info("  Abschreibungsbuchung fuer " + av.getName());
         AbschreibungsBuchung buchung = (AbschreibungsBuchung) db.createObject(AbschreibungsBuchung.class,null);
         buchung.setDatum(end);
         buchung.setGeschaeftsjahr(jahr);
         buchung.setSollKonto(av.getAbschreibungskonto());
         buchung.setHabenKonto(av.getKonto());
         buchung.setBelegnummer(buchung.getBelegnummer());
-        if (rest)
-          buchung.setText(i18n.tr("Restwertbuchung {0}",av.getName()));
-        else
-          buchung.setText(i18n.tr("Abschreibung {0}",av.getName()));
+        buchung.setText(name + " " + av.getName());
         buchung.setBetrag(betrag);
         buchung.store();
         
@@ -314,6 +314,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.34  2005/10/14 17:24:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/10/13 21:29:02  willuhn
  * *** empty log message ***
  *
