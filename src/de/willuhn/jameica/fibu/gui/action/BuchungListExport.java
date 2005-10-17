@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.8 $
+ * $Date: 2005/10/17 22:59:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,6 +108,8 @@ public class BuchungListExport extends AbstractExportAction
       export.addObject("buchungen",b);
       export.addObject("anfangsbestaende",ab);
       export.addObject("jahr",jahr);
+      export.addObject("start",getStart());
+      export.addObject("end",getEnd());
       export.setTarget(new FileOutputStream(file));
       export.setTitle(getName());
       export.setTemplate("buchungsjournal.vm");
@@ -136,6 +138,9 @@ public class BuchungListExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.8  2005/10/17 22:59:38  willuhn
+ * @B bug 135
+ *
  * Revision 1.7  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.2 $
+ * $Date: 2005/10/17 22:59:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,10 @@ public class Auswertungen extends AbstractView
     final AuswertungControl control = new AuswertungControl(this);
     
     Container group = new LabelGroup(getParent(),i18n.tr("Auswertungen"));
-    group.addLabelPair(i18n.tr("Auswertung"), control.getAuswertungen());
+    group.addLabelPair(i18n.tr("Art der Auswertung"), control.getAuswertungen());
+    group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getJahr());
+    group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
+    group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
     
     ButtonArea buttonArea = group.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
@@ -70,6 +73,9 @@ public class Auswertungen extends AbstractView
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.2  2005/10/17 22:59:38  willuhn
+ * @B bug 135
+ *
  * Revision 1.1  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

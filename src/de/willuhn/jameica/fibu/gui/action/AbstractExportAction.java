@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AbstractExportAction.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.3 $
+ * $Date: 2005/10/17 22:59:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import java.io.File;
+import java.util.Date;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -36,6 +37,9 @@ public abstract class AbstractExportAction implements ExportAction
 
   private I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private static Settings settings = new Settings(AbstractExportAction.class);
+  
+  private Date start = null;
+  private Date end = null;
   
   /**
    * @see de.willuhn.jameica.fibu.gui.action.ExportAction#storeTo(java.lang.String)
@@ -88,11 +92,46 @@ public abstract class AbstractExportAction implements ExportAction
     }
     throw new OperationCanceledException("giving up after 10 retries");
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getEnd()
+   */
+  public Date getEnd()
+  {
+    return this.end;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getStart()
+   */
+  public Date getStart()
+  {
+    return this.start;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#setEnd(java.util.Date)
+   */
+  public void setEnd(Date d)
+  {
+    this.end = d;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#setStart(java.util.Date)
+   */
+  public void setStart(Date d)
+  {
+    this.start = d;
+  }
 }
 
 
 /*********************************************************************
  * $Log: AbstractExportAction.java,v $
+ * Revision 1.3  2005/10/17 22:59:38  willuhn
+ * @B bug 135
+ *
  * Revision 1.2  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

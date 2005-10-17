@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/17 22:59:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -100,11 +100,21 @@ public class KontoExport extends AbstractExportAction
         
       export.addObject("konten",k);
       export.addObject("jahr",jahr);
+      export.addObject("start",getStart());
+      export.addObject("end",getEnd());
 
+      Date start = getStart();
+      Date end = getEnd();
+      
       for (int i=0;i<k.length;++i)
       {
         Vector buchungen = new Vector();
-        DBIterator list = k[i].getBuchungen(jahr);
+        DBIterator list = null;
+        if (start != null && end != null)
+          list = k[i].getBuchungen(jahr,start,end);
+        else
+          list = k[i].getBuchungen(jahr);
+
         while (list.hasNext())
         {
           buchungen.add(list.next());
@@ -139,6 +149,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.11  2005/10/17 22:59:38  willuhn
+ * @B bug 135
+ *
  * Revision 1.10  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

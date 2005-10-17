@@ -1,5 +1,15 @@
 #set($konten = $!{export.getObjects("konten")})
 
+#set($start = $!{export.getObjects("start")})
+#set($end = $!{export.getObjects("end")})
+
+#if($start)
+  #if($end)
+    <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
+    <br/>
+  #end
+#end
+
 #foreach($konto in $konten)
 
   $math.reset("soll")
