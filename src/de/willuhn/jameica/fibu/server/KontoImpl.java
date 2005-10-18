@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/10/06 16:00:37 $
+ * $Revision: 1.36 $
+ * $Date: 2005/10/18 09:25:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Date;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -30,8 +31,10 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 import de.willuhn.util.Session;
 
 /**
@@ -44,6 +47,8 @@ public class KontoImpl extends AbstractDBObject implements Konto
   private final transient static Session kontoTypCache     = new Session();
   private final transient static Session kontenRahmenCache = new Session();
   
+  private I18N i18n = null;
+  
   /**
    * Erzeugt ein neues Konto.
    * @throws RemoteException
@@ -51,6 +56,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public KontoImpl() throws RemoteException
   {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -363,8 +369,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
   /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
+  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException, ApplicationException
   {
+    if (!jahr.check(von))
+      throw new ApplicationException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(von)));
+
+    if (!jahr.check(bis))
+      throw new ApplicationException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(bis)));
+
     // Uhrzeiten noch zurueckdrehen
     Calendar cal = Calendar.getInstance();
     cal.setTime(von);
@@ -426,6 +438,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.36  2005/10/18 09:25:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2005/10/06 16:00:37  willuhn
  * @B bug 135
  *

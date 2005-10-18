@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.17 $
- * $Date: 2005/10/06 16:00:37 $
+ * $Revision: 1.18 $
+ * $Date: 2005/10/18 09:25:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Diese Klasse bildet die Konten in Fibu ab.
@@ -141,10 +142,11 @@ public interface Konto extends DBObject
    * @param jahr das Geschaeftsjahr.
    * @param von Start-Datum.
    * @param bis End-Datum.
+   * @throws ApplicationException
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
+  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException, ApplicationException;
 
   /**
    * Liefert den Anfangsbestand des Kontos oder null wenn keiner existiert.
@@ -158,6 +160,9 @@ public interface Konto extends DBObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.18  2005/10/18 09:25:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2005/10/06 16:00:37  willuhn
  * @B bug 135
  *
