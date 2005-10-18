@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,11 +22,11 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -341,7 +341,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("restwert".equals(arg0))
-      return new Double(getRestwert(Settings.getActiveGeschaeftsjahr()));
+    {
+      Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+      return new Double(getRestwert(jahr));
+    }
     return super.getAttribute(arg0);
   }
 
@@ -422,6 +425,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.11  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.10  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

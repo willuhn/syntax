@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.11 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -68,14 +67,16 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     
     try
     {
-      if (Settings.getActiveGeschaeftsjahr().isClosed())
+      Geschaeftsjahr jahr = getGeschaeftsjahr();
+
+      if (jahr == null || jahr.isNewObject())
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
+
+      if (jahr.isClosed())
         throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
       Konto k = getKonto();
-      Geschaeftsjahr jahr = getGeschaeftsjahr();
       
-      if (jahr == null || jahr.isNewObject())
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
       
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
@@ -174,6 +175,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.11  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.10  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *

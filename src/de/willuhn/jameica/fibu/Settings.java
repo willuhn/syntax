@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/10/13 15:44:33 $
+ * $Revision: 1.31 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,9 @@ package de.willuhn.jameica.fibu;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -131,11 +131,13 @@ public class Settings
 	 */
 	public static DBService getDBService() throws RemoteException
 	{
+	  // TODO Das ist noch nicht Client/Server tauglich
     if (db == null)
     {
       try
       {
         db = (DBService) Application.getServiceFactory().lookup(Fibu.class,"database");
+        db.setActiveGeschaeftsjahr(getActiveGeschaeftsjahr());
       }
       catch (RemoteException e)
       {
@@ -318,6 +320,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.31  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.30  2005/10/13 15:44:33  willuhn
  * @B bug 139
  *

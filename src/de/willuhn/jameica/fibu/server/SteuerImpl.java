@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.13 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.DBService;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -143,7 +145,10 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung für den Steuersatz ein."));
 
       if (getMandant() == null)
-        setAttribute("mandant_id",Settings.getActiveGeschaeftsjahr().getMandant());
+      {
+        Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+        setAttribute("mandant_id",jahr.getMandant());
+      }
     }
     catch (RemoteException e)
     {
@@ -197,6 +202,9 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.13  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.12  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

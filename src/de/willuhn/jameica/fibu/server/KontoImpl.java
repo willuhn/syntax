@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/10/18 09:25:31 $
+ * $Revision: 1.37 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -336,7 +337,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("saldo".equals(arg0))
-      return new Double(getSaldo(Settings.getActiveGeschaeftsjahr()));
+    {
+      Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+      return new Double(getSaldo(jahr));
+    }
     if ("kontenrahmen_id".equals(arg0))
       return getKontenrahmen();
     if ("kontoart_id".equals(arg0))
@@ -438,6 +442,9 @@ public class KontoImpl extends AbstractDBObject implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.37  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.36  2005/10/18 09:25:31  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.21 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,8 +18,8 @@ import java.util.Date;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.system.Application;
@@ -228,7 +228,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
     try
     {
       // Checken, ob in die Belegnummer eindeutig ist
-      DBIterator list = Settings.getActiveGeschaeftsjahr().getBuchungen();
+      Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+      DBIterator list = jahr.getBuchungen();
       list.addFilter("belegnummer = " + this.getAttribute("belegnummer"));
       if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
         list.addFilter("id != " + this.getID());
@@ -268,7 +269,12 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   public void insertCheck() throws ApplicationException
   {
     try {
-      if (Settings.getActiveGeschaeftsjahr().isClosed())
+      Geschaeftsjahr jahr = getGeschaeftsjahr();
+
+      if (jahr == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus."));
+
+      if (jahr.isClosed())
         throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
       if (getBetrag() == 0.0d)
@@ -293,10 +299,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       Date d = getDatum();
       if (d == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Datum ein."));
-
-      Geschaeftsjahr jahr = getGeschaeftsjahr();
-      if (jahr == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus."));
 
       if (!jahr.check(d))
         throw new ApplicationException(i18n.tr("Datum befindet sich nicht innerhalb des aktuellen Geschäftsjahres."));
@@ -346,6 +348,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.21  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.20  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

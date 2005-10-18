@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.7 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,11 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.DBService;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -111,7 +112,8 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   {
     try
     {
-      if (Settings.getActiveGeschaeftsjahr().isClosed())
+      Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+      if (jahr.isClosed())
         throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
       if (getAnlagevermoegen() == null)
@@ -139,6 +141,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.7  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.6  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

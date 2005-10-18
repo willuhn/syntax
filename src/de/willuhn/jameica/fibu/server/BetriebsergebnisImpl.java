@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BetriebsergebnisImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/26 23:51:59 $
+ * $Revision: 1.4 $
+ * $Date: 2005/10/18 23:28:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
   {
     // Liste der Konten mit Einnahmen ermitteln
     ArrayList list = new ArrayList();
-    DBIterator i = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+    DBIterator i = jahr.getKontenrahmen().getKonten();
     i.addFilter("kontoart_id = " + Kontoart.KONTOART_ERLOES + " OR (kontoart_id = " + Kontoart.KONTOART_STEUER + " AND kontotyp_id = " + Kontotyp.KONTOTYP_EINNAHME + ")");
     
     while (i.hasNext())
@@ -70,7 +70,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
   public Konto[] getAusgaben() throws RemoteException
   {
     ArrayList list = new ArrayList();
-    DBIterator i = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+    DBIterator i = jahr.getKontenrahmen().getKonten();
     i.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND + " OR (kontoart_id = " + Kontoart.KONTOART_STEUER + " AND kontotyp_id = " + Kontotyp.KONTOTYP_AUSGABE + ")");
     while (i.hasNext())
     {
@@ -107,6 +107,9 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
 
 /*********************************************************************
  * $Log: BetriebsergebnisImpl.java,v $
+ * Revision 1.4  2005/10/18 23:28:55  willuhn
+ * @N client/server tauglichkeit
+ *
  * Revision 1.3  2005/09/26 23:51:59  willuhn
  * *** empty log message ***
  *
