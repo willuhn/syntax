@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.4 $
+ * $Date: 2005/10/20 23:03:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,7 +80,7 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
     {
       return (Geschaeftsjahr) this.jahre.get(getClientHost());
     }
-    catch (ServerNotActiveException e)
+    catch (Exception e)
     {
       // lokaler Modus, also lokales Geschaeftsjahr nehmen
       return Settings.getActiveGeschaeftsjahr();
@@ -91,6 +91,9 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.4  2005/10/20 23:03:44  willuhn
+ * @N network support
+ *
  * Revision 1.3  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

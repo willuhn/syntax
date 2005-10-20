@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.32 $
+ * $Date: 2005/10/20 23:03:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,19 +125,17 @@ public class Settings
   }
   
   /**
-	 * Liefert den Datenbank-Service.
-	 * @return Datenbank.
-	 * @throws RemoteException
-	 */
-	public static DBService getDBService() throws RemoteException
-	{
-	  // TODO Das ist noch nicht Client/Server tauglich
+   * Liefert den Datenbank-Service.
+   * @return Datenbank.
+   * @throws RemoteException
+   */
+  private static DBService getInternalDBService() throws RemoteException
+  {
     if (db == null)
     {
       try
       {
         db = (DBService) Application.getServiceFactory().lookup(Fibu.class,"database");
-        db.setActiveGeschaeftsjahr(getActiveGeschaeftsjahr());
       }
       catch (RemoteException e)
       {
@@ -150,6 +148,18 @@ public class Settings
       }
     }
     return db;
+  }
+
+  /**
+	 * Liefert den Datenbank-Service.
+	 * @return Datenbank.
+	 * @throws RemoteException
+	 */
+	public static DBService getDBService() throws RemoteException
+	{
+    db = getInternalDBService();
+    db.setActiveGeschaeftsjahr(getActiveGeschaeftsjahr());
+    return db;
 	}
 
   /**
@@ -161,12 +171,13 @@ public class Settings
     if (j == null)
     {
       jahr = null;
+      settings.setAttribute("gj.active",(String)null);
       return;
     }
 
     try
     {
-      jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,j.getID());
+      jahr = j;
       settings.setAttribute("gj.active",jahr.getID());
     }
     catch (RemoteException e)
@@ -176,32 +187,27 @@ public class Settings
     setStatus();
   }
   
-  private static boolean inProgress = false;
-  
   /**
    * Liefert das aktuelle Geschaeftsjahr oder einen Dialog zur Abfrage, falls dieses noch
    * nicht ausgeaehlt ist.
    * @return das aktive Geschaeftsjahr.
    * @throws RemoteException
    */
-  public static Geschaeftsjahr getActiveGeschaeftsjahr() throws RemoteException
+  public static synchronized Geschaeftsjahr getActiveGeschaeftsjahr() throws RemoteException
   {
-    if (inProgress)
-      return null;
   	if (jahr != null && !jahr.isNewObject())
   		return jahr;
 
   	try
     {
       boolean ask = true;
-      inProgress = true;
       String id = settings.getString("gj.active",null);
 
       if (id != null)
       {
         try
         {
-          jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,id);
+          jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,id);
           ask = false;
         }
         catch (ObjectNotFoundException oe)
@@ -212,7 +218,7 @@ public class Settings
 
       if (ask)
       {
-        DBIterator list = getDBService().createList(Geschaeftsjahr.class);
+        DBIterator list = getInternalDBService().createList(Geschaeftsjahr.class);
         if (list.size() > 0 && !Application.inServerMode())
         {
           // TODO Das funktioniert im Client/Server-Mode noch nicht.
@@ -226,7 +232,7 @@ public class Settings
           Finanzamt fa = null;
           try
           {
-            DBIterator faList = getDBService().createList(Finanzamt.class);
+            DBIterator faList = getInternalDBService().createList(Finanzamt.class);
             if (faList.size() > 0)
             {
               Logger.info("reusing existing finanzamt");
@@ -235,14 +241,14 @@ public class Settings
             }
             else
             {
-              fa = (Finanzamt) getDBService().createObject(Finanzamt.class,null);
+              fa = (Finanzamt) getInternalDBService().createObject(Finanzamt.class,null);
               fa.setName("default");
               fa.transactionBegin();
               fa.store();
             }
             
             Mandant m = null;
-            DBIterator mList = getDBService().createList(Mandant.class);
+            DBIterator mList = getInternalDBService().createList(Mandant.class);
             if (mList.size() > 0)
             {
               Logger.info("reusing existing mandant");
@@ -250,15 +256,15 @@ public class Settings
             }
             else
             {
-              m = (Mandant) getDBService().createObject(Mandant.class,null);
+              m = (Mandant) getInternalDBService().createObject(Mandant.class,null);
               m.setFinanzamt(fa);
               m.setSteuernummer("");
               m.setFirma("default");
               m.store();
             }
             
-            jahr = (Geschaeftsjahr) getDBService().createObject(Geschaeftsjahr.class,null);
-            jahr.setKontenrahmen((Kontenrahmen) getDBService().createObject(Kontenrahmen.class,"2"));
+            jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,null);
+            jahr.setKontenrahmen((Kontenrahmen) getInternalDBService().createObject(Kontenrahmen.class,"2"));
             jahr.setMandant(m);
             jahr.store();
             
@@ -278,16 +284,16 @@ public class Settings
 
       setStatus();
       setActiveGeschaeftsjahr(jahr);
+      // Bevor wir das Jahr rausgeben, muessen wir dem DBService noch das Geschaeftsjahr klar machen.
+      // Sonst hat das Geschaeftsjahr einen DBService ohne Geschaeftsjahr. Das wird dann aber gebraucht,
+      // wenn darueber der Kontenrahmen und die Konten geladen werden.
+      getInternalDBService().setActiveGeschaeftsjahr(jahr);
       return jahr;
     }
     catch (Exception e)
     {
       Logger.error("error while choosing mandant",e);
       throw new RemoteException("Fehler beim Auswählen/Erstellen des aktiven Geschäftsjahres");
-    }
-    finally
-    {
-      inProgress = false;
     }
   }
   
@@ -320,6 +326,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.32  2005/10/20 23:03:44  willuhn
+ * @N network support
+ *
  * Revision 1.31  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *
