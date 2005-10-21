@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/GeschaeftsjahrAuswahlDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.3 $
+ * $Date: 2005/10/21 15:59:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,7 @@ import de.willuhn.util.I18N;
 
 /**
  * Ein Dialog, ueber den das Geschaeftsjahr ausgewaehlt werden kann.
+ * @deprecated
  */
 public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 {
@@ -169,6 +170,9 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: GeschaeftsjahrAuswahlDialog.java,v $
+ * Revision 1.3  2005/10/21 15:59:06  willuhn
+ * @C getActiveGeschaeftsjahr cleanup
+ *
  * Revision 1.2  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

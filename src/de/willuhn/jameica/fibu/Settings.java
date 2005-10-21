@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/10/20 23:03:44 $
+ * $Revision: 1.33 $
+ * $Date: 2005/10/21 15:59:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
-import de.willuhn.jameica.fibu.gui.dialogs.GeschaeftsjahrAuswahlDialog;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -198,102 +197,79 @@ public class Settings
   	if (jahr != null && !jahr.isNewObject())
   		return jahr;
 
-  	try
+    String id = settings.getString("gj.active",null);
+
+    if (id != null)
     {
-      boolean ask = true;
-      String id = settings.getString("gj.active",null);
-
-      if (id != null)
+      try
       {
-        try
-        {
-          jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,id);
-          ask = false;
-        }
-        catch (ObjectNotFoundException oe)
-        {
-          // ignore
-        }
+        jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,id);
+        setActiveGeschaeftsjahr(jahr);
+        return jahr;
       }
-
-      if (ask)
+      catch (ObjectNotFoundException oe)
       {
-        DBIterator list = getInternalDBService().createList(Geschaeftsjahr.class);
-        if (list.size() > 0 && !Application.inServerMode())
-        {
-          // TODO Das funktioniert im Client/Server-Mode noch nicht.
-          Logger.info("open gj select dialog");
-          GeschaeftsjahrAuswahlDialog d = new GeschaeftsjahrAuswahlDialog(GeschaeftsjahrAuswahlDialog.POSITION_CENTER);
-          jahr = (Geschaeftsjahr) d.open();
-        }
-        else
-        {
-          Logger.info("auto creating new mandant/geschaeftsjahr");
-          Finanzamt fa = null;
-          try
-          {
-            DBIterator faList = getInternalDBService().createList(Finanzamt.class);
-            if (faList.size() > 0)
-            {
-              Logger.info("reusing existing finanzamt");
-              fa = (Finanzamt) faList.next();
-              fa.transactionBegin();
-            }
-            else
-            {
-              fa = (Finanzamt) getInternalDBService().createObject(Finanzamt.class,null);
-              fa.setName("default");
-              fa.transactionBegin();
-              fa.store();
-            }
-            
-            Mandant m = null;
-            DBIterator mList = getInternalDBService().createList(Mandant.class);
-            if (mList.size() > 0)
-            {
-              Logger.info("reusing existing mandant");
-              m = (Mandant) mList.next();
-            }
-            else
-            {
-              m = (Mandant) getInternalDBService().createObject(Mandant.class,null);
-              m.setFinanzamt(fa);
-              m.setSteuernummer("");
-              m.setFirma("default");
-              m.store();
-            }
-            
-            jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,null);
-            jahr.setKontenrahmen((Kontenrahmen) getInternalDBService().createObject(Kontenrahmen.class,"2"));
-            jahr.setMandant(m);
-            jahr.store();
-            
-            fa.transactionCommit();
-            Logger.info("finanzamt, mandant, geschaeftsjahr created");
-          }
-          catch (Exception e)
-          {
-            Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
-            if (fa != null)
-              fa.transactionRollback();
-            throw e;
-          }
+        Logger.warn("defined geschaeftsjahr does not exist");
+        settings.setAttribute("gj.active",(String)null);
+        // ignore
+      }
+    }
+
+    Logger.info("auto creating new mandant/geschaeftsjahr");
+    Finanzamt fa = null;
+    try
+    {
+      DBIterator faList = getInternalDBService().createList(Finanzamt.class);
+      if (faList.size() > 0)
+      {
+        Logger.info("reusing existing finanzamt");
+        fa = (Finanzamt) faList.next();
+        fa.transactionBegin();
+      }
+      else
+      {
+        fa = (Finanzamt) getInternalDBService().createObject(Finanzamt.class,null);
+        fa.setName("default");
+        fa.transactionBegin();
+        fa.store();
+      }
           
-        }
+      Mandant m = null;
+      DBIterator mList = getInternalDBService().createList(Mandant.class);
+      if (mList.size() > 0)
+      {
+        Logger.info("reusing existing mandant");
+        m = (Mandant) mList.next();
       }
-
-      setStatus();
+      else
+      {
+        m = (Mandant) getInternalDBService().createObject(Mandant.class,null);
+        m.setFinanzamt(fa);
+        m.setSteuernummer("");
+        m.setFirma("default");
+        m.store();
+      }
+          
+      jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,null);
+      jahr.setKontenrahmen((Kontenrahmen) getInternalDBService().createObject(Kontenrahmen.class,"2"));
+      jahr.setMandant(m);
+      jahr.store();
+          
+      fa.transactionCommit();
       setActiveGeschaeftsjahr(jahr);
-      // Bevor wir das Jahr rausgeben, muessen wir dem DBService noch das Geschaeftsjahr klar machen.
-      // Sonst hat das Geschaeftsjahr einen DBService ohne Geschaeftsjahr. Das wird dann aber gebraucht,
-      // wenn darueber der Kontenrahmen und die Konten geladen werden.
-      getInternalDBService().setActiveGeschaeftsjahr(jahr);
+      Logger.info("finanzamt, mandant, geschaeftsjahr created");
       return jahr;
     }
     catch (Exception e)
     {
-      Logger.error("error while choosing mandant",e);
-      throw new RemoteException("Fehler beim Auswählen/Erstellen des aktiven Geschäftsjahres");
+      Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
+      if (fa != null)
+      {
+        fa.transactionRollback();
+        Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
+      }
+      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+      throw new RemoteException(i18n.tr("Fehler beim Anlegen des Geschäftsjahres"));
     }
   }
   
@@ -326,6 +302,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.33  2005/10/21 15:59:06  willuhn
+ * @C getActiveGeschaeftsjahr cleanup
+ *
  * Revision 1.32  2005/10/20 23:03:44  willuhn
  * @N network support
  *
