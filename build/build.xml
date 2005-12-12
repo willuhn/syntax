@@ -34,7 +34,7 @@
 		<echo message="BUILD  : ${build.number}" />
 		<echo message="JAVA   : ${java.version}" />
 
-		<property name="define.pluginname" 			value="fibu" />
+		<property name="define.pluginname" 			value="syntax" />
 		<property name="define.jarfilename" 		value="${define.pluginname}.jar" />
 		<property name="define.zipfilename" 		value="${define.pluginname}.zip" />
 		<property name="define.srcfilename" 		value="${define.pluginname}.src.zip" />
