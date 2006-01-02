@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/02 17:38:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.io;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 
@@ -26,7 +25,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -38,35 +36,8 @@ import de.willuhn.util.I18N;
 public class VelocityExporter
 {
 
-  private static File templateDir = null;
   private static I18N i18n        = null;
   
-  static
-  {
-    try
-    {
-      // Velocity initialisieren
-      Logger.info("init velocity template engine");
-      Velocity.setProperty(Velocity.RESOURCE_LOADER,"fibu");
-      Velocity.setProperty("fibu.resource.loader.description","Fibu Velocity Loader");
-      Velocity.setProperty("fibu.resource.loader.class",VelocityLoader.class.getName());
-
-      Velocity.setProperty(Velocity.RUNTIME_LOG_LOGSYSTEM, new VelocityLogger());
-      Velocity.init();
-
-      i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
-      PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-      templateDir = new File(res.getPath() + File.separator + "lib","velocity");
-      Logger.info("velocity template dir: " + templateDir.getAbsolutePath());
-
-    }
-    catch (Throwable t)
-    {
-      Logger.error("velocity init failed",t);
-    }
-  }
-
   /**
    * Exportiert die Daten in den angegebenen OutputStream.
    * @param export der zu druckende Export.
@@ -129,6 +100,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.7  2006/01/02 17:38:16  willuhn
+ * @N moved Velocity to Jameica
+ *
  * Revision 1.6  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

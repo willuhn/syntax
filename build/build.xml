@@ -58,15 +58,10 @@
 
 		<path id="compilepath">
 			<pathelement location="../jameica/lib/swt/linux/swt.jar" />
-			<pathelement location="../jameica/lib/swt/forms.jar" />
-			<pathelement location="../jameica/lib/swt/jface.jar" />
+      <pathelement location="../jameica/lib/velocity/velocity-1.4.jar" />
 			<pathelement location="../jameica/bin/" />
 			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
 			<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />
-      <pathelement location="${lib.dir}/commons-collections.jar" />
-      <pathelement location="${lib.dir}/logkit-1.0.1.jar" />
-      <pathelement location="${lib.dir}/oro.jar" />
-      <pathelement location="${lib.dir}/velocity-1.4.jar" />
 		</path>
 
 	</target>
@@ -119,7 +114,7 @@
 				<attribute name="Implementation-Title" value="${define.pluginname}" />
 				<attribute name="Implementation-Version" value="${appversion}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
-				<attribute name="Class-Path" value="lang help lib lib/commons-collections.jar lib/logkit-1.0.1.jar lib/oro.jar lib/velocity-1.4.jar" />
+				<attribute name="Class-Path" value="lang help lib" />
       </manifest>
 			<fileset dir="${class.dir}" />
 		</jar>
