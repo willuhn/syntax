@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.61 $
- * $Date: 2006/01/02 15:51:12 $
+ * $Revision: 1.62 $
+ * $Date: 2006/01/02 16:09:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,7 +140,11 @@ public class BuchungControl extends AbstractControl
             getText().setValue(t.getText());
             getBetrag().setValue(new Double(t.getBetrag()));
             getSteuer().setValue(new Double(t.getSteuer()));
-            getBetrag().focus();
+            
+            // Das Setzen des Focus geht zwar. Aber danach laesst sich die
+            // Combo-Box nicht mehr bedienen. Scheint ein SWT-Bug zu sein.
+            // getBetrag().focus();
+            new KontoListener().handleEvent(null);
           }
           catch (RemoteException e)
           {
@@ -643,7 +647,7 @@ public class BuchungControl extends AbstractControl
             {
               getSteuer().enable();
               getSteuer().setValue(new Double(satz));
-              getSteuer().setComment(i18n.tr("% [{0}]",s.getName()));
+              new SteuerListener().handleEvent(null);
               GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
             }
           }
@@ -764,6 +768,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.62  2006/01/02 16:09:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.61  2006/01/02 15:51:12  willuhn
  * @B NPE
  *
