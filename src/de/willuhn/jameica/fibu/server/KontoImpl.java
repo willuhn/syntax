@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.37 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.38 $
+ * $Date: 2006/01/02 01:54:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,23 +31,18 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.Session;
 
 /**
  * @author willuhn
  */
 public class KontoImpl extends AbstractDBObject implements Konto
 {
-  // Cachen wir der Performance wegen
-  private final transient static Session kontoArtCache     = new Session();
-  private final transient static Session kontoTypCache     = new Session();
-  private final transient static Session kontenRahmenCache = new Session();
-  
   private I18N i18n = null;
   
   /**
@@ -81,16 +76,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
-    Integer i = (Integer) super.getAttribute("kontenrahmen_id");
-    if (i == null)
-      return null;
-    Kontenrahmen kr = (Kontenrahmen) kontenRahmenCache.get(i);
-    if (kr == null)
-    {
-      kr = (Kontenrahmen) getService().createObject(Kontenrahmen.class,i.toString());
-      kontenRahmenCache.put(i,kr);
-    }
-    return kr;
+    return (Kontenrahmen) getAttribute("kontenrahmen_id");
   }
 
   /**
@@ -204,16 +190,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontoart getKontoArt() throws RemoteException
   {
-    Integer i = (Integer) super.getAttribute("kontoart_id");
-    if (i == null)
-      return null;
-    Kontoart ka = (Kontoart) kontoArtCache.get(i);
-    if (ka == null)
-    {
-      ka = (Kontoart) getService().createObject(Kontoart.class,i.toString());
-      kontoArtCache.put(i,ka);
-    }
-    return ka;
+    return (Kontoart) getAttribute("kontoart_id");
   }
 
   /**
@@ -231,6 +208,14 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     if ("steuer_id".equals(field))
       return Steuer.class;
+    if ("kontoart_id".equals(field))
+      return Kontoart.class;
+    if ("kontotyp_id".equals(field))
+      return Kontotyp.class;
+    if ("kontenrahmen_id".equals(field))
+      return Kontenrahmen.class;
+    if ("mandant_id".equals(field))
+      return Mandant.class;
     return null;
   }
 
@@ -239,7 +224,16 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void deleteCheck() throws ApplicationException
   {
-    throw new ApplicationException("Konten dürfen nicht gelöscht werden.");
+    try
+    {
+      if (!isUserKonto())
+        throw new ApplicationException("Konto ist ein System-Konto und darf daher nicht gelöscht werden.");
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to check konto",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Kontos"));
+    }
   }
 
   /**
@@ -248,36 +242,45 @@ public class KontoImpl extends AbstractDBObject implements Konto
   public void insertCheck() throws ApplicationException
   {
     try {
+      if (!isUserKonto())
+        throw new ApplicationException(i18n.tr("System-Konten dürfen nicht geändert werden."));
+        
       Kontenrahmen kr = getKontenrahmen();
       if (kr == null)
-        throw new ApplicationException("Bitte wählen Sie einen Kontenrahmen aus.");
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
 
       String name = (String) getAttribute("name");
       if (name == null || "".equals(name))
-        throw new ApplicationException("Bitte geben Sie einen Namen für das Konto ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen für das Konto ein."));
       
       String kontonummer = (String) getAttribute("kontonummer");
       if (kontonummer == null || "".equals(kontonummer))
-        throw new ApplicationException("Bitte geben Sie eine Kontonummer ein.");
+        throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
       
       Kontoart ka = (Kontoart) getAttribute("kontoart_id");
       if (ka == null)
-        throw new ApplicationException("Bitte wählen Sie eine Kontoart aus.");
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Kontoart aus."));
 
       // Jetzt muessen wir noch pruefen, ob die Kontonummer schon bei einem anderen
       // Konto vergeben ist
-      DBIterator konten = getList();
+      DBIterator konten = kr.getKonten();
       while(konten.hasNext())
       {
         Konto k = (Konto) konten.next();
-        Kontenrahmen kr2 = k.getKontenrahmen();
-        if (k.getKontonummer().equals(kontonummer) && !k.getID().equals(getID()) && kr.getID().equals(kr2.getID()))
-          throw new ApplicationException("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen.");
+        
+        // 1. Kontonummer stimmt ueberein
+        // 2. ID des Konto verschieden
+        if (k.getKontonummer().equals(kontonummer) &&
+            !k.getID().equals(getID())
+        )
+        {
+          throw new ApplicationException(i18n.tr("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen."));
+        }
       }
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Überprüfung der Pflichtfelder",e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Überprüfung der Pflichtfelder"),e);
     }
     super.insertCheck();
   }
@@ -303,7 +306,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontenrahmen(Kontenrahmen k) throws RemoteException
   {
-    setAttribute("kontenrahmen_id",k == null ? null : new Integer(k.getID()));
+    setAttribute("kontenrahmen_id",k);
   }
 
   /**
@@ -319,7 +322,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
-    setAttribute("kontoart_id",art == null ? null : new Integer(art.getID()));
+    setAttribute("kontoart_id",art);
   }
 
   /**
@@ -341,12 +344,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
       return new Double(getSaldo(jahr));
     }
-    if ("kontenrahmen_id".equals(arg0))
-      return getKontenrahmen();
-    if ("kontoart_id".equals(arg0))
-      return getKontoArt();
-    if ("kontotyp_id".equals(arg0))
-      return getKontoTyp();
     return super.getAttribute(arg0);
   }
 
@@ -419,16 +416,7 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public Kontotyp getKontoTyp() throws RemoteException
   {
-    Integer i = (Integer) super.getAttribute("kontotyp_id");
-    if (i == null)
-      return null;
-    Kontotyp kt = (Kontotyp) kontoTypCache.get(i);
-    if (kt == null)
-    {
-      kt = (Kontotyp) getService().createObject(Kontotyp.class,i.toString());
-      kontoTypCache.put(i,kt);
-    }
-    return kt;
+    return (Kontotyp) getAttribute("kontotyp_id");
   }
 
   /**
@@ -436,12 +424,41 @@ public class KontoImpl extends AbstractDBObject implements Konto
    */
   public void setKontoTyp(Kontotyp typ) throws RemoteException
   {
-    setAttribute("kontotyp_id",typ == null ? null : new Integer(typ.getID()));
+    setAttribute("kontotyp_id",typ);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#isUserKonto()
+   */
+  public boolean isUserKonto() throws RemoteException
+  {
+    return getMandant() != null;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getMandant()
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    return (Mandant) getAttribute("mandant_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
+   */
+  public void setMandant(Mandant mandant) throws RemoteException
+  {
+    if (!this.isNewObject())
+      throw new RemoteException(i18n.tr("System-Konten dürfen nicht geändert werden"));
+    setAttribute("mandant_id",mandant);
   }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.38  2006/01/02 01:54:07  willuhn
+ * @N Benutzerdefinierte Konten
+ *
  * Revision 1.37  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

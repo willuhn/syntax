@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.24 $
+ * $Date: 2006/01/02 01:54:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,9 @@ package de.willuhn.jameica.fibu.gui.controller;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -23,6 +26,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -50,6 +54,7 @@ public class KontoControl extends AbstractControl
 	private Input kontonummer  = null;
 	private Input steuer			 = null;
 	private Input kontoart		 = null;
+  private Input kontotyp     = null;
 	private Input kontenrahmen = null;
   private Input saldo        = null;
   
@@ -79,6 +84,12 @@ public class KontoControl extends AbstractControl
 			return konto;
 
 		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
+    konto.setKontenrahmen(Settings.getActiveGeschaeftsjahr().getKontenrahmen());
+    konto.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+    
+    // Konto-Art definieren wir mit der haeufigsten Konto-Art vor
+    konto.setKontoArt((Kontoart) Settings.getDBService().createObject(Kontoart.class,""+Kontoart.KONTOART_AUFWAND));
+    
 		return konto;
 	}
 
@@ -106,6 +117,8 @@ public class KontoControl extends AbstractControl
 		if (name != null)
 			return name;
 		name = new TextInput(getKonto().getName());
+    if (!getKonto().isUserKonto())
+      name.disable();
 		return name;
 	}
 
@@ -119,6 +132,8 @@ public class KontoControl extends AbstractControl
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
+    if (!getKonto().isUserKonto())
+      kontonummer.disable();
 		return kontonummer;
 	}
 
@@ -132,28 +147,29 @@ public class KontoControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-		if (getKonto().getKontoArt().isSteuerpflichtig())
+    DBIterator list = Settings.getDBService().createList(Steuer.class);
+    Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    ArrayList found = new ArrayList();
+    while (list.hasNext())
     {
-      DBIterator list = Settings.getDBService().createList(Steuer.class);
-      Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
-      ArrayList found = new ArrayList();
-      while (list.hasNext())
-      {
-        Steuer s = (Steuer) list.next();
-        Konto k = s.getSteuerKonto();
-        if (k == null)
-          continue;
-        Kontenrahmen kr2 = k.getKontenrahmen();
-        if (kr2 == null)
-          continue;
-        if (kr2.equals(kr))
-          found.add(s);
-      }
-      GenericIterator i = PseudoIterator.fromArray((Steuer[])found.toArray(new Steuer[found.size()]));
-      steuer = new SelectInput(i,getKonto().getSteuer());
+      Steuer s = (Steuer) list.next();
+      Konto k = s.getSteuerKonto();
+      if (k == null)
+        continue;
+      Kontenrahmen kr2 = k.getKontenrahmen();
+      if (kr2 == null)
+        continue;
+      if (kr2.equals(kr))
+        found.add(s);
     }
-		else
-			steuer = new LabelInput(i18n.tr("Konto besitzt keinen Steuersatz."));
+    GenericIterator i = PseudoIterator.fromArray((Steuer[])found.toArray(new Steuer[found.size()]));
+    steuer = new SelectInput(i,getKonto().getSteuer());
+
+    // Deaktivieren, wenn Konto nicht steuerpflichtig
+    Kontoart ka = getKonto().getKontoArt();
+    if (!getKonto().isUserKonto() || ka == null || !ka.isSteuerpflichtig())
+      steuer.disable();
+
 		return steuer;
 	}
 
@@ -168,11 +184,61 @@ public class KontoControl extends AbstractControl
 			return kontoart;
 
 		Kontoart ka = getKonto().getKontoArt();
-		kontoart = new LabelInput(ka.getName());
+		kontoart = new SelectInput(Settings.getDBService().createList(Kontoart.class),ka);
+    kontoart.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        Kontoart k = (Kontoart) kontoart.getValue();
+        if (k == null)
+          return;
+        try
+        {
+          // Wenn die Konto-Art steuerpflichtig, muessen wir den Steuersatz freischalten
+          if (k.isSteuerpflichtig())
+            getSteuer().enable();
+          else
+            getSteuer().disable();
+          
+          // Wenn es ein Steuerkonto ist, dann Kontotyp freischalten
+          if (k.getKontoArt() == Kontoart.KONTOART_STEUER)
+            getKontotyp().enable();
+          else
+            getKontotyp().disable();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to update tax field",e);
+          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Aktualisieren des Steuersatzes"));
+        }
+      }
+    });
+    
+    if (!getKonto().isUserKonto())
+      kontoart.disable();
 		return kontoart;
 	}
 
-	/**
+  /**
+   * Liefert das Eingabe-Feld fuer den Konto-Typ.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getKontotyp() throws RemoteException
+  {
+    if (kontotyp != null)
+      return kontotyp;
+
+    Kontotyp kt = getKonto().getKontoTyp();
+    kontotyp = new SelectInput(Settings.getDBService().createList(Kontotyp.class),kt);
+    Kontoart ka = getKonto().getKontoArt();
+    if (getKonto().isUserKonto() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+      kontotyp.enable();
+    else
+      kontotyp.disable();
+    return kontotyp;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld fuer den Kontenrahmen.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -193,16 +259,23 @@ public class KontoControl extends AbstractControl
   public void handleStore()
   {
     try {
+      if (!getKonto().isUserKonto())
+        throw new ApplicationException(i18n.tr("Konto ist ein System-Konto und darf nicht geändert werden"));
 
       getKonto().setName((String) getName().getValue());
       getKonto().setKontonummer((String) getKontonummer().getValue());
+      Kontoart art = (Kontoart) getKontoart().getValue();
+      getKonto().setKontoArt(art);
+      if (art.isSteuerpflichtig())
+        getKonto().setSteuer((Steuer) getSteuer().getValue());
+      else
+        getKonto().setSteuer(null);
 
-      // Kontenrahmen und Kontoart darf nicht geaendert werden
-
-      Input i = getSteuer();
-      if (i instanceof SelectInput)
-        getKonto().setSteuer((Steuer)i.getValue());
-
+      if (art.getKontoArt() == Kontoart.KONTOART_STEUER)
+        getKonto().setKontoTyp((Kontotyp) getKontotyp().getValue());
+      else
+        getKonto().setKontoTyp(null);
+      
       // und jetzt speichern wir.
       getKonto().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Konto gespeichert."));
@@ -222,6 +295,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.24  2006/01/02 01:54:07  willuhn
+ * @N Benutzerdefinierte Konten
+ *
  * Revision 1.23  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

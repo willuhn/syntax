@@ -25,6 +25,7 @@ CREATE TABLE konto (
   name varchar(255) NOT NULL,
   kontenrahmen_id int(10) NOT NULL,
   steuer_id int(10),
+  mandant_id int(10),
   UNIQUE (id),
   UNIQUE (kontenrahmen_id,kontonummer),
   PRIMARY KEY (id)
@@ -138,6 +139,7 @@ ALTER TABLE konto ADD CONSTRAINT fk_konto_kontoart FOREIGN KEY (kontoart_id) REF
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_konto_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id) DEFERRABLE;
 ALTER TABLE konto ADD CONSTRAINT fk_konto_kontotyp FOREIGN KEY (kontotyp_id) REFERENCES kontotyp (id) DEFERRABLE;
+ALTER TABLE konto ADD CONSTRAINT fk_konto_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
@@ -174,6 +176,7 @@ CREATE INDEX idx_konto_kontonummer    ON konto(kontonummer);
 CREATE INDEX idx_konto_kontoart       ON konto(kontoart_id);
 CREATE INDEX idx_konto_kontenrahmen   ON konto(kontenrahmen_id);
 CREATE INDEX idx_konto_steuer         ON konto(steuer_id);
+CREATE INDEX idx_konto_mandant        ON konto(mandant_id);
 
 CREATE INDEX idx_av_mandant           ON anlagevermoegen(mandant_id);
 

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/02 01:54:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,11 @@ public class KontoDelete implements Action
       Konto[] k = null;
       
       if (context instanceof Konto)
+      {
         k = new Konto[] {(Konto) context};
+        if (!k[0].isUserKonto())
+          throw new ApplicationException(i18n.tr("System-Konten dürfen nicht gelöscht werden"));
+      }
       else
         k = (Konto[]) context;
       
@@ -70,16 +74,23 @@ public class KontoDelete implements Action
       k[0].transactionBegin();
       try
       {
+        int deleted = 0;
+        String s = null;
         for (int i=0;i<k.length;++i)
         {
-          k[i].delete();
+          if (k[i].isUserKonto())
+          {
+            s = k[i].getKontonummer();
+            k[i].delete();
+            deleted++;
+          }
         }
         k[0].transactionCommit();
 
-        if (k.length > 1)
+        if (deleted > 1)
           GUI.getStatusBar().setSuccessText(i18n.tr("{0} Konten gelöscht.", ""+k.length));
         else
-          GUI.getStatusBar().setSuccessText(i18n.tr("Konto {0} gelöscht.", ""+k[0].getKontonummer()));
+          GUI.getStatusBar().setSuccessText(i18n.tr("Konto {0} gelöscht.",s));
       }
       catch (ApplicationException ae)
       {
@@ -94,6 +105,10 @@ public class KontoDelete implements Action
       }
 
     }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete konto",e);
@@ -106,6 +121,9 @@ public class KontoDelete implements Action
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.6  2006/01/02 01:54:07  willuhn
+ * @N Benutzerdefinierte Konten
+ *
  * Revision 1.5  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

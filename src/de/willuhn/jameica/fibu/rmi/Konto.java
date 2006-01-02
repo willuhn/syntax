@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.18 $
- * $Date: 2005/10/18 09:25:31 $
+ * $Revision: 1.19 $
+ * $Date: 2006/01/02 01:54:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -155,11 +155,38 @@ public interface Konto extends DBObject
    * @throws RemoteException
    */
   public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException;
+  
+  /**
+   * Prueft, ob es ein vom User angelegtes Konto ist.
+   * Liefert genau dann true, wenn getMandant nicht null liefert.
+   * @return true, wenn es ein vom User angelegtes Konto ist.
+   * @throws RemoteException
+   */
+  public boolean isUserKonto() throws RemoteException;
+
+  /**
+   * Liefert den Mandanten, wenn es ein User-Konto ist, sonst immer null.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException;
+  
+  /**
+   * Speichert den Mandanten.
+   * Laesst sich nur bei neu angelegten Konten ausfuehren.
+   * Andernfalls wird eine RemoteException geworfen.
+   * @param mandant
+   * @throws RemoteException
+   */
+  public void setMandant(Mandant mandant) throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.19  2006/01/02 01:54:07  willuhn
+ * @N Benutzerdefinierte Konten
+ *
  * Revision 1.18  2005/10/18 09:25:31  willuhn
  * *** empty log message ***
  *

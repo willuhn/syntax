@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/09/01 16:34:45 $
+ * $Revision: 1.15 $
+ * $Date: 2006/01/02 01:54:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
@@ -60,25 +61,34 @@ public class KontoNeu extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
+    if (!control.getKonto().isUserKonto())
+      GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
+
     Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
 
-    group.addLabelPair(i18n.tr("Name")        , control.getName());
-    group.addLabelPair(i18n.tr("Kontonummer") , control.getKontonummer());
-    group.addLabelPair(i18n.tr("Steuersatz")  , control.getSteuer());
-    group.addLabelPair(i18n.tr("Kontoart")    , control.getKontoart());
-    group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmen());
-    group.addLabelPair(i18n.tr("Saldo"),        control.getSaldo());
+    group.addLabelPair(i18n.tr("Name")            , control.getName());
+    group.addLabelPair(i18n.tr("Kontonummer")     , control.getKontonummer());
+    group.addLabelPair(i18n.tr("Kontoart")        , control.getKontoart());
+    group.addLabelPair(i18n.tr("Steuerkonto-Typ") , control.getKontotyp());
+    group.addLabelPair(i18n.tr("Steuersatz")      , control.getSteuer());
+    group.addLabelPair(i18n.tr("Kontenrahmen")    , control.getKontenrahmen());
+    group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
     ButtonArea buttons = group.createButtonArea(3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
-    buttons.addButton(i18n.tr("Speichern"), new Action()
+    Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
+    delete.setEnabled(control.getKonto().isUserKonto());
+    buttons.addButton(delete);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,true);
+    store.setEnabled(control.getKonto().isUserKonto());
+    buttons.addButton(store);
 
     new Headline(getParent(),i18n.tr("Buchungen auf diesem Konto"));
     new BuchungList(control.getKonto(),new BuchungNeu()).paint(getParent());
@@ -95,6 +105,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.15  2006/01/02 01:54:07  willuhn
+ * @N Benutzerdefinierte Konten
+ *
  * Revision 1.14  2005/09/01 16:34:45  willuhn
  * *** empty log message ***
  *
