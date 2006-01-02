@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateListe.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/02 22:56:50 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/02 23:35:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
 import de.willuhn.jameica.fibu.gui.part.BuchungstemplateList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -63,6 +62,9 @@ public class BuchungstemplateListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungstemplateListe.java,v $
+ * Revision 1.3  2006/01/02 23:35:33  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/01/02 22:56:50  willuhn
  * @B typo
  *
