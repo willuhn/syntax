@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/06 22:27:16 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/02 23:50:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -242,7 +242,10 @@ public class AnlagevermoegenControl extends AbstractControl
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     list.addFilter("steuer_id is null");
 
-    afaKonto = new KontoInput(list,getAnlagevermoegen().getAbschreibungskonto());
+    Konto k = getAnlagevermoegen().getAbschreibungskonto();
+    if (k == null)
+      k = Settings.getAbschreibunsgKonto(jahr);
+    afaKonto = new KontoInput(list,k);
     return afaKonto;
   }
 
@@ -281,6 +284,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.12  2006/01/02 23:50:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2005/10/06 22:27:16  willuhn
  * @N KontoInput
  *

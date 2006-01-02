@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/29 22:52:04 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/02 23:50:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,7 @@ public class AnlagevermoegenNeu extends AbstractView
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
     table.paint(getParent());
     
-    ButtonArea buttonArea = group.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
@@ -88,6 +88,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.5  2006/01/02 23:50:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/29 22:52:04  willuhn
  * *** empty log message ***
  *
