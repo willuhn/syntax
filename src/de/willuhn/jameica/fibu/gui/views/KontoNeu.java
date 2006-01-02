@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/01/02 01:54:07 $
+ * $Revision: 1.16 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class KontoNeu extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
-    if (!control.getKonto().isUserKonto())
+    if (!control.getKonto().isUserObject())
       GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
 
     Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
@@ -77,7 +77,7 @@ public class KontoNeu extends AbstractView
     ButtonArea buttons = group.createButtonArea(3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
     Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
-    delete.setEnabled(control.getKonto().isUserKonto());
+    delete.setEnabled(control.getKonto().isUserObject());
     buttons.addButton(delete);
     
     Button store = new Button(i18n.tr("Speichern"), new Action()
@@ -87,7 +87,7 @@ public class KontoNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    store.setEnabled(control.getKonto().isUserKonto());
+    store.setEnabled(control.getKonto().isUserObject());
     buttons.addButton(store);
 
     new Headline(getParent(),i18n.tr("Buchungen auf diesem Konto"));
@@ -105,6 +105,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.16  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.15  2006/01/02 01:54:07  willuhn
  * @N Benutzerdefinierte Konten
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/05 13:47:19 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,13 +15,11 @@ package de.willuhn.jameica.fibu.rmi;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
  * Diese Klasse bildet die Buchungen in Fibu ab.
  * @author willuhn
  */
-public interface BaseBuchung extends DBObject
+public interface BaseBuchung extends Transfer
 {
 
   /**
@@ -33,32 +31,11 @@ public interface BaseBuchung extends DBObject
   public Date getDatum() throws RemoteException;
 
   /**
-   * Liefert das Soll-Konto zu dieser Buchung.
-   * @return Konto der Buchung.
-   * @throws RemoteException
-   */
-  public Konto getSollKonto() throws RemoteException;
-
-  /**
-   * Liefert das Haben-Konto zu dieser Buchung.
-   * @return Haben-Konto der Buchung.
-   * @throws RemoteException
-   */
-  public Konto getHabenKonto() throws RemoteException;
-  
-  /**
    * Liefert das Geschaeftsjahr zu dieser Buchung.
    * @return Geschaeftsjahr der Buchung.
    * @throws RemoteException
    */
   public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException;
-
-  /**
-   * Liefert den Text der Buchung.
-   * @return Text der Buchung.
-   * @throws RemoteException
-   */
-  public String getText() throws RemoteException;
 
   /**
    * Liefert die Belegnummer oder erzeugt eine neue, wenn sie null ist.
@@ -68,20 +45,6 @@ public interface BaseBuchung extends DBObject
   public int getBelegnummer() throws RemoteException;
 
   /**
-   * Liefert den Netto-Betrag der Buchung.
-   * @return Netto-Betrag der Buchung.
-   * @throws RemoteException
-   */
-  public double getBetrag() throws RemoteException;
-
-  /**
-   * Liefert Steuersatz der Buchung.
-   * @return Steuersatz der Buchung.
-   * @throws RemoteException
-   */
-  public double getSteuer() throws RemoteException;
-
-  /**
    * Setzt das Datum der Buchung.
    * @param d Datum.
    * @throws RemoteException
@@ -89,46 +52,11 @@ public interface BaseBuchung extends DBObject
   public void setDatum(Date d) throws RemoteException;
 
   /**
-   * Setzt das Soll-Konto zu dieser Buchung.
-   * @param k Soll-Konto der Buchung.
-   * @throws RemoteException
-   */
-  public void setSollKonto(Konto k) throws RemoteException;
-
-  /**
-   * Setzt das Haben-Konto zu dieser Buchung.
-   * @param k Haben-Konto der Buchung.
-   * @throws RemoteException
-   */
-  public void setHabenKonto(Konto k) throws RemoteException;
-
-  /**
-   * Setzt den Text der Buchung.
-   * @param text Text der Buchung.
-   * @throws RemoteException
-   */
-  public void setText(String text) throws RemoteException;
-
-  /**
    * Setzt die Belegnummer.
    * @param belegnummer Belegnummer der Buchung.
    * @throws RemoteException
    */
   public void setBelegnummer(int belegnummer) throws RemoteException;
-
-  /**
-   * Setzt den Netto-Betrag der Buchung.
-   * @param betrag Betrag der Buchung.
-   * @throws RemoteException
-   */
-  public void setBetrag(double betrag) throws RemoteException;
-
-  /**
-   * Setzt den Steuersatz der Buchung.
-   * @param steuer Steuersatz der Buchung.
-   * @throws RemoteException
-   */
-  public void setSteuer(double steuer) throws RemoteException;
 
   /**
    * Setzt das Geschaeftsjahr der Buchung.
@@ -141,6 +69,9 @@ public interface BaseBuchung extends DBObject
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
+ * Revision 1.7  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.6  2005/09/05 13:47:19  willuhn
  * *** empty log message ***
  *

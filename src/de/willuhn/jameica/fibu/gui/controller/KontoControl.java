@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/01/02 01:54:07 $
+ * $Revision: 1.25 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,7 +117,7 @@ public class KontoControl extends AbstractControl
 		if (name != null)
 			return name;
 		name = new TextInput(getKonto().getName());
-    if (!getKonto().isUserKonto())
+    if (!getKonto().isUserObject())
       name.disable();
 		return name;
 	}
@@ -132,7 +132,7 @@ public class KontoControl extends AbstractControl
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
-    if (!getKonto().isUserKonto())
+    if (!getKonto().isUserObject())
       kontonummer.disable();
 		return kontonummer;
 	}
@@ -167,7 +167,7 @@ public class KontoControl extends AbstractControl
 
     // Deaktivieren, wenn Konto nicht steuerpflichtig
     Kontoart ka = getKonto().getKontoArt();
-    if (!getKonto().isUserKonto() || ka == null || !ka.isSteuerpflichtig())
+    if (!getKonto().isUserObject() || ka == null || !ka.isSteuerpflichtig())
       steuer.disable();
 
 		return steuer;
@@ -213,7 +213,7 @@ public class KontoControl extends AbstractControl
       }
     });
     
-    if (!getKonto().isUserKonto())
+    if (!getKonto().isUserObject())
       kontoart.disable();
 		return kontoart;
 	}
@@ -231,7 +231,7 @@ public class KontoControl extends AbstractControl
     Kontotyp kt = getKonto().getKontoTyp();
     kontotyp = new SelectInput(Settings.getDBService().createList(Kontotyp.class),kt);
     Kontoart ka = getKonto().getKontoArt();
-    if (getKonto().isUserKonto() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+    if (getKonto().isUserObject() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       kontotyp.enable();
     else
       kontotyp.disable();
@@ -259,7 +259,7 @@ public class KontoControl extends AbstractControl
   public void handleStore()
   {
     try {
-      if (!getKonto().isUserKonto())
+      if (!getKonto().isUserObject())
         throw new ApplicationException(i18n.tr("Konto ist ein System-Konto und darf nicht geändert werden"));
 
       getKonto().setName((String) getName().getValue());
@@ -295,6 +295,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.25  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.24  2006/01/02 01:54:07  willuhn
  * @N Benutzerdefinierte Konten
  *

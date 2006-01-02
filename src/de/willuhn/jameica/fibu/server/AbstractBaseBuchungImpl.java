@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.22 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,25 +15,19 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
-public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implements BaseBuchung
+public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl implements BaseBuchung
 {
-  transient I18N i18n = null;
-  
   /**
    * Erzeugt eine neue BaseBuchung.
    * @throws RemoteException
@@ -41,7 +35,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   public AbstractBaseBuchungImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -70,32 +63,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getSollKonto()
-   */
-  public Konto getSollKonto() throws RemoteException
-  {
-    Konto k = (Konto) getAttribute("sollkonto_id");
-    return k;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getHabenKonto()
-   */
-  public Konto getHabenKonto() throws RemoteException
-  {
-    Konto k = (Konto) getAttribute("habenkonto_id");
-    return k;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getText()
-   */
-  public String getText() throws RemoteException
-  {
-    return (String) getAttribute("buchungstext");
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getBelegnummer()
    */
   public int getBelegnummer() throws RemoteException
@@ -105,30 +72,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
       return i.intValue();
     
     return createBelegnummer();
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getBetrag()
-   */
-  public double getBetrag() throws RemoteException
-  {
-    Double d = (Double) getAttribute("betrag");
-    if (d == null)
-      return 0;
-
-    return d.doubleValue();
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getSteuer()
-   */
-  public double getSteuer() throws RemoteException
-  {
-    Double d = (Double) getAttribute("steuer");
-    if (d != null)
-      return d.doubleValue();
-
-    return 0;
   }
 
   /**
@@ -148,22 +91,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
-   */
-  public void setSollKonto(Konto k) throws RemoteException
-  {
-    setAttribute("sollkonto_id",k);
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setHabenKonto(de.willuhn.jameica.fibu.rmi.Konto)
-   */
-  public void setHabenKonto(Konto k) throws RemoteException
-  {
-    setAttribute("habenkonto_id",k);
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeschaeftsjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
   public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
@@ -172,35 +99,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setText(java.lang.String)
-   */
-  public void setText(String text) throws RemoteException
-  {
-    setAttribute("buchungstext", text);
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setBelegnummer(int)
    */
   public void setBelegnummer(int belegnummer) throws RemoteException
   {
     setAttribute("belegnummer",new Integer(belegnummer));
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setBetrag(double)
-   */
-  public void setBetrag(double betrag) throws RemoteException
-  {
-    setAttribute("betrag", new Double(betrag));
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setSteuer(double)
-   */
-  public void setSteuer(double steuer) throws RemoteException
-  {
-    setAttribute("steuer", new Double(steuer));
   }
 
   /**
@@ -250,16 +153,10 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("sollkonto_id".equals(field))
-      return Konto.class;
-
-    if ("habenkonto_id".equals(field))
-      return Konto.class;
-
     if ("geschaeftsjahr_id".equals(field))
       return Geschaeftsjahr.class;
 
-    return null;
+    return super.getForeignObject(field);
   }
   
 
@@ -348,6 +245,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractDBObject implement
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.22  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.21  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

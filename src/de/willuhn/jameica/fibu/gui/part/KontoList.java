@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/03 21:55:24 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -31,9 +32,11 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -71,6 +74,28 @@ public class KontoList extends TablePart
     addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new KontoListMenu());
     setMulti(true);
+
+    setFormatter(new TableFormatter()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
+      public void format(TableItem item)
+      {
+        try
+        {
+          if (item == null)
+            return;
+          Konto k = (Konto) item.getData();
+          if (k.isUserObject())
+            item.setForeground(Color.SUCCESS.getSWTColor());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to check konto",e);
+        }
+      }
+    });
   }
   
   /**
@@ -220,6 +245,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.12  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.11  2005/10/03 21:55:24  willuhn
  * @B bug 128, 129
  *

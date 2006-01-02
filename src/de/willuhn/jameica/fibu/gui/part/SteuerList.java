@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/SteuerList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,13 +45,12 @@ public class SteuerList extends TablePart
 
   /**
    * ct.
+   * @param list
    * @param action
-   * @throws RemoteException
    */
-  public SteuerList(Action action) throws RemoteException
+  public SteuerList(GenericIterator list, Action action)
   {
-    super(init(), action);
-    
+    super(list, action);
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Steuersatz"),"satz",new CurrencyFormatter("%",Fibu.DECIMALFORMAT));
@@ -84,8 +83,8 @@ public class SteuerList extends TablePart
           if (item == null)
             return;
           Steuer s = (Steuer) item.getData();
-          if (s.isInitial())
-            item.setForeground(Color.COMMENT.getSWTColor());
+          if (s.isUserObject())
+            item.setForeground(Color.SUCCESS.getSWTColor());
         }
         catch (RemoteException e)
         {
@@ -97,13 +96,24 @@ public class SteuerList extends TablePart
   }
   
   /**
+   * ct.
+   * @param action
+   * @throws RemoteException
+   */
+  public SteuerList(Action action) throws RemoteException
+  {
+    this(init(), action);
+  }
+  
+  /**
    * Initialisiert die Liste der Steuersaetze.
    * @return Liste der Steuersaetze.
    * @throws RemoteException
    */
   private static GenericIterator init() throws RemoteException
   {
-    DBIterator list = Settings.getActiveGeschaeftsjahr().getMandant().getSteuer();
+    DBIterator list = Settings.getDBService().createList(Steuer.class);
+    list.addFilter("mandant_id is null or mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
     list.setOrder("order by name");
     ArrayList al = new ArrayList();
     Kontenrahmen soll = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
@@ -125,6 +135,9 @@ public class SteuerList extends TablePart
 
 /*********************************************************************
  * $Log: SteuerList.java,v $
+ * Revision 1.5  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.4  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

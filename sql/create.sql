@@ -1,6 +1,7 @@
 CREATE TABLE kontenrahmen (
   id NUMERIC default UNIQUEKEY('kontenrahmen'),
   name varchar(100) NOT NULL,
+  mandant_id int(10) NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
@@ -12,7 +13,6 @@ CREATE TABLE steuer (
   name varchar(255) NOT NULL,
   satz double NOT NULL,
   steuerkonto_id int(10) NOT NULL,
-  initial int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -24,8 +24,8 @@ CREATE TABLE konto (
   kontonummer varchar(4) NOT NULL,
   name varchar(255) NOT NULL,
   kontenrahmen_id int(10) NOT NULL,
-  steuer_id int(10),
-  mandant_id int(10),
+  steuer_id int(10) NULL,
+  mandant_id int(10) NULL,
   UNIQUE (id),
   UNIQUE (kontenrahmen_id,kontonummer),
   PRIMARY KEY (id)
@@ -51,6 +51,18 @@ CREATE TABLE buchung (
   steuer double,
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE buchungstemplate (
+  id NUMERIC default UNIQUEKEY('buchungstemplate'),
+  name varchar(255) NOT NULL,
+  sollkonto_id int(10) NULL,
+  habenkonto_id int(10) NULL,
+  buchungstext varchar(255) NULL,
+  betrag double NULL,
+  steuer double NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -132,6 +144,8 @@ CREATE TABLE abschreibung (
   PRIMARY KEY (id)
 );
 
+ALTER TABLE kontenrahmen ADD CONSTRAINT fk_kontenrahmen_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+
 ALTER TABLE steuer ADD CONSTRAINT fk_steuer_konto FOREIGN KEY (steuerkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE steuer ADD CONSTRAINT fk_steuer_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 
@@ -145,6 +159,9 @@ ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFE
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;
 

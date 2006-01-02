@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/01/02 01:54:07 $
+ * $Revision: 1.20 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,14 +16,13 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
 
 /**
  * Diese Klasse bildet die Konten in Fibu ab.
  * @author willuhn
  */
-public interface Konto extends DBObject
+public interface Konto extends UserObject
 {
 
   /**
@@ -156,34 +155,13 @@ public interface Konto extends DBObject
    */
   public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException;
   
-  /**
-   * Prueft, ob es ein vom User angelegtes Konto ist.
-   * Liefert genau dann true, wenn getMandant nicht null liefert.
-   * @return true, wenn es ein vom User angelegtes Konto ist.
-   * @throws RemoteException
-   */
-  public boolean isUserKonto() throws RemoteException;
-
-  /**
-   * Liefert den Mandanten, wenn es ein User-Konto ist, sonst immer null.
-   * @return Mandant.
-   * @throws RemoteException
-   */
-  public Mandant getMandant() throws RemoteException;
-  
-  /**
-   * Speichert den Mandanten.
-   * Laesst sich nur bei neu angelegten Konten ausfuehren.
-   * Andernfalls wird eine RemoteException geworfen.
-   * @param mandant
-   * @throws RemoteException
-   */
-  public void setMandant(Mandant mandant) throws RemoteException;
-
 }
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.20  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.19  2006/01/02 01:54:07  willuhn
  * @N Benutzerdefinierte Konten
  *

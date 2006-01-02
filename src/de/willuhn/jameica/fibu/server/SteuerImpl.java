@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.14 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,14 +14,10 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.DBService;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -31,7 +27,7 @@ import de.willuhn.util.I18N;
 /**
  * @author willuhn
  */
-public class SteuerImpl extends AbstractDBObject implements Steuer
+public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 {
   private I18N i18n = null;
 
@@ -104,9 +100,7 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   {
     if ("steuerkonto_id".equals(field))
       return Konto.class;
-    if ("mandant_id".equals(field))
-      return Mandant.class;
-    return null;
+    return super.getForeignObject(field);
   }
 
   /**
@@ -114,9 +108,8 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
    */
   protected void deleteCheck() throws ApplicationException
   {
+    super.deleteCheck();
     try {
-      if (isInitial())
-        throw new ApplicationException(i18n.tr("Der Steuersatz gehört zum initialen Datenbestand und darf nicht gelöscht werden."));
 
       // wir checken ob vielleicht ein Konto diesen Steuersatz besitzt.
       DBIterator list = Settings.getDBService().createList(Konto.class);
@@ -135,35 +128,21 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
+    super.insertCheck();
     try {
-      if (isInitial())
-        throw new ApplicationException(i18n.tr("Der Steuersatz gehört zum initialen Datenbestand und darf nicht geändert werden."));
-
       if (getName() == null || "".equals(getName()))
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung für den Steuersatz ein."));
-
-      if (getMandant() == null)
-      {
-        Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
-        setAttribute("mandant_id",jahr.getMandant());
-      }
+      
+      if (getSatz() < 0)
+        throw new ApplicationException(i18n.tr("Steuersatz darf nicht kleiner als 0 sein."));
     }
     catch (RemoteException e)
     {
       Logger.error("error while checking dependencies",e);
       throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Pflichtfelder."),e);
     }
-    super.insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
-  {
-    insertCheck();
   }
 
   /**
@@ -181,27 +160,13 @@ public class SteuerImpl extends AbstractDBObject implements Steuer
   {
     setAttribute("steuerkonto_id",k);
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#isInitial()
-   */
-  public boolean isInitial() throws RemoteException
-  {
-    Integer i = (Integer) getAttribute("initial");
-    return i != null && i.intValue() == 1;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#getMandant()
-   */
-  public Mandant getMandant() throws RemoteException
-  {
-    return (Mandant) getAttribute("mandant_id");
-  }
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.14  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.13  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

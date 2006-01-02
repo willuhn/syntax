@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/10/06 22:27:16 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,6 +94,7 @@ public class SteuerControl extends AbstractControl
 			return steuer;
 
 		steuer = (Steuer) Settings.getDBService().createObject(Steuer.class,null);
+    steuer.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
 		return steuer;
 
 	}
@@ -108,10 +109,11 @@ public class SteuerControl extends AbstractControl
 		if (name != null)
 			return name;
 
-    if (getSteuer().isInitial())
-      name = new LabelInput(getSteuer().getName());
+    name = new TextInput(getSteuer().getName());
+    if (!getSteuer().isUserObject())
+      name.disable();
     else
-      name = new TextInput(getSteuer().getName());
+      name.enable();
 		return name;
 	}
 
@@ -124,11 +126,13 @@ public class SteuerControl extends AbstractControl
 	{
 		if (satz != null)
 			return satz;
-    if (getSteuer().isInitial())
-      satz = new LabelInput(Fibu.DECIMALFORMAT.format(getSteuer().getSatz()));
-    else
-      satz = new DecimalInput(getSteuer().getSatz(), Fibu.DECIMALFORMAT);
+
+    satz = new DecimalInput(getSteuer().getSatz(), Fibu.DECIMALFORMAT);
 		satz.setComment(i18n.tr("Angabe in \"%\""));
+    if (!getSteuer().isUserObject())
+      satz.disable();
+    else
+      satz.enable();
 		return satz;
 	}
 
@@ -146,6 +150,12 @@ public class SteuerControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
     kontoauswahl = new KontoInput(list,getSteuer().getSteuerKonto());
+
+    if (!getSteuer().isUserObject())
+      kontoauswahl.disable();
+    else
+      kontoauswahl.enable();
+    
     return kontoauswahl;
 	}
 
@@ -157,7 +167,7 @@ public class SteuerControl extends AbstractControl
   {
     try {
 
-      if (getSteuer().isInitial())
+      if (!getSteuer().isUserObject())
       {
         GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
         return;
@@ -186,6 +196,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.23  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.22  2005/10/06 22:27:16  willuhn
  * @N KontoInput
  *

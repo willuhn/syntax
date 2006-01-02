@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.22 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -272,16 +271,6 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Mandant#getSteuer()
-   */
-  public DBIterator getSteuer() throws RemoteException
-  {
-    DBIterator list = getService().createList(Steuer.class);
-    list.addFilter("mandant_id is null or mandant_id = " + this.getID());
-    return list;
-  }
-
-  /**
    * Ueberschrieben, um alle Geschaeftsjahre inclusive aller Buchungen und Anfangsbestaende zu loeschen.
    * @see de.willuhn.datasource.rmi.Changeable#delete()
    */
@@ -329,6 +318,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.22  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.21  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

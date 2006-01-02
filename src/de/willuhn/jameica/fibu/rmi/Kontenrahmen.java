@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/01 21:08:41 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,13 +16,12 @@ package de.willuhn.jameica.fibu.rmi;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Bildet die verschiedenen Kontenrahmen in Fibu ab.
  * @author willuhn
  */
-public interface Kontenrahmen extends DBObject
+public interface Kontenrahmen extends UserObject
 {
   /**
    * Liefert den Namen des Kontenrahmens.
@@ -42,6 +41,9 @@ public interface Kontenrahmen extends DBObject
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.7  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.6  2005/09/01 21:08:41  willuhn
  * *** empty log message ***
  *

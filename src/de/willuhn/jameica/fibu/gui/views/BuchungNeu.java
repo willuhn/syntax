@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.37 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,8 @@ public class BuchungNeu extends AbstractView
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
+    kontoGroup.addLabelPair(i18n.tr("Vorlage"),         control.getBuchungstemplate());
+    kontoGroup.addSeparator();
     kontoGroup.addLabelPair(i18n.tr("Datum"),           control.getDatum());
     kontoGroup.addLabelPair(i18n.tr("Soll-Konto"),      control.getSollKontoAuswahl());
     kontoGroup.addLabelPair(i18n.tr("Haben-Konto"),     control.getHabenKontoAuswahl());
@@ -107,6 +109,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.37  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.36  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

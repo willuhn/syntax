@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.59 $
- * $Date: 2005/10/13 15:44:33 $
+ * $Revision: 1.60 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -42,6 +43,8 @@ import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
+import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -60,6 +63,7 @@ public class BuchungControl extends AbstractControl
 	private Buchung buchung 		= null;
 
 	// Eingabe-Felder
+  private Input template         = null;
 	private Input	text					   = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
@@ -103,7 +107,51 @@ public class BuchungControl extends AbstractControl
 		
 	}
 
-	/**
+  /**
+   * Liefert eine Auswahlbox mit Buchungsvorlagen.
+   * @return  Auswahlbox mit Buchungsvorlagen.
+   * @throws RemoteException
+   */
+  public Input getBuchungstemplate() throws RemoteException
+  {
+    if (this.template != null)
+      return this.template;
+    DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
+    if (list.size() == 0)
+    {
+      this.template = new LabelInput(i18n.tr("Keine Buchungsvorlagen vorhanden"));
+    }
+    else
+    {
+      this.template = new SelectInput(list,null);
+      ((SelectInput)this.template).setPleaseChoose(i18n.tr("Bitte wählen..."));
+      this.template.addListener(new Listener() {
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            Object o = template.getValue();
+            if (o == null || !(o instanceof Buchungstemplate))
+              return;
+            Buchungstemplate t = (Buchungstemplate) o;
+            getSollKontoAuswahl().setValue(t.getSollKonto());
+            getHabenKontoAuswahl().setValue(t.getHabenKonto());
+            getText().setValue(t.getText());
+            getBetrag().setValue(new Double(t.getBetrag()));
+            getSteuer().setValue(new Double(t.getSteuer()));
+          }
+          catch (RemoteException e)
+          {
+            Logger.error("unable to apply tenplate data",e);
+            GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Übernehmen der Vorlage"));
+          }
+        }
+      });
+    }
+    return this.template;
+  }
+  
+  /**
 	 * Liefert das Eingabe-Feld fuer das Datum.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -700,6 +748,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.60  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.59  2005/10/13 15:44:33  willuhn
  * @B bug 139
  *

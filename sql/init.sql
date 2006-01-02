@@ -17,13 +17,13 @@ INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (3, 6, 1, '1770', 'Umsatzsteuer', 1, NULL);
 
 -- Steuern SKR03
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1,'Vorsteuer 16%', '16', 1, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (2,'Vorsteuer 7%', '7', 2, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (3,'Umsatzsteuer 16%', '16', 3, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (4,'Umsatzsteuer 15%', '15', 3, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (5,'Umsatzsteuer 7%', '7', 3, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (6,'Vorsteuer 0%', '0', 1, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (7,'Umsatzsteuer 0%', '0', 3, 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (2,'Vorsteuer 7%', '7', 2);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (3,'Umsatzsteuer 16%', '16', 3);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (4,'Umsatzsteuer 15%', '15', 3);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (5,'Umsatzsteuer 7%', '7', 3);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (6,'Vorsteuer 0%', '0', 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (7,'Umsatzsteuer 0%', '0', 3);
 
 
 -- restliche SKR03-Konten
@@ -147,13 +147,13 @@ INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_
 INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1003, 6, 1, '3800', 'Umsatzsteuer', 2, NULL);
 
 -- Steuern SKR04
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1001,'Vorsteuer 16%', '16', 1001, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1002,'Vorsteuer 7%', '7', 1002, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1003,'Umsatzsteuer 16%', '16', 1003, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1004,'Umsatzsteuer 15%', '15', 1003, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1005,'Umsatzsteuer 7%', '7', 1003, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1006,'Vorsteuer 0%', '0', 1001, 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id, initial) VALUES (1007,'Umsatzsteuer 0%', '0', 1003, 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1001,'Vorsteuer 16%', '16', 1001);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1002,'Vorsteuer 7%', '7', 1002);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1003,'Umsatzsteuer 16%', '16', 1003);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1004,'Umsatzsteuer 15%', '15', 1003);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1005,'Umsatzsteuer 7%', '7', 1003);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1006,'Vorsteuer 0%', '0', 1001);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1007,'Umsatzsteuer 0%', '0', 1003);
 
 -- Restliche SKR04-Konten
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1100, 4, '0135', 'EDV-Software', 2, 1001);

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.10 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.11 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,13 +90,6 @@ public interface Mandant extends DBObject
   public DBIterator getAnlagevermoegen() throws RemoteException;
   
   /**
-   * Liefert eine Liste der Steuersaetze zu diesem Mandanten.
-   * @return Liste der Steuersaetze fuer den Mandanten.
-   * @throws RemoteException
-   */
-  public DBIterator getSteuer() throws RemoteException;
-  
-  /**
    * Liefert das zugehoerige Finanzamt.
    * @return das Finanzamt des Mandanten.
    * @throws RemoteException
@@ -177,6 +170,9 @@ public interface Mandant extends DBObject
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.11  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.10  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

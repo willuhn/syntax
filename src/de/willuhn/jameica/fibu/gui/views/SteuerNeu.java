@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2005/10/05 17:52:33 $
+ * $Revision: 1.16 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,13 +55,11 @@ public class SteuerNeu extends AbstractView
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     
-    boolean initial = control.getSteuer().isInitial();
-    
-    if (initial)
+    if (!control.getSteuer().isUserObject())
       GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
     
     Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer());
-    delete.setEnabled(!initial);
+    delete.setEnabled(control.getSteuer().isUserObject());
     buttonArea.addButton(delete);
     
     Button store = new Button(i18n.tr("Speichern"), new Action()
@@ -71,7 +69,7 @@ public class SteuerNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    store.setEnabled(!initial);
+    store.setEnabled(control.getSteuer().isUserObject());
     buttonArea.addButton(store);
   }
 
@@ -85,6 +83,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.16  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.15  2005/10/05 17:52:33  willuhn
  * @N steuer behaviour
  *

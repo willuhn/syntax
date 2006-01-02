@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/02 01:54:07 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class KontoDelete implements Action
       if (context instanceof Konto)
       {
         k = new Konto[] {(Konto) context};
-        if (!k[0].isUserKonto())
+        if (!k[0].isUserObject())
           throw new ApplicationException(i18n.tr("System-Konten dürfen nicht gelöscht werden"));
       }
       else
@@ -78,7 +78,7 @@ public class KontoDelete implements Action
         String s = null;
         for (int i=0;i<k.length;++i)
         {
-          if (k[i].isUserKonto())
+          if (k[i].isUserObject())
           {
             s = k[i].getKontonummer();
             k[i].delete();
@@ -121,6 +121,9 @@ public class KontoDelete implements Action
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.7  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.6  2006/01/02 01:54:07  willuhn
  * @N Benutzerdefinierte Konten
  *

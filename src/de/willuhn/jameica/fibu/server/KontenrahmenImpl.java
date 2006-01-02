@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/09/01 21:08:41 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,18 +15,25 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
-public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
+public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenrahmen
 {
 
+  private I18N i18n = null;
+  
   /**
    * Erzeugt einen neuen Kontorahmen.
    * @throws RemoteException
@@ -34,6 +41,7 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   public KontenrahmenImpl() throws RemoteException
   {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -53,43 +61,46 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected void insertCheck() throws ApplicationException
   {
-    return null;
+    super.insertCheck();
+    try {
+      String name = (String) getAttribute("name");
+      if (name == null || "".equals(name))
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen für den Kontenrahmen ein."));
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Kontenrahmens."),e);
+    }
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
-  public void deleteCheck() throws ApplicationException
+  protected void deleteCheck() throws ApplicationException
   {
-    throw new ApplicationException("Kontenrahmen dürfen nicht gelöscht werden.");
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
-   */
-  public void insertCheck() throws ApplicationException
-  {
+    super.deleteCheck();
     try {
-      String name = (String) getAttribute("name");
-      if (name == null || "".equals(name))
-        throw new ApplicationException("Bitte geben Sie einen Namen für den Kontenrahmen ein.");
+
+      DBIterator list = Settings.getDBService().createList(Konto.class);
+      list.addFilter("kontenrahmen_id = " + this.getID());
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Der Kontenrahmen enthält Konten. Bitte löschen zu Sie zunächst die Konten."));
+
+      list = Settings.getDBService().createList(Geschaeftsjahr.class);
+      list.addFilter("kontenrahmen_id = " + this.getID());
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Es existieren bereits Geschäftsjahre mit diesem Kontenrahmen."));
+
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler bei der Prüfung der Pflichtfelder.",e);
+      Logger.error("error while checking dependencies",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Abhängigkeiten."));
     }
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
-  {
-    insertCheck();
   }
 
   /**
@@ -116,6 +127,9 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.12  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.11  2005/09/01 21:08:41  willuhn
  * *** empty log message ***
  *

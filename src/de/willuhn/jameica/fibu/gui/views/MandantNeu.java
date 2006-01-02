@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2005/09/01 23:07:17 $
+ * $Revision: 1.21 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,11 +12,22 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.gui.views;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.TabFolder;
+
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
+import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
+import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
+import de.willuhn.jameica.fibu.gui.part.KontoList;
+import de.willuhn.jameica.fibu.gui.part.SteuerList;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -24,9 +35,10 @@ import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -88,10 +100,27 @@ public class MandantNeu extends AbstractView
     button4.setEnabled(control.storeAllowed());
     buttonArea.addButton(button4);
 
-    new Headline(getParent(),i18n.tr("Vorhandene Geschäftsjahre"));
-    TablePart jahre = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
-    jahre.paint(getParent());
+    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
+    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+    folder.setBackground(Color.BACKGROUND.getSWTColor());
 
+    TabGroup jahre = new TabGroup(folder,i18n.tr("Vorhandene Geschäftsjahre"));
+    TablePart t1 = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
+    t1.paint(jahre.getComposite());
+
+    TabGroup konten = new TabGroup(folder,i18n.tr("Benutzerdefinierte Konten"),false,1);
+    DBIterator i = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+    i.addFilter("mandant_id = " + control.getMandant().getID());
+    TablePart t2 = new KontoList(i, new KontoNeu());
+    t2.paint(konten.getComposite());
+
+    TabGroup steuern = new TabGroup(folder,i18n.tr("Benutzerdefinierte Steuersätze"));
+    DBIterator list = Settings.getDBService().createList(Steuer.class);
+    list.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    list.setOrder("order by name");
+    TablePart t3 = new SteuerList(list, new SteuerNeu());
+    t3.paint(steuern.getComposite());
+    
   }
 
   /**
@@ -104,6 +133,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.21  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.20  2005/09/01 23:07:17  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/01/02 01:54:07 $
+ * $Revision: 1.39 $
+ * $Date: 2006/01/02 15:18:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,11 +18,11 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -31,7 +31,6 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -41,7 +40,7 @@ import de.willuhn.util.I18N;
 /**
  * @author willuhn
  */
-public class KontoImpl extends AbstractDBObject implements Konto
+public class KontoImpl extends AbstractUserObjectImpl implements Konto
 {
   private I18N i18n = null;
   
@@ -214,20 +213,40 @@ public class KontoImpl extends AbstractDBObject implements Konto
       return Kontotyp.class;
     if ("kontenrahmen_id".equals(field))
       return Kontenrahmen.class;
-    if ("mandant_id".equals(field))
-      return Mandant.class;
-    return null;
+    return super.getForeignObject(field);
   }
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
-  public void deleteCheck() throws ApplicationException
+  protected void deleteCheck() throws ApplicationException
   {
+    super.deleteCheck();
     try
     {
-      if (!isUserKonto())
-        throw new ApplicationException("Konto ist ein System-Konto und darf daher nicht gelöscht werden.");
+      DBIterator list = getService().createList(Steuer.class);
+      list.addFilter("steuerkonto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto ist als Sammelkonto einem Steuersatz zugeordnet."));
+
+      list = getService().createList(Anfangsbestand.class);
+      list.addFilter("konto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto besitzt bereits einen Anfangsbestand. Löschen SIe zuerst diesen."));
+
+      list = getService().createList(Buchung.class);
+      list.addFilter("habenkonto_id = " + this.getID() + " OR sollkonto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Es existieren bereits Buchungen auf diesem Konto."));
+
+      list = getService().createList(Anlagevermoegen.class);
+      list.addFilter("konto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto ist einem Anlage-Gegenstand zugeordnet."));
     }
     catch (RemoteException e)
     {
@@ -239,12 +258,10 @@ public class KontoImpl extends AbstractDBObject implements Konto
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
+    super.insertCheck();
     try {
-      if (!isUserKonto())
-        throw new ApplicationException(i18n.tr("System-Konten dürfen nicht geändert werden."));
-        
       Kontenrahmen kr = getKontenrahmen();
       if (kr == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
@@ -282,15 +299,6 @@ public class KontoImpl extends AbstractDBObject implements Konto
     {
       throw new ApplicationException(i18n.tr("Fehler bei der Überprüfung der Pflichtfelder"),e);
     }
-    super.insertCheck();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
-  public void updateCheck() throws ApplicationException
-  {
-    insertCheck();
   }
 
   /**
@@ -426,36 +434,13 @@ public class KontoImpl extends AbstractDBObject implements Konto
   {
     setAttribute("kontotyp_id",typ);
   }
-  
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#isUserKonto()
-   */
-  public boolean isUserKonto() throws RemoteException
-  {
-    return getMandant() != null;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getMandant()
-   */
-  public Mandant getMandant() throws RemoteException
-  {
-    return (Mandant) getAttribute("mandant_id");
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
-   */
-  public void setMandant(Mandant mandant) throws RemoteException
-  {
-    if (!this.isNewObject())
-      throw new RemoteException(i18n.tr("System-Konten dürfen nicht geändert werden"));
-    setAttribute("mandant_id",mandant);
-  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.39  2006/01/02 15:18:29  willuhn
+ * @N Buchungs-Vorlagen
+ *
  * Revision 1.38  2006/01/02 01:54:07  willuhn
  * @N Benutzerdefinierte Konten
  *
