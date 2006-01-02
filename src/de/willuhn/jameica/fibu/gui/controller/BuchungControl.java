@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.60 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.61 $
+ * $Date: 2006/01/02 15:51:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,6 +103,7 @@ public class BuchungControl extends AbstractControl
 			return buchung;
 		
 		buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
+    buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
 		return buchung;
 		
 	}
@@ -139,6 +140,7 @@ public class BuchungControl extends AbstractControl
             getText().setValue(t.getText());
             getBetrag().setValue(new Double(t.getBetrag()));
             getSteuer().setValue(new Double(t.getSteuer()));
+            getBetrag().focus();
           }
           catch (RemoteException e)
           {
@@ -203,6 +205,8 @@ public class BuchungControl extends AbstractControl
     datum.setComment("");
     datum.enableClientControl();
     datum.addListener(new WochentagListener());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      datum.disable();
     return datum;
   
   }
@@ -220,6 +224,8 @@ public class BuchungControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
     sollKontoAuswahl.addListener(new KontoListener());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      sollKontoAuswahl.disable();
     return sollKontoAuswahl;
   }
 
@@ -237,6 +243,8 @@ public class BuchungControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
     habenKontoAuswahl.addListener(new KontoListener());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      habenKontoAuswahl.disable();
     return habenKontoAuswahl;
 	}
 
@@ -251,6 +259,8 @@ public class BuchungControl extends AbstractControl
 			return text;
 		
 		text = new TextInput(getBuchung().getText());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      text.disable();
 		return text;
 	}
 
@@ -258,8 +268,9 @@ public class BuchungControl extends AbstractControl
    * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob zu der Buchung
    * gleich ein Datensatz im Anlagevermoegen angelegt werden soll.
    * @return Checkbox.
+   * @throws RemoteException
    */
-  public CheckboxInput getAnlageVermoegen()
+  public CheckboxInput getAnlageVermoegen() throws RemoteException
   {
     if (this.anlageVermoegen != null)
       return this.anlageVermoegen;
@@ -287,6 +298,8 @@ public class BuchungControl extends AbstractControl
         }
       }
     });
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      anlageVermoegen.disable();
     return this.anlageVermoegen;
   }
   
@@ -334,6 +347,8 @@ public class BuchungControl extends AbstractControl
 			return belegnummer;
 		
 		belegnummer = new IntegerInput(getBuchung().getBelegnummer());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      belegnummer.disable();
 		return belegnummer;
 	}
 
@@ -350,6 +365,8 @@ public class BuchungControl extends AbstractControl
 		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Fibu.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     betrag.addListener(new SteuerListener());
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      betrag.disable();
 		return betrag;
 	}
 
@@ -368,6 +385,8 @@ public class BuchungControl extends AbstractControl
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
     sl.handleEvent(null);
+    if (getBuchung().getGeschaeftsjahr().isClosed())
+      steuer.disable();
 		return steuer;
 	}
 
@@ -455,9 +474,6 @@ public class BuchungControl extends AbstractControl
       getBuchung().setHabenKonto((Konto) getHabenKontoAuswahl().getValue());
       getBuchung().setText((String)getText().getValue());
       
-      // wir speichern grundsaetzlich den aktiven Mandanten als Inhaber der Buchung
-			getBuchung().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
-
       // und jetzt speichern wir.
 			getBuchung().store();
       
@@ -748,6 +764,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.61  2006/01/02 15:51:12  willuhn
+ * @B NPE
+ *
  * Revision 1.60  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

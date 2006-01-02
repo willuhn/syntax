@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.38 $
+ * $Date: 2006/01/02 15:51:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,7 @@ public class BuchungNeu extends AbstractView
     control.getDatum().focus();
 
     boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
-    if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+    if (closed) GUI.getView().setErrorText(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"));
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = kontoGroup.createButtonArea(4);
@@ -109,6 +109,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.38  2006/01/02 15:51:12  willuhn
+ * @B NPE
+ *
  * Revision 1.37  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *
