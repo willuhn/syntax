@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/02 22:56:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public class BuchungstemplateListe extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Buchungsvorlagen"));
 
-    Part p = new BuchungstemplateList(new BuchungNeu());
+    Part p = new BuchungstemplateList(new BuchungstemplateNeu());
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
@@ -63,6 +63,9 @@ public class BuchungstemplateListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungstemplateListe.java,v $
+ * Revision 1.2  2006/01/02 22:56:50  willuhn
+ * @B typo
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *
