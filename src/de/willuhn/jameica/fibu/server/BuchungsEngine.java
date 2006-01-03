@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.38 $
+ * $Date: 2006/01/03 23:58:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,10 +113,9 @@ public class BuchungsEngine
 
       // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
       Logger.info("  Pruefe, ob neues Geschaeftsjahr bereits existiert");
-      DBIterator check = db.createList(Geschaeftsjahr.class);
+      DBIterator check = m.getGeschaeftsjahre();
       check.addFilter(jahrNeu.getBeginn().getTime() + " < TONUMBER(ende)");
       check.addFilter(jahrNeu.getEnde().getTime() + " > TONUMBER(beginn)");
-      check.addFilter("mandant_id = " + m.getID());
       if (check.hasNext())
         throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
 
@@ -197,9 +196,8 @@ public class BuchungsEngine
    * @return Die erzeugte Abschreibungs-Buchung oder <code>null</code> wenn das Anlage-Gut
    * bereits abgeschrieben ist und keine Abschreibungs-Buchung noetig ist.
    * @throws RemoteException
-   * @throws ApplicationException
    */
-  public static AbschreibungsBuchung schreibeAb(Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException, ApplicationException
+  public static AbschreibungsBuchung schreibeAb(Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException
   {
     double anschaffung = av.getAnschaffungskosten();
     double betrag      = anschaffung / (double) av.getNutzungsdauer();
@@ -216,7 +214,7 @@ public class BuchungsEngine
 
     
     // GWGs voll abschreiben
-    if (anschaffung <= Settings.getGwgWert(jahr))
+    if (anschaffung <= Settings.getGwgWert(jahr) && av.getNutzungsdauer() == 1)
     {
       Logger.info("    GWG: Schreibe voll ab");
       name = i18n.tr("GWG-Abschreibung");
@@ -370,6 +368,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.38  2006/01/03 23:58:36  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.37  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

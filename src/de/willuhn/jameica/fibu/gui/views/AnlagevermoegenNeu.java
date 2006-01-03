@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/03 00:05:38 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/03 23:58:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,12 +53,13 @@ public class AnlagevermoegenNeu extends AbstractView
     group.addLabelPair(i18n.tr("Bezeichnung"),                  control.getName());
     group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
-    group.addLabelPair(i18n.tr("Anschaffungskosten"),           control.getKosten());
+    group.addLabelPair(i18n.tr("Anschaffungskosten (netto)"),   control.getKosten());
 
     Container afa = new LabelGroup(getParent(),i18n.tr("Abschreibung"));
     afa.addLabelPair(i18n.tr("Abschreibungskonto"),           control.getAbschreibungsKonto());
     afa.addLabelPair(i18n.tr("Nutzungsdauer in Jahren"),      control.getLaufzeit());
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
+    afa.addLabelPair("", control.getHinweis());
 
     ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
@@ -88,6 +89,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.7  2006/01/03 23:58:36  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.6  2006/01/03 00:05:38  willuhn
  * *** empty log message ***
  *

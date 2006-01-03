@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.44 $
- * $Date: 2005/10/06 14:48:40 $
+ * $Revision: 1.45 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -141,15 +140,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
         HilfsBuchung b = (HilfsBuchung) i.next();
         b.delete();
       }
-      i = getService().createList(Anlagevermoegen.class);
-      i.addFilter("buchung_id = " + this.getID());
-      if (i.hasNext())
-      {
-        Anlagevermoegen av = (Anlagevermoegen) i.next();
-        av.setBuchung(null);
-        av.store();
-      }
-      
       super.delete();
       transactionCommit();
     }
@@ -203,6 +193,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.45  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.44  2005/10/06 14:48:40  willuhn
  * @N Sonderregelung fuer Abschreibunsgbuchungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/EinstellungenControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/13 15:44:33 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,8 +41,9 @@ public class EinstellungenControl extends AbstractControl
 {
   private I18N i18n = null;
 
-  private KontoInput afaKonto = null;
-  private Input gwgWert       = null;
+  private KontoInput afaKonto    = null;
+  private KontoInput afaKontoGWG = null;
+  private Input gwgWert          = null;
   
   /**
    * ct.
@@ -68,10 +69,29 @@ public class EinstellungenControl extends AbstractControl
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
-    afaKonto = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr));
+    afaKonto = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr,false));
     return afaKonto;
   }
   
+  /**
+   * Liefert das Eingabe-Feld zur Auswahl des Abschreibungskontos fuer GWGs.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public KontoInput getAbschreibungsKontoGWG() throws RemoteException
+  {
+    if (afaKontoGWG != null)
+      return afaKontoGWG;
+    
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+
+    DBIterator konten = jahr.getKontenrahmen().getKonten();
+    konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
+    konten.addFilter("steuer_id is null");
+    afaKontoGWG = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr,true));
+    return afaKontoGWG;
+  }
+
   /**
    * Liefert ein Eingabe-Feld zur Definition des GWG-Wertes.
    * @return GWG-Wert.
@@ -98,7 +118,24 @@ public class EinstellungenControl extends AbstractControl
     try
     {
       Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-      Settings.setAbschreibungsKonto(jahr,(Konto)getAbschreibungsKonto().getValue());
+      
+      Konto k = (Konto) getAbschreibungsKonto().getValue();
+      if (k != null)
+      {
+        Kontoart ka = k.getKontoArt();
+        if (ka.getKontoArt() != Kontoart.KONTOART_AUFWAND)
+          throw new ApplicationException(i18n.tr("Das ausgewählte Abschreibungskonto ist kein Aufwandskonto"));
+      }
+      Settings.setAbschreibungsKonto(jahr,k,false);
+
+      k = (Konto) getAbschreibungsKontoGWG().getValue();
+      if (k != null)
+      {
+        Kontoart ka = k.getKontoArt();
+        if (ka.getKontoArt() != Kontoart.KONTOART_AUFWAND)
+          throw new ApplicationException(i18n.tr("Das ausgewählte Abschreibungskonto für GWG ist kein Aufwandskonto"));
+      }
+      Settings.setAbschreibungsKonto(jahr,k,true);
       
       Double d = (Double) getGwgWert().getValue();
       Settings.setGwgWert(jahr,d == null ? 0 : d.doubleValue());
@@ -120,6 +157,9 @@ public class EinstellungenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: EinstellungenControl.java,v $
+ * Revision 1.3  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.2  2005/10/13 15:44:33  willuhn
  * @B bug 139
  *

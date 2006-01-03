@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.14 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,13 +32,16 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -58,10 +61,12 @@ public class AnlagevermoegenControl extends AbstractControl
   private Input kosten      = null;
   private Input laufzeit    = null;
   private Input restwert    = null;
+  private Input hinweis     = null;
   
   private KontoInput konto       = null;
   private KontoInput afaKonto    = null;
   private DialogInput datum      = null;
+  
   
   /**
    * @param view
@@ -116,6 +121,8 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.name != null)
       return this.name;
     this.name = new TextInput(getAnlagevermoegen().getName(),255);
+    if (!getAnlagevermoegen().canChange())
+      this.name.disable();
     return this.name;
   }
   
@@ -130,13 +137,46 @@ public class AnlagevermoegenControl extends AbstractControl
       return this.kosten;
     Mandant m = getAnlagevermoegen().getMandant();
     this.kosten = new DecimalInput(getAnlagevermoegen().getAnschaffungskosten(),Fibu.DECIMALFORMAT);
-    this.kosten.setComment(m.getWaehrung());
+    this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {2}",new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(Settings.getGwgWert(null)),m.getWaehrung()}));
     if (!getAnlagevermoegen().canChange())
-    {
       this.kosten.disable();
-      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
-    }
+    this.kosten.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Double d = (Double) kosten.getValue();
+          Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+          if (d != null && d.doubleValue() <= Settings.getGwgWert(jahr))
+            getAbschreibungsKonto().setValue(Settings.getAbschreibunsgKonto(jahr,true));
+          else
+            getAbschreibungsKonto().setValue(Settings.getAbschreibunsgKonto(jahr,false));
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while checking afa konto",e);
+          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anpassen des Afa-Kontos"));
+        }
+      }
+    });
     return this.kosten;
+  }
+  
+  /**
+   * Liefert einen Hinweistext.
+   * @return Hinweistext.
+   * @throws RemoteException
+   */
+  public Input getHinweis() throws RemoteException
+  {
+    if (this.hinweis != null)
+      return this.hinweis;
+    this.hinweis = new LabelInput("");
+    ((LabelInput)this.hinweis).setColor(Color.ERROR);
+    if (!getAnlagevermoegen().canChange())
+      this.hinweis.setValue(i18n.tr("Es existieren bereits Abschreibungen. Anlage kann nicht mehr geändert werden"));
+    return this.hinweis;
   }
   
   /**
@@ -186,10 +226,7 @@ public class AnlagevermoegenControl extends AbstractControl
     datum.setValue(date);
     datum.disableClientControl();
     if (!getAnlagevermoegen().canChange())
-    {
       this.datum.disable();
-      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
-    }
     return datum;
   }
   
@@ -202,12 +239,10 @@ public class AnlagevermoegenControl extends AbstractControl
   {
     if (this.laufzeit != null)
       return this.laufzeit;
-    this.laufzeit = new IntegerInput(getAnlagevermoegen().getNutzungsdauer());
+    int n = getAnlagevermoegen().getNutzungsdauer();
+    this.laufzeit = new IntegerInput(n == 0 ? 1 : n);
     if (!getAnlagevermoegen().canChange())
-    {
       this.laufzeit.disable();
-      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
-    }
     return this.laufzeit;
   }
   
@@ -227,10 +262,7 @@ public class AnlagevermoegenControl extends AbstractControl
 
     konto = new KontoInput(list,getAnlagevermoegen().getKonto());
     if (!getAnlagevermoegen().canChange())
-    {
       this.konto.disable();
-      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
-    }
     return konto;
   }
 
@@ -251,13 +283,13 @@ public class AnlagevermoegenControl extends AbstractControl
 
     Konto k = getAnlagevermoegen().getAbschreibungskonto();
     if (k == null)
-      k = Settings.getAbschreibunsgKonto(jahr);
+    {
+      Double d = (Double) getKosten().getValue();
+      k = Settings.getAbschreibunsgKonto(jahr,d != null && d.doubleValue() < Settings.getGwgWert(jahr));
+    }
     afaKonto = new KontoInput(list,k);
     if (!getAnlagevermoegen().canChange())
-    {
       this.afaKonto.disable();
-      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
-    }
     return afaKonto;
   }
 
@@ -268,45 +300,72 @@ public class AnlagevermoegenControl extends AbstractControl
   {
     try
     {
-      Anlagevermoegen a = getAnlagevermoegen();
-      a.setName((String) getName().getValue());
-      if (a.canChange())
+      getAnlagevermoegen().setName((String) getName().getValue());
+      getAnlagevermoegen().setKonto((Konto)getKonto().getValue());
+      getAnlagevermoegen().setAbschreibungskonto((Konto)getAbschreibungsKonto().getValue());
+      getAnlagevermoegen().setAnschaffungsDatum((Date) getDatum().getValue());
+      
+      double ak = 0.0d;
+      try
       {
-        getAnlagevermoegen().setKonto((Konto)getKonto().getValue());
-        getAnlagevermoegen().setAbschreibungskonto((Konto)getAbschreibungsKonto().getValue());
-        a.setAnschaffungsDatum((Date) getDatum().getValue());
-        
-        try {
-          a.setAnschaffungskosten(((Double) getKosten().getValue()).doubleValue());
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to set kosten",e);
-          throw new ApplicationException(i18n.tr("Anschaffungskosten ungültig."));
-        }
+        ak = ((Double) getKosten().getValue()).doubleValue();
+        getAnlagevermoegen().setAnschaffungskosten(ak);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to set kosten",e);
+        throw new ApplicationException(i18n.tr("Anschaffungskosten ungültig."));
+      }
 
-        try {
-          a.setNutzungsdauer(((Integer) getLaufzeit().getValue()).intValue());
-        }
-        catch (Exception e)
+      int nutzungsdauer = 1;
+      try {
+        nutzungsdauer = ((Integer) getLaufzeit().getValue()).intValue();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to set laufzeit",e);
+        throw new ApplicationException(i18n.tr("Nutzungsdauer ungültig."));
+      }
+      
+      if (ak <= Settings.getGwgWert(Settings.getActiveGeschaeftsjahr()))
+      {
+        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
+        d.setTitle(i18n.tr("Geringwertiges Wirtschaftsgut"));
+        d.setText(i18n.tr("Anlage kann als GWG sofort abgeschrieben werden.\n" +
+                          "Nutzungsdauer zur Sofort-Abschreibung auf 1 Jahr verkürzen?"));
+        try
         {
-          Logger.error("unable to set laufzeit",e);
-          throw new ApplicationException(i18n.tr("Nutzungsdauer ungültig."));
-        }
-
-        if (getRestwert().isEnabled())
-        {
-          try {
-            a.setRestwert(((Double) getRestwert().getValue()).doubleValue());
-          }
-          catch (Exception e)
+          if (((Boolean)d.open()).booleanValue())
           {
-            Logger.error("unable to set restwert",e);
-            throw new ApplicationException(i18n.tr("Restwert ungültig."));
+            getLaufzeit().setValue(new Integer(1));
+            nutzungsdauer = 1;
           }
+        }
+        catch (OperationCanceledException oce)
+        {
+          // ignore
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking for gwg",e);
+          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen auf GWG"));
         }
       }
-      a.store();
+      getAnlagevermoegen().setNutzungsdauer(nutzungsdauer);
+
+      if (getRestwert().isEnabled())
+      {
+        try {
+          getAnlagevermoegen().setRestwert(((Double) getRestwert().getValue()).doubleValue());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to set restwert",e);
+          throw new ApplicationException(i18n.tr("Restwert ungültig."));
+        }
+      }
+
+      getAnlagevermoegen().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gespeichert"));
     }
     catch (RemoteException e)
@@ -359,6 +418,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.14  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.13  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

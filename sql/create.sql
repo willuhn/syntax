@@ -133,7 +133,6 @@ CREATE TABLE anlagevermoegen (
   anschaffungsdatum date NOT NULL,
   k_abschreibung_id int(10) NOT NULL,
   konto_id int(10) NULL,
-  buchung_id int(10) NULL,
   nutzungsdauer int(2) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -173,7 +172,6 @@ ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFE
 ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
 
-ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;

@@ -8,7 +8,6 @@ ALTER CREATE TABLE anlagevermoegen (
   anschaffungsdatum date NOT NULL,
   k_abschreibung_id int(10) NOT NULL,
   konto_id int(10) NULL,
-  buchung_id int(10) NULL,
   nutzungsdauer int(2) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)

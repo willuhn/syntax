@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,20 +65,6 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setAnschaffungsDatum(Date d) throws RemoteException;
-  
-  /**
-   * Liefert eine optionale Buchung, ueber die das Anlagegut in den Bestand gelangt ist.
-   * @return Buchung.
-   * @throws RemoteException
-   */
-  public Buchung getBuchung() throws RemoteException;
-  
-  /**
-   * Speichert eine optionale Buchung, ueber die das Anlagegut in den Bestand gelangt ist.
-   * @param buchung Buchung.
-   * @throws RemoteException
-   */
-  public void setBuchung(Buchung buchung) throws RemoteException;
   
   /**
    * Liefert die Nutzungsdauer fuer die Abschreibung in Jahren.
@@ -182,9 +168,8 @@ public interface Anlagevermoegen extends DBObject
   public void setAbschreibungskonto(Konto k) throws RemoteException;
   
   /**
-   * Speichert den Restwert im aktuellen Geschaeftsjahr.
-   * Die manuelle Speicherung des Restwertes ist nur dann
-   * erlaubt, wenn:
+   * Legt den Restwert der Anlage fest.
+   * Die manuelle Festlegung des Restwertes ist nur dann erlaubt, wenn:
    * <ol>
    *   <li>Noch keine Abschreibungen vorliegen</li>
    *   <li>sich das Anschaffungsdatum vor dem aktuellen Geschaeftsjahr befindet</li>
@@ -201,6 +186,9 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.8  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.7  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

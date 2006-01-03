@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.35 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.36 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,15 +46,16 @@ public class Settings
   /**
    * Liefert das Abschreibungskonto fuer das Geschaeftsjahr.
    * @param jahr Geschaeftsjahr
+   * @param gwg handelt es sich um ein GWG?
    * @return das Konto oder <code>null</code> wenn noch keines definiert ist.
    * @throws RemoteException
    */
-  public static Konto getAbschreibunsgKonto(Geschaeftsjahr jahr) throws RemoteException
+  public static Konto getAbschreibunsgKonto(Geschaeftsjahr jahr, boolean gwg) throws RemoteException
   {
     if (jahr == null)
       return null;
     
-    String id = settings.getString("jahr." + jahr.getID() + ".afakonto",null);
+    String id = settings.getString("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),null);
     if (id != null && id.length() > 0)
       return (Konto) getDBService().createObject(Konto.class,id);
     return null;
@@ -64,10 +65,11 @@ public class Settings
    * Speichert das Abschreibungskonto fuer das Geschaeftsjahr.
    * @param jahr Geschaeftsjahr.
    * @param k Konto.
+   * @param gwg handelt es sich um ein GWG?
    * @throws RemoteException
    * @throws ApplicationException
    */
-  public static void setAbschreibungsKonto(Geschaeftsjahr jahr, Konto k) throws RemoteException, ApplicationException
+  public static void setAbschreibungsKonto(Geschaeftsjahr jahr, Konto k, boolean gwg) throws RemoteException, ApplicationException
   {
     if (jahr == null)
       return;
@@ -84,7 +86,7 @@ public class Settings
       I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Konto {0} ist kein gültiges Aufwandskonto",k.getKontonummer()));
     }
-    settings.setAttribute("jahr." + jahr.getID() + ".afakonto",k.getID());
+    settings.setAttribute("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),k.getID());
     
   }
   
@@ -293,6 +295,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.36  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.35  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

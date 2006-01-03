@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.62 $
- * $Date: 2006/01/02 16:09:10 $
+ * $Revision: 1.63 $
+ * $Date: 2006/01/03 23:58:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -74,8 +75,6 @@ public class BuchungControl extends AbstractControl
   private KontoInput habenKontoAuswahl  = null;
   
   private CheckboxInput anlageVermoegen = null;
-  private Input laufzeit                = null;
-  private KontoInput afaKonto           = null;
   
   private I18N i18n;
 
@@ -280,66 +279,11 @@ public class BuchungControl extends AbstractControl
       return this.anlageVermoegen;
     this.anlageVermoegen = new CheckboxInput(false);
     this.anlageVermoegen.disable();
-    this.anlageVermoegen.addListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        try
-        {
-          if (anlageVermoegen.isEnabled())
-          {
-            getLaufzeit().enable();
-            getAbschreibungsKonto().enable();
-          }
-          else
-          {
-            getLaufzeit().disable();
-            getAbschreibungsKonto().disable();
-          }
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while enabling/disabling afa controls",e);
-        }
-      }
-    });
     if (getBuchung().getGeschaeftsjahr().isClosed())
       anlageVermoegen.disable();
     return this.anlageVermoegen;
   }
   
-  /**
-   * Liefert ein Eingabe-Feld fuer die Laufzeit.
-   * @return Eingabe-Feld.
-   */
-  public Input getLaufzeit()
-  {
-    if (this.laufzeit != null)
-      return this.laufzeit;
-    this.laufzeit = new IntegerInput(1);
-    this.laufzeit.setComment(i18n.tr("Nutzungsdauer des Anlagegutes in Jahren"));
-    this.laufzeit.disable();
-    return this.laufzeit;
-  }
-  
-  /**
-   * Liefert das Eingabe-Feld zur Auswahl des Abschreibungskontos.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public KontoInput getAbschreibungsKonto() throws RemoteException
-  {
-    if (afaKonto != null)
-      return afaKonto;
-    
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    
-    DBIterator list = jahr.getKontenrahmen().getKonten();
-    list.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
-    afaKonto = new KontoInput(list,Settings.getAbschreibunsgKonto(jahr));
-    afaKonto.disable();
-    return afaKonto;
-  }
-
   /**
 	 * Liefert das Eingabe-Feld fuer die Belegnummer.
 	 * @return Eingabe-Feld.
@@ -480,61 +424,29 @@ public class BuchungControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getBuchung().store();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
       
       //////////////////////////////////////////////////////////////////////////
       // Anlagevermoegen
-      if (((Boolean)getAnlageVermoegen().getValue()).booleanValue())
+      if (getAnlageVermoegen().isEnabled() && ((Boolean)getAnlageVermoegen().getValue()).booleanValue())
       {
-        int laufzeit = ((Integer)getLaufzeit().getValue()).intValue();
-        if (laufzeit == 0)
-          throw new ApplicationException(i18n.tr("Bitte geben Sie eine Laufzeit für die Abschreibung ein"));
-        
         Anlagevermoegen av = (Anlagevermoegen) Settings.getDBService().createObject(Anlagevermoegen.class,null);
-
-        av.setAbschreibungskonto((Konto) getAbschreibungsKonto().getValue());
         av.setAnschaffungsDatum(getBuchung().getDatum());
         av.setAnschaffungskosten(getBuchung().getBetrag());
-        av.setBuchung(getBuchung());
         av.setKonto(getBuchung().getSollKonto());
         av.setName(getBuchung().getText());
-        av.setNutzungsdauer(laufzeit);
         av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
-        av.store();
-        
-        GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} und Anlagevermögen gespeichert.",""+getBuchung().getBelegnummer()));
+        new AnlagevermoegenNeu().handleAction(av);
       }
-      else
-      {
-        GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
-      }
-      getBuchung().transactionCommit();
-
-      if (startNew)
+      else if (startNew)
         new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
-
     }
     catch (ApplicationException e1)
     {
-      try
-      {
-        getBuchung().transactionRollback();
-      }
-      catch (RemoteException e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
       GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
     catch (Throwable t)
     {
-      try
-      {
-        getBuchung().transactionRollback();
-      }
-      catch (RemoteException e2)
-      {
-        Logger.error("unable to rollback transaction",e2);
-      }
 			Logger.error("unable to store buchung",t);
       GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
     }
@@ -665,14 +577,11 @@ public class BuchungControl extends AbstractControl
           {
             getAnlageVermoegen().enable();
             getAnlageVermoegen().setValue(Boolean.TRUE);
-            getLaufzeit().enable();
-            getAbschreibungsKonto().enable();
           }
           else
           {
+            getAnlageVermoegen().setValue(Boolean.FALSE);
             getAnlageVermoegen().disable();
-            getLaufzeit().disable();
-            getAbschreibungsKonto().disable();
           }
         }
         catch (RemoteException e)
@@ -768,6 +677,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.63  2006/01/03 23:58:35  willuhn
+ * @N Afa- und GWG-Handling
+ *
  * Revision 1.62  2006/01/02 16:09:10  willuhn
  * *** empty log message ***
  *
