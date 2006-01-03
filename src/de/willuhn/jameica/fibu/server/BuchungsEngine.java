@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.35 $
- * $Date: 2006/01/03 11:29:03 $
+ * $Revision: 1.36 $
+ * $Date: 2006/01/03 13:48:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,10 +234,31 @@ public class BuchungsEngine
     else if (jahr.check(datum))
     {
       Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
+      
       Calendar cal = Calendar.getInstance();
       cal.setTime(datum);
-      int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
-      betrag = betrag / 12 * months;
+
+      Logger.info("    Pruefe vereinfachte Abschreibungsregel");
+      int soll = Settings.getGeaenderteHalbjahresAbschreibung();
+      int ist = cal.get(Calendar.YEAR);
+
+      int months = 0;
+
+      if (ist < soll)
+      {
+        Logger.info("    Anlagegut wurde vor " + soll + " angeschafft. Es gilt die Halbjahresregel");
+        if (cal.get(Calendar.MONTH) < Calendar.JULY)
+          months = 12;
+        else
+          months = 6;
+      }
+      else
+      {
+        months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
+      }
+      
+      Logger.info("    Berechne anteilige Abschreibung fuer " + months + " Monate");
+      betrag = (betrag / 12) * months; // Klammern nur der Optik wegen ;)
     }
     
     // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
@@ -343,6 +364,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.36  2006/01/03 13:48:14  willuhn
+ * @N Halbjahresregel bei Abschreibungen
+ *
  * Revision 1.35  2006/01/03 11:29:03  willuhn
  * @N Erzeugen der Abschreibungs-Buchung in eine separate Funktion ausgelagert
  *

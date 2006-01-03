@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/10/21 15:59:06 $
+ * $Revision: 1.34 $
+ * $Date: 2006/01/03 13:48:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,6 +91,15 @@ public class Settings
   }
   
   /**
+   * Liefert das Jahr, in dem die vereinfachte Halbjahres-Regel fuer Abschreibungen abgeschafft wurde.
+   * @return jahr der Abschaffung der vereinfachte Halbjahres-Regel.
+   */
+  public static int getGeaenderteHalbjahresAbschreibung()
+  {
+    return settings.getInt("abschreibung.vereinfachungsregel",2004);
+  }
+  
+  /**
    * Liefert die Nettogrenze fuer GWG (Geringwertige Wirtschaftsgueter).
    * @param jahr Geschaeftsjahr.
    * @return Nettogrenze.
@@ -122,7 +131,7 @@ public class Settings
 
     settings.setAttribute("jahr." + jahr.getID() + ".gwg",gwg);
   }
-  
+ 
   /**
    * Liefert den Datenbank-Service.
    * @return Datenbank.
@@ -302,6 +311,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.34  2006/01/03 13:48:14  willuhn
+ * @N Halbjahresregel bei Abschreibungen
+ *
  * Revision 1.33  2005/10/21 15:59:06  willuhn
  * @C getActiveGeschaeftsjahr cleanup
  *
