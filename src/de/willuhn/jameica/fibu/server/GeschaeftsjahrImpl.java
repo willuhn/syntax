@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.17 $
+ * $Date: 2006/01/03 11:29:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -342,6 +342,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         a.delete();
       }
       
+      // Die Abschreibungen werden beim Schliessen eines Geschaeftsjahres und
+      // damit bei der automatischen Erstellung eines neuen Jahres erstellt.
+      // Die Buchungen landen jedoch noch im alten Jahr. Wird nun diese Jahr
+      // geloescht, muessen auch die die zugehoerigen Abschreibungen wieder
+      // entfernt werden, damit das System wieder in dem Zustand ist wie
+      // unmittelbar vorm Erstellen des zu loeschenden Geschaeftsjahres.
       Geschaeftsjahr vorjahr = getVorjahr();
       if (vorjahr != null)
       {
@@ -480,6 +486,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.17  2006/01/03 11:29:03  willuhn
+ * @N Erzeugen der Abschreibungs-Buchung in eine separate Funktion ausgelagert
+ *
  * Revision 1.16  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

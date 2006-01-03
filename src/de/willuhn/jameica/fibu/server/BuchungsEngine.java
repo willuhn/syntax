@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/10/14 17:24:31 $
+ * $Revision: 1.35 $
+ * $Date: 2006/01/03 11:29:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class BuchungsEngine
     if (jahr.isClosed())
     {
       Logger.warn("geschaeftsjahr allready closed");
-      return;
+      throw new ApplicationException(i18n.tr("Geschäftsjahr wurde bereits abgeschlossen"));
     }
     
     try
@@ -70,67 +70,14 @@ public class BuchungsEngine
       Mandant m        = jahr.getMandant();
       DBService db     = Settings.getDBService();
 
-      // Abschreibungen buchen
-      Calendar cal1 = Calendar.getInstance();
-      
-      // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch _vor_ dem Ende gdes Geschaeftsjahres liegt
-      cal1.setTime(jahr.getEnde());
-      cal1.set(Calendar.HOUR,0);
-      cal1.set(Calendar.MINUTE,0);
-      cal1.set(Calendar.SECOND,1);
-      Date end = cal1.getTime();
-
       Logger.info("Buche Abschreibungen für Anlagevermögen");
       DBIterator list = m.getAnlagevermoegen();
       while (list.hasNext())
       {
         Anlagevermoegen av = (Anlagevermoegen) list.next();
 
-        double anschaffung = av.getAnschaffungskosten();
-        double betrag      = anschaffung / (double) av.getNutzungsdauer();
-        double restwert    = av.getRestwert(jahr);
-        String name        = i18n.tr("Abschreibung");
+        AbschreibungsBuchung buchung = schreibeAb(av,jahr);
 
-        if (restwert == 0.0d)
-          continue;
-
-        Logger.info("  Abschreibungsbuchung fuer " + av.getName());
-
-        Date datum = av.getAnschaffungsdatum();
-        
-        // GWGs voll abschreiben
-        if (anschaffung <= Settings.getGwgWert(jahr))
-        {
-          Logger.info("    GWG: Schreibe voll ab");
-          betrag = anschaffung;
-          name = i18n.tr("GWG-Abschreibung");
-        }
-        // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
-        else if (jahr.check(datum))
-        {
-          Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
-          Calendar cal = Calendar.getInstance();
-          cal.setTime(datum);
-          int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
-          betrag = betrag / 12 * months;
-        }
-        
-        // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
-        if (betrag >= restwert)
-        {
-          Logger.info("    Restwertbuchung");
-          betrag = restwert;
-          name = i18n.tr("restwertbuchung");
-        }
-        
-        AbschreibungsBuchung buchung = (AbschreibungsBuchung) db.createObject(AbschreibungsBuchung.class,null);
-        buchung.setDatum(end);
-        buchung.setGeschaeftsjahr(jahr);
-        buchung.setSollKonto(av.getAbschreibungskonto());
-        buchung.setHabenKonto(av.getKonto());
-        buchung.setBelegnummer(buchung.getBelegnummer());
-        buchung.setText(name + " " + av.getName());
-        buchung.setBetrag(betrag);
         buchung.store();
         
         Logger.info("  Abschreibung fuer " + av.getName());
@@ -165,6 +112,7 @@ public class BuchungsEngine
       Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
 
       // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
+      Logger.info("  Pruefe, ob neues Geschaeftsjahr bereits existiert");
       DBIterator check = db.createList(Geschaeftsjahr.class);
       check.addFilter(jahrNeu.getBeginn().getTime() + " < TONUMBER(ende)");
       check.addFilter(jahrNeu.getEnde().getTime() + " > TONUMBER(beginn)");
@@ -233,9 +181,90 @@ public class BuchungsEngine
   }
   
   /**
+   * Erzeugt eine Abschreibungsbuchung fuer das Anlage-Gut zum angegebenen Geschaeftsjahr.
+   * Hinweis: Die Funktion speichert die Buchung nicht in der Datenbank sondern erzeugt
+   * nur das Objekt. Das Speichern ist Sache des Aufrufers.
+   * Zusaetzlich zur AbschreibungsBuchung muss der Aufrufer durch Erzeugen eines
+   * Abschreibungs-Objektes die Verknuepfung zum Anlagegut herstellen.
+   * <code>
+   *   Abschreibung afa = (Abschreibung) Settings.getDBService().createObject(Abschreibung.class,null);
+   *   afa.setAnlagevermoegen(av);
+   *   afa.setBuchung(buchung);
+   *   afa.store();
+   * </code>
+   * @param av Anlage-Gut.
+   * @param jahr Geschaeftsjahr.
+   * @return Die erzeugte Abschreibungs-Buchung oder <code>null</code> wenn das Anlage-Gut
+   * bereits abgeschrieben ist und keine Abschreibungs-Buchung noetig ist.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public static AbschreibungsBuchung schreibeAb(Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException, ApplicationException
+  {
+    // Abschreibungen buchen
+    Calendar cal1 = Calendar.getInstance();
+    
+    // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch _vor_ dem Ende des Geschaeftsjahres liegt
+    cal1.setTime(jahr.getEnde());
+    cal1.set(Calendar.HOUR,0);
+    cal1.set(Calendar.MINUTE,0);
+    cal1.set(Calendar.SECOND,1);
+    Date end = cal1.getTime();
+
+    double anschaffung = av.getAnschaffungskosten();
+    double betrag      = anschaffung / (double) av.getNutzungsdauer();
+    double restwert    = av.getRestwert(jahr);
+    String name        = i18n.tr("Abschreibung");
+
+    if (restwert == 0.0d)
+      return null;
+
+    Logger.info("  Abschreibungsbuchung fuer " + av.getName());
+
+    Date datum = av.getAnschaffungsdatum();
+    
+    // GWGs voll abschreiben
+    if (anschaffung <= Settings.getGwgWert(jahr))
+    {
+      Logger.info("    GWG: Schreibe voll ab");
+      betrag = anschaffung;
+      name = i18n.tr("GWG-Abschreibung");
+    }
+    // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
+    else if (jahr.check(datum))
+    {
+      Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(datum);
+      int months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
+      betrag = betrag / 12 * months;
+    }
+    
+    // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
+    if (betrag >= restwert)
+    {
+      Logger.info("    Restwertbuchung");
+      betrag = restwert;
+      name = i18n.tr("restwertbuchung");
+    }
+    
+    AbschreibungsBuchung buchung = (AbschreibungsBuchung) Settings.getDBService().createObject(AbschreibungsBuchung.class,null);
+    buchung.setDatum(end);
+    buchung.setGeschaeftsjahr(jahr);
+    buchung.setSollKonto(av.getAbschreibungskonto());
+    buchung.setHabenKonto(av.getKonto());
+    buchung.setBelegnummer(buchung.getBelegnummer());
+    buchung.setText(name + " " + av.getName());
+    buchung.setBetrag(betrag);
+    return buchung;
+  }
+  
+  /**
    * Bucht die uebergebene Buchung.
    * Die Funktion erkennt selbstaendig, ob weitere Hilfs-Buchungen noetig sind
    * und liefert diese ungespeichert als Array zurueck.
+   * Hinweis: Die Funktion speichert die Hilfsbuchungen nicht in der Datenbank sondern erzeugt
+   * nur die Objekte. Das Speichern ist Sache des Aufrufers.
    * @param buchung die zu buchende Buchung.
    * @return Liste der noch zu speichernden Hilfsbuchungen oder null wenn keine Hilfsbuchungen noetig sind.
    * @throws RemoteException
@@ -314,6 +343,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.35  2006/01/03 11:29:03  willuhn
+ * @N Erzeugen der Abschreibungs-Buchung in eine separate Funktion ausgelagert
+ *
  * Revision 1.34  2005/10/14 17:24:31  willuhn
  * *** empty log message ***
  *
