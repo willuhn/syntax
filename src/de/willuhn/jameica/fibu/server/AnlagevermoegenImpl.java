@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -156,8 +156,14 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public double getRestwert(Geschaeftsjahr jahr) throws RemoteException
   {
-    double restwert = getAnschaffungskosten();
     GenericIterator abschreibungen = getAbschreibungen(jahr);
+
+    // Wenn keine Abschreibungen existieren, tolerieren wir den Wert
+    // des Attributes "restwert". Der darf vom Benutzer eingegeben werden,
+    // wenn es sich um migriertes Anlagegut handelt.
+    Double r = (Double) getAttribute("myrestwert");
+    
+    double restwert = r != null ? r.doubleValue() : getAnschaffungskosten();
     while (abschreibungen.hasNext())
     {
       Abschreibung a = (Abschreibung) abschreibungen.next();
@@ -269,12 +275,13 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     try
     {
-
+      Date datum = getAnschaffungsdatum();
+      
       if (getKonto() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Bestandskonto an"));
       if (getAbschreibungskonto() == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Aufwandskonto an, auf dem die Abschreibungen gebucht werden"));
-      if (getAnschaffungsdatum() == null)
+      if (datum == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Anschaffungsdatum an"));
       if (getAnschaffungskosten() == 0.0d)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Betrag für die Anschaffungskosten an"));
@@ -286,7 +293,24 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Mandanten an"));
       if (getName() == null || getName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Bezeichnung ein"));
-      
+
+      // Anlagevermoegen darf nicht in der Zukunft angeschafft werden.
+      Geschaeftsjahr jahr = ((DBService) getService()).getActiveGeschaeftsjahr();
+      Date end = jahr.getEnde();
+      if (datum.after(end))
+        throw new ApplicationException(i18n.tr("Anschaffungsdatum darf sich nicht hinter dem aktuellen Geschäfsjahr befinden"));
+
+      // In der Vergangenheit jedoch schon. Und zwar dann, wenn bereits
+      // existierendes Anlagevermoegen aus einer anderen Fibu-Anwendung
+      // uebernommen wird, fuer das bereits Abschreibungen existieren.
+      Date start = jahr.getBeginn();
+
+      // Anschaffungsdatum liegt nicht vorm aktuellen Jahr oder
+      // das Anlagevermoegen darf nicht mehr geaendert werden.
+      // den manuell eingegebenen Restwert.
+      if (!datum.before(start) || !canChange())
+        setAttribute("restwert",null);
+    
     }
     catch (RemoteException e)
     {
@@ -302,6 +326,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
+    
+    // TODO GWGs muessen via Checkbox manuell auswaehlbar sein, da nicht
+    // alles, was weniger als 400 EUR gekostet hat, automatisch ein GWG ist!!
     
     // Jetzt muessen wir noch pruefen, ob abschreibungsrelevante Daten geaendert wurden
     try
@@ -340,6 +367,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
+    // Erzeugt sonst eine Endlosscleife
+    if ("myrestwert".equals(arg0))
+      return super.getAttribute("restwert");
+    
     if ("restwert".equals(arg0))
     {
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
@@ -420,11 +451,27 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     return getRestwert(jahr) + getJahresAbschreibung(jahr);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setRestwert(double)
+   */
+  public void setRestwert(double restwert) throws RemoteException
+  {
+    if (canChange())
+      setAttribute("restwert", new Double(restwert));
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.12  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.11  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

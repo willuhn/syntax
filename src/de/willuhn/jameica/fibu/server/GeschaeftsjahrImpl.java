@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/01/03 11:29:03 $
+ * $Revision: 1.18 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -226,6 +226,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       int monate = getMonate();
       if (monate < 1 || monate > 12)
         throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht weniger als 1 und nicht mehr als 12 Monaten lang sein"));
+      
+      DBIterator existing = getService().createList(Geschaeftsjahr.class);
+      existing.addFilter("mandant_id = " + getMandant().getID());
+      while (existing.hasNext())
+      {
+        Geschaeftsjahr other = (Geschaeftsjahr) existing.next();
+        if (other.check(beginn) && !other.getID().equals(this.getID()))
+          throw new ApplicationException(i18n.tr("Geschäftsjahr überschneidet sich mit dem Existierenden: {0}",other.getAttribute(other.getPrimaryAttribute()).toString()));
+      }
     }
     catch (RemoteException e)
     {
@@ -474,11 +483,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    if (!Application.inServerMode() && this.equals(Settings.getActiveGeschaeftsjahr()))
-    {
-      // Member aktualisieren
-      Settings.setActiveGeschaeftsjahr(this);
-    }
+    
+    // Falls wir das aktuelle Geschaeftsjahr sind, laden wir es neu
+    Settings.reloadActiveGeschaeftsjahr();
   }
 
 }
@@ -486,6 +493,13 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.18  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.17  2006/01/03 11:29:03  willuhn
  * @N Erzeugen der Abschreibungs-Buchung in eine separate Funktion ausgelagert
  *

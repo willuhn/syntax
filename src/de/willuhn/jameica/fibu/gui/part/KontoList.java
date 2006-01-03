@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.13 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,7 +109,7 @@ public class KontoList extends TablePart
     this.filter = new CheckboxInput(false);
     this.search = new TextInput("");
     
-    group.addLabelPair(i18n.tr("Bezeichnung enthält"), this.search);
+    group.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
     group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
     
     super.paint(parent);
@@ -171,13 +171,13 @@ public class KontoList extends TablePart
 
                   // Wir holen uns den aktuellen Text
                   String text = (String) search.getValue();
-                  if (text.length() == 0) text = null;
                   if (text != null) text = text.toLowerCase();
 
                   boolean checkSaldo = ((Boolean)filter.getValue()).booleanValue();
 
                   Konto k     = null;
                   String name = null;
+                  String nr   = null;
 
                   for (int i=0;i<konten.size();++i)
                   {
@@ -188,15 +188,17 @@ public class KontoList extends TablePart
                       continue;
 
                     name = k.getName();
+                    nr   = k.getKontonummer();
+
                     // Was zum Filtern da?
-                    if (text == null || name == null || name.length() == 0)
+                    if (text == null || text.length() == 0)
                     {
                       // ne
                       addItem(k);
                       continue;
                     }
                     
-                    if (name.toLowerCase().indexOf(text) != -1)
+                    if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
                       addItem(k);
                     
                   }
@@ -245,6 +247,13 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.13  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.12  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

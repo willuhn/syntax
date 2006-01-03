@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.24 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class SteuerControl extends AbstractControl
   }
 
   /**
-   * Liefert eine Auswahl des Mandanten.
+   * Liefert ein Anzeigefeld fuer den Mandanten.
    * @return Mandant.
    * @throws RemoteException
    */
@@ -196,6 +196,13 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.24  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.23  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

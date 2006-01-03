@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,8 +22,10 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -31,6 +33,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -53,6 +56,9 @@ public class BuchungstemplateControl extends AbstractControl
   private DecimalInput steuer				    = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
+  
+  private Input mandant          = null;
+  private Input kontenrahmen     = null;
   
   private I18N i18n;
 
@@ -80,11 +86,49 @@ public class BuchungstemplateControl extends AbstractControl
 			return buchung;
 		
 		buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
+    
+    // Die beiden Parameter geben wir automatisch vor.
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    buchung.setMandant(jahr.getMandant());
+    buchung.setKontenrahmen(jahr.getKontenrahmen());
 		return buchung;
 		
 	}
 
-	/**
+  /**
+   * Liefert ein Anzeigefeld fuer den Mandanten.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Input getMandant() throws RemoteException
+  {
+    if (this.mandant != null)
+      return this.mandant;
+    Mandant m = getBuchung().getMandant();
+    if (m == null)
+      m = Settings.getActiveGeschaeftsjahr().getMandant();
+    this.mandant = new LabelInput(m.getFirma());
+    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
+    return this.mandant;
+  }
+
+  /**
+   * Liefert ein Anzeigefeld fuer den Kontenrahmen.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Input getKontenrahmen() throws RemoteException
+  {
+    if (this.kontenrahmen != null)
+      return this.kontenrahmen;
+    Kontenrahmen m = getBuchung().getKontenrahmen();
+    if (m == null)
+      m = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    this.kontenrahmen = new LabelInput(m.getName());
+    return this.kontenrahmen;
+  }
+
+  /**
 	 * Liefert das Eingabe-Feld zur Auswahl des SollKontos.
    * @return Eingabe-Feld.
    * @throws RemoteException
@@ -349,6 +393,13 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
+ * Revision 1.2  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

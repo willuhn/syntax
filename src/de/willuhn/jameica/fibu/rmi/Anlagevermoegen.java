@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,11 +181,33 @@ public interface Anlagevermoegen extends DBObject
    */
   public void setAbschreibungskonto(Konto k) throws RemoteException;
   
+  /**
+   * Speichert den Restwert im aktuellen Geschaeftsjahr.
+   * Die manuelle Speicherung des Restwertes ist nur dann
+   * erlaubt, wenn:
+   * <ol>
+   *   <li>Noch keine Abschreibungen vorliegen</li>
+   *   <li>sich das Anschaffungsdatum vor dem aktuellen Geschaeftsjahr befindet</li>
+   * </ol>
+   * Hiermit lassen sich bereits existierende Anlagegueter aus anderen
+   * Fibu-Programmen uebernehmen, die bereits vorher existierten und
+   * schon Abschreibungen in dem vorherigen Fibu-Programm vorlagen.
+   * @param restwert
+   * @throws RemoteException
+   */
+  public void setRestwert(double restwert) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.7  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.6  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *

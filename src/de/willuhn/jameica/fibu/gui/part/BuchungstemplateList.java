@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungstemplateList.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.BuchungstemplateListMenu;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -90,7 +91,10 @@ public class BuchungstemplateList extends TablePart
    */
   private static GenericIterator init() throws RemoteException
   {
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
+    list.addFilter("(mandant_id is null or mandant_id = " + jahr.getMandant().getID() + ")");
+    list.addFilter("(kontenrahmen_id is null or kontenrahmen_id = " + jahr.getKontenrahmen().getID() + ")");
     list.setOrder("order by name");
     return list;
   }
@@ -100,6 +104,13 @@ public class BuchungstemplateList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungstemplateList.java,v $
+ * Revision 1.2  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

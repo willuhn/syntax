@@ -61,6 +61,8 @@ CREATE TABLE buchungstemplate (
   sollkonto_id int(10) NULL,
   habenkonto_id int(10) NULL,
   buchungstext varchar(255) NULL,
+  mandant_id int(10) NULL,
+  kontenrahmen_id int(10) NULL,
   betrag double NULL,
   steuer double NULL,
   UNIQUE (id),
@@ -114,8 +116,8 @@ CREATE TABLE geschaeftsjahr (
   id NUMERIC default UNIQUEKEY('geschaeftsjahr'),
   vorjahr_id int(10) NULL,
   mandant_id int(10) NOT NULL,
-  beginn date NOT NULL,
-  ende date NOT NULL,
+  beginn date NULL,
+  ende date NULL,
   kontenrahmen_id int(10) NOT NULL,
   closed int(1) NULL,
   UNIQUE (id),
@@ -127,6 +129,7 @@ CREATE TABLE anlagevermoegen (
   mandant_id int(10) NOT NULL,
   name varchar(255) NOT NULL,
   anschaffungskosten double NOT NULL,
+  restwert double NULL,
   anschaffungsdatum date NOT NULL,
   k_abschreibung_id int(10) NOT NULL,
   konto_id int(10) NULL,
@@ -162,6 +165,8 @@ ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFE
 
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;
 

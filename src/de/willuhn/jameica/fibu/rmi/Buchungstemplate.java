@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchungstemplate.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,12 +34,47 @@ public interface Buchungstemplate extends Transfer
    * @throws RemoteException
    */
   public void setName(String name) throws RemoteException;
+  
+  /**
+   * Liefert den Mandanten, fuer den das Buchungstemplate gilt. Kann <code>null</code> sein.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException;
 
+  /**
+   * Speichert den Mandanten, fuer den das Template gilt.
+   * @param m Mandant.
+   * @throws RemoteException
+   */
+  public void setMandant(Mandant m) throws RemoteException;
+
+  /**
+   * Liefert den Kontenrahmen. Kann <code>null</code> sein.
+   * @return Kontenrahmen.
+   * @throws RemoteException
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException;
+  
+  /**
+   * Speichert den Kontenrahmen.
+   * @param kr Kontenrahmen.
+   * @throws RemoteException
+   */
+  public void setKontenrahmen(Kontenrahmen kr) throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: Buchungstemplate.java,v $
+ * Revision 1.2  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

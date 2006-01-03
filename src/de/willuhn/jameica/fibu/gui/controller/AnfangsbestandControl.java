@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/06 22:27:17 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -138,7 +138,15 @@ public class AnfangsbestandControl extends AbstractControl
   {
     try {
 
-      getAnfangsbestand().setBetrag(((Double)getBetrag().getValue()).doubleValue());
+      try {
+        getAnfangsbestand().setBetrag(((Double) getBetrag().getValue()).doubleValue());
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to set betrag",e);
+        throw new ApplicationException(i18n.tr("Betrag ungültig."));
+      }
+
       getAnfangsbestand().setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
       getAnfangsbestand().setKonto((Konto)getKontoAuswahl().getValue());
       
@@ -161,6 +169,13 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.7  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.6  2005/10/06 22:27:17  willuhn
  * @N KontoInput
  *

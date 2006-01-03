@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.36 $
- * $Date: 2006/01/03 13:48:14 $
+ * $Revision: 1.37 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -201,37 +201,33 @@ public class BuchungsEngine
    */
   public static AbschreibungsBuchung schreibeAb(Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException, ApplicationException
   {
-    // Abschreibungen buchen
-    Calendar cal1 = Calendar.getInstance();
-    
-    // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch _vor_ dem Ende des Geschaeftsjahres liegt
-    cal1.setTime(jahr.getEnde());
-    cal1.set(Calendar.HOUR,0);
-    cal1.set(Calendar.MINUTE,0);
-    cal1.set(Calendar.SECOND,1);
-    Date end = cal1.getTime();
-
     double anschaffung = av.getAnschaffungskosten();
     double betrag      = anschaffung / (double) av.getNutzungsdauer();
     double restwert    = av.getRestwert(jahr);
-    String name        = i18n.tr("Abschreibung");
+    boolean gwg        = false;
 
     if (restwert == 0.0d)
-      return null;
+      return null; // bereits abgeschrieben
+
+    String name = i18n.tr("Abschreibung");
+    Date datum = av.getAnschaffungsdatum();
 
     Logger.info("  Abschreibungsbuchung fuer " + av.getName());
 
-    Date datum = av.getAnschaffungsdatum();
     
     // GWGs voll abschreiben
     if (anschaffung <= Settings.getGwgWert(jahr))
     {
       Logger.info("    GWG: Schreibe voll ab");
-      betrag = anschaffung;
       name = i18n.tr("GWG-Abschreibung");
+      betrag = anschaffung;
+      if (betrag > restwert)
+        betrag = restwert;
+      gwg = true;
     }
+
     // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
-    else if (jahr.check(datum))
+    if (!gwg && jahr.check(datum))
     {
       Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
       
@@ -258,26 +254,36 @@ public class BuchungsEngine
       }
       
       Logger.info("    Berechne anteilige Abschreibung fuer " + months + " Monate");
+      name = i18n.tr("Anteilige Abschreibung für {0} Monate",""+months);
       betrag = (betrag / 12) * months; // Klammern nur der Optik wegen ;)
     }
     
     // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
-    if (betrag >= restwert)
+    if (!gwg && betrag >= restwert)
     {
       Logger.info("    Restwertbuchung");
+      name = i18n.tr("Restwertbuchung");
       betrag = restwert;
-      name = i18n.tr("restwertbuchung");
     }
     
+    // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch
+    // _vor_ dem Ende des Geschaeftsjahres liegt
+    Calendar cal1 = Calendar.getInstance();
+    cal1.setTime(jahr.getEnde());
+    cal1.set(Calendar.HOUR,0);
+    cal1.set(Calendar.MINUTE,0);
+    cal1.set(Calendar.SECOND,1);
+    Date end = cal1.getTime();
+
     AbschreibungsBuchung buchung = (AbschreibungsBuchung) Settings.getDBService().createObject(AbschreibungsBuchung.class,null);
     buchung.setDatum(end);
     buchung.setGeschaeftsjahr(jahr);
     buchung.setSollKonto(av.getAbschreibungskonto());
     buchung.setHabenKonto(av.getKonto());
     buchung.setBelegnummer(buchung.getBelegnummer());
-    buchung.setText(name + " " + av.getName());
+    buchung.setText(name + ": " + av.getName());
     buchung.setBetrag(betrag);
-    return buchung;
+    return buchung; 
   }
   
   /**
@@ -308,7 +314,7 @@ public class BuchungsEngine
     // checken, ob alle Daten da sind.
     if (sKonto == null || hKonto == null)
     {
-      throw new RemoteException("Haben- oder Soll-Konto fehlt.");
+      throw new ApplicationException(i18n.tr("Haben- oder Soll-Konto fehlt."));
     }
 
     // Der zu verwendende Steuersatz
@@ -364,6 +370,13 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.37  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.36  2006/01/03 13:48:14  willuhn
  * @N Halbjahresregel bei Abschreibungen
  *

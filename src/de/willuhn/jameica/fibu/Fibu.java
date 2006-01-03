@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.29 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,14 +29,6 @@ import de.willuhn.util.ApplicationException;
  */
 public class Fibu extends AbstractPlugin
 {
-
-  /**
-   * @param file
-   */
-  public Fibu(File file)
-  {
-    super(file);
-  }
 
   /**
    * Dateformatter.
@@ -80,6 +72,17 @@ public class Fibu extends AbstractPlugin
     DECIMALFORMAT.applyPattern("###,###,##0.00");
     DECIMALFORMAT.setGroupingUsed(true);
   }
+
+  private boolean firstStart = false;
+  
+  /**
+   * @param file
+   */
+  public Fibu(File file)
+  {
+    super(file);
+  }
+
 
   /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#init()
@@ -142,12 +145,22 @@ public class Fibu extends AbstractPlugin
 
       db.executeSQLScript(create);
       db.executeSQLScript(init);
+      this.firstStart = true;
     }
     catch (Exception e)
     {
       Logger.error("unable to create sql tables",e);
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
     }
+  }
+  
+  /**
+   * Liefert true, wenn das Plugin zum allerersten mal gestartet wird.
+   * @return true beim allerersten Start.
+   */
+  boolean isFirstStart()
+  {
+    return firstStart;
   }
 
   /**
@@ -160,6 +173,13 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.29  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.28  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

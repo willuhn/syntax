@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungstemplateImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -89,11 +91,63 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
   {
     setAttribute("name",name);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#getMandant()
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    return (Mandant) getAttribute("mandant_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
+   */
+  public void setMandant(Mandant m) throws RemoteException
+  {
+    setAttribute("mandant_id",m);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#getKontenrahmen()
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException
+  {
+    return (Kontenrahmen) getAttribute("kontenrahmen_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
+   */
+  public void setKontenrahmen(Kontenrahmen kr) throws RemoteException
+  {
+    setAttribute("kontenrahmen_id",kr);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    if ("mandant_id".equals(field))
+      return Mandant.class;
+    if ("kontenrahmen_id".equals(field))
+      return Kontenrahmen.class;
+    
+    return super.getForeignObject(field);
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungstemplateImpl.java,v $
+ * Revision 1.2  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

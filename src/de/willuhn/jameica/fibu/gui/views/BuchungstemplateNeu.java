@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,8 @@ public class BuchungstemplateNeu extends AbstractView
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
+    kontoGroup.addLabelPair(i18n.tr("Mandant"),                     control.getMandant());
+    kontoGroup.addLabelPair(i18n.tr("Kontenrahmen"),                control.getKontenrahmen());
     kontoGroup.addLabelPair(i18n.tr("Bezeichnung der Vorlage"),     control.getBezeichnung());
     kontoGroup.addSeparator();
     kontoGroup.addLabelPair(i18n.tr("Soll-Konto"),                  control.getSollKontoAuswahl());
@@ -85,6 +87,13 @@ public class BuchungstemplateNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
+ * Revision 1.2  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

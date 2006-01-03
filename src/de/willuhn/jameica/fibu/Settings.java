@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/01/03 13:48:14 $
+ * $Revision: 1.35 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,9 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.rmi.DBService;
-import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -171,6 +169,24 @@ public class Settings
 	}
 
   /**
+   * Laedt das aktuelle Geschaeftsjahr neu.
+   */
+  public static void reloadActiveGeschaeftsjahr()
+  {
+    if (jahr == null)
+      return;
+    
+    try
+    {
+      jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,jahr.getID());
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to reload active gj",e);
+    }
+    
+  }
+  /**
    * Legt das aktuelle Geschaeftsjahr manuell fest.
    * @param j zu aktivierendes Geschaeftsjahr.
    */
@@ -213,8 +229,6 @@ public class Settings
       try
       {
         jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,id);
-        setActiveGeschaeftsjahr(jahr);
-        return jahr;
       }
       catch (ObjectNotFoundException oe)
       {
@@ -223,63 +237,31 @@ public class Settings
         // ignore
       }
     }
-
-    Logger.info("auto creating new mandant/geschaeftsjahr");
-    Finanzamt fa = null;
-    try
+    else
     {
-      DBIterator faList = getInternalDBService().createList(Finanzamt.class);
-      if (faList.size() > 0)
+      // Ansonsten nehmen wir das erste, das wir finden
+      DBIterator list = getInternalDBService().createList(Geschaeftsjahr.class);
+      if (list.size() == 0)
+        throw new RemoteException("Kein Geschäftsjahr vorhanden");
+      jahr = (Geschaeftsjahr) list.next();
+      Fibu f = (Fibu) Application.getPluginLoader().getPlugin(Fibu.class);
+      if (f.isFirstStart())
       {
-        Logger.info("reusing existing finanzamt");
-        fa = (Finanzamt) faList.next();
-        fa.transactionBegin();
+        // Das ist der erste Start, dann speichern wir noch das Geschaeftsjahr
+        // um Start- und End-Datum anzulegen.
+        try
+        {
+          jahr.store();
+        }
+        catch (ApplicationException e)
+        {
+          throw new RemoteException(e.getMessage());
+        }
       }
-      else
-      {
-        fa = (Finanzamt) getInternalDBService().createObject(Finanzamt.class,null);
-        fa.setName("default");
-        fa.transactionBegin();
-        fa.store();
-      }
-          
-      Mandant m = null;
-      DBIterator mList = getInternalDBService().createList(Mandant.class);
-      if (mList.size() > 0)
-      {
-        Logger.info("reusing existing mandant");
-        m = (Mandant) mList.next();
-      }
-      else
-      {
-        m = (Mandant) getInternalDBService().createObject(Mandant.class,null);
-        m.setFinanzamt(fa);
-        m.setSteuernummer("");
-        m.setFirma("default");
-        m.store();
-      }
-          
-      jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,null);
-      jahr.setKontenrahmen((Kontenrahmen) getInternalDBService().createObject(Kontenrahmen.class,"2"));
-      jahr.setMandant(m);
-      jahr.store();
-          
-      fa.transactionCommit();
-      setActiveGeschaeftsjahr(jahr);
-      Logger.info("finanzamt, mandant, geschaeftsjahr created");
-      return jahr;
+      
     }
-    catch (Exception e)
-    {
-      Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
-      if (fa != null)
-      {
-        fa.transactionRollback();
-        Logger.error("unable to create finanzamt, mandant, geschaeftsjahr",e);
-      }
-      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-      throw new RemoteException(i18n.tr("Fehler beim Anlegen des Geschäftsjahres"));
-    }
+    setActiveGeschaeftsjahr(jahr);
+    return jahr;
   }
   
   /**
@@ -311,6 +293,13 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.35  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.34  2006/01/03 13:48:14  willuhn
  * @N Halbjahresregel bei Abschreibungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/01/02 23:50:58 $
+ * $Revision: 1.13 $
+ * $Date: 2006/01/03 17:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,7 +140,7 @@ public class AnlagevermoegenControl extends AbstractControl
   }
   
   /**
-   * Liefert ein Anzeige-Feld fuer den Restwert.
+   * Liefert ein Feld fuer den Restwert.
    * @return Restwert.
    * @throws RemoteException
    */
@@ -149,8 +149,9 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.restwert != null)
       return this.restwert;
     Mandant m = getAnlagevermoegen().getMandant();
-    this.restwert = new LabelInput(Fibu.DECIMALFORMAT.format(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr())));
+    this.restwert = new DecimalInput(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()),Fibu.DECIMALFORMAT);
     this.restwert.setComment(m.getWaehrung());
+    this.restwert.disable();
     return this.restwert;
   }
 
@@ -178,6 +179,7 @@ public class AnlagevermoegenControl extends AbstractControl
           return;
         datum.setValue(event.data);
         datum.setText(Fibu.DATEFORMAT.format((Date)event.data));
+        new RestwertListener().handleEvent(null);
       }
     });
     datum = new DialogInput(Fibu.DATEFORMAT.format(date),d);
@@ -185,7 +187,7 @@ public class AnlagevermoegenControl extends AbstractControl
     datum.disableClientControl();
     if (!getAnlagevermoegen().canChange())
     {
-      this.datum.disableButton();
+      this.datum.disable();
       GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
     }
     return datum;
@@ -224,6 +226,11 @@ public class AnlagevermoegenControl extends AbstractControl
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_ANLAGE);
 
     konto = new KontoInput(list,getAnlagevermoegen().getKonto());
+    if (!getAnlagevermoegen().canChange())
+    {
+      this.konto.disable();
+      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
+    }
     return konto;
   }
 
@@ -246,6 +253,11 @@ public class AnlagevermoegenControl extends AbstractControl
     if (k == null)
       k = Settings.getAbschreibunsgKonto(jahr);
     afaKonto = new KontoInput(list,k);
+    if (!getAnlagevermoegen().canChange())
+    {
+      this.afaKonto.disable();
+      GUI.getView().setErrorText(i18n.tr("Es liegen bereits Abschreibungen vor"));
+    }
     return afaKonto;
   }
 
@@ -263,8 +275,36 @@ public class AnlagevermoegenControl extends AbstractControl
         getAnlagevermoegen().setKonto((Konto)getKonto().getValue());
         getAnlagevermoegen().setAbschreibungskonto((Konto)getAbschreibungsKonto().getValue());
         a.setAnschaffungsDatum((Date) getDatum().getValue());
-        a.setAnschaffungskosten(((Double)getKosten().getValue()).doubleValue());
-        a.setNutzungsdauer(((Integer)getLaufzeit().getValue()).intValue());
+        
+        try {
+          a.setAnschaffungskosten(((Double) getKosten().getValue()).doubleValue());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to set kosten",e);
+          throw new ApplicationException(i18n.tr("Anschaffungskosten ungültig."));
+        }
+
+        try {
+          a.setNutzungsdauer(((Integer) getLaufzeit().getValue()).intValue());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to set laufzeit",e);
+          throw new ApplicationException(i18n.tr("Nutzungsdauer ungültig."));
+        }
+
+        if (getRestwert().isEnabled())
+        {
+          try {
+            a.setRestwert(((Double) getRestwert().getValue()).doubleValue());
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to set restwert",e);
+            throw new ApplicationException(i18n.tr("Restwert ungültig."));
+          }
+        }
       }
       a.store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gespeichert"));
@@ -279,11 +319,53 @@ public class AnlagevermoegenControl extends AbstractControl
       GUI.getView().setErrorText(ae.getMessage());
     }
   }
+  
+  /**
+   * Prueft, ob der Restwert eingegeben werden kann.
+   * @author willuhn
+   */
+  private class RestwertListener implements Listener
+  {
+
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      try
+      {
+        Date d = (Date) getDatum().getValue();
+        if (d == null)
+          return;
+        
+        Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+        Date start = jahr.getBeginn();
+        if (d.before(start) && getAnlagevermoegen().canChange())
+          getRestwert().enable();
+        else
+          getRestwert().disable();
+        
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("error while checking restwert",e);
+        GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Restwertes"));
+      }
+    }
+    
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.13  2006/01/03 17:55:53  willuhn
+ * @N a lot more checks
+ * @B NPEs
+ * @N BuchungsTemplates pro Mandant/Kontenrahmen
+ * @N Default-Geschaeftsjahr in init.sql verschoben
+ * @N Handling von Eingabe von Altbestaenden im AV
+ *
  * Revision 1.12  2006/01/02 23:50:58  willuhn
  * *** empty log message ***
  *
