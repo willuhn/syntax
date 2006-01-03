@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/02 23:50:58 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/03 00:05:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,10 +60,6 @@ public class AnlagevermoegenNeu extends AbstractView
     afa.addLabelPair(i18n.tr("Nutzungsdauer in Jahren"),      control.getLaufzeit());
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
 
-    new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
-    TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
-    table.paint(getParent());
-    
     ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
@@ -74,6 +70,10 @@ public class AnlagevermoegenNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
+
+    new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
+    TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
+    table.paint(getParent());
   }
 
   /**
@@ -88,6 +88,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.6  2006/01/03 00:05:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2006/01/02 23:50:58  willuhn
  * *** empty log message ***
  *
