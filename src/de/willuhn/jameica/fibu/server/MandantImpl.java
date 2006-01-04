@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/04 00:53:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -293,8 +294,15 @@ public class MandantImpl extends AbstractDBObject implements Mandant
         Anlagevermoegen a = (Anlagevermoegen) av.next();
         a.delete();
       }
-      super.delete();
       
+      DBIterator bt = getBuchungstemplates();
+      while (bt.hasNext())
+      {
+        Buchungstemplate t = (Buchungstemplate) bt.next();
+        t.delete();
+      }
+      super.delete();
+
       transactionCommit();
     }
     catch (ApplicationException e)
@@ -313,11 +321,24 @@ public class MandantImpl extends AbstractDBObject implements Mandant
       throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getBuchungstemplates()
+   */
+  public DBIterator getBuchungstemplates() throws RemoteException
+  {
+    DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
+    list.addFilter("mandant_id = " + getID());
+    return list;
+  }
 }
 
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.23  2006/01/04 00:53:48  willuhn
+ * @B bug 166 Ausserplanmaessige Abschreibungen
+ *
  * Revision 1.22  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.15 $
+ * $Date: 2006/01/04 00:53:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,7 +137,7 @@ public class AnlagevermoegenControl extends AbstractControl
       return this.kosten;
     Mandant m = getAnlagevermoegen().getMandant();
     this.kosten = new DecimalInput(getAnlagevermoegen().getAnschaffungskosten(),Fibu.DECIMALFORMAT);
-    this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {2}",new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(Settings.getGwgWert(null)),m.getWaehrung()}));
+    this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
     if (!getAnlagevermoegen().canChange())
       this.kosten.disable();
     this.kosten.addListener(new Listener()
@@ -191,7 +191,11 @@ public class AnlagevermoegenControl extends AbstractControl
     Mandant m = getAnlagevermoegen().getMandant();
     this.restwert = new DecimalInput(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()),Fibu.DECIMALFORMAT);
     this.restwert.setComment(m.getWaehrung());
-    this.restwert.disable();
+    if (getAnlagevermoegen().canChange())
+      new RestwertListener().handleEvent(null);
+    else
+      this.restwert.disable();
+    
     return this.restwert;
   }
 
@@ -418,6 +422,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.15  2006/01/04 00:53:48  willuhn
+ * @B bug 166 Ausserplanmaessige Abschreibungen
+ *
  * Revision 1.14  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

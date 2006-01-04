@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/04 00:53:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,6 +90,13 @@ public interface Mandant extends DBObject
   public DBIterator getAnlagevermoegen() throws RemoteException;
   
   /**
+   * Liefert eine Liste der Buchungsvorlagen des Mandanten.
+   * @return Liste der Buchungsvorlagen.
+   * @throws RemoteException
+   */
+  public DBIterator getBuchungstemplates() throws RemoteException;
+  
+  /**
    * Liefert das zugehoerige Finanzamt.
    * @return das Finanzamt des Mandanten.
    * @throws RemoteException
@@ -170,6 +177,9 @@ public interface Mandant extends DBObject
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.12  2006/01/04 00:53:48  willuhn
+ * @B bug 166 Ausserplanmaessige Abschreibungen
+ *
  * Revision 1.11  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

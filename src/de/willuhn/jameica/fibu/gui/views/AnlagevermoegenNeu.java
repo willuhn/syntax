@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/03 23:58:36 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/04 00:53:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,8 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenAbschreiben;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
 import de.willuhn.jameica.fibu.gui.controller.AnlagevermoegenControl;
 import de.willuhn.jameica.fibu.gui.part.AbschreibungList;
@@ -21,6 +23,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -61,9 +64,21 @@ public class AnlagevermoegenNeu extends AbstractView
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
     afa.addLabelPair("", control.getHinweis());
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
+
+    Button b = new Button(i18n.tr("Ausserplanmäßige Abschreibung"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new AnlagevermoegenAbschreiben().handleAction(context);
+        
+        // Seite neu laden, damit die Abschreibung angezeigt wird
+        GUI.startView(GUI.getCurrentView().getClass(),getCurrentObject());
+      }
+    }, getCurrentObject());
+    b.setEnabled(!control.getAnlagevermoegen().isNewObject() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) > 0.0d);
+    buttonArea.addButton(b);
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -89,6 +104,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.8  2006/01/04 00:53:48  willuhn
+ * @B bug 166 Ausserplanmaessige Abschreibungen
+ *
  * Revision 1.7  2006/01/03 23:58:36  willuhn
  * @N Afa- und GWG-Handling
  *
