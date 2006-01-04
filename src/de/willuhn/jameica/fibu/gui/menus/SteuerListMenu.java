@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -42,7 +41,7 @@ public class SteuerListMenu extends ContextMenu
     this.addItem(new EditItem(i18n.tr("Bearbeiten"), new SteuerNeu(),false));
     this.addItem(new EditItem(i18n.tr("Löschen"), new SteuerDelete(),true));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neuer Steuersatz"), new SNeu()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Steuersatz"), new SNeu()));
   }
   
   /**
@@ -59,7 +58,7 @@ public class SteuerListMenu extends ContextMenu
     }
   }
   
-  private static class EditItem extends CheckedContextMenuItem
+  private static class EditItem extends GJCheckedContextMenuItem
   {
     private boolean strict = false;
     
@@ -95,6 +94,9 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
+ * Revision 1.5  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.4  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

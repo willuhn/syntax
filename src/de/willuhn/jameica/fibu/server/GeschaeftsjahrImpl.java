@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.19 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -325,6 +326,8 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     try
     {
+      Logger.info("Lösche Geschaeftsjahr " + getAttribute(getPrimaryAttribute()));
+
       transactionBegin();
 
       Logger.info("Lösche Abschreibungen");
@@ -372,10 +375,16 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         vorjahr.setClosed(false);
         vorjahr.store();
       }
-        
+
+      Geschaeftsjahr j = ((DBService) getService()).getActiveGeschaeftsjahr();
+      boolean active = j != null && j.getID().equals(this.getID());
       super.delete();
       transactionCommit();
-      Settings.setActiveGeschaeftsjahr(null);
+      if (active)
+      {
+        Logger.info("Entferne aktives Geschäftsjahr");
+        Settings.setActiveGeschaeftsjahr(null);
+      }
     }
     catch (ApplicationException e)
     {
@@ -493,6 +502,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.19  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.18  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

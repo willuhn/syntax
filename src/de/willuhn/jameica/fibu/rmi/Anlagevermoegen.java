@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,7 +140,7 @@ public interface Anlagevermoegen extends DBObject
   public boolean canChange() throws RemoteException;
   
   /**
-   * Liefert das Konto.
+   * Liefert das Bestands-Konto des Anlage-Gegenstandes.
    * @return Konto.
    * @throws RemoteException
    */
@@ -186,6 +186,9 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.9  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.8  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

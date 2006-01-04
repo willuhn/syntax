@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/01/04 00:53:48 $
+ * $Revision: 1.24 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -279,15 +279,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   {
     try
     {
+      Logger.info("Lösche Mandant " + getAttribute(getPrimaryAttribute()));
+
       transactionBegin();
 
-      DBIterator jahre = getGeschaeftsjahre();
-      while (jahre.hasNext())
-      {
-        Geschaeftsjahr jahr = (Geschaeftsjahr) jahre.next();
-        jahr.delete();
-      }
-      
       DBIterator av = getAnlagevermoegen();
       while (av.hasNext())
       {
@@ -301,6 +296,14 @@ public class MandantImpl extends AbstractDBObject implements Mandant
         Buchungstemplate t = (Buchungstemplate) bt.next();
         t.delete();
       }
+
+      DBIterator jahre = getGeschaeftsjahre();
+      while (jahre.hasNext())
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) jahre.next();
+        jahr.delete();
+      }
+
       super.delete();
 
       transactionCommit();
@@ -336,6 +339,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.24  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.23  2006/01/04 00:53:48  willuhn
  * @B bug 166 Ausserplanmaessige Abschreibungen
  *

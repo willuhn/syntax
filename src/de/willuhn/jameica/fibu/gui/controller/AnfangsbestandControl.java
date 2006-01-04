@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,14 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -87,7 +89,12 @@ public class AnfangsbestandControl extends AbstractControl
       return konto;
     
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    konto = new KontoInput(jahr.getKontenrahmen().getKonten(),getAnfangsbestand().getKonto());
+    DBIterator konten = jahr.getKontenrahmen().getKonten();
+    konten.addFilter("(kontoart_id = " + Kontoart.KONTOART_ANLAGE + " or " +
+                     " kontoart_id = " + Kontoart.KONTOART_GELD + " or " +
+                     " kontoart_id = " + Kontoart.KONTOART_PRIVAT
+                     + ")");
+    konto = new KontoInput(konten,getAnfangsbestand().getKonto());
     return konto;
   }
 
@@ -169,6 +176,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.8  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.7  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

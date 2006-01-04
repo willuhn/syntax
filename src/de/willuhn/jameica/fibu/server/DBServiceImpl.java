@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/10/20 23:03:44 $
+ * $Revision: 1.5 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,10 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 import java.sql.Connection;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import de.willuhn.datasource.db.EmbeddedDBServiceImpl;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
@@ -31,7 +30,8 @@ import de.willuhn.jameica.system.Application;
 public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
 {
 
-  private Hashtable jahre = new Hashtable();
+  private HashMap jahre = new HashMap();
+  private Geschaeftsjahr jahr = null;
   
   /**
    * ct.
@@ -58,8 +58,6 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
    */
   public void setActiveGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
   {
-    if (jahr == null)
-      return;
     try
     {
       this.jahre.put(getClientHost(),jahr);
@@ -67,7 +65,7 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
     catch (ServerNotActiveException e)
     {
       // hu, wir laufen wohl lokal. Also koennen wir auch das lokale Geschaeftsjahr nehmen
-      Settings.setActiveGeschaeftsjahr(jahr);
+      this.jahr = jahr;
     }
   }
 
@@ -83,7 +81,7 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
     catch (Exception e)
     {
       // lokaler Modus, also lokales Geschaeftsjahr nehmen
-      return Settings.getActiveGeschaeftsjahr();
+      return this.jahr;
     }
   }
 }
@@ -91,6 +89,9 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.5  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.4  2005/10/20 23:03:44  willuhn
  * @N network support
  *

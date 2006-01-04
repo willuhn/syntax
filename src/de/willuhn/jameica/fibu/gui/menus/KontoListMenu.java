@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/KontoListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/25 21:58:57 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.gui.action.KontoExport;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -38,17 +37,17 @@ public class KontoListMenu extends ContextMenu
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new SingleItem(i18n.tr("Bearbeiten"), new KontoNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new KontoDelete()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new KontoDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neues Konto"), new KNeu()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neues Konto"), new KNeu()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Report erzeugen..."), new KontoExport()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Report erzeugen..."), new KontoExport()));
   }
   
   /**
    * Ueberschrieben, um zu pruefen, ob ein Array oder ein einzelnes Element markiert ist.
    */
-  private static class SingleItem extends CheckedContextMenuItem
+  private static class SingleItem extends GJCheckedContextMenuItem
   {
     /**
      * @param text
@@ -88,6 +87,9 @@ public class KontoListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: KontoListMenu.java,v $
+ * Revision 1.3  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.2  2005/08/25 21:58:57  willuhn
  * @N SKR04
  *

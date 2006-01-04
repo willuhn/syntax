@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.13 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,7 +117,7 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   public DBIterator getKonten() throws RemoteException
   {
     DBIterator list = getService().createList(Konto.class);
-    list.addFilter("kontenrahmen_id = " + this.getID());
+    list.addFilter("(kontenrahmen_id = " + this.getID() + ")");
     list.setOrder("order by kontonummer");
     return list;
   }
@@ -127,6 +127,9 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.13  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.12  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

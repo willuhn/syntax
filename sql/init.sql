@@ -267,10 +267,3 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1208, 1, '4600', 'Eigenverbrauch', 2, 1003);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1209, 1, '4695', 'Umsatzsteuervergütungen', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1210, 1, '7100', 'Zinserträge', 2, 1007);
-
-
--- Default-Mandant
-INSERT INTO finanzamt (id,name) VALUES (1,'default');
-INSERT INTO mandant (id,firma,steuernummer,finanzamt_id) VALUES (1,'default','',1);
-INSERT INTO geschaeftsjahr (id,mandant_id,kontenrahmen_id) VALUES (1,1,2);
-

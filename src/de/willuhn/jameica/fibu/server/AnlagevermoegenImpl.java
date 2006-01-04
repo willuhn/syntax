@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.14 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -257,14 +257,20 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     {
       Date datum = getAnschaffungsdatum();
       
-      if (getKonto() == null)
+      Konto bestand = getKonto();
+      
+      if (bestand == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Bestandskonto an"));
       
+      Kontoart ka = bestand.getKontoArt();
+      if (ka.getKontoArt() != Kontoart.KONTOART_ANLAGE)
+        throw new ApplicationException(i18n.tr("Das ausgewählte Bestandskonto ist kein Anlagekonto"));
+
       Konto k = getAbschreibungskonto();
       if (k == null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Aufwandskonto an, auf dem die Abschreibungen gebucht werden"));
 
-      Kontoart ka = k.getKontoArt();
+      ka = k.getKontoArt();
       if (ka.getKontoArt() != Kontoart.KONTOART_AUFWAND)
         throw new ApplicationException(i18n.tr("Das ausgewählte Abschreibungskonto ist kein Aufwandskonto"));
 
@@ -418,6 +424,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.14  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.13  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

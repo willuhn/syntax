@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnlagevermoegenListMenu.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/29 14:26:57 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/04 16:04:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.fibu.gui.menus;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
-import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -34,10 +33,10 @@ public class AnlagevermoegenListMenu extends ContextMenu
   public AnlagevermoegenListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new AnlagevermoegenDelete()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new AnlagevermoegenDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Anlagevermögen hinzufügen"), new ANeu()));
+    this.addItem(new GJContextMenuItem(i18n.tr("Anlagevermögen hinzufügen"), new ANeu()));
   }
   
   /**
@@ -59,6 +58,9 @@ public class AnlagevermoegenListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnlagevermoegenListMenu.java,v $
+ * Revision 1.2  2006/01/04 16:04:33  willuhn
+ * @B gj/mandant handling (insb. Loeschen)
+ *
  * Revision 1.1  2005/08/29 14:26:57  willuhn
  * @N Anlagevermoegen, Abschreibungen
  *
