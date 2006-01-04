@@ -10,7 +10,7 @@ $math.reset("restwert")
     <th>Bezeichnung</th>
     <th>Anschaffungsdatum</th>
     <th style="text-align:right">Anschaffungskosten</th>
-    <th style="text-align:right">Nutzungsdauer</th>
+    <th style="text-align:right">Nutzungsdauer (in Jahren)</th>
     <th style="text-align:right">Anfangsbestand</th>
     <th style="text-align:right">Jahres-AfA</th>
     <th style="text-align:right">Restwert</th>

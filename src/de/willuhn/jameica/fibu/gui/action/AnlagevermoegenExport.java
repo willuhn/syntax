@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/04 17:59:11 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/04 17:59:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,6 @@ public class AnlagevermoegenExport extends AbstractExportAction
       }
     }
     
-    // TODO: Einzeluebersicht fehlt noch
     File file = null;
     try
     {
@@ -146,6 +145,9 @@ public class AnlagevermoegenExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.8  2006/01/04 17:59:27  willuhn
+ * @B bug 171
+ *
  * Revision 1.7  2006/01/04 17:59:11  willuhn
  * @B bug 171
  *
