@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/17 22:59:38 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/04 17:59:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.swt.widgets.Event;
@@ -100,6 +101,7 @@ public class AuswertungControl extends AbstractControl
         Logger.error("error while loading class " + c,e);
       }
     }
+    Collections.sort(list);
     GenericIterator gi = PseudoIterator.fromArray((ExportObject[]) list.toArray(new ExportObject[list.size()]));
     auswertungen = new SelectInput(gi,null);
     auswertungen.setComment("");
@@ -257,7 +259,7 @@ public class AuswertungControl extends AbstractControl
   /**
    * Hilfsklasse.
    */
-  private class ExportObject implements GenericObject
+  private class ExportObject implements GenericObject, Comparable
   {
     private ExportAction action = null;
     
@@ -310,6 +312,29 @@ public class AuswertungControl extends AbstractControl
         return false;
       return this.action.getClass().equals(((ExportObject)arg0).action.getClass());
     }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o)
+    {
+      if (o == null || !(o instanceof ExportObject))
+        return 1;
+      
+      try
+      {
+        ExportObject other = (ExportObject) o;
+        String myName    = (String) getAttribute(getPrimaryAttribute());
+        String otherName = (String) other.getAttribute(other.getPrimaryAttribute());
+        return myName.compareTo(otherName);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to compare objects",e);
+        return 0;
+      }
+      
+    }
     
   }
 
@@ -318,6 +343,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.3  2006/01/04 17:59:11  willuhn
+ * @B bug 171
+ *
  * Revision 1.2  2005/10/17 22:59:38  willuhn
  * @B bug 135
  *

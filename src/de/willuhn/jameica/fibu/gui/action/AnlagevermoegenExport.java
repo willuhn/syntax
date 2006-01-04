@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/04 17:59:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class AnlagevermoegenExport extends AbstractExportAction
     File file = null;
     try
     {
-      file = storeTo(i18n.tr("fibu-anlagevermoegen-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
+      file = storeTo(getOutputFile());
     }
     catch (OperationCanceledException oce)
     {
@@ -102,7 +102,7 @@ public class AnlagevermoegenExport extends AbstractExportAction
       export.addObject("jahr",jahr);
       export.setTarget(new FileOutputStream(file));
       export.setTitle(getName());
-      export.setTemplate("anlagevermoegen.vm");
+      export.setTemplate(getTemplate());
 
       VelocityExporter.export(export);
 
@@ -123,11 +123,32 @@ public class AnlagevermoegenExport extends AbstractExportAction
   {
     return i18n.tr("Gesamtübersicht des Anlagevermögens");
   }
+  
+  /**
+   * Liefert den Namen des Templates.
+   * @return Dateiname des Templates.
+   */
+  String getTemplate()
+  {
+    return "anlagevermoegen.vm";
+  }
+  
+  /**
+   * Liefert den vorzuschlagenden Dateinamen fuer den Report.
+   * @return Dateiname.
+   */
+  String getOutputFile()
+  {
+    return i18n.tr("fibu-anlagevermoegen-{0}.html",Fibu.FASTDATEFORMAT.format(new Date()));    
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.7  2006/01/04 17:59:11  willuhn
+ * @B bug 171
+ *
  * Revision 1.6  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

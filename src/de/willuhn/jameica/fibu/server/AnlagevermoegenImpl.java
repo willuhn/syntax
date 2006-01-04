@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.15 $
+ * $Date: 2006/01/04 17:59:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -392,15 +392,16 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     DBIterator list = getService().createList(Abschreibung.class);
     list.addFilter("av_id = " + getID());
     list.setOrder("order by id");
+    double sum = 0.0d;
     while (list.hasNext())
     {
       Abschreibung a = (Abschreibung) list.next();
       AbschreibungsBuchung b = a.getBuchung();
       Geschaeftsjahr j = b.getGeschaeftsjahr();
       if (j.equals(jahr))
-        return b.getBetrag();
+        sum += b.getBetrag();
     }
-    return 0.0d;
+    return sum;
   }
 
   /**
@@ -424,6 +425,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.15  2006/01/04 17:59:11  willuhn
+ * @B bug 171
+ *
  * Revision 1.14  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.10 $
+ * $Date: 2006/01/04 17:59:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,9 @@ public interface Anlagevermoegen extends DBObject
   public double getRestwert(Geschaeftsjahr jahr) throws RemoteException;
   
   /**
-   * Liefert die Abschreibung des Jahres insofern es abgeschlossen wurde.
+   * Liefert die Summe der Abschreibungen des Geschaeftsjahres.
+   * Falls das Geschaeftsjahr noch nicht abgeschlossen ist, fehlt die
+   * planmaessige Abschreibung zum Jahresende noch.
    * @param jahr das Geschaeftsjahr.
    * @return Abschreibung des Geschaeftsjahres oder <code>0.0</code>.
    * @throws RemoteException
@@ -186,6 +188,9 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.10  2006/01/04 17:59:11  willuhn
+ * @B bug 171
+ *
  * Revision 1.9  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *
