@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.20 $
+ * $Date: 2006/01/04 17:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -233,7 +233,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       while (existing.hasNext())
       {
         Geschaeftsjahr other = (Geschaeftsjahr) existing.next();
-        if (other.check(beginn) && !other.getID().equals(this.getID()))
+        if (other.check(beginn) && !other.equals(this))
           throw new ApplicationException(i18n.tr("Geschäftsjahr überschneidet sich mit dem Existierenden: {0}",other.getAttribute(other.getPrimaryAttribute()).toString()));
       }
     }
@@ -256,7 +256,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     try
     {
       Geschaeftsjahr vorjahr = getVorjahr();
-      if (vorjahr != null && vorjahr.getID().equals(this.getID()))
+      if (vorjahr != null && vorjahr.equals(this))
         throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht auf sich selbst verweisen"));
 
       GenericIterator list = getBuchungen();
@@ -377,7 +377,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       }
 
       Geschaeftsjahr j = ((DBService) getService()).getActiveGeschaeftsjahr();
-      boolean active = j != null && j.getID().equals(this.getID());
+      boolean active = j != null && j.equals(this);
       super.delete();
       transactionCommit();
       if (active)
@@ -502,6 +502,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.20  2006/01/04 17:05:32  willuhn
+ * @B bug 170
+ *
  * Revision 1.19  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.63 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.64 $
+ * $Date: 2006/01/04 17:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -346,8 +346,6 @@ public class BuchungControl extends AbstractControl
   {
     try {
 
-      getBuchung().transactionBegin();
-      
       //////////////////////////////////////////////////////////////////////////
       // Belegnummer checken
       try {
@@ -677,6 +675,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.64  2006/01/04 17:05:32  willuhn
+ * @B bug 170
+ *
  * Revision 1.63  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

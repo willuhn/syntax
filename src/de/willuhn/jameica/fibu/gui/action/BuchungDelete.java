@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungDelete.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/04 17:05:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,13 +51,13 @@ public class BuchungDelete implements Action
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       if (b.length > 1)
       {
-        d.setTitle(i18n.tr("Buchungen wirklich stornieren?"));
-        d.setText(i18n.tr("Wollen Sie diese {0} Buchungen wirklich stornieren?",""+b.length));
+        d.setTitle(i18n.tr("Buchungen wirklich löschen?"));
+        d.setText(i18n.tr("Wollen Sie diese {0} Buchungen wirklich löschen?",""+b.length));
       }
       else
       {
-        d.setTitle(i18n.tr("Buchung wirklich stornieren?"));
-        d.setText(i18n.tr("Wollen Sie die Buchung \"{0}\" [Beleg {1}] wirklich stornieren?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
+        d.setTitle(i18n.tr("Buchung wirklich löschen?"));
+        d.setText(i18n.tr("Wollen Sie die Buchung \"{0}\" [Beleg {1}] wirklich löschen?",new String[]{b[0].getText(),""+b[0].getBelegnummer()}));
       }
       
 
@@ -67,37 +67,42 @@ public class BuchungDelete implements Action
         return;
       }
 
-      b[0].transactionBegin();
-      try
+      int deleted = 0;
+      int skipped = 0;
+      for (int i=0;i<b.length;++i)
       {
-        for (int i=0;i<b.length;++i)
+        try
         {
           b[i].delete();
+          deleted++;
         }
-        b[0].transactionCommit();
+        catch (Exception e)
+        {
+          // BUGZILLA 170
+          skipped++;
+        }
+      }
 
-        if (b.length > 1)
-          GUI.getStatusBar().setSuccessText(i18n.tr("{0} Buchungen storniert.", ""+b.length));
+      if (b.length > 1)
+      {
+        if (skipped > 0)
+          GUI.getStatusBar().setSuccessText(i18n.tr("{0} Buchungen gelöscht, {1} übersprungen.", new String[]{""+deleted,""+skipped}));
         else
-          GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} storniert.", ""+b[0].getBelegnummer()));
+          GUI.getStatusBar().setSuccessText(i18n.tr("{0} Buchungen gelöscht.", ""+deleted));
       }
-      catch (ApplicationException ae)
+      else
       {
-        b[0].transactionRollback();
-        throw ae;
-      }
-      catch (Exception e)
-      {
-        b[0].transactionRollback();
-        Logger.error("unable to delete buchung",e);
-        throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
+        if (skipped > 0)
+          GUI.getStatusBar().setErrorText(i18n.tr("Buchung Nr. {0} darf nicht gelöscht werden.", ""+b[0].getBelegnummer()));
+        else
+          GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gelöscht.", ""+b[0].getBelegnummer()));
       }
 
     }
     catch (Exception e)
     {
       Logger.error("unable to delete buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Stornieren der Buchung(en)"));
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Buchung(en)"));
     }
   }
 
@@ -106,6 +111,9 @@ public class BuchungDelete implements Action
 
 /*********************************************************************
  * $Log: BuchungDelete.java,v $
+ * Revision 1.8  2006/01/04 17:05:32  willuhn
+ * @B bug 170
+ *
  * Revision 1.7  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *
