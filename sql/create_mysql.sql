@@ -1,24 +1,24 @@
-CREATE TABLE kontenrahmen (
-  id NUMERIC default UNIQUEKEY('kontenrahmen'),
+CREATE TABLE IF NOT EXISTS kontenrahmen (
+  id int NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
   mandant_id int(10) NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE steuer (
-  id NUMERIC default UNIQUEKEY('steuer'),
+CREATE TABLE IF NOT EXISTS steuer (
+  id int NOT NULL AUTO_INCREMENT,
   mandant_id int(10) NULL,
   name varchar(255) NOT NULL,
   satz double NOT NULL,
   steuerkonto_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE konto (
-  id NUMERIC default UNIQUEKEY('konto'),
+CREATE TABLE IF NOT EXISTS konto (
+  id int NOT NULL AUTO_INCREMENT,
   kontoart_id int(10) NOT NULL,
   kontotyp_id int(10) NULL,
   kontonummer varchar(4) NOT NULL,
@@ -29,19 +29,19 @@ CREATE TABLE konto (
   UNIQUE (id),
   UNIQUE (kontenrahmen_id,kontonummer),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE konto_ab (
-  id NUMERIC default UNIQUEKEY('konto_ab'),
+CREATE TABLE IF NOT EXISTS konto_ab (
+  id int NOT NULL AUTO_INCREMENT,
   konto_id int(10) NOT NULL,
   geschaeftsjahr_id int(10) NOT NULL,
   betrag double NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE buchung (
-  id NUMERIC default UNIQUEKEY('buchung'),
+CREATE TABLE IF NOT EXISTS buchung (
+  id int NOT NULL AUTO_INCREMENT,
   datum date NOT NULL,
   sollkonto_id int(10) NOT NULL,
   habenkonto_id int(10) NOT NULL,
@@ -53,10 +53,10 @@ CREATE TABLE buchung (
   buchung_id int(10),
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE buchungstemplate (
-  id NUMERIC default UNIQUEKEY('buchungstemplate'),
+CREATE TABLE IF NOT EXISTS buchungstemplate (
+  id int NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   sollkonto_id int(10) NULL,
   habenkonto_id int(10) NULL,
@@ -67,10 +67,10 @@ CREATE TABLE buchungstemplate (
   steuer double NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE finanzamt (
-  id NUMERIC default UNIQUEKEY('finanzamt'),
+CREATE TABLE IF NOT EXISTS finanzamt (
+  id int NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   strasse varchar(255) NULL,
   postfach varchar(50) NULL,
@@ -79,26 +79,26 @@ CREATE TABLE finanzamt (
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE kontoart (
-  id NUMERIC default UNIQUEKEY('kontoart'),
+CREATE TABLE IF NOT EXISTS kontoart (
+  id int NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE kontotyp (
-  id NUMERIC default UNIQUEKEY('kontotyp'),
+CREATE TABLE IF NOT EXISTS kontotyp (
+  id int NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE mandant (
-  id NUMERIC default UNIQUEKEY('mandant'),
+CREATE TABLE IF NOT EXISTS mandant (
+  id int NOT NULL AUTO_INCREMENT,
   name1 varchar(255) NULL,
   name2 varchar(255) NULL,
   firma varchar(255) NOT NULL,
@@ -110,10 +110,10 @@ CREATE TABLE mandant (
   finanzamt_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE geschaeftsjahr (
-  id NUMERIC default UNIQUEKEY('geschaeftsjahr'),
+CREATE TABLE IF NOT EXISTS geschaeftsjahr (
+  id int NOT NULL AUTO_INCREMENT,
   vorjahr_id int(10) NULL,
   mandant_id int(10) NOT NULL,
   beginn date NULL,
@@ -122,10 +122,10 @@ CREATE TABLE geschaeftsjahr (
   closed int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE anlagevermoegen (
-  id NUMERIC default UNIQUEKEY('anlagevermoegen'),
+CREATE TABLE IF NOT EXISTS anlagevermoegen (
+  id int NOT NULL AUTO_INCREMENT,
   mandant_id int(10) NOT NULL,
   name varchar(255) NOT NULL,
   anschaffungskosten double NOT NULL,
@@ -136,16 +136,15 @@ CREATE TABLE anlagevermoegen (
   nutzungsdauer int(2) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
-CREATE TABLE abschreibung (
-  id NUMERIC default UNIQUEKEY('abschreibung'),
+CREATE TABLE IF NOT EXISTS abschreibung (
+  id int NOT NULL AUTO_INCREMENT,
   av_id int(10) NOT NULL,
   buchung_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-);
-
+) TYPE = INNODB;
 
 CREATE INDEX idx_kr_mandant           ON kontenrahmen(mandant_id);
 
@@ -187,39 +186,39 @@ CREATE INDEX idx_abschreibung_av      ON abschreibung(av_id);
 CREATE INDEX idx_abschreibung_buchung ON abschreibung(buchung_id);
 
 
-ALTER TABLE kontenrahmen ADD CONSTRAINT fk_kontenrahmen_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+ALTER TABLE kontenrahmen ADD CONSTRAINT fk_kontenrahmen_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 
-ALTER TABLE steuer ADD CONSTRAINT fk_steuer_konto FOREIGN KEY (steuerkonto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE steuer ADD CONSTRAINT fk_steuer_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+ALTER TABLE steuer ADD CONSTRAINT fk_steuer_konto FOREIGN KEY (steuerkonto_id) REFERENCES konto (id);
+ALTER TABLE steuer ADD CONSTRAINT fk_steuer_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 
-ALTER TABLE konto ADD CONSTRAINT fk_konto_kontoart FOREIGN KEY (kontoart_id) REFERENCES kontoart (id) DEFERRABLE;
-ALTER TABLE konto ADD CONSTRAINT fk_konto_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
-ALTER TABLE konto ADD CONSTRAINT fk_konto_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id) DEFERRABLE;
-ALTER TABLE konto ADD CONSTRAINT fk_konto_kontotyp FOREIGN KEY (kontotyp_id) REFERENCES kontotyp (id) DEFERRABLE;
-ALTER TABLE konto ADD CONSTRAINT fk_konto_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+ALTER TABLE konto ADD CONSTRAINT fk_konto_kontoart FOREIGN KEY (kontoart_id) REFERENCES kontoart (id);
+ALTER TABLE konto ADD CONSTRAINT fk_konto_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
+ALTER TABLE konto ADD CONSTRAINT fk_konto_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
+ALTER TABLE konto ADD CONSTRAINT fk_konto_kontotyp FOREIGN KEY (kontotyp_id) REFERENCES kontotyp (id);
+ALTER TABLE konto ADD CONSTRAINT fk_konto_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 
-ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
-ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id);
+ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
+ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id);
+ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id);
 
-ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
-ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id);
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
+ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
 
-ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id) DEFERRABLE;
+ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id);
 
-ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
+ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id);
 
-ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
-ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
-ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (k_abschreibung_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (k_abschreibung_id) REFERENCES konto (id);
 
-ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
-ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
-ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_self FOREIGN KEY (vorjahr_id) REFERENCES geschaeftsjahr (id) DEFERRABLE;
+ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
+ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
+ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_self FOREIGN KEY (vorjahr_id) REFERENCES geschaeftsjahr (id);
 
-ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id) DEFERRABLE;
-ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id);
+ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id);

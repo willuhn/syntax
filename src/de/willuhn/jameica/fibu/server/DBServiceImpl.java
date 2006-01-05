@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/05 17:40:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,20 +18,27 @@ import java.rmi.server.ServerNotActiveException;
 import java.sql.Connection;
 import java.util.HashMap;
 
-import de.willuhn.datasource.db.EmbeddedDBServiceImpl;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
 
 /**
  * Datenbank-Service fuer Fibu.
  */
-public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
+public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implements DBService
 {
 
   private HashMap jahre = new HashMap();
   private Geschaeftsjahr jahr = null;
+  
+  private static Settings SETTINGS = new Settings(DBService.class);
+
+  static
+  {
+    SETTINGS.setStoreWhenRead(false);
+  }
   
   /**
    * ct.
@@ -39,7 +46,13 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
    */
   public DBServiceImpl() throws RemoteException
   {
-    super(Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath() + "/db/db.conf","fibu","fibu");
+    super(
+      SETTINGS.getString("jdbc.driver","com.mckoi.JDBCDriver"),
+      SETTINGS.getString("jdbc.url",":jdbc:mckoi:local://" + Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath() + "/db/db.conf"),
+      SETTINGS.getString("jdbc.username","fibu"),
+      SETTINGS.getString("jdbc.password","fibu")
+    );
+    this.setClassloader(Application.getClassLoader());
     this.setClassFinder(Application.getClassLoader().getClassFinder());
   }
 
@@ -89,6 +102,9 @@ public class DBServiceImpl extends EmbeddedDBServiceImpl implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.6  2006/01/05 17:40:30  willuhn
+ * @N mysql support
+ *
  * Revision 1.5  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

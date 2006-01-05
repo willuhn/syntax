@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS abschreibung;
+DROP TABLE IF EXISTS anlagevermoegen;
+DROP TABLE IF EXISTS buchung;
+DROP TABLE IF EXISTS buchungstemplate;
+DROP TABLE IF EXISTS finanzamt;
+DROP TABLE IF EXISTS geschaeftsjahr;
+DROP TABLE IF EXISTS konto_ab;
+DROP TABLE IF EXISTS kontoart;
+DROP TABLE IF EXISTS kontotyp;
+DROP TABLE IF EXISTS mandant;
+DROP TABLE IF EXISTS kontenrahmen;
+DROP TABLE IF EXISTS steuer;
+DROP TABLE IF EXISTS konto;
