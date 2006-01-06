@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/01/04 17:05:32 $
+ * $Revision: 1.21 $
+ * $Date: 2006/01/06 11:25:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -157,7 +157,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     if (d == null)
       return false;
-    return ((d.after(getBeginn()) || d.equals(getBeginn()))  && d.before(getEnde()));
+    
+    Date ende   = getEnde();
+    Date beginn = getBeginn();
+    
+    return ((d.after(beginn) || d.equals(beginn)) && // Nach oder identisch mit Beginn
+            (d.before(ende)  || d.equals(ende)));    //  Vor oder identisch mit Ende
   }
 
   /**
@@ -229,12 +234,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht weniger als 1 und nicht mehr als 12 Monaten lang sein"));
       
       DBIterator existing = getService().createList(Geschaeftsjahr.class);
-      existing.addFilter("mandant_id = " + getMandant().getID());
+      existing.addFilter("mandant_id = " + this.getMandant().getID());
       while (existing.hasNext())
       {
         Geschaeftsjahr other = (Geschaeftsjahr) existing.next();
-        if (other.check(beginn) && !other.equals(this))
-          throw new ApplicationException(i18n.tr("Geschäftsjahr überschneidet sich mit dem Existierenden: {0}",other.getAttribute(other.getPrimaryAttribute()).toString()));
+        if ((other.check(beginn) ||  other.check(ende)) && other.equals(this))
+          throw new ApplicationException(i18n.tr("Geschäftsjahr überschneidet sich mit dem existierenden Jahr: {0}",other.getAttribute(other.getPrimaryAttribute()).toString()));
       }
     }
     catch (RemoteException e)
@@ -251,8 +256,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
-    // Wir muessen pruefen, ob sich der Kontenrahmen geaendert hat und dies
-    // verbieten, wenn wir schon Buchungen haben.
     try
     {
       Geschaeftsjahr vorjahr = getVorjahr();
@@ -502,6 +505,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.21  2006/01/06 11:25:03  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2006/01/04 17:05:32  willuhn
  * @B bug 170
  *
