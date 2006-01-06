@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.17 $
+ * $Date: 2006/01/06 15:17:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -142,26 +142,6 @@ public class AnlagevermoegenControl extends AbstractControl
     this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
     if (!getAnlagevermoegen().canChange())
       this.kosten.disable();
-    this.kosten.addListener(new Listener()
-    {
-      public void handleEvent(Event event)
-      {
-        try
-        {
-          Double d = (Double) kosten.getValue();
-          Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-          if (d != null && d.doubleValue() <= Settings.getGwgWert(jahr))
-            getAbschreibungsKonto().setValue(Settings.getAbschreibunsgKonto(jahr,true));
-          else
-            getAbschreibungsKonto().setValue(Settings.getAbschreibunsgKonto(jahr,false));
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while checking afa konto",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Anpassen des Afa-Kontos"));
-        }
-      }
-    });
     return this.kosten;
   }
   
@@ -321,9 +301,9 @@ public class AnlagevermoegenControl extends AbstractControl
       Konto k = (Konto)getKonto().getValue();
 
       Konto abschreibung = (Konto)getAbschreibungsKonto().getValue();
+
       getAnlagevermoegen().setName((String) getName().getValue());
       getAnlagevermoegen().setKonto(k);
-      getAnlagevermoegen().setAbschreibungskonto(abschreibung);
       getAnlagevermoegen().setAnschaffungsDatum((Date) getDatum().getValue());
       
       double ak = 0.0d;
@@ -350,28 +330,30 @@ public class AnlagevermoegenControl extends AbstractControl
       
       if (ak <= Settings.getGwgWert(Settings.getActiveGeschaeftsjahr()))
       {
+        Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
+
         YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
         d.setTitle(i18n.tr("Geringwertiges Wirtschaftsgut"));
-        d.setText(i18n.tr("Anlage kann als GWG sofort abgeschrieben werden.\n" +
-                          "Nutzungsdauer zur Sofort-Abschreibung auf 1 Jahr verkürzen?"));
+
+        String text = i18n.tr("Anlage kann als GWG sofort abgeschrieben werden.\n" +
+                              "Nutzungsdauer zur Sofort-Abschreibung auf 1 Jahr verkürzen?");
+        
+        if (ka != null)
+          text += "\n" + i18n.tr("Ausserdem können die Abschreibungen auf dem Konto\n" +
+              "\"" + ka.getName() + "\" gebucht werden.");
+        d.setText(text);
         try
         {
           if (((Boolean)d.open()).booleanValue())
           {
             getLaufzeit().setValue(new Integer(1));
             nutzungsdauer = 1;
-          }
-          else
-          {
-            Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
-            if (abschreibung != null && ka != null && abschreibung.equals(ka))
+ 
+            if (ka != null)
             {
-              // User will es nicht als GWG, aber als Abschreibungskonto ist noch das GWG-Konto drin
-              Konto ka2 = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),false);
-              getAnlagevermoegen().setAbschreibungskonto(ka2);
-              getAbschreibungsKonto().setValue(ka2);
+              getAbschreibungsKonto().setValue(ka);
+              abschreibung = ka;
             }
-              
           }
         }
         catch (OperationCanceledException oce)
@@ -384,6 +366,7 @@ public class AnlagevermoegenControl extends AbstractControl
           GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen auf GWG"));
         }
       }
+      getAnlagevermoegen().setAbschreibungskonto(abschreibung);
       getAnlagevermoegen().setNutzungsdauer(nutzungsdauer);
 
       if (getRestwert().isEnabled())
@@ -452,6 +435,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.17  2006/01/06 15:17:08  willuhn
+ * @C Abschreibungskonto
+ *
  * Revision 1.16  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *
