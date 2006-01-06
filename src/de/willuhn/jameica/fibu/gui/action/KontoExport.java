@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/17 22:59:38 $
+ * $Revision: 1.12 $
+ * $Date: 2006/01/06 00:30:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.VelocityExporter;
+import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
@@ -91,7 +92,8 @@ public class KontoExport extends AbstractExportAction
         while (konten.hasNext())
         {
           Konto k1 = (Konto) konten.next();
-          if (k1.getUmsatz(jahr) == 0.0d)
+          Anfangsbestand ab = k1.getAnfangsbestand(jahr);
+          if (k1.getUmsatz(jahr) == 0.0d && (ab == null || ab.getBetrag() == 0.0d))
             continue;
           l.add(k1);
         }
@@ -149,6 +151,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.12  2006/01/06 00:30:01  willuhn
+ * @C report fixes
+ *
  * Revision 1.11  2005/10/17 22:59:38  willuhn
  * @B bug 135
  *

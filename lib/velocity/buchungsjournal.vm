@@ -60,12 +60,21 @@ $math.reset("brutto")
     </tr>
   #end
 
-  <tr>
-    <td colspan="3" style="border-top:1px solid #000000">Buchungen gesamt: ${count}</td>
-    <td style="border-top:1px solid #000000">Summen:</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("netto"))} ${eur}</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("steuer"))} ${eur}</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("brutto"))} ${eur}</td>
-    <td style="border-top:1px solid #000000">&nbsp;</td>
+	<tr>
+    <td colspan="8" style="border-top:1px solid #000000;">&nbsp;</td>
   </tr>
+
+  <tr>
+    <th colspan="3">Buchungen gesamt: ${count}</th>
+    <th>Summen:</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))} ${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))} ${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("brutto"))} ${eur}</th>
+    <th>&nbsp;</th>
+  </tr>
+
+ 	<tr>
+    <td colspan="8" style="border-top:2px solid #000000;">&nbsp;</td>
+  </tr>
+
 </table>

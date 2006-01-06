@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/04 17:59:27 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/06 00:30:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,7 @@ public class AnlagevermoegenExport extends AbstractExportAction
       while (i.hasNext())
       {
         Anlagevermoegen av = (Anlagevermoegen) i.next();
-        if (av.getRestwert(jahr) > 0.0d)
+        // if (av.getRestwert(jahr) > 0.0d) // Auch AV mit Restwert 0 ausgeben.
           list.add(av);
       }
       
@@ -145,6 +145,9 @@ public class AnlagevermoegenExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.9  2006/01/06 00:30:01  willuhn
+ * @C report fixes
+ *
  * Revision 1.8  2006/01/04 17:59:27  willuhn
  * @B bug 171
  *

@@ -39,13 +39,21 @@ $math.reset("restwert")
 
   #end
 
+	<tr>
+    <td colspan="7" style="border-top:1px solid #000000;">&nbsp;</td>
+  </tr>
+
   <tr>
-    <td colspan="2" style="border-top:1px solid #000000">Summen:</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("anschaffungskosten"))} ${eur}</td>
-    <td style="border-top:1px solid #000000">&nbsp;</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("anfangsbestand"))} ${eur}</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("jahresabschreibung"))} ${eur}</td>
-    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("restwert"))} ${eur}</td>
+    <th colspan="2">Summen:</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anschaffungskosten"))} ${eur}</th>
+    <th>&nbsp;</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anfangsbestand"))} ${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("jahresabschreibung"))} ${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("restwert"))} ${eur}</th>
+  </tr>
+
+ 	<tr>
+    <td colspan="7" style="border-top:2px solid #000000;">&nbsp;</td>
   </tr>
 
 </table>
