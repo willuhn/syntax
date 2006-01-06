@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/AbschreibungDialog.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,7 @@ public class AbschreibungDialog extends AbstractDialog
             // _vor_ dem Ende des Geschaeftsjahres liegt
             Calendar cal = Calendar.getInstance();
             cal.setTime(jahr.getEnde());
-            cal.set(Calendar.HOUR,0);
+            cal.set(Calendar.HOUR_OF_DAY,0);
             cal.set(Calendar.MINUTE,0);
             cal.set(Calendar.SECOND,1);
             d = cal.getTime();
@@ -248,6 +248,9 @@ public class AbschreibungDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AbschreibungDialog.java,v $
+ * Revision 1.3  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.2  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

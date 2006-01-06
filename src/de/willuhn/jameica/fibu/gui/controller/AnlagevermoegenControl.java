@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/01/04 00:53:48 $
+ * $Revision: 1.16 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,6 +67,8 @@ public class AnlagevermoegenControl extends AbstractControl
   private KontoInput afaKonto    = null;
   private DialogInput datum      = null;
   
+  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(AnfangsbestandControl.class);
+
   
   /**
    * @param view
@@ -264,7 +266,19 @@ public class AnlagevermoegenControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_ANLAGE);
 
-    konto = new KontoInput(list,getAnlagevermoegen().getKonto());
+    Konto k = getAnlagevermoegen().getKonto();
+    
+    String last = settings.getString("konto.last",null);
+    if (k == null && getAnlagevermoegen().isNewObject() && last != null && last.length() > 0)
+    {
+      try
+      {
+        k = (Konto) Settings.getDBService().createObject(Konto.class,last);
+      }
+      catch (Exception e) {/*ignore*/}
+    }
+
+    konto = new KontoInput(list,k);
     if (!getAnlagevermoegen().canChange())
       this.konto.disable();
     return konto;
@@ -304,9 +318,12 @@ public class AnlagevermoegenControl extends AbstractControl
   {
     try
     {
+      Konto k = (Konto)getKonto().getValue();
+
+      Konto abschreibung = (Konto)getAbschreibungsKonto().getValue();
       getAnlagevermoegen().setName((String) getName().getValue());
-      getAnlagevermoegen().setKonto((Konto)getKonto().getValue());
-      getAnlagevermoegen().setAbschreibungskonto((Konto)getAbschreibungsKonto().getValue());
+      getAnlagevermoegen().setKonto(k);
+      getAnlagevermoegen().setAbschreibungskonto(abschreibung);
       getAnlagevermoegen().setAnschaffungsDatum((Date) getDatum().getValue());
       
       double ak = 0.0d;
@@ -344,6 +361,18 @@ public class AnlagevermoegenControl extends AbstractControl
             getLaufzeit().setValue(new Integer(1));
             nutzungsdauer = 1;
           }
+          else
+          {
+            Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
+            if (abschreibung != null && ka != null && abschreibung.equals(ka))
+            {
+              // User will es nicht als GWG, aber als Abschreibungskonto ist noch das GWG-Konto drin
+              Konto ka2 = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),false);
+              getAnlagevermoegen().setAbschreibungskonto(ka2);
+              getAbschreibungsKonto().setValue(ka2);
+            }
+              
+          }
         }
         catch (OperationCanceledException oce)
         {
@@ -370,6 +399,7 @@ public class AnlagevermoegenControl extends AbstractControl
       }
 
       getAnlagevermoegen().store();
+      settings.setAttribute("konto.last",k.getID());
       GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gespeichert"));
     }
     catch (RemoteException e)
@@ -422,6 +452,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.16  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.15  2006/01/04 00:53:48  willuhn
  * @B bug 166 Ausserplanmaessige Abschreibungen
  *

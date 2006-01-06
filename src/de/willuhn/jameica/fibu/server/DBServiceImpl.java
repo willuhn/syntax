@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/05 17:40:30 $
+ * $Revision: 1.7 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,11 +97,22 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
       return this.jahr;
     }
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBService#getSQLTimestampFunction()
+   */
+  public String getSQLTimestampFunction() throws RemoteException
+  {
+    return SETTINGS.getString("sql.function.timestamp","tonumber");
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.7  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.6  2006/01/05 17:40:30  willuhn
  * @N mysql support
  *

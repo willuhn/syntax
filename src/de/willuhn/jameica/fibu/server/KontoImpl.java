@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.40 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -371,7 +371,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
     list.addFilter(" (sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
     list.addFilter("geschaeftsjahr_id = " + jahr.getID());
-    list.setOrder("order by tonumber(datum)");
+    list.setOrder("order by UNIX_TIMESTAMP(datum)");
     return list;
   }
 
@@ -402,8 +402,10 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     Date end = cal.getTime();
     
+    String function = ((DBService)getService()).getSQLTimestampFunction();
+
     DBIterator list = this.getBuchungen(jahr);
-    list.addFilter("tonumber(datum) >= " + start.getTime() + " AND tonumber(datum) <=" + end.getTime());
+    list.addFilter(function + "(datum) >= " + start.getTime() + " AND " + function + "(datum) <=" + end.getTime());
     return list;
   }
 
@@ -438,6 +440,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.40  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.39  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

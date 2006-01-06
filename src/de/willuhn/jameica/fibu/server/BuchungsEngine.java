@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/01/03 23:58:36 $
+ * $Revision: 1.39 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
@@ -25,6 +24,7 @@ import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -112,10 +112,11 @@ public class BuchungsEngine
       Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
 
       // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
+      String function = db.getSQLTimestampFunction();
       Logger.info("  Pruefe, ob neues Geschaeftsjahr bereits existiert");
       DBIterator check = m.getGeschaeftsjahre();
-      check.addFilter(jahrNeu.getBeginn().getTime() + " < TONUMBER(ende)");
-      check.addFilter(jahrNeu.getEnde().getTime() + " > TONUMBER(beginn)");
+      check.addFilter(jahrNeu.getBeginn().getTime() + " < " + function + "(ende)");
+      check.addFilter(jahrNeu.getEnde().getTime() + " > " + function + "(beginn)");
       if (check.hasNext())
         throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
 
@@ -268,7 +269,7 @@ public class BuchungsEngine
     // _vor_ dem Ende des Geschaeftsjahres liegt
     Calendar cal1 = Calendar.getInstance();
     cal1.setTime(jahr.getEnde());
-    cal1.set(Calendar.HOUR,0);
+    cal1.set(Calendar.HOUR_OF_DAY,0);
     cal1.set(Calendar.MINUTE,0);
     cal1.set(Calendar.SECOND,1);
     Date end = cal1.getTime();
@@ -368,6 +369,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.39  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.38  2006/01/03 23:58:36  willuhn
  * @N Afa- und GWG-Handling
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class AnfangsbestandControl extends AbstractControl
   private Input geschaeftsjahr  = null;
 
   private I18N i18n;
-
+  
   /**
    * @param view
    */
@@ -94,6 +94,7 @@ public class AnfangsbestandControl extends AbstractControl
                      " kontoart_id = " + Kontoart.KONTOART_GELD + " or " +
                      " kontoart_id = " + Kontoart.KONTOART_PRIVAT
                      + ")");
+    
     konto = new KontoInput(konten,getAnfangsbestand().getKonto());
     return konto;
   }
@@ -176,6 +177,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.9  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.8  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

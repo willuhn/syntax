@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBService.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.3 $
+ * $Date: 2006/01/06 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,11 +33,23 @@ public interface DBService extends de.willuhn.datasource.rmi.DBService
    * @throws RemoteException
    */
   public Geschaeftsjahr getActiveGeschaeftsjahr() throws RemoteException;
+  
+  /**
+   * Liefert den Namen der SQL-Funktion, mit der die Datenbank aus einem DATE-Feld einen UNIX-Timestamp macht.
+   * Bei MySQL ist das z.Bsp. "UNIX_TIMESTAMP" und bei McKoi schlicht "TONUMBER".
+   * @return Name der SQL-Funktion.
+   * @throws RemoteException
+   */
+  public String getSQLTimestampFunction() throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.3  2006/01/06 00:05:51  willuhn
+ * @N MySQL Support
+ *
  * Revision 1.2  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *
