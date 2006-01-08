@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.46 $
+ * $Date: 2006/01/08 15:28:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,12 +145,26 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     }
     catch (RemoteException e)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e;
     }
     catch (ApplicationException ae)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw ae;
     }
   }
@@ -193,6 +207,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.46  2006/01/08 15:28:40  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.45  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

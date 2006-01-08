@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnlagevermoegenAbschreiben.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/04 00:53:48 $
+ * $Revision: 1.2 $
+ * $Date: 2006/01/08 15:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,6 +77,7 @@ public class AnlagevermoegenAbschreiben implements Action
         Abschreibung a = (Abschreibung) Settings.getDBService().createObject(Abschreibung.class,null);
         a.setAnlagevermoegen(av);
         a.setBuchung(b);
+        a.setSonderabschreibung(true);
         a.store();
         b.transactionCommit();
         GUI.getStatusBar().setSuccessText(i18n.tr("Abschreibung gebucht"));
@@ -129,6 +130,9 @@ public class AnlagevermoegenAbschreiben implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenAbschreiben.java,v $
+ * Revision 1.2  2006/01/08 15:28:41  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.1  2006/01/04 00:53:48  willuhn
  * @B bug 166 Ausserplanmaessige Abschreibungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.25 $
+ * $Date: 2006/01/08 15:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -310,16 +310,38 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     }
     catch (ApplicationException e)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e;
     }
     catch (RemoteException e2)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e2;
     }
     catch (Throwable t)
     {
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       Logger.error("unable to delete mandant",t);
       throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
     }
@@ -339,6 +361,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.25  2006/01/08 15:28:41  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.24  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.8 $
+ * $Date: 2006/01/08 15:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,11 +136,88 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
   {
     insertCheck();
   }
+  
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#delete()
+   */
+  public void delete() throws RemoteException, ApplicationException
+  {
+    // Wir muessen die Buchung mit loeschen
+    try
+    {
+      transactionBegin();
+
+      Logger.info("Lösche zugehörige Abschreibungsbuchung");
+      AbschreibungsBuchung b = getBuchung();
+      if (b != null)
+        b.delete();
+
+      super.delete();
+      transactionCommit();
+    }
+    catch (ApplicationException e)
+    {
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
+      throw e;
+    }
+    catch (RemoteException e2)
+    {
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
+      throw e2;
+    }
+    catch (Throwable t)
+    {
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
+      Logger.error("unable to delete abschreibung",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Abschreibung"));
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#isSonderabschreibung()
+   */
+  public boolean isSonderabschreibung() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("sonderabschreibung");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Abschreibung#setSonderabschreibung(boolean)
+   */
+  public void setSonderabschreibung(boolean b) throws RemoteException
+  {
+    setAttribute("sonderabschreibung",b ? new Integer(1) : null);
+  }
 }
 
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.8  2006/01/08 15:28:41  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.7  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

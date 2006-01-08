@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/01/06 11:25:03 $
+ * $Revision: 1.22 $
+ * $Date: 2006/01/08 15:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -371,6 +371,8 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         while (afa.hasNext())
         {
           Abschreibung a = (Abschreibung) afa.next();
+          if (a.isSonderabschreibung())
+            continue; // Sonderabschreibungen werden uebersprungen
           AbschreibungsBuchung b = a.getBuchung();
           a.delete();
           b.delete();
@@ -391,18 +393,40 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     }
     catch (ApplicationException e)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e;
     }
     catch (RemoteException e2)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e2;
     }
     catch (Throwable t)
     {
-      Logger.error("unable to delete mandant",t);
-      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
+      Logger.error("unable to delete jahr",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Geschäftsjahres"));
     }
   }
 
@@ -500,11 +524,40 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     Settings.reloadActiveGeschaeftsjahr();
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
+   */
+  protected void deleteCheck() throws ApplicationException
+  {
+    // Geschaeftsjahre duerfen nur sequentiell geloescht werden.
+    // Wir pruefen daher, ob es ein Folge-Jahre gibt.
+    try
+    {
+      DBIterator list = getService().createList(Geschaeftsjahr.class);
+      while (list.hasNext())
+      {
+        Geschaeftsjahr j = (Geschaeftsjahr) list.next();
+        if (j.getVorjahr().equals(this))
+          throw new ApplicationException(i18n.tr("Geschäftsjahr besitzt bereits ein Folgejahr. Löschen Sie zunächst dieses"));
+      }
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to check jahr",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Geschäftsjahres"));
+    }
+    
+    super.deleteCheck();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.22  2006/01/08 15:28:41  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.21  2006/01/06 11:25:03  willuhn
  * *** empty log message ***
  *

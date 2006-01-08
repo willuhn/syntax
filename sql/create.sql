@@ -142,6 +142,7 @@ CREATE TABLE abschreibung (
   id NUMERIC default UNIQUEKEY('abschreibung'),
   av_id int(10) NOT NULL,
   buchung_id int(10) NOT NULL,
+  sonderabschreibung int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

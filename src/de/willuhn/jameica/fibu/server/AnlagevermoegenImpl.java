@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/01/04 17:59:11 $
+ * $Revision: 1.16 $
+ * $Date: 2006/01/08 15:28:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -233,16 +233,38 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     }
     catch (ApplicationException e)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e;
     }
     catch (RemoteException e2)
     {
-      transactionRollback();
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       throw e2;
     }
     catch (Throwable t)
     {
+      try
+      {
+        transactionRollback();
+      }
+      catch (Throwable tr)
+      {
+        Logger.error("unable to rollback transaction",tr);
+      }
       Logger.error("unable to delete av",t);
       throw new ApplicationException(i18n.tr("Fehler beim Löschen des Anlage-Gegenstandes"));
     }
@@ -425,6 +447,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.16  2006/01/08 15:28:41  willuhn
+ * @N Loeschen von Sonderabschreibungen
+ *
  * Revision 1.15  2006/01/04 17:59:11  willuhn
  * @B bug 171
  *

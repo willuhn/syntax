@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS abschreibung (
   id int NOT NULL AUTO_INCREMENT,
   av_id int(10) NOT NULL,
   buchung_id int(10) NOT NULL,
+  sonderabschreibung int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 ) TYPE = INNODB;
