@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/10/06 22:27:17 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/09 01:40:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.AnlagevermoegenListMenu;
@@ -41,7 +42,7 @@ public class AnlagevermoegenList extends TablePart
    */
   public AnlagevermoegenList(Action action) throws RemoteException
   {
-    super(Settings.getDBService().createList(Anlagevermoegen.class), action);
+    super(init(), action);
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Konto"),"konto_id", new Formatter() {
@@ -68,11 +69,26 @@ public class AnlagevermoegenList extends TablePart
     addColumn(i18n.tr("Restwert"),"restwert",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new AnlagevermoegenListMenu());
   }
+  
+  /**
+   * Erzeugt die Liste des Anlagevermoegens.
+   * @return Liste des Anlagevermoegens.
+   * @throws RemoteException
+   */
+  private static DBIterator init() throws RemoteException
+  {
+    DBIterator list = Settings.getDBService().createList(Anlagevermoegen.class);
+    list.setOrder("order by anschaffungsdatum desc");
+    return list;
+  }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.6  2006/01/09 01:40:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2005/10/06 22:27:17  willuhn
  * @N KontoInput
  *

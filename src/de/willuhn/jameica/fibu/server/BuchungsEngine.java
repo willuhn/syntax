@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.40 $
+ * $Date: 2006/01/09 01:40:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,6 +65,7 @@ public class BuchungsEngine
     
     try
     {
+      Logger.info("Starte Transaktion");
       jahr.transactionBegin();
       
       Mandant m        = jahr.getMandant();
@@ -78,6 +79,11 @@ public class BuchungsEngine
 
         AbschreibungsBuchung buchung = schreibeAb(av,jahr);
 
+        if (buchung == null)
+        {
+          Logger.info("  Ueberspringe " + av.getName() + " - bereits abgeschrieben");
+          continue;
+        }
         buchung.store();
         
         Logger.info("  Abschreibung fuer " + av.getName());
@@ -157,21 +163,28 @@ public class BuchungsEngine
       jahr.store();
 
       jahr.transactionCommit();
+      Logger.info("Schliesse Transaktion");
     }
     catch (RemoteException e)
     {
+      Logger.info("Rolle Transaktion zurueck");
+      jahr.setClosed(false);
       jahr.transactionRollback();
       throw e;
     }
     catch (ApplicationException ae)
     {
+      Logger.info("Rolle Transaktion zurueck");
+      jahr.setClosed(false);
       jahr.transactionRollback();
       throw ae;
     }
     catch (Throwable t)
     {
+      Logger.info("Rolle Transaktion zurueck");
+      jahr.setClosed(false);
       jahr.transactionRollback();
-      Logger.error("error while closing gj");
+      Logger.error("error while closing gj",t);
       throw new RemoteException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
     }
     finally
@@ -369,6 +382,9 @@ public class BuchungsEngine
 
 /*********************************************************************
  * $Log: BuchungsEngine.java,v $
+ * Revision 1.40  2006/01/09 01:40:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/01/08 15:28:41 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/09 01:40:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -238,7 +238,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       while (existing.hasNext())
       {
         Geschaeftsjahr other = (Geschaeftsjahr) existing.next();
-        if ((other.check(beginn) ||  other.check(ende)) && other.equals(this))
+        if ((other.check(beginn) ||  other.check(ende)) && !other.equals(this))
           throw new ApplicationException(i18n.tr("Geschäftsjahr überschneidet sich mit dem existierenden Jahr: {0}",other.getAttribute(other.getPrimaryAttribute()).toString()));
       }
     }
@@ -272,11 +272,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
         if (hasChanged("mandant_id"))
           throw new ApplicationException(i18n.tr("Wechsel des Mandanten nicht mehr möglich, da bereits Buchungen vorliegen"));
 
-        if (hasChanged("beginn"))
-          throw new ApplicationException(i18n.tr("Beginn des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
-
-        if (hasChanged("ende"))
-          throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
+// Das schlaegt ggf. fehl, da die beiden Getter getBeginn und getEnde die Uhrzeit aendern
+//        if (hasChanged("beginn"))
+//          throw new ApplicationException(i18n.tr("Beginn des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
+//
+//        if (hasChanged("ende"))
+//          throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
       }
     }
     catch (RemoteException e)
@@ -537,7 +538,10 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       while (list.hasNext())
       {
         Geschaeftsjahr j = (Geschaeftsjahr) list.next();
-        if (j.getVorjahr().equals(this))
+        Geschaeftsjahr vorjahr = j.getVorjahr();
+        if (vorjahr == null)
+          continue;
+        if (vorjahr.equals(this))
           throw new ApplicationException(i18n.tr("Geschäftsjahr besitzt bereits ein Folgejahr. Löschen Sie zunächst dieses"));
       }
     }
@@ -555,6 +559,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.23  2006/01/09 01:40:31  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2006/01/08 15:28:41  willuhn
  * @N Loeschen von Sonderabschreibungen
  *
