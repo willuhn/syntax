@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.41 $
+ * $Date: 2006/01/09 01:17:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -126,23 +126,31 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       DBServiceImpl service = (DBServiceImpl) this.getService();
       stmt = service.getConnection().createStatement();
 
-      double saldo = 0.0d;
+      double haben = 0.0d;
+      double soll = 0.0d;
 
+      // Haben-Seite
       String sql = "select sum(betrag) as b from buchung " +
         " where geschaeftsjahr_id = "+ jahr.getID() + 
         " and habenkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
-        saldo = rs.getDouble("b");
+        haben = rs.getDouble("b");
 
+      // Soll-Seite
       sql = "select sum(betrag) as b from buchung " +
       " where geschaeftsjahr_id = "+ jahr.getID() + 
       " and sollkonto_id = " + this.getID();
       rs = stmt.executeQuery(sql);
       if (rs.next())
-        saldo -= rs.getDouble("b");
+        soll = rs.getDouble("b");
 
-      return saldo;
+      int art = getKontoArt().getKontoArt();
+      
+      // TODO Ist das hier richtig?
+      if (art == Kontoart.KONTOART_ERLOES)
+        return haben - soll;
+      return soll - haben;
     }
     catch (Exception e)
     {
@@ -440,6 +448,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.41  2006/01/09 01:17:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.40  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *

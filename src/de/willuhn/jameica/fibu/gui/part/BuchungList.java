@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/09/26 23:52:00 $
+ * $Revision: 1.15 $
+ * $Date: 2006/01/09 01:17:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,6 +51,10 @@ public class BuchungList extends TablePart
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
+    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
+    addColumn(i18n.tr("Haben-Lonto"),"habenkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollkonto_id", new Formatter()
     {
       public String format(Object o)
@@ -72,10 +76,6 @@ public class BuchungList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
-    addColumn(i18n.tr("Haben-Lonto"),"habenkonto_id", new KontoFormatter());
-    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
-    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
     setContextMenu(new BuchungListMenu());
     setMulti(true);
   }
@@ -106,7 +106,7 @@ public class BuchungList extends TablePart
     
     // Sonst die des aktuellen Geschaeftsjahres
     DBIterator list = jahr.getBuchungen();
-    list.setOrder("order by id desc");
+    list.setOrder("order by belegnummer desc");
     return list;
   }
   
@@ -128,7 +128,10 @@ public class BuchungList extends TablePart
       Konto k = (Konto) o;
       try
       {
-        return k.getKontonummer() + " [" + k.getName() + "]";
+        String name = k.getName();
+        if (name.length() > 15)
+          name = name.substring(0,10) + "...";
+        return k.getKontonummer() + " [" + name + "]";
       }
       catch (RemoteException e)
       {
@@ -143,6 +146,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.15  2006/01/09 01:17:12  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2005/09/26 23:52:00  willuhn
  * *** empty log message ***
  *
