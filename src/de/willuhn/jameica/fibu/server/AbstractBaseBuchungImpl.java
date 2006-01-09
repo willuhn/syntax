@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/09 01:52:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
-import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.logging.Logger;
@@ -113,6 +112,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   private int createBelegnummer() throws RemoteException
   {
+    // TODO Create Belegnummer noch nicht schoen
     DBIterator iterator = this.getList();
     iterator.setOrder("order by id desc");
     if (!iterator.hasNext())
@@ -120,34 +120,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
     return ((BaseBuchung) iterator.next()).getBelegnummer() + 1;
   }
   
-  /**
-   * BUGZILLA 121
-   * @deprecated
-   * Prueft, ob die Belegnummer eindeutig ist.
-   * @throws ApplicationException
-   */
-  void checkBelegnummer() throws ApplicationException
-  {
-    try
-    {
-      // Checken, ob in die Belegnummer eindeutig ist
-      Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
-      DBIterator list = jahr.getBuchungen();
-      list.addFilter("belegnummer = " + this.getAttribute("belegnummer"));
-      if (!this.isNewObject()) // wenn das Objekt existiert, klammern wir es aus
-        list.addFilter("id != " + this.getID());
-      if (list.hasNext())
-        throw new ApplicationException(i18n.tr("Im aktuellen Geschäftsjahr existiert bereits eine Buchung mit dieser Nummer"));
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while checking buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Belegnummer."),e);
-    }
-    
-  }
-
-
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
@@ -245,6 +217,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.23  2006/01/09 01:52:40  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *
