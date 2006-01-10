@@ -8,7 +8,7 @@
   <license>proprietary</license>
 
   <menu>
-    <item id="fibu.menu" name="F&amp;ibu">
+    <item id="syntax.menu" name="SynTAX">
       <item name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
       <item name="Aktuelles &amp;Geschäftsjahr öffnen"  shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu" />
       <item name="-" />
@@ -22,12 +22,12 @@
   </menu>
 
   <navigation>
-	  <item id="fibu.navi" 									 name="Fibu" 						  icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
-	    <item id="fibu.navi.buchungen" 			 name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
-	    <item id="fibu.navi.konten" 				 name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
-	    <item id="fibu.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
-	    <item id="fibu.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
-	    <item id="fibu.navi.auswertungen"    name="Auswertungen"   		icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
+	  <item id="syntax.navi" 									 name="SynTAX"					  icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
+	    <item id="syntax.navi.buchungen" 			 name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
+	    <item id="syntax.navi.konten" 				 name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
+	    <item id="syntax.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
+	    <item id="syntax.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
+	    <item id="syntax.navi.auswertungen"    name="Auswertungen"   		icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
 	  </item>
   </navigation>
 
