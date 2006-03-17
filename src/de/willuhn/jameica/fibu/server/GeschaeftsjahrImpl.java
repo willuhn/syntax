@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/01/09 01:40:31 $
+ * $Revision: 1.24 $
+ * $Date: 2006/03/17 16:23:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,6 +97,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     cal.set(Calendar.HOUR_OF_DAY,0);
     cal.set(Calendar.MINUTE,0);
     cal.set(Calendar.SECOND,0);
+    cal.set(Calendar.MILLISECOND,0);
 
     d = cal.getTime();
     setBeginn(d);
@@ -559,6 +560,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.24  2006/03/17 16:23:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.23  2006/01/09 01:40:31  willuhn
  * *** empty log message ***
  *

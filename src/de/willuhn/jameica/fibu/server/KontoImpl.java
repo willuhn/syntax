@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/01/09 01:17:12 $
+ * $Revision: 1.42 $
+ * $Date: 2006/03/17 16:23:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -400,6 +400,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     cal.set(Calendar.HOUR_OF_DAY,0);
     cal.set(Calendar.MINUTE,0);
     cal.set(Calendar.SECOND,0);
+    cal.set(Calendar.MILLISECOND,0);
 
     Date start = cal.getTime();
 
@@ -448,6 +449,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.42  2006/03/17 16:23:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.41  2006/01/09 01:17:12  willuhn
  * *** empty log message ***
  *
