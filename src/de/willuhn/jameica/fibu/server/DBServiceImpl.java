@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.8 $
+ * $Date: 2006/03/27 20:26:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,9 +59,11 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   /**
    * Liefert die Connection.
    * TODO: Boeser Hack, ich weiss. ;)
+   * @return Liefert die Connection.
+   * @throws RemoteException
    * @see de.willuhn.datasource.db.DBServiceImpl#getConnection()
    */
-  public Connection getConnection()
+  public Connection getMyConnection() throws RemoteException
   {
     return super.getConnection();
   }
@@ -110,6 +112,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.8  2006/03/27 20:26:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *

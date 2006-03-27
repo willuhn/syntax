@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.38 $
+ * $Date: 2006/03/27 20:26:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -350,7 +350,7 @@ public class Settings
 
     if (jahr == null)
     {
-      GUI.getStatusBar().setStatusText(i18n.tr("Kein aktives Geschäftsjahr vorhanden"));
+      GUI.getStatusBar().setErrorText(i18n.tr("Kein aktives Geschäftsjahr vorhanden"));
       return;
     }
     try
@@ -363,7 +363,7 @@ public class Settings
         (String)jahr.getAttribute(jahr.getPrimaryAttribute()),
         jahr.isClosed() ? i18n.tr("geschlossen") : "in Bearbeitung"
       };
-      GUI.getStatusBar().setStatusText(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params));
     }
     catch (RemoteException e)
     {
@@ -374,6 +374,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.38  2006/03/27 20:26:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.37  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

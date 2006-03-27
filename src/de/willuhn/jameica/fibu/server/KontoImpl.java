@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/03/17 16:23:28 $
+ * $Revision: 1.43 $
+ * $Date: 2006/03/27 20:26:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,7 +124,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     try
     {
       DBServiceImpl service = (DBServiceImpl) this.getService();
-      stmt = service.getConnection().createStatement();
+      stmt = service.getMyConnection().createStatement();
 
       double haben = 0.0d;
       double soll = 0.0d;
@@ -449,6 +449,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.43  2006/03/27 20:26:53  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.42  2006/03/17 16:23:28  willuhn
  * *** empty log message ***
  *
