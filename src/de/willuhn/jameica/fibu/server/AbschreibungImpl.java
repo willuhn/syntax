@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/08 15:28:41 $
+ * $Revision: 1.9 $
+ * $Date: 2006/05/07 12:11:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,12 +147,13 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
     {
       transactionBegin();
 
+      super.delete();
+
       Logger.info("Lösche zugehörige Abschreibungsbuchung");
       AbschreibungsBuchung b = getBuchung();
       if (b != null)
         b.delete();
 
-      super.delete();
       transactionCommit();
     }
     catch (ApplicationException e)
@@ -215,6 +216,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.9  2006/05/07 12:11:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2006/01/08 15:28:41  willuhn
  * @N Loeschen von Sonderabschreibungen
  *
