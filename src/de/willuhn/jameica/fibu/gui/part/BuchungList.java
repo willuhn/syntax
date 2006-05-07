@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/01/09 01:17:12 $
+ * $Revision: 1.16 $
+ * $Date: 2006/05/07 16:27:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,6 +78,7 @@ public class BuchungList extends TablePart
     });
     setContextMenu(new BuchungListMenu());
     setMulti(true);
+    setRememberOrder(true);
   }
   
   /**
@@ -146,6 +147,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.16  2006/05/07 16:27:37  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2006/01/09 01:17:12  willuhn
  * *** empty log message ***
  *
