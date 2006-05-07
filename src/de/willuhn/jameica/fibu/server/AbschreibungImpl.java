@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/05/07 12:11:04 $
+ * $Revision: 1.10 $
+ * $Date: 2006/05/07 12:11:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,6 +147,8 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
     {
       transactionBegin();
 
+      // Erst die Abschreibung loeschen, weil sonst das Loeschen
+      // der Abschreibungsbuchung fehlschlaegt
       super.delete();
 
       Logger.info("Lösche zugehörige Abschreibungsbuchung");
@@ -216,6 +218,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
+ * Revision 1.10  2006/05/07 12:11:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2006/05/07 12:11:04  willuhn
  * *** empty log message ***
  *
