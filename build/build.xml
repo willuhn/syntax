@@ -126,9 +126,7 @@
 
 		<mkdir dir="${project.zipdir}/lib" />
 		<copy todir="${project.zipdir}/lib">
-			<fileset dir="${lib.dir}">
-        <exclude name="mysql-connector-*.jar" />
-      </fileset>   
+			<fileset dir="${lib.dir}" />
 		</copy>
 
 		<copy failonerror="false" file="${build.dir}/README" tofile="${project.zipdir}/README" />
