@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.43 $
- * $Date: 2006/03/27 20:26:53 $
+ * $Revision: 1.44 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -411,10 +411,10 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     Date end = cal.getTime();
     
-    String function = ((DBService)getService()).getSQLTimestampFunction();
+    DBService db = ((DBService)getService());
 
     DBIterator list = this.getBuchungen(jahr);
-    list.addFilter(function + "(datum) >= " + start.getTime() + " AND " + function + "(datum) <=" + end.getTime());
+    list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime() + " AND " + db.getSQLTimestamp("datum") + " <=" + end.getTime());
     return list;
   }
 
@@ -449,6 +449,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.44  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.43  2006/03/27 20:26:53  willuhn
  * *** empty log message ***
  *

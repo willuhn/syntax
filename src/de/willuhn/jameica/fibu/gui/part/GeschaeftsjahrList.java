@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.7 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class GeschaeftsjahrList extends TablePart
       {
         if (o == null)
           return null;
-        return ((Integer)o).intValue() == 1 ? i18n.tr("Geschlossen") : null;
+        return ((Integer)o).intValue() == 1 ? i18n.tr("Geschlossen") : i18n.tr("Offen");
       }
     });
     setFormatter(new TableFormatter() {
@@ -107,6 +107,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.7  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.6  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

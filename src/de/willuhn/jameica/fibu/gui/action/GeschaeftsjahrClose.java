@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrClose.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/09 01:40:32 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,14 +13,12 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.BuchungsEngine;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.server.BuchungsEngine;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -47,13 +45,11 @@ public class GeschaeftsjahrClose implements Action
 
     try
     {
-      YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Sicher?"));
-      d.setText(i18n.tr("Sind Sie sicher, dass Sie das Geschäftsjahr \"{0}\" abschliessen möchten?\n\n" +
-                        "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der " +
-                        "Konto als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
-      Boolean b = (Boolean) d.open();
-      if (!b.booleanValue())
+      boolean b = Application.getController().getApplicationCallback().askUser(
+          i18n.tr("Sind Sie sicher, dass Sie das Geschäftsjahr \"{0}\" abschliessen möchten?\n\n" +
+          "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der " +
+          "Konto als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
+      if (!b)
         return;
     }
     catch (OperationCanceledException oce)
@@ -72,7 +68,7 @@ public class GeschaeftsjahrClose implements Action
       {
         YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
         d.setTitle(i18n.tr("Abschluss vor Ablauf"));
-        d.setText(i18n.tr("Warnung: Sie schliessen das Geschäftsjahr noch bevor dessen Ende erreicht ist. " +
+        d.setText(i18n.tr("Warnung: Sie schliessen das Geschäftsjahr, noch bevor dessen Ende erreicht ist. " +
             "Sie können anschliessend keine Buchungen mehr darauf erfassen. Sind Sie sicher?"));
         Boolean b = (Boolean) d.open();
         if (!b.booleanValue())
@@ -91,13 +87,17 @@ public class GeschaeftsjahrClose implements Action
     
     try
     {
-      BuchungsEngine.close(jahr);
-      GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr erfolgreich abgeschlossen"));
+      BuchungsEngine engine = (BuchungsEngine) Application.getServiceFactory().lookup(Fibu.class,"engine");
+      engine.close(jahr);
     }
-    catch (RemoteException e)
+    catch (ApplicationException ae)
     {
-      Logger.error("error while closing gj",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
+      throw ae;
+    }
+    catch (Throwable t)
+    {
+      Logger.error("error while closing gj",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"),t);
     }
   }
 
@@ -106,6 +106,9 @@ public class GeschaeftsjahrClose implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrClose.java,v $
+ * Revision 1.6  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.5  2006/01/09 01:40:32  willuhn
  * *** empty log message ***
  *

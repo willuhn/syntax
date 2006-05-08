@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -37,6 +37,9 @@ public class BuchungListe implements Action
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.6  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.5  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

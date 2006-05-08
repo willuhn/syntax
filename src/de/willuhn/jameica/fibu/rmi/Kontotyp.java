@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontotyp.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/09/02 17:35:07 $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -66,6 +66,9 @@ public interface Kontotyp extends DBObject
 
 /*********************************************************************
  * $Log: Kontotyp.java,v $
+ * Revision 1.2  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.1  2005/09/02 17:35:07  willuhn
  * @N Kontotyp
  * @N Betriebsergebnis

@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BetriebsergebnisImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.5 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -107,6 +107,9 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
 
 /*********************************************************************
  * $Log: BetriebsergebnisImpl.java,v $
+ * Revision 1.5  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.4  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

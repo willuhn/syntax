@@ -40,7 +40,7 @@
     #set($buchungen = $!{export.getObjects("buchungen.${konto.Kontonummer}")})
     #foreach($buchung in $buchungen)
 
-      #set($brutto  = $buchung.Betrag)
+      #set($brutto  = $buchung.BruttoBetrag)
       #set($netto   = $math.netto($brutto,$buchung.Steuer))
       <tr>
         <td>$!{dateformat.format(${buchung.Datum})}</td>
@@ -67,22 +67,22 @@
       <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
       <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
       <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("haben"))} ${eur}</td>
-      <td colspan="2">&nbsp;</td>
+      <td colspan="2" style="border-top:1px solid #000000">&nbsp;</td>
     </tr>
   </table>
-  $math.subtract("haben",$math.get("soll"))
+  $math.subtract("soll",$math.get("haben"))
 
 	<br/>
 	<table>
 		<tr>
 		  <td>Summe der Umsätze:</td>
-      <td style="text-align:right">$!{decimalformat.format($math.get("haben"))} ${eur}</td>
+          <td style="text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
 		</tr>
 		#set($anfangsbestand = "")
     #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
     #set($ab = $!{anfangsbestand.toString()})
     #if($ab != "")
-      $math.add("haben",${anfangsbestand})
+      $math.add("soll",${anfangsbestand})
 	    <tr>
 	      <td>+ Anfangsbestand:</td>
         <td style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
@@ -90,7 +90,7 @@
     #end
 		<tr>
 		  <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
-      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("haben"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("soll"))} ${eur}</b></td>
 		</tr>
   </table>
 

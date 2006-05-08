@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.14 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -127,6 +127,9 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.14  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.13  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

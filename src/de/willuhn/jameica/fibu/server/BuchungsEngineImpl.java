@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/BuchungsEngine.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/01/09 01:40:32 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -24,6 +25,7 @@ import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.BuchungsEngine;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
@@ -31,166 +33,216 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
- * Diese Klasse uebernimmt alle Buchungen.
- * ACHTUNG: Sie nimmt keine Aenderungen an der Datenbank vor
- * sondern praepariert lediglich die Buchungs-Objekte. Das Schreiben
- * in die Datenbank muss der Aufrufer selbst.
- * @author willuhn
+ * Implementierung der Buchungsengine.
  */
-public class BuchungsEngine
+public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsEngine
 {
-  private static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+  private I18N i18n = null;
+  private boolean started = false;
 
   /**
-   * Schliesst das Geschaeftsjahr ab.
-   * @param jahr das zu schliessende Geschaeftsjahr.
+   * ct.
    * @throws RemoteException
-   * @throws ApplicationException
    */
-  public static void close(Geschaeftsjahr jahr) throws RemoteException, ApplicationException
+  public BuchungsEngineImpl() throws RemoteException
   {
-    Logger.info("closing geschaeftsjahr " + jahr.getAttribute(jahr.getPrimaryAttribute()));
+    super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BuchungsEngine#close(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public void close(final Geschaeftsjahr jahr) throws RemoteException, ApplicationException
+  {
+    if (jahr == null)
+      throw new ApplicationException(i18n.tr("Kein Geschäftsjahr angegeben"));
 
-    if (jahr.isClosed())
-    {
-      Logger.warn("geschaeftsjahr allready closed");
-      throw new ApplicationException(i18n.tr("Geschäftsjahr wurde bereits abgeschlossen"));
-    }
-    
-    try
-    {
-      Logger.info("Starte Transaktion");
-      jahr.transactionBegin();
-      
-      Mandant m        = jahr.getMandant();
-      DBService db     = Settings.getDBService();
+    Application.getController().start(new BackgroundTask() {
 
-      Logger.info("Buche Abschreibungen für Anlagevermögen");
-      DBIterator list = m.getAnlagevermoegen();
-      while (list.hasNext())
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
+       */
+      public void run(ProgressMonitor monitor) throws ApplicationException
       {
-        Anlagevermoegen av = (Anlagevermoegen) list.next();
-
-        AbschreibungsBuchung buchung = schreibeAb(av,jahr);
-
-        if (buchung == null)
+        try
         {
-          Logger.info("  Ueberspringe " + av.getName() + " - bereits abgeschrieben");
-          continue;
+          monitor.setStatusText(i18n.tr("Schliesse Geschäftsjahr " + jahr.getAttribute(jahr.getPrimaryAttribute())));
+
+          if (jahr.isClosed())
+            throw new ApplicationException(i18n.tr("Geschäftsjahr wurde bereits abgeschlossen"));
         }
-        buchung.store();
+        catch (RemoteException e)
+        {
+          Logger.error("unable to close gj",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
+        }
         
-        Logger.info("  Abschreibung fuer " + av.getName());
-        Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
-        afa.setAnlagevermoegen(av);
-        afa.setBuchung(buchung);
-        afa.store();
-      }
-      
-      // Neues geschaeftsjahr erzeugen
-      Logger.info("Erzeuge neues Geschaeftsjahr");
-      Geschaeftsjahr jahrNeu = (Geschaeftsjahr) db.createObject(Geschaeftsjahr.class,null);
-      
-      jahrNeu.setMandant(m);
-      jahrNeu.setKontenrahmen(jahr.getKontenrahmen());
-      
-      Logger.info("  Berechne Dauer des Geschaeftsjahres");
-      
-      Calendar cal = Calendar.getInstance();
-
-      // Beginn
-      cal.setTime(jahr.getEnde());
-      cal.add(Calendar.DATE,1); // Ein Tag drauf.
-      jahrNeu.setBeginn(cal.getTime());
-      
-      // Ende
-      cal.add(Calendar.MONTH,jahr.getMonate());
-      cal.add(Calendar.DATE,-1); // Ein Tag wieder abziehen
-      jahrNeu.setEnde(cal.getTime());
-
-      Logger.info("  Beginn: " + jahrNeu.getBeginn().toString());
-      Logger.info("  Ende  : " + jahrNeu.getEnde().toString());
-
-      // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
-      String function = db.getSQLTimestampFunction();
-      Logger.info("  Pruefe, ob neues Geschaeftsjahr bereits existiert");
-      DBIterator check = m.getGeschaeftsjahre();
-      check.addFilter(jahrNeu.getBeginn().getTime() + " < " + function + "(ende)");
-      check.addFilter(jahrNeu.getEnde().getTime() + " > " + function + "(beginn)");
-      if (check.hasNext())
-        throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
-
-      jahrNeu.setVorjahr(jahr);
-      jahrNeu.store();
-      
-      // Anfangsbestaende erzeugen
-      // Existierende Anfangsbestaende aus dem Vorjahr brauchen wir nicht
-      // beruecksichtigen, weil sie in k.getSaldo bereits enthalten sind.
-      Logger.info("Erzeuge neue Anfangsbestaende");
-      list = jahr.getKontenrahmen().getKonten();
-      while (list.hasNext())
-      {
-        // Wir wollen den Saldo des alten Jahres
-        Konto k = (Konto) list.next();
-        Kontoart ka = k.getKontoArt();
-        if (ka.getKontoArt() == Kontoart.KONTOART_PRIVAT)
+        
+        
+        try
         {
-          Logger.debug("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto");
-          continue;
-        }
+          monitor.log(i18n.tr("Starte Transaktion"));monitor.addPercentComplete(1);
+          jahr.transactionBegin();
           
-        double saldo = k.getSaldo(jahr);
-        if (saldo == 0.0)
-          continue;
-        
-        // Erzeugen aber einen Anfangsbestand fuers neue Jahr
-        Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
-        ab.setBetrag(saldo);
-        ab.setKonto(k);
-        ab.setGeschaeftsjahr(jahrNeu);
-        ab.store();
-        Logger.info("  [" + k.getKontonummer() + "] " + k.getName() + ": " + saldo);
-      }
-      
-      Logger.info("Schliesse altes Geschaeftsjahr");
-      jahr.setClosed(true);
-      jahr.store();
+          Mandant m        = jahr.getMandant();
+          DBService db     = Settings.getDBService();
 
-      jahr.transactionCommit();
-      Logger.info("Schliesse Transaktion");
-    }
-    catch (RemoteException e)
-    {
-      Logger.info("Rolle Transaktion zurueck");
-      jahr.setClosed(false);
-      jahr.transactionRollback();
-      throw e;
-    }
-    catch (ApplicationException ae)
-    {
-      Logger.info("Rolle Transaktion zurueck");
-      jahr.setClosed(false);
-      jahr.transactionRollback();
-      throw ae;
-    }
-    catch (Throwable t)
-    {
-      Logger.info("Rolle Transaktion zurueck");
-      jahr.setClosed(false);
-      jahr.transactionRollback();
-      Logger.error("error while closing gj",t);
-      throw new RemoteException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"));
-    }
-    finally
-    {
-      Settings.setActiveGeschaeftsjahr(jahr);
-    }
+          monitor.log(i18n.tr("Buche Abschreibungen für Anlagevermögen"));monitor.addPercentComplete(1);
+          DBIterator list = m.getAnlagevermoegen();
+          while (list.hasNext())
+          {
+            Anlagevermoegen av = (Anlagevermoegen) list.next();
+
+            AbschreibungsBuchung buchung = schreibeAb(monitor,av,jahr);
+
+            if (buchung == null)
+            {
+              monitor.log(i18n.tr("  Überspringe " + av.getName() + " - bereits abgeschrieben"));
+              continue;
+            }
+            buchung.store();
+            
+            monitor.log(i18n.tr("  Abschreibung für " + av.getName()));monitor.addPercentComplete(1);
+            Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
+            afa.setAnlagevermoegen(av);
+            afa.setBuchung(buchung);
+            afa.store();
+          }
+          
+          // Neues geschaeftsjahr erzeugen
+          monitor.setStatusText(i18n.tr("Erzeuge neues Geschäftsjahr"));monitor.addPercentComplete(1);
+          Geschaeftsjahr jahrNeu = (Geschaeftsjahr) db.createObject(Geschaeftsjahr.class,null);
+          
+          jahrNeu.setMandant(m);
+          jahrNeu.setKontenrahmen(jahr.getKontenrahmen());
+          
+          monitor.log(i18n.tr("  Berechne Dauer des Geschäftsjahres"));monitor.addPercentComplete(1);
+          
+          Calendar cal = Calendar.getInstance();
+
+          // Beginn
+          cal.setTime(jahr.getEnde());
+          cal.add(Calendar.DATE,1); // Ein Tag drauf.
+          jahrNeu.setBeginn(cal.getTime());
+          
+          // Ende
+          cal.add(Calendar.MONTH,jahr.getMonate());
+          cal.add(Calendar.DATE,-1); // Ein Tag wieder abziehen
+          jahrNeu.setEnde(cal.getTime());
+
+          monitor.log(i18n.tr("  Beginn: " + jahrNeu.getBeginn().toString()));
+          monitor.log(i18n.tr("  Ende  : " + jahrNeu.getEnde().toString()));
+
+          // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
+          monitor.log(i18n.tr("  Prüfe, ob neues Geschäftsjahr bereits existiert"));monitor.addPercentComplete(1);
+          DBIterator check = m.getGeschaeftsjahre();
+          check.addFilter(jahrNeu.getBeginn().getTime() + " < " + db.getSQLTimestamp("ende"));
+          check.addFilter(jahrNeu.getEnde().getTime() + " > " + db.getSQLTimestamp("beginn"));
+          if (check.hasNext())
+            throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
+
+          jahrNeu.setVorjahr(jahr);
+          jahrNeu.store();
+          
+          // Anfangsbestaende erzeugen
+          // Existierende Anfangsbestaende aus dem Vorjahr brauchen wir nicht
+          // beruecksichtigen, weil sie in k.getSaldo bereits enthalten sind.
+          monitor.log(i18n.tr("Erzeuge neue Anfangsbestände"));monitor.addPercentComplete(1);
+          list = jahr.getKontenrahmen().getKonten();
+          while (list.hasNext())
+          {
+            monitor.addPercentComplete(1);
+            
+            // Wir wollen den Saldo des alten Jahres
+            Konto k = (Konto) list.next();
+            Kontoart ka = k.getKontoArt();
+            if (ka.getKontoArt() == Kontoart.KONTOART_PRIVAT)
+            {
+              monitor.log(i18n.tr("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto"));
+              continue;
+            }
+              
+            double saldo = k.getSaldo(jahr);
+            if (saldo == 0.0)
+              continue;
+            
+            // Erzeugen aber einen Anfangsbestand fuers neue Jahr
+            Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
+            ab.setBetrag(saldo);
+            ab.setKonto(k);
+            ab.setGeschaeftsjahr(jahrNeu);
+            ab.store();
+            monitor.log(i18n.tr("  [" + k.getKontonummer() + "] " + k.getName() + ": " + saldo));
+          }
+          
+          monitor.log(i18n.tr("Schliesse altes Geschäftsjahr"));monitor.addPercentComplete(1);
+          jahr.setClosed(true);
+          jahr.store();
+
+          jahr.transactionCommit();
+          monitor.log(i18n.tr("Schliesse Transaktion"));monitor.addPercentComplete(1);
+          monitor.setStatusText(i18n.tr("Geschäftsjahr abgeschlossen"));
+          monitor.setStatus(ProgressMonitor.STATUS_DONE);
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing gj",t);
+          monitor.log(i18n.tr("Rolle Transaktion zurück"));
+          try
+          {
+            jahr.setClosed(false);
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("FATAL, unable to reopen old gj",re);
+          }
+          try
+          {
+            jahr.transactionRollback();
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("FATAL, unable to rollback transaction",re);
+          }
+          
+          if (t instanceof ApplicationException)
+            throw (ApplicationException) t;
+
+          throw new ApplicationException(i18n.tr("Fehler beim Schliessen des Geschäftsjahres"),t);
+        }
+        finally
+        {
+          Settings.setActiveGeschaeftsjahr(jahr);
+        }
+      }
+
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
+       */
+      public void interrupt()
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Der Vorgang kann nicht unterbrochen werden"), StatusBarMessage.TYPE_ERROR));
+      }
+
+      /**
+       * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
+       */
+      public boolean isInterrupted()
+      {
+        return false;
+      }
+    });
   }
   
   /**
@@ -205,13 +257,14 @@ public class BuchungsEngine
    *   afa.setBuchung(buchung);
    *   afa.store();
    * </code>
+   * @param monitor
    * @param av Anlage-Gut.
    * @param jahr Geschaeftsjahr.
    * @return Die erzeugte Abschreibungs-Buchung oder <code>null</code> wenn das Anlage-Gut
    * bereits abgeschrieben ist und keine Abschreibungs-Buchung noetig ist.
    * @throws RemoteException
    */
-  public static AbschreibungsBuchung schreibeAb(Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException
+  private AbschreibungsBuchung schreibeAb(ProgressMonitor monitor, Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException
   {
     double anschaffung = av.getAnschaffungskosten();
     double betrag      = anschaffung / (double) av.getNutzungsdauer();
@@ -224,13 +277,13 @@ public class BuchungsEngine
     String name = i18n.tr("Abschreibung");
     Date datum = av.getAnschaffungsdatum();
 
-    Logger.info("  Abschreibungsbuchung fuer " + av.getName());
+    monitor.log(i18n.tr("  Abschreibungsbuchung für " + av.getName()));monitor.addPercentComplete(1);
 
     
     // GWGs voll abschreiben
     if (anschaffung <= Settings.getGwgWert(jahr) && av.getNutzungsdauer() == 1)
     {
-      Logger.info("    GWG: Schreibe voll ab");
+      monitor.log(i18n.tr("    GWG: Schreibe voll ab"));
       name = i18n.tr("GWG-Abschreibung");
       betrag = anschaffung;
       if (betrag > restwert)
@@ -241,12 +294,12 @@ public class BuchungsEngine
     // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
     if (!gwg && jahr.check(datum))
     {
-      Logger.info("    Anschaffungsjahr: Schreibe anteilig ab");
+      monitor.log(i18n.tr("    Anschaffungsjahr: Schreibe anteilig ab"));monitor.addPercentComplete(1);
       
       Calendar cal = Calendar.getInstance();
       cal.setTime(datum);
 
-      Logger.info("    Pruefe vereinfachte Abschreibungsregel");
+      monitor.log(i18n.tr("    Prüfe vereinfachte Abschreibungsregel"));monitor.addPercentComplete(1);
       int soll = Settings.getGeaenderteHalbjahresAbschreibung();
       int ist = cal.get(Calendar.YEAR);
 
@@ -254,7 +307,7 @@ public class BuchungsEngine
 
       if (ist < soll)
       {
-        Logger.info("    Anlagegut wurde vor " + soll + " angeschafft. Es gilt die Halbjahresregel");
+        monitor.log(i18n.tr("    Anlagegut wurde vor " + soll + " angeschafft. Es gilt die Halbjahresregel"));monitor.addPercentComplete(1);
         if (cal.get(Calendar.MONTH) < Calendar.JULY)
           months = 12;
         else
@@ -265,7 +318,7 @@ public class BuchungsEngine
         months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
       }
       
-      Logger.info("    Berechne anteilige Abschreibung fuer " + months + " Monate");
+      monitor.log(i18n.tr("    Berechne anteilige Abschreibung für " + months + " Monate"));monitor.addPercentComplete(1);
       name = i18n.tr("Anteilige Abschreibung für {0} Monate",""+months);
       betrag = (betrag / 12) * months; // Klammern nur der Optik wegen ;)
     }
@@ -273,7 +326,7 @@ public class BuchungsEngine
     // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
     if (!gwg && betrag >= restwert)
     {
-      Logger.info("    Restwertbuchung");
+      monitor.log(i18n.tr("    Restwertbuchung"));monitor.addPercentComplete(1);
       name = i18n.tr("Restwertbuchung");
       betrag = restwert;
     }
@@ -299,17 +352,9 @@ public class BuchungsEngine
   }
   
   /**
-   * Bucht die uebergebene Buchung.
-   * Die Funktion erkennt selbstaendig, ob weitere Hilfs-Buchungen noetig sind
-   * und liefert diese ungespeichert als Array zurueck.
-   * Hinweis: Die Funktion speichert die Hilfsbuchungen nicht in der Datenbank sondern erzeugt
-   * nur die Objekte. Das Speichern ist Sache des Aufrufers.
-   * @param buchung die zu buchende Buchung.
-   * @return Liste der noch zu speichernden Hilfsbuchungen oder null wenn keine Hilfsbuchungen noetig sind.
-   * @throws RemoteException
-   * @throws ApplicationException
+   * @see de.willuhn.jameica.fibu.rmi.BuchungsEngine#buche(de.willuhn.jameica.fibu.rmi.Buchung)
    */
-  public static HilfsBuchung[] buche(Buchung buchung) throws RemoteException, ApplicationException
+  public HilfsBuchung[] buche(Buchung buchung) throws RemoteException, ApplicationException
   {
     if (!buchung.isNewObject())
     {
@@ -378,10 +423,62 @@ public class BuchungsEngine
     return new HilfsBuchung[]{hb};
   }
 
+  /**
+   * @see de.willuhn.datasource.Service#start()
+   */
+  public void start() throws RemoteException
+  {
+    if (isStarted())
+    {
+      Logger.warn("engine allready started, skipping request");
+      return;
+    }
+    this.started = true;
+  }
+
+  /**
+   * @see de.willuhn.datasource.Service#isStarted()
+   */
+  public boolean isStarted() throws RemoteException
+  {
+    return this.started;
+  }
+
+  /**
+   * @see de.willuhn.datasource.Service#isStartable()
+   */
+  public boolean isStartable() throws RemoteException
+  {
+    return !isStarted();
+  }
+
+  /**
+   * @see de.willuhn.datasource.Service#stop(boolean)
+   */
+  public void stop(boolean arg0) throws RemoteException
+  {
+    if (!isStarted())
+    {
+      Logger.warn("engine not started, skipping request");
+      return;
+    }
+    this.started = false;
+  }
+
+  /**
+   * @see de.willuhn.datasource.Service#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    return i18n.tr("Buchungs-Engine");
+  }
 }
 
 /*********************************************************************
- * $Log: BuchungsEngine.java,v $
+ * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.1  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.40  2006/01/09 01:40:32  willuhn
  * *** empty log message ***
  *

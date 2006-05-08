@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungsBuchungImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -69,6 +69,9 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
 
 /*********************************************************************
  * $Log: AbschreibungsBuchungImpl.java,v $
+ * Revision 1.3  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.2  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

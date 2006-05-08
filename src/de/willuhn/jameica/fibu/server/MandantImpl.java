@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/01/08 15:28:41 $
+ * $Revision: 1.26 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -361,6 +361,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.26  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.25  2006/01/08 15:28:41  willuhn
  * @N Loeschen von Sonderabschreibungen
  *

@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Mandant.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/01/04 00:53:48 $
+ * $Revision: 1.13 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -177,6 +177,9 @@ public interface Mandant extends DBObject
 
 /*********************************************************************
  * $Log: Mandant.java,v $
+ * Revision 1.13  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.12  2006/01/04 00:53:48  willuhn
  * @B bug 166 Ausserplanmaessige Abschreibungen
  *

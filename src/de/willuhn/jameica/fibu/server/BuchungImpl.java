@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.47 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.48 $
+ * $Date: 2006/05/08 22:44:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,11 +16,14 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.BuchungsEngine;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -66,7 +69,8 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     try {
       transactionBegin();
 
-      HilfsBuchung[] hbs = BuchungsEngine.buche(this);
+      BuchungsEngine engine = (BuchungsEngine) Application.getServiceFactory().lookup(Fibu.class,"engine");
+      HilfsBuchung[] hbs = engine.buche(this);
 
       super.store();
 
@@ -246,6 +250,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.48  2006/05/08 22:44:18  willuhn
+ * @N Debugging
+ *
  * Revision 1.47  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung
