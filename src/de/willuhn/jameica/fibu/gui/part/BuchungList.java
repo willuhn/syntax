@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/05/07 16:40:12 $
+ * $Revision: 1.18 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -34,8 +35,10 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -118,6 +121,28 @@ public class BuchungList extends TablePart
     setContextMenu(new BuchungListMenu());
     setMulti(true);
     setRememberOrder(true);
+    
+    setFormatter(new TableFormatter() {
+      public void format(TableItem item)
+      {
+        if (item == null)
+          return;
+        Buchung b = (Buchung) item.getData();
+        if (b == null)
+          return;
+        try
+        {
+          if (b.isGeprueft())
+            item.setForeground(Color.SUCCESS.getSWTColor());
+          else
+            item.setForeground(Color.WIDGET_FG.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to check buchung",e);
+        }
+      }
+    });
   }
 
   /**
@@ -299,6 +324,10 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.18  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.17  2006/05/07 16:40:12  willuhn
  * @N Suchfilter
  *

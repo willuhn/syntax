@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.29 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.30 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,32 +89,6 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
-    ////////////////////////////////////////////////////////////////////////////
-    // TODO WIEDER ENTFERNEN, WENN RELEASED
-    // Damit wir die Updates nicht immer haendisch nachziehen muessen, rufen wir
-    // bei einem Fehler das letzte Update-Script nochmal auf.
-    if (!Application.inClientMode())
-    {
-      try
-      {
-        de.willuhn.jameica.system.Settings s = new de.willuhn.jameica.system.Settings(Fibu.class);
-        double size = s.getDouble("sql-update-size",-1);
-        
-        File f = new File(getResources().getPath() + "/sql/update.sql");
-        
-        if (f.exists() && f.length() > 1 && f.length() != size)
-        {
-          EmbeddedDatabase db = new EmbeddedDatabase(getResources().getWorkPath() + "/db","fibu","fibu");
-          db.executeSQLScript(f);
-          s.setAttribute("sql-update-size",(double)f.length());
-        }
-      }
-      catch (Exception e2)
-      {
-        e2.printStackTrace();
-      }
-    }
-    ////////////////////////////////////////////////////////////////////////////
   }
 
   /**
@@ -168,11 +142,57 @@ public class Fibu extends AbstractPlugin
    */
   public void update(double oldVersion) throws ApplicationException
   {
+//    if (Application.inClientMode())
+//      return; // Kein Update im Client-Mode noetig.
+//
+//    Logger.info("starting update process for syntax");
+//
+//    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+//    df.setMaximumFractionDigits(1);
+//    df.setMinimumFractionDigits(1);
+//    df.setGroupingUsed(false);
+//
+//    double newVersion = oldVersion + 0.1d;
+//
+//    try
+//    {
+//      File dbDir = new File(getResources().getWorkPath(),"db");
+//
+//      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
+//      File f = new File(getResources().getPath() + "/sql/update_" + 
+//          df.format(oldVersion) + "-" + 
+//          df.format(newVersion) + ".sql");
+//
+//      Logger.info("checking sql file " + f.getAbsolutePath());
+//      while (f.exists())
+//      {
+//        Logger.info("  file exists, executing");
+//        db.executeSQLScript(f);
+//        oldVersion = newVersion;
+//        newVersion = oldVersion + 0.1d;
+//        f = new File(getResources().getPath() + "/sql/update_" + 
+//                     df.format(oldVersion) + "-" + 
+//                     df.format(newVersion) + ".sql");
+//      }
+//      Logger.info("Update completed");
+//    }
+//    catch (ApplicationException ae)
+//    {
+//      throw ae;
+//    }
+//    catch (Exception e)
+//    {
+//      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
+//    }
   }
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.30  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.29  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

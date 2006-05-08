@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/01/03 23:58:36 $
+ * $Revision: 1.40 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -59,7 +61,13 @@ public class BuchungNeu extends AbstractView
     kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
     kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
     kontoGroup.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
-    kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("In Anlagevermögen übernehmen"));
+    
+    Buchung b = control.getBuchung();
+    Anlagevermoegen av = b.getAnlagevermoegen();
+    if (av != null)
+      kontoGroup.addLabelPair(i18n.tr("Zugehöriges Anlagegut"), control.getAnlageVermoegenLink());
+    else if (b.isNewObject())
+      kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("In Anlagevermögen übernehmen"));
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
@@ -105,6 +113,10 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.40  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.39  2006/01/03 23:58:36  willuhn
  * @N Afa- und GWG-Handling
  *

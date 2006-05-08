@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/01/06 15:17:08 $
+ * $Revision: 1.18 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,14 +16,20 @@ package de.willuhn.jameica.fibu.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -33,6 +39,7 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
@@ -66,6 +73,8 @@ public class AnlagevermoegenControl extends AbstractControl
   private KontoInput konto       = null;
   private KontoInput afaKonto    = null;
   private DialogInput datum      = null;
+  
+  private Input buchungLink      = null;
   
   private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(AnfangsbestandControl.class);
 
@@ -292,6 +301,83 @@ public class AnlagevermoegenControl extends AbstractControl
   }
 
   /**
+   * Liefert ein Label mit der Bezeichnung der ggf zugehoerigen Buchung samt Link zum Oeffnen.
+   * @return Label mit Buchung.
+   */
+  public Input getBuchungLink()
+  {
+    if (this.buchungLink != null)
+      return this.buchungLink;
+    
+    this.buchungLink = new BuchungLink();
+    return this.buchungLink;
+  }
+  
+  /**
+   * Hilfsklasse.
+   */
+  private class BuchungLink extends ButtonInput
+  {
+    private BuchungLink()
+    {
+      addButtonListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            Buchung b = getAnlagevermoegen().getBuchung();
+            if (b == null)
+              return;
+            new BuchungNeu().handleAction(b);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to load buchung",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    public Control getClientControl(Composite parent)
+    {
+      Label label = GUI.getStyleFactory().createLabel(parent,SWT.NONE);
+      try
+      {
+        Buchung b = getAnlagevermoegen().getBuchung();
+        if (b != null)
+          label.setText(b.getText());
+        else
+          label.setText(i18n.tr("keine zugehörige Buchung verfügbar"));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to display buchung",e);
+      }
+      return label;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    public Object getValue()
+    {
+      return null;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    public void setValue(Object value)
+    {
+    }
+    
+  }
+
+  /**
    * Speichert das Anlagevermoegen.
    */
   public void handleStore()
@@ -435,6 +521,10 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.18  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.17  2006/01/06 15:17:08  willuhn
  * @C Abschreibungskonto
  *

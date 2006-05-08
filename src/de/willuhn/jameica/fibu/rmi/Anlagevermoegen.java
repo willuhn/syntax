@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/01/04 17:59:11 $
+ * $Revision: 1.11 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,6 +65,20 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setAnschaffungsDatum(Date d) throws RemoteException;
+  
+  /**
+   * Liefert eine optionale Buchung, ueber die das Anlagegut in den Bestand gelangt ist.
+   * @return Buchung.
+   * @throws RemoteException
+   */
+  public Buchung getBuchung() throws RemoteException;
+  
+  /**
+   * Speichert eine optionale Buchung, ueber die das Anlagegut in den Bestand gelangt ist.
+   * @param buchung Buchung.
+   * @throws RemoteException
+   */
+  public void setBuchung(Buchung buchung) throws RemoteException;
   
   /**
    * Liefert die Nutzungsdauer fuer die Abschreibung in Jahren.
@@ -188,6 +202,10 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.11  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.10  2006/01/04 17:59:11  willuhn
  * @B bug 171
  *

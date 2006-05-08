@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/04 00:53:48 $
+ * $Revision: 1.9 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenAbschreiben;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
 import de.willuhn.jameica.fibu.gui.controller.AnlagevermoegenControl;
 import de.willuhn.jameica.fibu.gui.part.AbschreibungList;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -57,6 +58,10 @@ public class AnlagevermoegenNeu extends AbstractView
     group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
     group.addLabelPair(i18n.tr("Anschaffungskosten (netto)"),   control.getKosten());
+
+    Buchung buchung = control.getAnlagevermoegen().getBuchung();
+    if (buchung != null)
+      group.addLabelPair(i18n.tr("Zugehörige Buchung"), control.getBuchungLink());
 
     Container afa = new LabelGroup(getParent(),i18n.tr("Abschreibung"));
     afa.addLabelPair(i18n.tr("Abschreibungskonto"),           control.getAbschreibungsKonto());
@@ -104,6 +109,10 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.9  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.8  2006/01/04 00:53:48  willuhn
  * @B bug 166 Ausserplanmaessige Abschreibungen
  *

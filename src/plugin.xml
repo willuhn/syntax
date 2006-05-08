@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="syntax" version="1.1">
+<plugin name="syntax" version="1.2">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>http://www.willuhn.de/projects/syntax</url>

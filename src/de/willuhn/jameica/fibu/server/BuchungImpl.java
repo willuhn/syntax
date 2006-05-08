@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2006/01/08 15:28:40 $
+ * $Revision: 1.47 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -140,6 +141,15 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
         HilfsBuchung b = (HilfsBuchung) i.next();
         b.delete();
       }
+      
+      // Falls mit der Buchung ein Anlagegenstand erzeugt wurde, muessen
+      // wir den Link loeschen.
+      Anlagevermoegen av = getAnlagevermoegen();
+      if (av != null)
+      {
+        av.setBuchung(null);
+        av.store();
+      }
       super.delete();
       transactionCommit();
     }
@@ -202,11 +212,44 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     this.insertCheck();
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#isGeprueft()
+   */
+  public boolean isGeprueft() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("geprueft");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setGeprueft(boolean)
+   */
+  public void setGeprueft(boolean b) throws RemoteException
+  {
+    setAttribute("geprueft",new Integer(b ? 1 : 0));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getAnlagevermoegen()
+   */
+  public Anlagevermoegen getAnlagevermoegen() throws RemoteException
+  {
+    DBIterator i = Settings.getDBService().createList(Anlagevermoegen.class);
+    i.addFilter("buchung_id = " + this.getID());
+    if (i.hasNext())
+      return (Anlagevermoegen) i.next();
+    return null;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.47  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.46  2006/01/08 15:28:40  willuhn
  * @N Loeschen von Sonderabschreibungen
  *

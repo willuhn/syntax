@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.64 $
- * $Date: 2006/01/04 17:05:32 $
+ * $Revision: 1.65 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,11 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
@@ -39,6 +43,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.DialogInput;
@@ -75,6 +80,7 @@ public class BuchungControl extends AbstractControl
   private KontoInput habenKontoAuswahl  = null;
   
   private CheckboxInput anlageVermoegen = null;
+  private Input anlagevermoegenLink     = null;
   
   private I18N i18n;
 
@@ -271,19 +277,93 @@ public class BuchungControl extends AbstractControl
    * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob zu der Buchung
    * gleich ein Datensatz im Anlagevermoegen angelegt werden soll.
    * @return Checkbox.
-   * @throws RemoteException
    */
-  public CheckboxInput getAnlageVermoegen() throws RemoteException
+  public CheckboxInput getAnlageVermoegen()
   {
     if (this.anlageVermoegen != null)
       return this.anlageVermoegen;
     this.anlageVermoegen = new CheckboxInput(false);
     this.anlageVermoegen.disable();
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      anlageVermoegen.disable();
     return this.anlageVermoegen;
   }
   
+  /**
+   * Liefert ein Label mit der Bezeichnung des ggf zugehoerigen Anlagegutes samt Link zum Oeffnen.
+   * @return Label mit AV.
+   */
+  public Input getAnlageVermoegenLink()
+  {
+    if (this.anlagevermoegenLink != null)
+      return this.anlagevermoegenLink;
+    
+    this.anlagevermoegenLink = new AVLink();
+    return this.anlagevermoegenLink;
+  }
+  
+  /**
+   * Hilfsklasse.
+   */
+  private class AVLink extends ButtonInput
+  {
+    private AVLink()
+    {
+      addButtonListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          try
+          {
+            Anlagevermoegen av = getBuchung().getAnlagevermoegen();
+            if (av == null)
+              return;
+            new AnlagevermoegenNeu().handleAction(av);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to load av",e);
+          }
+        }
+      });
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.ButtonInput#getClientControl(org.eclipse.swt.widgets.Composite)
+     */
+    public Control getClientControl(Composite parent)
+    {
+      Label label = GUI.getStyleFactory().createLabel(parent,SWT.NONE);
+      try
+      {
+        Anlagevermoegen av = getBuchung().getAnlagevermoegen();
+        if (av != null)
+          label.setText(av.getName());
+        else
+          label.setText(i18n.tr("kein Anlage-Gegenstand verfügbar"));
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to display av",e);
+      }
+      return label;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#getValue()
+     */
+    public Object getValue()
+    {
+      return null;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.input.Input#setValue(java.lang.Object)
+     */
+    public void setValue(Object value)
+    {
+    }
+    
+  }
+
   /**
 	 * Liefert das Eingabe-Feld fuer die Belegnummer.
 	 * @return Eingabe-Feld.
@@ -434,6 +514,7 @@ public class BuchungControl extends AbstractControl
         av.setKonto(getBuchung().getSollKonto());
         av.setName(getBuchung().getText());
         av.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+        av.setBuchung(getBuchung());
         new AnlagevermoegenNeu().handleAction(av);
       }
       else if (startNew)
@@ -675,6 +756,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.65  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.64  2006/01/04 17:05:32  willuhn
  * @B bug 170
  *

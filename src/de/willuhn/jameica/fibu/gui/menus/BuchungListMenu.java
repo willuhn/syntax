@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,12 +15,15 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
+import de.willuhn.jameica.fibu.gui.action.BuchungGeprueft;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
+import de.willuhn.jameica.fibu.gui.action.BuchungUnGeprueft;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -39,6 +42,11 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new BuchungDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung"), new BNeu()));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    
+    // TODO: Die farbliche Aenderung wird in der Tabelle nicht sofort uebernommen
+    this.addItem(new GeprueftItem(i18n.tr("als geprüft markieren"), new BuchungGeprueft(),false));
+    this.addItem(new GeprueftItem(i18n.tr("als ungeprüft markieren"), new BuchungUnGeprueft(),true));
   }
   
   /**
@@ -66,6 +74,45 @@ public class BuchungListMenu extends ContextMenu
   }
 
   /**
+   * Ueberschrieben, um zu pruefen, ob die Buchung als geprueft oder ungeprueft markiert werden kann.
+   */
+  private static class GeprueftItem extends GJCheckedContextMenuItem
+  {
+    private boolean geprueft = false;
+    
+    /**
+     * @param text
+     * @param action
+     * @param geprueft
+     */
+    private GeprueftItem(String text, Action action, boolean geprueft)
+    {
+      super(text,action);
+      this.geprueft = geprueft;
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o instanceof Buchung)
+      {
+        try
+        {
+          Buchung b = (Buchung) o;
+          return super.isEnabledFor(o) && ((b.isGeprueft() && geprueft) || (!b.isGeprueft() && !geprueft));
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to check buchung",e);
+        }
+      }
+      return super.isEnabledFor(o);
+    }
+  }
+
+  /**
    * Erzeugt immer eine neue Buchung - unabhaengig vom Kontext.
    */
   private static class BNeu extends BuchungNeu
@@ -84,6 +131,10 @@ public class BuchungListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungListMenu.java,v $
+ * Revision 1.4  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.3  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/01/08 15:28:41 $
+ * $Revision: 1.17 $
+ * $Date: 2006/05/08 15:41:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -119,6 +120,22 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getBuchung()
+   */
+  public Buchung getBuchung() throws RemoteException
+  {
+    return (Buchung) getAttribute("buchung_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setBuchung(de.willuhn.jameica.fibu.rmi.Buchung)
+   */
+  public void setBuchung(Buchung buchung) throws RemoteException
+  {
+    setAttribute("buchung_id",buchung);
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getNutzungsdauer()
    */
   public int getNutzungsdauer() throws RemoteException
@@ -178,6 +195,8 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   {
     if ("mandant_id".equals(arg0))
       return Mandant.class;
+    if ("buchung_id".equals(arg0))
+      return Buchung.class;
     if ("konto_id".equals(arg0))
       return Konto.class;
     if ("k_abschreibung_id".equals(arg0))
@@ -447,6 +466,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.17  2006/05/08 15:41:57  willuhn
+ * @N Buchungen als geprueft/ungeprueft markieren
+ * @N Link Anlagevermoegen -> Buchung
+ *
  * Revision 1.16  2006/01/08 15:28:41  willuhn
  * @N Loeschen von Sonderabschreibungen
  *

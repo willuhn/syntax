@@ -51,6 +51,7 @@ CREATE TABLE buchung (
   steuer double,
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
+  geprueft int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -134,6 +135,7 @@ CREATE TABLE anlagevermoegen (
   k_abschreibung_id int(10) NOT NULL,
   konto_id int(10) NULL,
   nutzungsdauer int(2) NOT NULL,
+  buchung_id int(10) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
@@ -183,6 +185,7 @@ CREATE INDEX idx_gj_self              ON geschaeftsjahr(vorjahr_id);
 CREATE INDEX idx_av_mandant           ON anlagevermoegen(mandant_id);
 CREATE INDEX idx_av_konto             ON anlagevermoegen(konto_id);
 CREATE INDEX idx_av_k_abschreibung    ON anlagevermoegen(k_abschreibung_id);
+CREATE INDEX idx_av_buchung           ON anlagevermoegen(buchung_id);
 
 CREATE INDEX idx_abschreibung_av      ON abschreibung(av_id);
 CREATE INDEX idx_abschreibung_buchung ON abschreibung(buchung_id);
@@ -217,6 +220,7 @@ ALTER TABLE konto_ab ADD CONSTRAINT fk_kontoab_gj FOREIGN KEY (geschaeftsjahr_id
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
 ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_abschreibung FOREIGN KEY (k_abschreibung_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE anlagevermoegen ADD CONSTRAINT fk_av_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
 
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
 ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id) DEFERRABLE;
