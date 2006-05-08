@@ -72,26 +72,26 @@
   </table>
   $math.subtract("soll",$math.get("haben"))
 
-	<br/>
-	<table>
-		<tr>
-		  <td>Summe der Umsätze:</td>
-          <td style="text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
-		</tr>
-		#set($anfangsbestand = "")
+  <br/>
+  <table>
+    <tr>
+      <td>Summe der Umsätze:</td>
+      <td style="text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
+    </tr>
+    #set($anfangsbestand = "")
     #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
     #set($ab = $!{anfangsbestand.toString()})
     #if($ab != "")
       $math.add("soll",${anfangsbestand})
-	    <tr>
-	      <td>+ Anfangsbestand:</td>
+      <tr>
+        <td>+ Anfangsbestand:</td>
         <td style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
       </tr>
     #end
-		<tr>
-		  <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
+    <tr>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
       <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("soll"))} ${eur}</b></td>
-		</tr>
+    </tr>
   </table>
 
   <br/><br/><br/>

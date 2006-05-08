@@ -110,7 +110,6 @@
         Finanzamt: $!{mandant.Finanzamt.Name}
       </td>
     </tr>
-    <tr>
   </table>
   
   <br/><br/>
