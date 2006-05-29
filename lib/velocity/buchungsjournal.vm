@@ -25,7 +25,7 @@ $math.reset("brutto")
     <tr>
       <td>$!{dateformat.format(${jahr.Beginn})}</td>
       <td style="text-align:right">&nbsp;</td>
-      <td>$!{konto.Kontonummer} [$!{konto.Name}]</td>
+      <td>$!{konto.Kontonummer}</td>
       <td style="width:70%">Anfangsbestands-Buchung</td>
       <td style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
       <td style="text-align:right">&nbsp;</td>
@@ -47,12 +47,12 @@ $math.reset("brutto")
     <tr>
       <td>$!{dateformat.format(${buchung.Datum})}</td>
       <td style="text-align:right">$!{buchung.Belegnummer}</td>
-      <td>$!{konto.Kontonummer} [$!{konto.Name}]</td>
+      <td>$!{konto.Kontonummer}</td>
       <td style="width:70%">$!{buchung.Text}</td>
       <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
       <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
       <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
-      <td>$!{gegen.Kontonummer} [$!{gegen.Name}]</td>
+      <td>$!{gegen.Kontonummer}</td>
   
       $math.add("netto",${netto})
       $math.add("steuer",${steuer})
@@ -65,7 +65,7 @@ $math.reset("brutto")
   </tr>
 
   <tr>
-    <th colspan="3">Buchungen gesamt: ${count}</th>
+    <th colspan="3" style="white-space:nowrap;">Buchungen gesamt: ${count}</th>
     <th>Summen:</th>
     <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))} ${eur}</th>
     <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))} ${eur}</th>

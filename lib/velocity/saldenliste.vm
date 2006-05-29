@@ -13,8 +13,8 @@
     <tr>
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
-      #set($ab = $konto.getAnfangsbestand(${jahr}))
-      #if($ab)
+      #if($konto.getAnfangsbestand(${jahr}))
+        #set($ab = $konto.getAnfangsbestand(${jahr}))
         <td style="text-align:right">$!{decimalformat.format(${ab.Betrag})} ${eur}</td>
       #else
         <td>&nbsp;</td>
@@ -25,6 +25,6 @@
     </tr>
 	#end
 	<tr>
-	  <td colspan="5" style="border-top:1px solid #000000;">&nbsp;</td>
+      <td colspan="5" style="border-top:1px solid #000000;border-bottom:2px solid #000000">Ende der Summen- und Saldenliste</td>
 	</tr>
 </table>

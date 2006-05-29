@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.48 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.49 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -217,23 +217,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchung#isGeprueft()
-   */
-  public boolean isGeprueft() throws RemoteException
-  {
-    Integer i = (Integer) getAttribute("geprueft");
-    return i != null && i.intValue() == 1;
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchung#setGeprueft(boolean)
-   */
-  public void setGeprueft(boolean b) throws RemoteException
-  {
-    setAttribute("geprueft",new Integer(b ? 1 : 0));
-  }
-
-  /**
    * @see de.willuhn.jameica.fibu.rmi.Buchung#getAnlagevermoegen()
    */
   public Anlagevermoegen getAnlagevermoegen() throws RemoteException
@@ -250,6 +233,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.49  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.48  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.44 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.45 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,6 +30,7 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -118,70 +117,34 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     if (getID() == null || getID().length() == 0)
       return 0;
 
+    double soll = 0.0d;
+    double haben = 0.0d;
+
+    int kontoArt = getKontoArt().getKontoArt();
     
-    Statement stmt = null;
-    ResultSet rs   = null;
-    try
+    DBIterator buchungen = getBuchungen(jahr);
+    while (buchungen.hasNext())
     {
-      DBServiceImpl service = (DBServiceImpl) this.getService();
-      stmt = service.getMyConnection().createStatement();
-
-      double haben = 0.0d;
-      double soll = 0.0d;
-
-      // Haben-Seite
-      String sql = "select sum(betrag) as b from buchung " +
-        " where geschaeftsjahr_id = "+ jahr.getID() + 
-        " and habenkonto_id = " + this.getID();
-      rs = stmt.executeQuery(sql);
-      if (rs.next())
-        haben = rs.getDouble("b");
-
-      // Soll-Seite
-      sql = "select sum(betrag) as b from buchung " +
-      " where geschaeftsjahr_id = "+ jahr.getID() + 
-      " and sollkonto_id = " + this.getID();
-      rs = stmt.executeQuery(sql);
-      if (rs.next())
-        soll = rs.getDouble("b");
-
-      int art = getKontoArt().getKontoArt();
-      
-      // TODO Ist das hier richtig?
-      if (art == Kontoart.KONTOART_ERLOES)
-        return haben - soll;
-      return soll - haben;
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while closing sql statement",e);
-      throw new RemoteException(e.toString());
-    }
-    finally
-    {
-      if (rs != null)
+      Transfer t = (Transfer) buchungen.next();
+      if ((t instanceof Buchung) && (kontoArt == Kontoart.KONTOART_GELD || kontoArt == Kontoart.KONTOART_PRIVAT))
       {
-        try
-        {
-          rs.close();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("error while closing resultset",t);
-        }
+        Buchung b = (Buchung) t;
+        if (b.getSollKonto().equals(this))
+          soll += b.getBruttoBetrag();
+        else
+          haben += b.getBruttoBetrag();
       }
-      if (stmt != null)
+      else
       {
-        try
-        {
-          stmt.close();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("error while closing sql statement",t);
-        }
+        if (t.getSollKonto().equals(this))
+          soll += t.getBetrag();
+        else
+          haben += t.getBetrag();
       }
     }
+    if (kontoArt == Kontoart.KONTOART_ERLOES)
+      return haben - soll;
+    return soll - haben;
   }
 
   /**
@@ -449,6 +412,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.45  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.44  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

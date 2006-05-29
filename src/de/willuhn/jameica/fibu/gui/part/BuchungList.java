@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.20 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
-import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -128,7 +128,7 @@ public class BuchungList extends TablePart
       {
         if (item == null)
           return;
-        Buchung b = (Buchung) item.getData();
+        BaseBuchung b = (BaseBuchung) item.getData();
         if (b == null)
           return;
         try
@@ -188,7 +188,7 @@ public class BuchungList extends TablePart
     list.begin();
     while (list.hasNext())
     {
-      Buchung a = (Buchung) list.next();
+      BaseBuchung a = (BaseBuchung) list.next();
       buchungen.add(a);
     }
   }
@@ -249,7 +249,7 @@ public class BuchungList extends TablePart
             // Erstmal alle rausschmeissen
             removeAll();
 
-            Buchung a = null;
+            BaseBuchung a = null;
 
             // Wir holen uns den aktuellen Text
             String text = (String) search.getValue();
@@ -259,7 +259,7 @@ public class BuchungList extends TablePart
 
             for (int i=0;i<buchungen.size();++i)
             {
-              a = (Buchung) buchungen.get(i);
+              a = (BaseBuchung) buchungen.get(i);
 
               // Was zum Filtern da?
               if (empty)
@@ -325,6 +325,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.20  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.19  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

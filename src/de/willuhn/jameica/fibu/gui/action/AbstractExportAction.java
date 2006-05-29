@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AbstractExportAction.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/10/17 22:59:38 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
@@ -40,6 +41,8 @@ public abstract class AbstractExportAction implements ExportAction
   
   private Date start = null;
   private Date end = null;
+  private Konto startKonto = null;
+  private Konto endKonto   = null;
   
   /**
    * @see de.willuhn.jameica.fibu.gui.action.ExportAction#storeTo(java.lang.String)
@@ -124,11 +127,46 @@ public abstract class AbstractExportAction implements ExportAction
   {
     this.start = d;
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getEndKonto()
+   */
+  public Konto getEndKonto()
+  {
+    return this.endKonto;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getStartKonto()
+   */
+  public Konto getStartKonto()
+  {
+    return this.startKonto;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#setEndKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setEndKonto(Konto konto)
+  {
+    this.endKonto = konto;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#setStartKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setStartKonto(Konto konto)
+  {
+    this.startKonto = konto;
+  }
 }
 
 
 /*********************************************************************
  * $Log: AbstractExportAction.java,v $
+ * Revision 1.4  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.3  2005/10/17 22:59:38  willuhn
  * @B bug 135
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/04 17:59:11 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,10 +24,13 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.ExportAction;
+import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -53,6 +56,9 @@ public class AuswertungControl extends AbstractControl
   private Input jahr          = null;
   private Input start         = null;
   private Input end           = null;
+  
+  private Input startKonto    = null;
+  private Input endKonto      = null;
   
   /**
    * @param view
@@ -232,6 +238,42 @@ public class AuswertungControl extends AbstractControl
   }
   
   /**
+   * Liefert das Start-Konto, bei dem die Auswertung beginnen soll.
+   * @return Start-Konto.
+   * @throws RemoteException
+   */
+  public Input getStartKonto() throws RemoteException
+  {
+    if (this.startKonto != null)
+      return this.startKonto;
+
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    DBIterator list = jahr.getKontenrahmen().getKonten();
+    list.setOrder("order by kontonummer");
+    
+    this.startKonto = new KontoInput((Konto) list.next());
+    return this.startKonto;
+  }
+  
+  /**
+   * Liefert das End-Konto, bei dem die Auswertung enden soll.
+   * @return End-Konto.
+   * @throws RemoteException
+   */
+  public Input getEndKonto() throws RemoteException
+  {
+    if (this.endKonto != null)
+      return this.endKonto;
+
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    DBIterator list = jahr.getKontenrahmen().getKonten();
+    list.setOrder("order by kontonummer desc");
+    
+    this.endKonto = new KontoInput((Konto) list.next());
+    return this.endKonto;
+  }
+
+  /**
    * Fuehrt die ausgewaehlte Auswertung aus.
    */
   public void handleExecute()
@@ -242,6 +284,8 @@ public class AuswertungControl extends AbstractControl
       ExportAction action = o.action;
       action.setStart((Date)getStart().getValue());
       action.setEnd((Date)getEnd().getValue());
+      action.setStartKonto((Konto) getStartKonto().getValue());
+      action.setEndKonto((Konto) getEndKonto().getValue());
       action.handleAction(getJahr().getValue());
     }
     catch (ApplicationException ae)
@@ -343,6 +387,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.4  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.3  2006/01/04 17:59:11  willuhn
  * @B bug 171
  *

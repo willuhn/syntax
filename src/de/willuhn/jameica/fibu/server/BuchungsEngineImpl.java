@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -357,6 +357,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
    */
   public HilfsBuchung[] buche(Buchung buchung) throws RemoteException, ApplicationException
   {
+    // Hilfsbuchungen loeschen
     if (!buchung.isNewObject())
     {
       DBIterator existing = buchung.getHilfsBuchungen();
@@ -376,23 +377,12 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     }
 
     // Der zu verwendende Steuersatz
-    Steuer s = sKonto.getSteuer();
-    boolean steuerSoll = true;
+    Steuer sSteuer = sKonto.getSteuer();
+    Steuer hSteuer = hKonto.getSteuer();
 
-    // wir nehmen das Steuerkonto vom Haben-Konto
-    if (s == null)
-    {
-      s = hKonto.getSteuer();
-      steuerSoll = false;
-    }
+    if (sSteuer == null && hSteuer == null)
+      return null; // Keine Steuerkonten vorhanden
     
-    if (s == null)
-    {
-      // kein Steuer-Konto. Also muessen wir auch nichts netto buchen
-      // und brauchen keine Hilfs-Buchungen
-      return null;
-    }
-
     Math math = new Math();
 
     double steuer  = buchung.getSteuer();
@@ -414,10 +404,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
-    hb.setBetrag(sBetrag);                                        // Steuer-Betrag
-    hb.setDatum(buchung.getDatum());                              // Datum
-    hb.setSollKonto(steuerSoll ? s.getSteuerKonto() : hKonto);    // Das Steuer-Konto
-    hb.setHabenKonto(steuerSoll ? hKonto : sKonto);               // Haben-Konto
+    hb.setBetrag(sBetrag);                                            // Steuer-Betrag
+    hb.setDatum(buchung.getDatum());                                  // Datum
+    hb.setSollKonto(sSteuer != null ? sSteuer.getSteuerKonto() : sKonto);   // Das Steuer-Konto
+    hb.setHabenKonto(hSteuer != null ? hSteuer.getSteuerKonto() : hKonto);  // Haben-Konto
     hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
     hb.setText(buchung.getText());                                // Text identisch mit Haupt-Buchung
      
@@ -477,6 +467,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.3  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.2  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

@@ -37,31 +37,7 @@
       <th>Gegenkonto</th>
     </tr>
 
-    #set($buchungen = $!{export.getObjects("buchungen.${konto.Kontonummer}")})
-    #foreach($buchung in $buchungen)
-
-      #set($brutto  = $buchung.BruttoBetrag)
-      #set($netto   = $math.netto($brutto,$buchung.Steuer))
-      <tr>
-        <td>$!{dateformat.format(${buchung.Datum})}</td>
-        <td style="text-align:right">$!{buchung.Belegnummer}</td>
-        <td style="width:70%">$!{buchung.Text}</td>
-
-        #set($gegen = $buchung.SollKonto)
-        #if ($gegen.Kontonummer == $konto.Kontonummer)
-          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-          <td>&nbsp;</td>
-          #set($gegen = $buchung.HabenKonto)
-          $math.add("soll",${netto})
-        #else
-          <td>&nbsp;</td>
-          <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-          $math.add("haben",${netto})
-        #end
-        <td style="text-align:right">$!{decimalformat.format($buchung.Steuer)} %</td>
-        <td>$!{gegen.Kontonummer} [$!{gegen.Name}]</td>
-      </tr>
-    #end
+    #parse("kontoauszug.$!{konto.KontoArt.Name}.vm")
 
     <tr>
       <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
@@ -70,27 +46,28 @@
       <td colspan="2" style="border-top:1px solid #000000">&nbsp;</td>
     </tr>
   </table>
-  $math.subtract("soll",$math.get("haben"))
 
   <br/>
   <table>
     <tr>
       <td>Summe der Umsätze:</td>
-      <td style="text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format($math.get("umsatz"))} ${eur}</td>
     </tr>
+
     #set($anfangsbestand = "")
     #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
     #set($ab = $!{anfangsbestand.toString()})
     #if($ab != "")
-      $math.add("soll",${anfangsbestand})
+      $math.add("umsatz",${anfangsbestand})
       <tr>
         <td>+ Anfangsbestand:</td>
         <td style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
       </tr>
     #end
+
     <tr>
       <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand:</td>
-      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("soll"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("umsatz"))} ${eur}</b></td>
     </tr>
   </table>
 

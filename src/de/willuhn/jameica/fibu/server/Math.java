@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.12 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,27 +74,49 @@ public class Math
    */
   public void add(String name, double value)
   {
+    add(name,name,value);
+  }
+  
+  /**
+   * Addiert den Betrag zur Summe mit diesem Namen und pappt das Ergebnis in Target.
+   * @param target das Ziel, in das die Summe soll.
+   * @param name Name der Summe.
+   * @param value zu addierender Betrag.
+   */
+  public void add(String target, String name, double value)
+  {
     Double d = (Double) this.table.get(name);
     if (d == null)
       d = new Double(0d);
 
     d = new Double(d.doubleValue() + value);
-    this.table.put(name,d);
+    this.table.put(target,d);
   }
-  
+
   /**
    * Substrahiert den Betrag von Summe mit diesem Namen.
    * @param name Name der Summe.
    * @param value zu substrahierender Betrag.
    */
-  public void subtract(String name, double value)
+  public void substract(String name, double value)
+  {
+    substract(name,name,value);
+  }
+
+  /**
+   * Substrahiert den Betrag von Summe mit diesem Namen und pappt das Ergebnis in Target.
+   * @param target Name des Parameters, in den die Summe soll.
+   * @param name Name der Summe.
+   * @param value zu substrahierender Betrag.
+   */
+  public void substract(String target, String name, double value)
   {
     Double d = (Double) this.table.get(name);
     if (d == null)
       d = new Double(0d);
 
     d = new Double(d.doubleValue() - value);
-    this.table.put(name,d);
+    this.table.put(target,d);
   }
 
   /**
@@ -122,6 +144,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.12  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.11  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

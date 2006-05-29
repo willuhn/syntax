@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/input/KontoInput.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/10/06 17:27:59 $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,10 +51,11 @@ public class KontoInput extends ButtonInput
   /**
    * ct.
    * @param konto
+   * @throws RemoteException
    */
-  public KontoInput(Konto konto)
+  public KontoInput(Konto konto) throws RemoteException
   {
-    this(null,konto);
+    this(Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten(),konto);
   }
 
   /**
@@ -175,6 +176,9 @@ public class KontoInput extends ButtonInput
 
 /*********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.2  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.1  2005/10/06 17:27:59  willuhn
  * @N KontoInput
  * @N Einstellungen

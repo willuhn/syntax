@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/01/06 00:30:01 $
+ * $Revision: 1.13 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,6 +88,12 @@ public class KontoExport extends AbstractExportAction
       {
         jahr = (Geschaeftsjahr) context;
         DBIterator konten = jahr.getKontenrahmen().getKonten();
+
+        Konto start = getStartKonto();
+        Konto end = getEndKonto();
+        if (start != null) konten.addFilter("kontonummer >= " + start.getKontonummer());
+        if (end != null) konten.addFilter("kontonummer <= " + end.getKontonummer());
+
         ArrayList l = new ArrayList();
         while (konten.hasNext())
         {
@@ -104,6 +110,8 @@ public class KontoExport extends AbstractExportAction
       export.addObject("jahr",jahr);
       export.addObject("start",getStart());
       export.addObject("end",getEnd());
+      export.addObject("startkonto",getStartKonto());
+      export.addObject("endkonto",getEndKonto());
 
       Date start = getStart();
       Date end = getEnd();
@@ -151,6 +159,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.13  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.12  2006/01/06 00:30:01  willuhn
  * @C report fixes
  *

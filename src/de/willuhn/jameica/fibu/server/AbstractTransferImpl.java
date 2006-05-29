@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -139,10 +141,44 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
     return null;
   }
+
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    // Fuer's Logging:
+    Konto hk = getHabenKonto();
+    Konto sk = getSollKonto();
+    Logger.info(sk.getKontonummer() + " an " + hk.getKontonummer() + ": " + getBetrag() + " (" + getText() + ")");
+    super.store();
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#isGeprueft()
+   */
+  public boolean isGeprueft() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("geprueft");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setGeprueft(boolean)
+   */
+  public void setGeprueft(boolean b) throws RemoteException
+  {
+    setAttribute("geprueft",new Integer(b ? 1 : 0));
+  }
+
+
 }
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.2  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

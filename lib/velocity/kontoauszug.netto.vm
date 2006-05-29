@@ -1,0 +1,29 @@
+#* Konto-Auszug, der mit Netto-Betraegen rechnet *#
+
+#set($buchungen = $!{export.getObjects("buchungen.${konto.Kontonummer}")})
+#foreach($buchung in $buchungen)
+
+  #set($netto   = $buchung.Betrag)
+  #set($brutto  = $math.brutto($netto,$buchung.Steuer))
+  <tr>
+    <td>$!{dateformat.format(${buchung.Datum})}</td>
+    <td style="text-align:right">$!{buchung.Belegnummer}</td>
+    <td style="width:70%">$!{buchung.Text}</td>
+
+	#set($gegen = $buchung.SollKonto)
+    #if ($gegen.Kontonummer == $konto.Kontonummer)
+      <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+      <td>&nbsp;</td>
+      #set($gegen = $buchung.HabenKonto)
+      $math.add("soll",${netto})
+    #else
+      <td>&nbsp;</td>
+      <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+      $math.add("haben",${netto})
+    #end
+    <td style="text-align:right">$!{decimalformat.format($buchung.Steuer)} %</td>
+    <td>$!{gegen.Kontonummer}</td>
+  </tr>
+#end
+
+$math.substract("umsatz","soll",$math.get("haben"))

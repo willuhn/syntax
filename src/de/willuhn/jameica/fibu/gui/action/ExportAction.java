@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/ExportAction.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/10/17 22:59:38 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/29 17:30:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.jameica.fibu.gui.action;
 import java.io.File;
 import java.util.Date;
 
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -65,12 +66,40 @@ public interface ExportAction extends Action
    * @param d End-Datum.
    */
   public void setEnd(Date d);
+  
+  /**
+   * Liefert das Konto, mit dem die Auswertung beginnen soll.
+   * @return das Konto oder null.
+   */
+  public Konto getStartKonto();
+  
+  /**
+   * Liefert das Konto, mit dem die Auswertung enden soll.
+   * @return das Konto oder null.
+   */
+  public Konto getEndKonto();
+  
+  /**
+   * Speichert das Konto, mit dem die Auswertung beginnen soll.
+   * @param konto das Konto.
+   */
+  public void setStartKonto(Konto konto);
+  
+  /**
+   * Speichert das Konto, mit dem die Auswertung enden soll.
+   * @param konto das Konto.
+   */
+  public void setEndKonto(Konto konto);
+  
 
 }
 
 
 /*********************************************************************
  * $Log: ExportAction.java,v $
+ * Revision 1.3  2006/05/29 17:30:26  willuhn
+ * @N a lot of debugging
+ *
  * Revision 1.2  2005/10/17 22:59:38  willuhn
  * @B bug 135
  *
