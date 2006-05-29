@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.14 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,6 +74,8 @@ public class KontoList extends TablePart
     addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new KontoListMenu());
     setMulti(true);
+    setRememberColWidths(true);
+    setRememberOrder(true);
 
     setFormatter(new TableFormatter()
     {
@@ -247,6 +249,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.14  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.13  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

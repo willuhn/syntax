@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungstemplateList.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,6 +82,8 @@ public class BuchungstemplateList extends TablePart
       }
     });
     setContextMenu(new BuchungstemplateListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
   
   /**
@@ -104,6 +106,9 @@ public class BuchungstemplateList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungstemplateList.java,v $
+ * Revision 1.3  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.2  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.2 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,8 +162,6 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           list = jahr.getKontenrahmen().getKonten();
           while (list.hasNext())
           {
-            monitor.addPercentComplete(1);
-            
             // Wir wollen den Saldo des alten Jahres
             Konto k = (Konto) list.next();
             Kontoart ka = k.getKontoArt();
@@ -177,6 +175,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
             if (saldo == 0.0)
               continue;
             
+            monitor.addPercentComplete(1);
+
             // Erzeugen aber einen Anfangsbestand fuers neue Jahr
             Anfangsbestand ab = (Anfangsbestand) db.createObject(Anfangsbestand.class,null);
             ab.setBetrag(saldo);
@@ -193,6 +193,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           jahr.transactionCommit();
           monitor.log(i18n.tr("Schliesse Transaktion"));monitor.addPercentComplete(1);
           monitor.setStatusText(i18n.tr("Geschäftsjahr abgeschlossen"));
+          monitor.setPercentComplete(100);
           monitor.setStatus(ProgressMonitor.STATUS_DONE);
         }
         catch (Throwable t)
@@ -476,6 +477,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.2  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.1  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

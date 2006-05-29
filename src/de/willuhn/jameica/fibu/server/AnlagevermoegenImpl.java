@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.18 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -430,19 +430,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public double getJahresAbschreibung(Geschaeftsjahr jahr) throws RemoteException
   {
-    DBIterator list = getService().createList(Abschreibung.class);
-    list.addFilter("av_id = " + getID());
-    list.setOrder("order by id");
-    double sum = 0.0d;
-    while (list.hasNext())
-    {
-      Abschreibung a = (Abschreibung) list.next();
-      AbschreibungsBuchung b = a.getBuchung();
-      Geschaeftsjahr j = b.getGeschaeftsjahr();
-      if (j.equals(jahr))
-        sum += b.getBetrag();
-    }
-    return sum;
+    return getJahresAbschreibung(jahr,false);
   }
 
   /**
@@ -461,11 +449,48 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     if (canChange())
       setAttribute("restwert", new Double(restwert));
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getJahresSonderAbschreibung(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public double getJahresSonderAbschreibung(Geschaeftsjahr jahr) throws RemoteException
+  {
+    return getJahresAbschreibung(jahr,true);
+  }
+
+  /**
+   * Hilfsmethode zum Ausrechnen der Abschreibungen.
+   * @param jahr
+   * @param nurSonder true, wenn nur die Summe der Sonderabschreibungen ermittelt werden soll. 
+   * @return die Summe der Abschreibungen.
+   * @throws RemoteException
+   */
+  private double getJahresAbschreibung(Geschaeftsjahr jahr, boolean nurSonder) throws RemoteException
+  {
+    DBIterator list = getService().createList(Abschreibung.class);
+    list.addFilter("av_id = " + getID());
+    if (nurSonder) list.addFilter("sonderabschreibung = 1");
+    list.setOrder("order by id");
+    double sum = 0.0d;
+    while (list.hasNext())
+    {
+      Abschreibung a = (Abschreibung) list.next();
+      AbschreibungsBuchung b = a.getBuchung();
+      Geschaeftsjahr j = b.getGeschaeftsjahr();
+      if (j.equals(jahr))
+        sum += b.getBetrag();
+    }
+    return sum;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.18  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.17  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

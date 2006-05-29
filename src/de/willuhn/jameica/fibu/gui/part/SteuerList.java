@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/SteuerList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,6 +93,8 @@ public class SteuerList extends TablePart
       }
     });
     setContextMenu(new SteuerListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
   
   /**
@@ -135,6 +137,9 @@ public class SteuerList extends TablePart
 
 /*********************************************************************
  * $Log: SteuerList.java,v $
+ * Revision 1.6  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.5  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/MandantList.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/24 13:00:13 $
+ * $Revision: 1.5 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,6 +48,8 @@ public class MandantList extends TablePart
     addColumn(i18n.tr("Steuernummer"),"steuernummer");
     // BUGZILLA 120
     setContextMenu(new MandantListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
 
   /**
@@ -66,6 +68,9 @@ public class MandantList extends TablePart
 
 /*********************************************************************
  * $Log: MandantList.java,v $
+ * Revision 1.5  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.4  2005/09/24 13:00:13  willuhn
  * @B bugfixes according to bugzilla
  *

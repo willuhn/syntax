@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/FinanzamtList.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/16 23:14:35 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,8 @@ public class FinanzamtList extends TablePart
     addColumn(i18n.tr("PLZ"),"plz");
     addColumn(i18n.tr("Ort"),"ort");
     setContextMenu(new FinanzamtListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
   
   private static GenericIterator init() throws RemoteException
@@ -59,6 +61,9 @@ public class FinanzamtList extends TablePart
 
 /*********************************************************************
  * $Log: FinanzamtList.java,v $
+ * Revision 1.3  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.2  2005/08/16 23:14:35  willuhn
  * @N velocity export
  * @N context menus

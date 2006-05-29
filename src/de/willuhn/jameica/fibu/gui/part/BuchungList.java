@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.19 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,6 +120,7 @@ public class BuchungList extends TablePart
     });
     setContextMenu(new BuchungListMenu());
     setMulti(true);
+    setRememberColWidths(true);
     setRememberOrder(true);
     
     setFormatter(new TableFormatter() {
@@ -324,6 +325,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.19  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.18  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

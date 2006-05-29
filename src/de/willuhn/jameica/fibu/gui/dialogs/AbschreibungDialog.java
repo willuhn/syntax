@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/AbschreibungDialog.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,7 @@ public class AbschreibungDialog extends AbstractDialog
     Mandant m = jahr.getMandant();
     double restwert = av.getRestwert(jahr);
     this.betrag = new DecimalInput(restwert, Fibu.DECIMALFORMAT);
-    this.betrag.setComment(i18n.tr("in [0}, Restwert: {1} {0}", new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(restwert)}));
+    this.betrag.setComment(i18n.tr("in {0}, Restwert: {1} {0}", new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(restwert)}));
     return this.betrag;
   }
   
@@ -248,6 +248,9 @@ public class AbschreibungDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AbschreibungDialog.java,v $
+ * Revision 1.4  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.3  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *

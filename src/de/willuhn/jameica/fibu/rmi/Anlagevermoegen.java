@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.12 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,14 +105,23 @@ public interface Anlagevermoegen extends DBObject
   public double getRestwert(Geschaeftsjahr jahr) throws RemoteException;
   
   /**
-   * Liefert die Summe der Abschreibungen des Geschaeftsjahres.
+   * Liefert die Summe aller Abschreibungen des Geschaeftsjahres.
    * Falls das Geschaeftsjahr noch nicht abgeschlossen ist, fehlt die
    * planmaessige Abschreibung zum Jahresende noch.
+   * Die Summe enthaelt auch ggf vorhandene Sonderabschreibungen.
    * @param jahr das Geschaeftsjahr.
    * @return Abschreibung des Geschaeftsjahres oder <code>0.0</code>.
    * @throws RemoteException
    */
   public double getJahresAbschreibung(Geschaeftsjahr jahr) throws RemoteException;
+
+  /**
+   * Liefert nur die Summe der Sonderabschreibungen des Geschaeftsjahres.
+   * @param jahr das Geschaeftsjahr.
+   * @return Sonderabschreibung des Geschaeftsjahres oder <code>0.0</code>.
+   * @throws RemoteException
+   */
+  public double getJahresSonderAbschreibung(Geschaeftsjahr jahr) throws RemoteException;
 
   /**
    * Liefert den Anfangsbestand der Anlage.
@@ -139,7 +148,8 @@ public interface Anlagevermoegen extends DBObject
   public void setMandant(Mandant mandant) throws RemoteException;
   
   /**
-   * Liefert die Abschreibungsbuchungen zu diesem Anlagevermoegen bis zum genannten Jahr.
+   * Liefert alle Abschreibungsbuchungen zu diesem Anlagevermoegen bis zum genannten Jahr.
+   * Darin sind auch ggf vorhandene Sonder-Abschreibungen enthalten.
    * @param jahr das Geschaeftsjahr.
    * @return Abschreibungsbuchungen.
    * @throws RemoteException
@@ -202,6 +212,9 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
+ * Revision 1.12  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.11  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

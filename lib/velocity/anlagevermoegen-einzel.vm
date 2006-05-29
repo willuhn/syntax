@@ -19,6 +19,14 @@
     </tr>
     
     <tr>
+      <td>Abschreibungsart</td>
+      <td>linear</td>
+
+      <td>Erinnerungswert</td>
+      <td style="text-align:right">0,00 ${eur}</td>
+    </tr>
+
+	<tr>
       <td>Nutzungsdauer (in Jahren)</td>
       <td>$!{av.Nutzungsdauer}</td>
 
@@ -26,7 +34,7 @@
       <td style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</td>
     </tr>
     
-  	<tr>
+	<tr>
 	    <td colspan="4">&nbsp;</td>
 	  </tr>
 
@@ -37,6 +45,10 @@
     <tr>
       <td colspan="2">- Abschreibung</td>
       <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresAbschreibung(${jahr})})} ${eur}</td>
+    </tr>
+    <tr>
+      <td colspan="2">&nbsp;&nbsp;(darin enthaltene Sonderabschreibung)</td>
+      <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresSonderAbschreibung(${jahr})})} ${eur}</td>
     </tr>
   	<tr>
 	    <td colspan="4" style="border-top:1px solid #000000;">&nbsp;</td>

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.10 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class AnlagevermoegenNeu extends AbstractView
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
 
-    Button b = new Button(i18n.tr("Ausserplanmäßige Abschreibung"),new Action() {
+    Button b = new Button(i18n.tr("Ausserplanmäßige Abschreibung..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new AnlagevermoegenAbschreiben().handleAction(context);
@@ -82,7 +82,7 @@ public class AnlagevermoegenNeu extends AbstractView
         GUI.startView(GUI.getCurrentView().getClass(),getCurrentObject());
       }
     }, getCurrentObject());
-    b.setEnabled(!control.getAnlagevermoegen().isNewObject() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) > 0.0d);
+    b.setEnabled(!control.getAnlagevermoegen().isNewObject() && !Settings.getActiveGeschaeftsjahr().isClosed() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) > 0.0d);
     buttonArea.addButton(b);
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
@@ -109,6 +109,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.10  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.9  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

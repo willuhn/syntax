@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnfangsbestandList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/30 22:51:31 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,8 @@ public class AnfangsbestandList extends TablePart
     });
     addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
     setContextMenu(new AnfangsbestandListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
   
   /**
@@ -78,6 +80,9 @@ public class AnfangsbestandList extends TablePart
 
 /*********************************************************************
  * $Log: AnfangsbestandList.java,v $
+ * Revision 1.6  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.5  2005/08/30 22:51:31  willuhn
  * @B bugfixing
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AbschreibungList.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/10/06 15:15:38 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.Date;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.menus.AbschreibungListMenu;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -87,6 +88,28 @@ public class AbschreibungList extends TablePart
         }
       }
     });
+    
+    addColumn(i18n.tr("Text"),"buchung_id", new Formatter() {
+      public String format(Object o)
+      {
+        if (o == null || !(o instanceof AbschreibungsBuchung))
+          return null;
+        try
+        {
+          AbschreibungsBuchung b = (AbschreibungsBuchung) o;
+          return b.getText();
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("error while reading buchung",e);
+          return null;
+        }
+      }
+    });
+
+    setContextMenu(new AbschreibungListMenu());
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
 
 }
@@ -94,6 +117,9 @@ public class AbschreibungList extends TablePart
 
 /*********************************************************************
  * $Log: AbschreibungList.java,v $
+ * Revision 1.6  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.5  2005/10/06 15:15:38  willuhn
  * *** empty log message ***
  *

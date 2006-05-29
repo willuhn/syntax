@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.8 $
+ * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,6 +86,8 @@ public class GeschaeftsjahrList extends TablePart
       }
     });
     setContextMenu(new GeschaeftsjahrListMenu(m));
+    setRememberColWidths(true);
+    setRememberOrder(true);
   }
   
   /**
@@ -107,6 +109,9 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.8  2006/05/29 13:02:30  willuhn
+ * @N Behandlung von Sonderabschreibungen
+ *
  * Revision 1.7  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

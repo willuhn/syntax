@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandDelete.java,v $
- * $Revision: 1.4 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AbschreibungDelete.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/05/29 13:02:30 $
  * $Author: willuhn $
  * $Locker:  $
@@ -14,7 +14,8 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Abschreibung;
+import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
@@ -24,9 +25,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Action zum Loeschen eines Anfangsbestandes.
+ * Action zum Loeschen einer Abschreibung.
  */
-public class AnfangsbestandDelete implements Action
+public class AbschreibungDelete implements Action
 {
 
   /**
@@ -34,16 +35,26 @@ public class AnfangsbestandDelete implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    if (context == null || !(context instanceof Anfangsbestand))
+    if (context == null || !(context instanceof Abschreibung))
       return;
     
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     try
     {
+      // Checken, ob die ueberhaupt geloescht werden darf
+      Abschreibung a = (Abschreibung) context;
+      
+      if (!a.isSonderabschreibung())
+        throw new ApplicationException(i18n.tr("Nur Sonderabschreibungen dürfen gelöscht werden"));
+      
+      AbschreibungsBuchung ab = a.getBuchung();
+      if (ab.getGeschaeftsjahr().isClosed())
+        throw new ApplicationException(i18n.tr("Geschäftsjahr der Abschreibungen ist bereits abgeschlossen"));
+
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-      d.setTitle(i18n.tr("Anfangsbestand wirklich löschen?"));
-      d.setText(i18n.tr("Wollen Sie diesen Anfangsbestand wirklich löschen?"));
+      d.setTitle(i18n.tr("Abschreibung wirklich löschen?"));
+      d.setText(i18n.tr("Wollen Sie diese Abschreibung wirklich löschen?"));
       
       if (!((Boolean) d.open()).booleanValue())
       {
@@ -51,13 +62,13 @@ public class AnfangsbestandDelete implements Action
         return;
       }
 
-      ((Anfangsbestand)context).delete();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Anfangsbestand gelöscht"));
+      a.delete();
+      GUI.getStatusBar().setSuccessText(i18n.tr("Abschreibung gelöscht"));
     }
     catch (Exception e)
     {
-      Logger.error("unable to delete anfangsbestand",e);
-      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Anfangsbestandes"));
+      Logger.error("unable to delete abschreibung",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen der Abschreibung"));
     }
   }
 
@@ -65,17 +76,8 @@ public class AnfangsbestandDelete implements Action
 
 
 /*********************************************************************
- * $Log: AnfangsbestandDelete.java,v $
- * Revision 1.4  2006/05/29 13:02:30  willuhn
+ * $Log: AbschreibungDelete.java,v $
+ * Revision 1.1  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.3  2005/09/26 15:15:39  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/09/01 16:34:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
  *
  **********************************************************************/
