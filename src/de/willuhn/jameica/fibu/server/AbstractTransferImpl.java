@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.3 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,11 +147,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void store() throws RemoteException, ApplicationException
   {
-    // Fuer's Logging:
-    Konto hk = getHabenKonto();
-    Konto sk = getSollKonto();
-    Logger.info(sk.getKontonummer() + " an " + hk.getKontonummer() + ": " + getBetrag() + " (" + getText() + ")");
     super.store();
+    // Fuer's Logging:
+    Logger.info(getSollKonto().getKontonummer() + " an " + getHabenKonto().getKontonummer() + ": " + Fibu.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
   }
 
   /**
@@ -176,6 +174,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.3  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

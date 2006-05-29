@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.46 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -121,7 +120,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     double haben = 0.0d;
 
     int kontoArt = getKontoArt().getKontoArt();
+    Kontotyp typ = getKontoTyp();
     
+    // TODO: Umsatz so richtig?
     DBIterator buchungen = getBuchungen(jahr);
     while (buchungen.hasNext())
     {
@@ -142,7 +143,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
           haben += t.getBetrag();
       }
     }
-    if (kontoArt == Kontoart.KONTOART_ERLOES)
+    if (kontoArt == Kontoart.KONTOART_ERLOES || (typ != null && typ.getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME))
       return haben - soll;
     return soll - haben;
   }
@@ -339,10 +340,10 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     // das ok. Falls Steuer-Buchungen aber manuell als Hauptbuchungen angelegt werden,
     // muessen bei KONTOART_STEUER zwei Listen erzeugt werden. Eine, mit den Hilfsbuchungen,
     // die andere mit den Hauptbuchungen.
-    DBIterator list = Settings.getDBService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
-    list.addFilter(" (sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
+    DBIterator list = getService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
+    list.addFilter("(sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
     list.addFilter("geschaeftsjahr_id = " + jahr.getID());
-    list.setOrder("order by UNIX_TIMESTAMP(datum)");
+    list.setOrder("order by datum");
     return list;
   }
 
@@ -412,6 +413,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.46  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.45  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

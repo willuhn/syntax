@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.30 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.31 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,14 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import de.willuhn.datasource.Service;
 import de.willuhn.datasource.db.EmbeddedDatabase;
+import de.willuhn.jameica.fibu.gui.action.FirstStart;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.Extension;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
+import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -73,8 +80,6 @@ public class Fibu extends AbstractPlugin
     DECIMALFORMAT.setGroupingUsed(true);
   }
 
-  private boolean firstStart = false;
-  
   /**
    * @param file
    */
@@ -89,6 +94,47 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
+    // Wir triggern noch das Laden der Jameica-Startseite, damit
+    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
+    if (!Application.inServerMode())
+    {
+      if (Settings.isFirstStart())
+      {
+        Extension e = new Extension() {
+          public void extend(Extendable extendable)
+          {
+            try
+            {
+              new FirstStart().handleAction(extendable);
+            }
+            catch (ApplicationException e)
+            {
+              GUI.getStatusBar().setErrorText(e.getMessage());
+            }
+          }
+        };
+        ExtensionRegistry.register(e,Start.class.getName());
+      }
+      else
+      {
+        try
+        {
+          Service db = Application.getServiceFactory().lookup(Fibu.class,"database");
+          db.start();
+          Service en = Application.getServiceFactory().lookup(Fibu.class,"engine");
+          en.start();
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to start service",e);
+          throw new ApplicationException(getResources().getI18N().tr("Fehler beim Starten der Dienste"),e);
+        }
+      }
+    }
   }
 
   /**
@@ -119,7 +165,6 @@ public class Fibu extends AbstractPlugin
 
       db.executeSQLScript(create);
       db.executeSQLScript(init);
-      this.firstStart = true;
     }
     catch (Exception e)
     {
@@ -129,66 +174,18 @@ public class Fibu extends AbstractPlugin
   }
   
   /**
-   * Liefert true, wenn das Plugin zum allerersten mal gestartet wird.
-   * @return true beim allerersten Start.
-   */
-  boolean isFirstStart()
-  {
-    return firstStart;
-  }
-
-  /**
    * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
    */
   public void update(double oldVersion) throws ApplicationException
   {
-//    if (Application.inClientMode())
-//      return; // Kein Update im Client-Mode noetig.
-//
-//    Logger.info("starting update process for syntax");
-//
-//    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-//    df.setMaximumFractionDigits(1);
-//    df.setMinimumFractionDigits(1);
-//    df.setGroupingUsed(false);
-//
-//    double newVersion = oldVersion + 0.1d;
-//
-//    try
-//    {
-//      File dbDir = new File(getResources().getWorkPath(),"db");
-//
-//      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
-//      File f = new File(getResources().getPath() + "/sql/update_" + 
-//          df.format(oldVersion) + "-" + 
-//          df.format(newVersion) + ".sql");
-//
-//      Logger.info("checking sql file " + f.getAbsolutePath());
-//      while (f.exists())
-//      {
-//        Logger.info("  file exists, executing");
-//        db.executeSQLScript(f);
-//        oldVersion = newVersion;
-//        newVersion = oldVersion + 0.1d;
-//        f = new File(getResources().getPath() + "/sql/update_" + 
-//                     df.format(oldVersion) + "-" + 
-//                     df.format(newVersion) + ".sql");
-//      }
-//      Logger.info("Update completed");
-//    }
-//    catch (ApplicationException ae)
-//    {
-//      throw ae;
-//    }
-//    catch (Exception e)
-//    {
-//      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
-//    }
   }
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.31  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.30  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

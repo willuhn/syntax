@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -346,7 +346,17 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     buchung.setGeschaeftsjahr(jahr);
     buchung.setSollKonto(av.getAbschreibungskonto());
     buchung.setHabenKonto(av.getKonto());
-    buchung.setBelegnummer(buchung.getBelegnummer());
+    Buchung b = av.getBuchung();
+    if (b != null)
+    {
+      // Wenn die Buchung zur Erzeugung des Anlagegutes noch existiert, uebernehmen wir die Belegnummer.
+      buchung.setBelegnummer(b.getBelegnummer());
+    }
+    else
+    {
+      // TODO: Die erzeugten Belegnummern sind Unfug
+      buchung.setBelegnummer(buchung.getBelegnummer());
+    }
     buchung.setText(name + ": " + av.getName());
     buchung.setBetrag(betrag);
     return buchung; 
@@ -404,8 +414,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
-    hb.setBetrag(sBetrag);                                            // Steuer-Betrag
-    hb.setDatum(buchung.getDatum());                                  // Datum
+    hb.setBetrag(sBetrag);                                        // Steuer-Betrag
+    hb.setDatum(buchung.getDatum());                              // Datum
     hb.setSollKonto(sSteuer != null ? sSteuer.getSteuerKonto() : sKonto);   // Das Steuer-Konto
     hb.setHabenKonto(hSteuer != null ? hSteuer.getSteuerKonto() : hKonto);  // Haben-Konto
     hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
@@ -413,7 +423,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
      
     return new HilfsBuchung[]{hb};
   }
-
+  
   /**
    * @see de.willuhn.datasource.Service#start()
    */
@@ -467,6 +477,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.4  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.10 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
-import java.sql.Connection;
 import java.util.HashMap;
 
 import de.willuhn.jameica.fibu.Fibu;
@@ -54,18 +53,6 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     );
     this.setClassloader(Application.getClassLoader());
     this.setClassFinder(Application.getClassLoader().getClassFinder());
-  }
-
-  /**
-   * Liefert die Connection.
-   * TODO: Boeser Hack, ich weiss. ;)
-   * @return Liefert die Connection.
-   * @throws RemoteException
-   * @see de.willuhn.datasource.db.DBServiceImpl#getConnection()
-   */
-  public Connection getMyConnection() throws RemoteException
-  {
-    return super.getConnection();
   }
 
   /**
@@ -114,6 +101,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.10  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

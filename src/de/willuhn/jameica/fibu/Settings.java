@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/03/27 20:26:53 $
+ * $Revision: 1.39 $
+ * $Date: 2006/05/29 23:05:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,24 @@ public class Settings
 
   private static DBService db = null;
 	private static Geschaeftsjahr jahr = null;
+  
+  /**
+   * Liefert true, wenn die Anwendung zum ersten Mal gestartet wird.
+   * @return true, beim ersten Start.
+   */
+  public static boolean isFirstStart()
+  {
+    return settings.getBoolean("firststart",true);
+  }
+  
+  /**
+   * Speichert, ob die Anwendung zum ersten Mal gestartet wird.
+   * @param b.
+   */
+  public static void setFirstStart(boolean b)
+  {
+    settings.setAttribute("firststart",b);
+  }
   
   /**
    * Liefert das Abschreibungskonto fuer das Geschaeftsjahr.
@@ -374,6 +392,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.39  2006/05/29 23:05:07  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.38  2006/03/27 20:26:53  willuhn
  * *** empty log message ***
  *
