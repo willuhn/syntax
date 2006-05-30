@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.19 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -414,17 +414,17 @@ public class AnlagevermoegenControl extends AbstractControl
         throw new ApplicationException(i18n.tr("Nutzungsdauer ungültig."));
       }
       
-      if (ak <= Settings.getGwgWert(Settings.getActiveGeschaeftsjahr()))
+      if (nutzungsdauer > 1 && ak <= Settings.getGwgWert(Settings.getActiveGeschaeftsjahr()))
       {
-        Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
-
         YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
         d.setTitle(i18n.tr("Geringwertiges Wirtschaftsgut"));
 
         String text = i18n.tr("Anlage kann als GWG sofort abgeschrieben werden.\n" +
                               "Nutzungsdauer zur Sofort-Abschreibung auf 1 Jahr verkürzen?");
         
-        if (ka != null)
+        Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
+
+        if (ka != null && !ka.equals(abschreibung))
           text += "\n" + i18n.tr("Ausserdem können die Abschreibungen auf dem Konto\n" +
               "\"" + ka.getName() + "\" gebucht werden.");
         d.setText(text);
@@ -435,7 +435,7 @@ public class AnlagevermoegenControl extends AbstractControl
             getLaufzeit().setValue(new Integer(1));
             nutzungsdauer = 1;
  
-            if (ka != null)
+            if (ka != null && !ka.equals(abschreibung))
             {
               getAbschreibungsKonto().setValue(ka);
               abschreibung = ka;
@@ -521,6 +521,9 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.19  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.18  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

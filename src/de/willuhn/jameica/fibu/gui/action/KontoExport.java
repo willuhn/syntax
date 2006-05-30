@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.14 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Program;
 import de.willuhn.jameica.system.Application;
@@ -120,11 +121,20 @@ public class KontoExport extends AbstractExportAction
       {
         Vector buchungen = new Vector();
         DBIterator list = null;
-        if (start != null && end != null)
-          list = k[i].getBuchungen(jahr,start,end);
+        Kontoart ka = k[i].getKontoArt();
+        if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+        {
+          // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+          // erzeugte Hilfsbuchungen. Da der User aber auch echte
+          // Hauptbuchungen darauf erzeugen kann, muss die Liste
+          // hier noch um die Hauptbuchungen ergaenzt werden.
+          list = k[i].getHilfsBuchungen(jahr,start,end);
+        }
         else
-          list = k[i].getBuchungen(jahr);
-
+        {
+          list = k[i].getHauptBuchungen(jahr,start,end);
+        }
+        
         while (list.hasNext())
         {
           buchungen.add(list.next());
@@ -159,6 +169,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.14  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.13  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

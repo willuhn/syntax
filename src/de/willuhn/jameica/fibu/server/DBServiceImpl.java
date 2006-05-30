@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.11 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,13 +15,19 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.ResultSetExtractor;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
 
 /**
  * Datenbank-Service fuer Fibu.
@@ -96,11 +102,72 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     String s = SETTINGS.getString("sql.function.timestamp","tonumber({0})");
     return s.replaceAll("\\{0\\}",content);
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBService#execute(java.lang.String, java.lang.Object[], de.willuhn.jameica.fibu.rmi.ResultSetExtractor)
+   */
+  public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException
+  {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try
+    {
+      ps = getConnection().prepareStatement(sql);
+      if (params != null)
+      {
+        for (int i=0;i<params.length;++i)
+        {
+          Object o = params[i];
+          if (o == null)
+            ps.setNull((i+1), Types.NULL);
+          else
+            ps.setObject((i+1),params[i]);
+        }
+      }
+
+      rs = ps.executeQuery();
+      return extractor.extract(rs);
+    }
+    catch (SQLException e)
+    {
+      Logger.error("error while executing sql statement",e);
+      throw new RemoteException("error while executing sql statement: " + e.getMessage(),e);
+    }
+    finally
+    {
+      if (rs != null)
+      {
+        try
+        {
+          rs.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing resultset",t);
+        }
+      }
+      if (ps != null)
+      {
+        try
+        {
+          ps.close();
+        }
+        catch (Throwable t2)
+        {
+          Logger.error("error while closing statement",t2);
+        }
+      }
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.11  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.10  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

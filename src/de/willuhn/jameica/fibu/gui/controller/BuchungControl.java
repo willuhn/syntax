@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.65 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.66 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -553,8 +553,8 @@ public class BuchungControl extends AbstractControl
           return;
         double satz = d.doubleValue();
           
-        if (satz == 0.0d)
-          return;
+//        if (satz == 0.0d)
+//          return;
 
         Math math = new Math();
         Double betrag = (Double) getBetrag().getValue();
@@ -756,6 +756,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.66  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.65  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

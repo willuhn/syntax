@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.15 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -186,7 +186,7 @@ public class KontoList extends TablePart
                     k = (Konto) konten.get(i);
 
                     // BUGZILLA 128
-                    if (checkSaldo && k.getBuchungen(Settings.getActiveGeschaeftsjahr()).size() == 0)
+                    if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr()) == 0)
                       continue;
 
                     name = k.getName();
@@ -249,6 +249,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.15  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.14  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBService.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.5 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,12 +42,25 @@ public interface DBService extends de.willuhn.datasource.rmi.DBService
    * @throws RemoteException
    */
   public String getSQLTimestamp(String content) throws RemoteException;
-  
+
+  /**
+   * Fuehrt ein SQL-Statement aus und uebergibt das Resultset an den Extractor.
+   * @param sql das Statement.
+   * @param params die Parameter zur Erzeugung des PreparedStatements.
+   * @param extractor der Extractor.
+   * @return die vom ResultSetExtractor zurueckgelieferten Daten.
+   * @throws RemoteException
+   */
+  public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException;
+
 }
 
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.5  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.4  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

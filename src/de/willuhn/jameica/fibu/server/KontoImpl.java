@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.46 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.47 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,6 +30,7 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
@@ -122,28 +125,30 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     int kontoArt = getKontoArt().getKontoArt();
     Kontotyp typ = getKontoTyp();
     
-    // TODO: Umsatz so richtig?
-    DBIterator buchungen = getBuchungen(jahr);
+    // Erst die Hauptbuchungen
+    DBIterator buchungen = getHauptBuchungen(jahr);
     while (buchungen.hasNext())
     {
       Transfer t = (Transfer) buchungen.next();
-      if ((t instanceof Buchung) && (kontoArt == Kontoart.KONTOART_GELD || kontoArt == Kontoart.KONTOART_PRIVAT))
-      {
-        Buchung b = (Buchung) t;
-        if (b.getSollKonto().equals(this))
-          soll += b.getBruttoBetrag();
-        else
-          haben += b.getBruttoBetrag();
-      }
+      if (t.getSollKonto().equals(this))
+        soll += t.getBetrag();
       else
-      {
-        if (t.getSollKonto().equals(this))
-          soll += t.getBetrag();
-        else
-          haben += t.getBetrag();
-      }
+        haben += t.getBetrag();
     }
-    if (kontoArt == Kontoart.KONTOART_ERLOES || (typ != null && typ.getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME))
+
+    // Und jetzt noch die Hilfs-Buchungen
+    DBIterator hilfsbuchungen = getHilfsBuchungen(jahr);
+    while (hilfsbuchungen.hasNext())
+    {
+      Transfer t = (Transfer) hilfsbuchungen.next();
+      if (t.getSollKonto().equals(this))
+        soll += t.getBetrag();
+      else
+        haben += t.getBetrag();
+    }
+    
+    // Siehe auch BetriebsergebnisImpl#getEinnahmen
+    if (kontoArt == Kontoart.KONTOART_ERLOES || (kontoArt == Kontoart.KONTOART_STEUER && typ != null && typ.getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME))
       return haben - soll;
     return soll - haben;
   }
@@ -328,57 +333,93 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr) throws RemoteException
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr) throws RemoteException
   {
-    Kontoart ka = getKontoArt();
-    int art = Kontoart.KONTOART_UNGUELTIG;
-    if (ka != null)
-      art = ka.getKontoArt();
-    // TODO Solange Steuer-Buchungen nur automatisch als Hilfsbuchungen erzeugt werden, ist
-    // das ok. Falls Steuer-Buchungen aber manuell als Hauptbuchungen angelegt werden,
-    // muessen bei KONTOART_STEUER zwei Listen erzeugt werden. Eine, mit den Hilfsbuchungen,
-    // die andere mit den Hauptbuchungen.
-    DBIterator list = getService().createList(art == Kontoart.KONTOART_STEUER ? HilfsBuchung.class : Buchung.class);
-    list.addFilter("(sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
-    list.addFilter("geschaeftsjahr_id = " + jahr.getID());
-    list.setOrder("order by datum");
-    return list;
+    return getBuchungen(jahr, null, null, Buchung.class);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHilfsBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public DBIterator getHilfsBuchungen(Geschaeftsjahr jahr) throws RemoteException
+  {
+    return getBuchungen(jahr, null, null, HilfsBuchung.class);
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException, ApplicationException
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
   {
-    if (!jahr.check(von))
-      throw new ApplicationException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(von)));
+    return getBuchungen(jahr, von, bis, Buchung.class);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHilfsBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
+   */
+  public DBIterator getHilfsBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
+  {
+    return getBuchungen(jahr, von, bis, HilfsBuchung.class);
+  }
 
-    if (!jahr.check(bis))
-      throw new ApplicationException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(bis)));
+  /**
+   * Interne Hilfs-Funktion zum Laden der entsprechenden Buchungen.
+   * @param jahr das Jahr.
+   * @param von Start-Datum.
+   * @param bis End-Datum.
+   * @param type Art der Buchungen.
+   * @return Liste der Buchungen.
+   * @throws RemoteException
+   */
+  private DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Class type) throws RemoteException
+  {
+    
+    if (von != null && !jahr.check(von))
+      throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(von)));
 
-    // Uhrzeiten noch zurueckdrehen
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(von);
-    cal.set(Calendar.HOUR_OF_DAY,0);
-    cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,0);
-    cal.set(Calendar.MILLISECOND,0);
+    if (bis != null && !jahr.check(bis))
+      throw new RemoteException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Fibu.DATEFORMAT.format(bis)));
 
-    Date start = cal.getTime();
+    Date start = null;
+    if (von != null)
+    {
+      // Uhrzeiten noch zurueckdrehen
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(von);
+      cal.set(Calendar.HOUR_OF_DAY,0);
+      cal.set(Calendar.MINUTE,0);
+      cal.set(Calendar.SECOND,0);
+      cal.set(Calendar.MILLISECOND,0);
 
-    cal.setTime(bis);
-    cal.set(Calendar.HOUR_OF_DAY,23);
-    cal.set(Calendar.MINUTE,59);
-    cal.set(Calendar.SECOND,59);
+      start = cal.getTime();
+    }
 
-    Date end = cal.getTime();
+    Date end = null;
+    if (bis != null)
+    {
+      // Uhrzeiten auf Ende des Tages setzen
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(bis);
+      cal.set(Calendar.HOUR_OF_DAY,23);
+      cal.set(Calendar.MINUTE,59);
+      cal.set(Calendar.SECOND,59);
+      end = cal.getTime();
+    }
+
     
     DBService db = ((DBService)getService());
 
-    DBIterator list = this.getBuchungen(jahr);
-    list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime() + " AND " + db.getSQLTimestamp("datum") + " <=" + end.getTime());
+    DBIterator list = getService().createList(type);
+    list.addFilter("(sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
+    list.addFilter("geschaeftsjahr_id = " + jahr.getID());
+    if (start != null)
+      list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime());
+    if (end != null)
+      list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
+    list.setOrder("order by datum");
+
     return list;
   }
 
@@ -409,10 +450,42 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   {
     setAttribute("kontotyp_id",typ);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getNumBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public int getNumBuchungen(Geschaeftsjahr jahr) throws RemoteException
+  {
+    if (this.isNewObject())
+      return 0;
+    
+    // Die ID muss via tonumber umgewandelt werden, da wir sie als String
+    // uebergeben
+    String sql = "select count(id) from buchung where sollkonto_id = ? or habenkonto_id = ?";
+
+    DBService service = (DBService) this.getService();
+
+    ResultSetExtractor rs = new ResultSetExtractor()
+    {
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        if (!rs.next())
+          return new Integer(0);
+        return new Integer(rs.getInt(1));
+      }
+    };
+
+    Integer id = new Integer(this.getID());
+    Integer i = (Integer) service.execute(sql, new Object[] {id,id},rs);
+    return i == null ? 0 : i.intValue();
+  }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.47  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.46  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

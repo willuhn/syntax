@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.25 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class BuchungListe extends AbstractView
     
     ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Buchungsjournal exportieren"), new BuchungListExport());
+    buttons.addButton(i18n.tr("Buchungsjournal drucken"), new BuchungListExport());
     
     Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
     create.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
@@ -68,6 +68,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.25  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.24  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

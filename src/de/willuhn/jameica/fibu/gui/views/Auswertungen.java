@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.4 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.AuswertungControl;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -42,6 +44,11 @@ public class Auswertungen extends AbstractView
     GUI.getView().setTitle(i18n.tr("Auswertungen"));
 
     final AuswertungControl control = new AuswertungControl(this);
+    
+    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    if (!current.isClosed())
+      GUI.getView().setErrorText(i18n.tr("Das aktuelle Geschäftsjahr ist noch nicht abgeschlossen. Abschreibungen wurden noch nicht gebucht."));
+
     
     Container group = new LabelGroup(getParent(),i18n.tr("Auswertungen"));
     group.addLabelPair(i18n.tr("Art der Auswertung"), control.getAuswertungen());
@@ -79,6 +86,9 @@ public class Auswertungen extends AbstractView
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.4  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.3  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

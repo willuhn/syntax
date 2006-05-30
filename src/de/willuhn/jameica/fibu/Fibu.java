@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.32 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,45 +96,45 @@ public class Fibu extends AbstractPlugin
   {
     // Wir triggern noch das Laden der Jameica-Startseite, damit
     // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
-    if (!Application.inServerMode())
-    {
-      if (Settings.isFirstStart())
-      {
-        Extension e = new Extension() {
-          public void extend(Extendable extendable)
-          {
-            try
-            {
-              new FirstStart().handleAction(extendable);
-            }
-            catch (ApplicationException e)
-            {
-              GUI.getStatusBar().setErrorText(e.getMessage());
-            }
-          }
-        };
-        ExtensionRegistry.register(e,Start.class.getName());
-      }
-      else
-      {
-        try
-        {
-          Service db = Application.getServiceFactory().lookup(Fibu.class,"database");
-          db.start();
-          Service en = Application.getServiceFactory().lookup(Fibu.class,"engine");
-          en.start();
-        }
-        catch (ApplicationException ae)
-        {
-          throw ae;
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to start service",e);
-          throw new ApplicationException(getResources().getI18N().tr("Fehler beim Starten der Dienste"),e);
-        }
-      }
-    }
+//    if (!Application.inServerMode())
+//    {
+//      if (Settings.isFirstStart())
+//      {
+//        Extension e = new Extension() {
+//          public void extend(Extendable extendable)
+//          {
+//            try
+//            {
+//              new FirstStart().handleAction(extendable);
+//            }
+//            catch (ApplicationException e)
+//            {
+//              GUI.getStatusBar().setErrorText(e.getMessage());
+//            }
+//          }
+//        };
+//        ExtensionRegistry.register(e,Start.class.getName());
+//      }
+//      else
+//      {
+//        try
+//        {
+//          Service db = Application.getServiceFactory().lookup(Fibu.class,"database");
+//          db.start();
+//          Service en = Application.getServiceFactory().lookup(Fibu.class,"engine");
+//          en.start();
+//        }
+//        catch (ApplicationException ae)
+//        {
+//          throw ae;
+//        }
+//        catch (Exception e)
+//        {
+//          Logger.error("unable to start service",e);
+//          throw new ApplicationException(getResources().getI18N().tr("Fehler beim Starten der Dienste"),e);
+//        }
+//      }
+//    }
   }
 
   /**
@@ -183,6 +183,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.32  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.31  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

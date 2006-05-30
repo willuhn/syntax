@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.21 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -158,7 +158,18 @@ public class BuchungList extends TablePart
 
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
-      return konto.getBuchungen(jahr);
+    {
+      Kontoart ka = konto.getKontoArt();
+      if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+      {
+        // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+        // erzeugte Hilfsbuchungen. Da der User aber auch echte
+        // Hauptbuchungen darauf erzeugen kann, muss die Liste
+        // hier noch um die Hauptbuchungen ergaenzt werden.
+        return konto.getHilfsBuchungen(jahr);
+      }
+      return konto.getHauptBuchungen(jahr);
+    }
     
     // Sonst die des aktuellen Geschaeftsjahres
     DBIterator list = jahr.getBuchungen();
@@ -325,6 +336,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.21  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.20  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

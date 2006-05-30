@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.21 $
+ * $Date: 2006/05/30 23:22:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Diese Klasse bildet die Konten in Fibu ab.
@@ -129,24 +128,54 @@ public interface Konto extends UserObject
   public void setSteuer(Steuer steuer) throws RemoteException;
   
   /**
-   * Liefert eine Liste aller Buchungen auf dem Konto.
+   * Liefert eine Liste der Haupt-Buchungen auf dem Konto.
    * @param jahr das Geschaeftsjahr.
    * @return Liste der Buchungen.
+   * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr) throws RemoteException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr) throws RemoteException;
 
   /**
-   * Liefert eine Liste der Buchungen auf dem Konto begrenzt auf einen Zeitraum.
+   * Liefert eine Liste der Haupt-Buchungen auf dem Konto begrenzt auf einen Zeitraum.
    * @param jahr das Geschaeftsjahr.
-   * @param von Start-Datum.
-   * @param bis End-Datum.
-   * @throws ApplicationException
-   * @return Liste der Buchungen.
+   * @param von Start-Datum. Kann auch weggelassen werden.
+   * @param bis End-Datum. Kann auch weggelassen werden.
+   * @return Liste der Haupt-Buchungen.
+   * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException, ApplicationException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
 
+  /**
+   * Liefert eine Liste aller Hilfsbuchungen auf dem Konto.
+   * @param jahr das Geschaeftsjahr.
+   * @return Liste der Hilfs-Buchungen.
+   * Die Objekte sind vom Typ <code>HilfsBuchung</code>.
+   * @throws RemoteException
+   */
+  public DBIterator getHilfsBuchungen(Geschaeftsjahr jahr) throws RemoteException;
+
+  /**
+   * Liefert eine Liste der Hilfsbuchungen auf dem Konto begrenzt auf einen Zeitraum.
+   * @param jahr das Geschaeftsjahr.
+   * @param von Start-Datum. Kann auch weggelassen werden.
+   * @param bis End-Datum. Kann auch weggelassen werden.
+   * @return Liste der Hilfs-Buchungen.
+   * Die Objekte sind vom Typ <code>HilfsBuchung</code>.
+   * @throws RemoteException
+   */
+  public DBIterator getHilfsBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
+  
+  /**
+   * Liefert der Anzahl aller Buchungen auf dem Konto in dem Geschaeftsjahr.
+   * Das schliesst auch Hilfs-Buchungen ein.
+   * @param jahr zu pruefendes Geschaeftsjahr.
+   * @return true, wenn Buchungen vorhanden sind.
+   * @throws RemoteException
+   */
+  public int getNumBuchungen(Geschaeftsjahr jahr) throws RemoteException;
+  
   /**
    * Liefert den Anfangsbestand des Kontos oder null wenn keiner existiert.
    * @param jahr das Geschaeftsjahr.
@@ -159,6 +188,9 @@ public interface Konto extends UserObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.21  2006/05/30 23:22:55  willuhn
+ * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
+ *
  * Revision 1.20  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *
