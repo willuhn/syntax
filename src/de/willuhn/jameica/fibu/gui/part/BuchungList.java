@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.22 $
+ * $Date: 2006/05/30 23:33:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -172,7 +172,7 @@ public class BuchungList extends TablePart
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getBuchungen();
+    DBIterator list = jahr.getHauptBuchungen();
     list.setOrder("order by belegnummer desc");
     return list;
   }
@@ -336,6 +336,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.22  2006/05/30 23:33:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

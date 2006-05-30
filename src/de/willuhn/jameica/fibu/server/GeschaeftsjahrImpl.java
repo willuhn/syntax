@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/03/17 16:23:28 $
+ * $Revision: 1.25 $
+ * $Date: 2006/05/30 23:33:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -263,7 +263,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       if (vorjahr != null && vorjahr.equals(this))
         throw new ApplicationException(i18n.tr("Geschäftsjahr darf nicht auf sich selbst verweisen"));
 
-      GenericIterator list = getBuchungen();
+      // Das Hilfsbuchungen nicht ohne Hauptbuchungen existieren koennen, brauchen
+      // wir nur schauen, ob Hauptbuchungen existieren.
+      GenericIterator list = getHauptBuchungen();
 
       if (list.size() > 0)
       {
@@ -305,9 +307,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getBuchungen()
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen()
    */
-  public DBIterator getBuchungen() throws RemoteException
+  public DBIterator getHauptBuchungen() throws RemoteException
   {
     DBIterator list = getService().createList(Buchung.class);
     list.addFilter("geschaeftsjahr_id = " + this.getID());
@@ -344,9 +346,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       }
       
       Logger.info("Lösche Buchungen");
-      GenericIterator buchungen = getBuchungen();
+      GenericIterator buchungen = getHauptBuchungen();
       while (buchungen.hasNext())
       {
+        // Wir muessen nur die Haupt-Buchungen loeschen.
+        // Die wiederrum loeschen ihre Hilfsbuchungen dann
+        // selbst
         Buchung b = (Buchung) buchungen.next();
         b.delete();
       }
@@ -560,6 +565,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.25  2006/05/30 23:33:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2006/03/17 16:23:28  willuhn
  * *** empty log message ***
  *

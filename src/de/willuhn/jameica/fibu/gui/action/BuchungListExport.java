@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.8 $
- * $Date: 2005/10/17 22:59:38 $
+ * $Revision: 1.9 $
+ * $Date: 2006/05/30 23:33:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,7 +87,7 @@ public class BuchungListExport extends AbstractExportAction
     try
     {
 
-      DBIterator list = jahr.getBuchungen();
+      DBIterator list = jahr.getHauptBuchungen();
       list.setOrder("order by datum");
       Buchung[] b = new Buchung[list.size()];
       int count = 0;
@@ -138,6 +138,9 @@ public class BuchungListExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.9  2006/05/30 23:33:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2005/10/17 22:59:38  willuhn
  * @B bug 135
  *

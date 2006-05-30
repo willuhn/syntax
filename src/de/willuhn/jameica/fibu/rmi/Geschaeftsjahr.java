@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/09/05 15:00:43 $
+ * $Revision: 1.10 $
+ * $Date: 2006/05/30 23:33:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,11 +90,11 @@ public interface Geschaeftsjahr extends DBObject
   public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException;
   
   /**
-   * Liefert die Buchungen des Geschaeftsjahres.
+   * Liefert die Haupt-Buchungen des Geschaeftsjahres.
    * @return Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getBuchungen() throws RemoteException;
+  public DBIterator getHauptBuchungen() throws RemoteException;
   
   /**
    * Liefert die Anfangsbestaende.
@@ -156,6 +156,9 @@ public interface Geschaeftsjahr extends DBObject
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
+ * Revision 1.10  2006/05/30 23:33:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2005/09/05 15:00:43  willuhn
  * *** empty log message ***
  *
