@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/12 14:08:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -429,6 +429,11 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
    */
   public void start() throws RemoteException
   {
+    if (Settings.isFirstStart())
+    {
+      Logger.info("first start: skipping engine start");
+      return;
+    }
     if (isStarted())
     {
       Logger.warn("engine allready started, skipping request");
@@ -477,6 +482,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.5  2006/06/12 14:08:29  willuhn
+ * @N DB-Wizard
+ *
  * Revision 1.4  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

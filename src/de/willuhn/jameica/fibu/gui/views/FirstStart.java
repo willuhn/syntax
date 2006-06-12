@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/12 14:08:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,19 +13,16 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.fibu.gui.action.FirstStart1ChooseDatabase;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
-import de.willuhn.jameica.system.Application;
-import de.willuhn.util.I18N;
 
 /**
  * View mit dem Wizard fuer den ersten Start.
  */
-public class FirstStart extends AbstractView
+public class FirstStart extends AbstractFirstStart
 {
 
   /**
@@ -33,8 +30,8 @@ public class FirstStart extends AbstractView
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    
+    super.bind();
+
     GUI.getView().setTitle(i18n.tr("SynTAX: Installation"));
     
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Willkommen"));
@@ -43,7 +40,7 @@ public class FirstStart extends AbstractView
     
     FormTextPart t = new FormTextPart();
     t.setText("<form>" +
-        "<li>Schritt 1: Auswahl des Datenbank-Typs</li>" +
+        "<li>Schritt 1: Auswahl der Datenbank</li>" +
         "<li>Schritt 2: Einrichtung der Datenbank</li>" +
         "<li>Schritt 3: Anlegen eines Mandanten</li>" +
         "<li>Schritt 4: Erstellen eines Geschäftsjahres</li>" +
@@ -51,7 +48,7 @@ public class FirstStart extends AbstractView
 
     group.addPart(t);
     ButtonArea buttons = group.createButtonArea(1);
-    buttons.addButton(i18n.tr("Weiter >>"),null/*new FirstStart1.class*/);
+    buttons.addButton(i18n.tr("Weiter >>"),new FirstStart1ChooseDatabase(), getController());
     
     
   }
@@ -61,6 +58,9 @@ public class FirstStart extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.2  2006/06/12 14:08:29  willuhn
+ * @N DB-Wizard
+ *
  * Revision 1.1  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.33 $
+ * $Date: 2006/06/12 14:08:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,45 +96,23 @@ public class Fibu extends AbstractPlugin
   {
     // Wir triggern noch das Laden der Jameica-Startseite, damit
     // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
-//    if (!Application.inServerMode())
-//    {
-//      if (Settings.isFirstStart())
-//      {
-//        Extension e = new Extension() {
-//          public void extend(Extendable extendable)
-//          {
-//            try
-//            {
-//              new FirstStart().handleAction(extendable);
-//            }
-//            catch (ApplicationException e)
-//            {
-//              GUI.getStatusBar().setErrorText(e.getMessage());
-//            }
-//          }
-//        };
-//        ExtensionRegistry.register(e,Start.class.getName());
-//      }
-//      else
-//      {
-//        try
-//        {
-//          Service db = Application.getServiceFactory().lookup(Fibu.class,"database");
-//          db.start();
-//          Service en = Application.getServiceFactory().lookup(Fibu.class,"engine");
-//          en.start();
-//        }
-//        catch (ApplicationException ae)
-//        {
-//          throw ae;
-//        }
-//        catch (Exception e)
-//        {
-//          Logger.error("unable to start service",e);
-//          throw new ApplicationException(getResources().getI18N().tr("Fehler beim Starten der Dienste"),e);
-//        }
-//      }
-//    }
+    if (!Application.inServerMode() && Settings.isFirstStart())
+    {
+      Extension e = new Extension() {
+        public void extend(Extendable extendable)
+        {
+          try
+          {
+            new FirstStart().handleAction(extendable);
+          }
+          catch (ApplicationException e)
+          {
+            GUI.getStatusBar().setErrorText(e.getMessage());
+          }
+        }
+      };
+      ExtensionRegistry.register(e,Start.class.getName());
+    }
   }
 
   /**
@@ -149,28 +127,28 @@ public class Fibu extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
-    if (Application.inClientMode())
-      return;
-
-    File dbDir = new File(getResources().getWorkPath(),"db");
-    if (!dbDir.exists())
-      dbDir.mkdirs();
-
-    try
-    {
-      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
-
-      File create = new File(getResources().getPath() + "/sql/create.sql");
-      File init   = new File(getResources().getPath() + "/sql/init.sql");
-
-      db.executeSQLScript(create);
-      db.executeSQLScript(init);
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to create sql tables",e);
-      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
-    }
+//    if (Application.inClientMode())
+//      return;
+//
+//    File dbDir = new File(getResources().getWorkPath(),"db");
+//    if (!dbDir.exists())
+//      dbDir.mkdirs();
+//
+//    try
+//    {
+//      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
+//
+//      File create = new File(getResources().getPath() + "/sql/create.sql");
+//      File init   = new File(getResources().getPath() + "/sql/init.sql");
+//
+//      db.executeSQLScript(create);
+//      db.executeSQLScript(init);
+//    }
+//    catch (Exception e)
+//    {
+//      Logger.error("unable to create sql tables",e);
+//      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
+//    }
   }
   
   /**
@@ -183,6 +161,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.33  2006/06/12 14:08:30  willuhn
+ * @N DB-Wizard
+ *
  * Revision 1.32  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart2CreateDatabase.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/06/12 14:08:30 $
  * $Author: willuhn $
  * $Locker:  $
@@ -18,27 +18,25 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Prueft, ob die Datenbank schon eingerichtet ist und startet ggf einen Wizard.
+ * Action zum Erstellen der Datenbank.
  */
-public class FirstStart implements Action
+public class FirstStart2CreateDatabase implements Action
 {
+
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart.class,context);
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart2CreateDatabase.class,context);
   }
 
 }
 
 
 /*********************************************************************
- * $Log: FirstStart.java,v $
- * Revision 1.2  2006/06/12 14:08:30  willuhn
+ * $Log: FirstStart2CreateDatabase.java,v $
+ * Revision 1.1  2006/06/12 14:08:30  willuhn
  * @N DB-Wizard
- *
- * Revision 1.1  2006/05/29 23:05:07  willuhn
- * *** empty log message ***
  *
  **********************************************************************/

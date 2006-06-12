@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.12 $
+ * $Date: 2006/06/12 14:08:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -160,11 +160,27 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     }
   }
 
+  /**
+   * Ueberschrieben, damit der Service nur gestartet wird, wenn die DB eingerichtet ist.
+   * @see de.willuhn.datasource.Service#start()
+   */
+  public synchronized void start() throws RemoteException
+  {
+    if (de.willuhn.jameica.fibu.Settings.isFirstStart())
+    {
+      Logger.info("first start: skipping db service");
+      return;
+    }
+    super.start();
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.12  2006/06/12 14:08:29  willuhn
+ * @N DB-Wizard
+ *
  * Revision 1.11  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *
