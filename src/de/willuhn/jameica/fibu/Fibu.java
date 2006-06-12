@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/06/12 14:08:30 $
+ * $Revision: 1.34 $
+ * $Date: 2006/06/12 15:41:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-import de.willuhn.datasource.Service;
-import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.fibu.gui.action.FirstStart;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -27,7 +25,6 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -127,28 +124,6 @@ public class Fibu extends AbstractPlugin
    */
   public void install() throws ApplicationException
   {
-//    if (Application.inClientMode())
-//      return;
-//
-//    File dbDir = new File(getResources().getWorkPath(),"db");
-//    if (!dbDir.exists())
-//      dbDir.mkdirs();
-//
-//    try
-//    {
-//      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),"fibu","fibu");
-//
-//      File create = new File(getResources().getPath() + "/sql/create.sql");
-//      File init   = new File(getResources().getPath() + "/sql/init.sql");
-//
-//      db.executeSQLScript(create);
-//      db.executeSQLScript(init);
-//    }
-//    catch (Exception e)
-//    {
-//      Logger.error("unable to create sql tables",e);
-//      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Installieren des Fibu-Plugins"));
-//    }
   }
   
   /**
@@ -161,6 +136,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.34  2006/06/12 15:41:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.33  2006/06/12 14:08:30  willuhn
  * @N DB-Wizard
  *

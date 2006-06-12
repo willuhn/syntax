@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/12 15:41:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 
 package de.willuhn.jameica.fibu.gui.controller;
 
+import java.io.File;
+import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,8 +35,11 @@ import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.ProgressBar;
+import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.sql.ScriptExecutor;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -52,6 +57,9 @@ public class FirstStartControl extends AbstractControl
   private PasswordInput inputPassword2 = null;
   private TextInput inputHostname      = null;
   private IntegerInput inputPort       = null;
+  
+  private ProgressBar createMonitor    = null;
+  private ProgressBar initMonitor      = null;
   
   private DBSupport dbType = null;
   private String username  = "syntax";
@@ -193,6 +201,28 @@ public class FirstStartControl extends AbstractControl
     }
     return this.inputPort;
   }
+  
+  /**
+   * Zeigt einen Fortschrittsbalken fuer die Erstellung der Datenbank an.
+   * @return Fortschrittsbalken.
+   */
+  public ProgressBar getCreateProgressMonitor()
+  {
+    if (this.createMonitor == null)
+      this.createMonitor = new ProgressBar();
+    return this.createMonitor;
+  }
+
+  /**
+   * Zeigt einen Fortschrittsbalken fuer die Initial-Befuellung der Datenbank an.
+   * @return Fortschrittsbalken.
+   */
+  public ProgressBar getInitProgressMonitor()
+  {
+    if (this.initMonitor == null)
+      this.initMonitor = new ProgressBar();
+    return this.initMonitor;
+  }
 
   
   /**
@@ -243,8 +273,42 @@ public class FirstStartControl extends AbstractControl
   /**
    * Erstellt die ausgewaehlte Datenbank.
    */
-  public void handleCreateDatabase()
+  public void handle2CreateDatabase()
   {
+    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+    File create = new File(res.getPath() + "/sql/create_mysql.sql");
+    File init   = new File(res.getPath() + "/sql/init.sql");
+
+    Connection conn = null;
+    try
+    {
+      conn = this.dbType.getConnection();
+      ScriptExecutor.execute(new FileReader(create),conn, getCreateProgressMonitor());
+      ScriptExecutor.execute(new FileReader(init),conn, getInitProgressMonitor());
+    }
+    catch (ApplicationException ae)
+    {
+      GUI.getView().setErrorText(ae.getLocalizedMessage());
+    }
+    catch (Throwable t)
+    {
+      Logger.error("unable to execute sql scripts",t);
+      GUI.getView().setErrorText(i18n.tr("Fehler beim Initialisieren der Datenbank"));
+    }
+    finally
+    {
+      if (conn != null)
+      {
+        try
+        {
+          conn.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to close connection",t);
+        }
+      }
+    }
     
   }
 
@@ -292,6 +356,13 @@ public class FirstStartControl extends AbstractControl
      * @throws ApplicationException
      */
     public void test() throws ApplicationException;
+    
+    /**
+     * Erstellt eine neue Connection zu der Datenbank.
+     * @return die Connection.
+     * @throws ApplicationException
+     */
+    public Connection getConnection() throws ApplicationException;
   }
   
   /**
@@ -373,6 +444,23 @@ public class FirstStartControl extends AbstractControl
       if (port <= 0 || port > 65535)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
       
+      Connection conn = getConnection();
+      try
+      {
+        conn.close();
+      }
+      catch (Throwable t)
+      {
+        Logger.error("unable to close connection",t);
+      }
+      GUI.getView().setSuccessText(i18n.tr("Datenbankverbindung erfolgreich getestet"));
+    }
+
+    /**
+     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#getConnection()
+     */
+    public Connection getConnection() throws ApplicationException
+    {
       try
       {
         Class.forName("com.mysql.jdbc.Driver");
@@ -383,15 +471,12 @@ public class FirstStartControl extends AbstractControl
         throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers"));
       }
 
-      Connection conn = null;
       try
       {
         String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port +
                            "/" + dbname + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
         Logger.info("using jdbc url: " + jdbcUrl);
-        conn = DriverManager.getConnection(jdbcUrl,username,password);
-        conn.close();
-        GUI.getView().setSuccessText(i18n.tr("Datenbankverbindung erfolgreich getestet"));
+        return DriverManager.getConnection(jdbcUrl,username,password);
       }
       catch (Throwable t)
       {
@@ -475,6 +560,48 @@ public class FirstStartControl extends AbstractControl
     {
       // Hier gibts nichts zu testen
     }
+
+    /**
+     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#getConnection()
+     */
+    public Connection getConnection() throws ApplicationException
+    {
+      try
+      {
+        Class.forName("com.mckoi.JDBCDriver");
+      }
+      catch (Throwable t)
+      {
+        Logger.error("unable to load jdbc driver",t);
+        throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers"));
+      }
+
+      try
+      {
+        PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+        
+        File dbDir = new File(res.getWorkPath(),"db");
+        if (!dbDir.exists())
+          dbDir.mkdirs();
+
+        String jdbcUrl = ":jdbc:mckoi:local://" + dbDir.getAbsolutePath() + "/db.conf";
+        Logger.info("using jdbc url: " + jdbcUrl);
+        return DriverManager.getConnection(jdbcUrl,"syntax","syntax");
+      }
+      catch (Throwable t)
+      {
+        Logger.error("unable to connect to database",t);
+
+        Throwable tOrig = t.getCause();
+        
+        String msg = t.getLocalizedMessage();
+        if (tOrig != null & tOrig != t)
+          msg += ". " + tOrig.getLocalizedMessage();
+        throw new ApplicationException(msg);
+      }
+    
+    
+    }
     
   }
 
@@ -483,6 +610,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.2  2006/06/12 15:41:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *

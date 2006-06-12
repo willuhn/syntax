@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart1ChooseDatabase.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/12 15:41:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class FirstStart1ChooseDatabase extends AbstractFirstStart
         getController().handleFirstStart();
       }
     });
-    buttons.addButton(i18n.tr("Weiter >>"),new Action() {
+    buttons.addButton(i18n.tr("Datenbank testen >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         getController().handle1ChooseDatabase();
@@ -63,6 +63,9 @@ public class FirstStart1ChooseDatabase extends AbstractFirstStart
 
 /*********************************************************************
  * $Log: FirstStart1ChooseDatabase.java,v $
+ * Revision 1.2  2006/06/12 15:41:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *
