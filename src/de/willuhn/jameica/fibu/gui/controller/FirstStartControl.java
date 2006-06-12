@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/12 15:41:18 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/12 23:05:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,34 +13,28 @@
 
 package de.willuhn.jameica.fibu.gui.controller;
 
-import java.io.File;
-import java.io.FileReader;
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.FirstStart;
-import de.willuhn.jameica.fibu.gui.action.FirstStart2CreateDatabase;
+import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ProgressBar;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
-import de.willuhn.sql.ScriptExecutor;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
 
 /**
@@ -58,16 +52,9 @@ public class FirstStartControl extends AbstractControl
   private TextInput inputHostname      = null;
   private IntegerInput inputPort       = null;
   
-  private ProgressBar createMonitor    = null;
-  private ProgressBar initMonitor      = null;
+  private ProgressBar monitor          = null;
   
-  private DBSupport dbType = null;
-  private String username  = "syntax";
-  private String password  = null;
-  private String password2 = null;
-  private String dbname    = "syntax";
-  private String hostname  = "database.hostname";
-  private int port         = 3306;
+  private DBSupport dbType             = null;
   
   /**
    * @param view
@@ -87,33 +74,58 @@ public class FirstStartControl extends AbstractControl
   {
     if (this.inputDbType == null)
     {
-      DBSupport[] list = new DBSupport[2];
-      list[0] = new McKoi();
-      list[1] = new MySQL();
-      inputDbType = new SelectInput(PseudoIterator.fromArray(list),this.dbType);
-      inputDbType.addListener(new Listener() {
+      ClassFinder finder = Application.getClassLoader().getClassFinder();
+      Class[] dbs = finder.findImplementors(DBSupport.class);
+      
+      ArrayList list = new ArrayList();
+      for (int i=0;i<dbs.length;++i)
+      {
+        Logger.info("trying to init dbsupport " + dbs[i].getName());
+        try
+        {
+          list.add(dbs[i].newInstance());
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to init dbsupport " + dbs[i].getName() + ", skipping",t);
+        }
+      }
+      DBSupport[] databases = (DBSupport[]) list.toArray(new DBSupport[list.size()]);
+      inputDbType = new SelectInput(PseudoIterator.fromArray(databases),this.dbType);
+      
+      
+      Listener l = new Listener() {
         public void handleEvent(Event event)
         {
           try
           {
             DBSupport s = (DBSupport) inputDbType.getValue();
-            s.handleAction(null);
+            if(s.needsUsername())  getUsername().enable();
+            else                   getUsername().disable();
+
+            if(s.needsDatabaseName()) getDBName().enable();
+            else                      getDBName().disable();
+
+            if(s.needsHostname()) getHostname().enable();
+            else                  getHostname().disable();
+
+            if(s.needsPassword()) getPassword().enable();
+            else                  getPassword().disable();
+
+            if(s.needsTcpPort()) getPort().enable();
+            else                 getPort().disable();
+
           }
-          catch(ApplicationException ae)
+          catch(RemoteException e)
           {
-            GUI.getView().setErrorText(ae.getMessage());
+            Logger.error("unable to apply database configuration",e);
+            GUI.getView().setErrorText(i18n.tr("Fehler beim Übernehmen der Datenbank-Konfiguration"));
           }
         }
-      });
-      try
-      {
-        DBSupport s = this.dbType != null ? this.dbType : list[0];
-        s.handleAction(null);
-      }
-      catch (ApplicationException ae)
-      {
-        GUI.getView().setErrorText(ae.getMessage());
-      }
+      };
+      
+      inputDbType.addListener(l);
+      l.handleEvent(null);
     }
     return inputDbType;
   }
@@ -121,12 +133,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Eingabe-Feld fuer den Usernamen.
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public TextInput getUsername()
+  public TextInput getUsername() throws RemoteException
   {
     if (this.inputUsername == null)
     {
-      this.inputUsername = new TextInput(this.username);
+      this.inputUsername = new TextInput(((DBSupport)getDBType().getValue()).getUsername());
       this.inputUsername.setComment(i18n.tr("Username des Datenbank-Benutzers"));
     }
     return this.inputUsername;
@@ -135,12 +148,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Eingabe-Feld fuer den Namen der Datenbank.
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public TextInput getDBName()
+  public TextInput getDBName() throws RemoteException
   {
     if (this.inputDbname == null)
     {
-      this.inputDbname = new TextInput(this.dbname);
+      this.inputDbname = new TextInput(((DBSupport)getDBType().getValue()).getDatabaseName());
       this.inputDbname.setComment(i18n.tr("Name der Datenbank"));
     }
     return this.inputDbname;
@@ -149,12 +163,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Eingabe-Feld fuer das Passwort.
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public PasswordInput getPassword()
+  public PasswordInput getPassword() throws RemoteException
   {
     if (this.inputPassword == null)
     {
-      this.inputPassword = new PasswordInput(this.password);
+      this.inputPassword = new PasswordInput(((DBSupport)getDBType().getValue()).getPassword());
       this.inputPassword.setComment(i18n.tr("Passwort des Datenbank-Benutzers"));
     }
     return this.inputPassword;
@@ -168,7 +183,7 @@ public class FirstStartControl extends AbstractControl
   {
     if (this.inputPassword2 == null)
     {
-      this.inputPassword2 = new PasswordInput(this.password2);
+      this.inputPassword2 = new PasswordInput("");
       this.inputPassword2.setComment(i18n.tr("Geben Sie hier das Passwort nochmal zur Kontrolle ein"));
     }
     return this.inputPassword2;
@@ -177,12 +192,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Liefert ein Eingabe-Feld fuer den Hostnamen der Datenbank.
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public TextInput getHostname()
+  public TextInput getHostname() throws RemoteException
   {
     if (this.inputHostname == null)
     {
-      this.inputHostname = new TextInput(this.hostname);
+      this.inputHostname = new TextInput(((DBSupport)getDBType().getValue()).getHostname());
       this.inputHostname.setComment(i18n.tr("Hostname des Datenbank-Servers"));
     }
     return this.inputHostname;
@@ -191,12 +207,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Eingabe-Feld fuer den TCP-Port der Datenbank. 
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public IntegerInput getPort()
+  public IntegerInput getPort() throws RemoteException
   {
     if (this.inputPort == null)
     {
-      this.inputPort = new IntegerInput(this.port);
+      this.inputPort = new IntegerInput(((DBSupport)getDBType().getValue()).getTcpPort());
       this.inputPort.setComment(i18n.tr("TCP-Port des Datenbank-Servers"));
     }
     return this.inputPort;
@@ -206,25 +223,16 @@ public class FirstStartControl extends AbstractControl
    * Zeigt einen Fortschrittsbalken fuer die Erstellung der Datenbank an.
    * @return Fortschrittsbalken.
    */
-  public ProgressBar getCreateProgressMonitor()
+  public ProgressBar getProgressMonitor()
   {
-    if (this.createMonitor == null)
-      this.createMonitor = new ProgressBar();
-    return this.createMonitor;
+    if (this.monitor == null)
+    {
+      this.monitor = new ProgressBar();
+      this.monitor.showLogs(false);
+    }
+    return this.monitor;
   }
 
-  /**
-   * Zeigt einen Fortschrittsbalken fuer die Initial-Befuellung der Datenbank an.
-   * @return Fortschrittsbalken.
-   */
-  public ProgressBar getInitProgressMonitor()
-  {
-    if (this.initMonitor == null)
-      this.initMonitor = new ProgressBar();
-    return this.initMonitor;
-  }
-
-  
   /**
    * Wechselt zur Startseite des Wizards.
    *
@@ -248,67 +256,29 @@ public class FirstStartControl extends AbstractControl
   }
   
   /**
-   * Testet die ausgewaehlte Datenbank auf Verfuegbarkeit und leitet
-   * auf die naechste Seite weiter.
+   * Erstellt die ausgewaehlte Datenbank.
    */
-  public void handle1ChooseDatabase()
+  public void handle1CreateDatabase()
   {
     try
     {
       handleApply();
       this.dbType.test();
-      new FirstStart2CreateDatabase().handleAction(this);
     }
     catch (ApplicationException ae)
     {
       GUI.getView().setErrorText(ae.getMessage());
+      return;
     }
     catch (RemoteException re)
     {
       Logger.error("error while checking database",re);
       GUI.getView().setErrorText(i18n.tr("Fehler beim Testen der Datenbank"));
+      return;
     }
-  }
-  
-  /**
-   * Erstellt die ausgewaehlte Datenbank.
-   */
-  public void handle2CreateDatabase()
-  {
-    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-    File create = new File(res.getPath() + "/sql/create_mysql.sql");
-    File init   = new File(res.getPath() + "/sql/init.sql");
 
-    Connection conn = null;
-    try
-    {
-      conn = this.dbType.getConnection();
-      ScriptExecutor.execute(new FileReader(create),conn, getCreateProgressMonitor());
-      ScriptExecutor.execute(new FileReader(init),conn, getInitProgressMonitor());
-    }
-    catch (ApplicationException ae)
-    {
-      GUI.getView().setErrorText(ae.getLocalizedMessage());
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to execute sql scripts",t);
-      GUI.getView().setErrorText(i18n.tr("Fehler beim Initialisieren der Datenbank"));
-    }
-    finally
-    {
-      if (conn != null)
-      {
-        try
-        {
-          conn.close();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("unable to close connection",t);
-        }
-      }
-    }
+    
+    
     
   }
 
@@ -318,16 +288,29 @@ public class FirstStartControl extends AbstractControl
    */
   public void handleApply() throws RemoteException
   {
-    this.username  =  (String) getUsername().getValue();
-    this.dbname    =  (String) getDBName().getValue();
-    this.hostname  =  (String) getHostname().getValue();
-    this.password  =  (String) getPassword().getValue();
-    this.password2 =  (String) getPassword2().getValue();
+    this.dbType = (DBSupport) getDBType().getValue();
+    this.dbType.setUsername((String) getUsername().getValue());
+    this.dbType.setPassword((String) getPassword().getValue());
+    this.dbType.setHostname((String) getHostname().getValue());
+    this.dbType.setDatabaseName((String) getDBName().getValue());
+
     Integer p = (Integer) getPort().getValue();
     if (p != null)
-      this.port = p.intValue();
+      this.dbType.setTcpPort(p.intValue());
 
-    this.dbType = (DBSupport) getDBType().getValue();
+//    if (dbname == null || dbname.length() == 0)
+//      throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen der Datenbank an"));
+//    if (username == null || username.length() == 0)
+//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
+//    if (hostname == null || hostname.length() == 0)
+//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Hostnamen für die Datenbank an"));
+//    if (password == null || password.length() == 0)
+//      throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
+//    if (!password.equals(password2))
+//      throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
+//    if (port <= 0 || port > 65535)
+//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
+
   }
   
   /**
@@ -343,273 +326,14 @@ public class FirstStartControl extends AbstractControl
     this.inputPort      = null;
     this.inputUsername  = null;
   }
-  
-  
-  
-  /**
-   * Hilfs-Interface zur Auswahl der Datenbank.
-   */
-  private interface DBSupport extends GenericObject, Action
-  {
-    /**
-     * Testet die ausgewaehlte Datenbank.
-     * @throws ApplicationException
-     */
-    public void test() throws ApplicationException;
-    
-    /**
-     * Erstellt eine neue Connection zu der Datenbank.
-     * @return die Connection.
-     * @throws ApplicationException
-     */
-    public Connection getConnection() throws ApplicationException;
-  }
-  
-  /**
-   * Hilfsklasse fuer MySQL-Support.
-   */
-  private class MySQL implements DBSupport
-  {
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return "MySQL";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[]{"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return this.getClass().getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-      return getID().equals(arg0.getID());
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
-    public void handleAction(Object context) throws ApplicationException
-    {
-      getDBName().enable();
-      getUsername().enable();
-      getHostname().enable();
-      getPort().enable();
-      getPassword().enable();
-      getPassword2().enable();
-    }
-
-    /**
-     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#test()
-     */
-    public void test() throws ApplicationException
-    {
-      
-      if (dbname == null || dbname.length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen der Datenbank an"));
-      if (username == null || username.length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
-      if (hostname == null || hostname.length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Hostnamen für die Datenbank an"));
-      if (password == null || password.length() == 0)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
-      if (!password.equals(password2))
-        throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
-      if (port <= 0 || port > 65535)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
-      
-      Connection conn = getConnection();
-      try
-      {
-        conn.close();
-      }
-      catch (Throwable t)
-      {
-        Logger.error("unable to close connection",t);
-      }
-      GUI.getView().setSuccessText(i18n.tr("Datenbankverbindung erfolgreich getestet"));
-    }
-
-    /**
-     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#getConnection()
-     */
-    public Connection getConnection() throws ApplicationException
-    {
-      try
-      {
-        Class.forName("com.mysql.jdbc.Driver");
-      }
-      catch (Throwable t)
-      {
-        Logger.error("unable to load jdbc driver",t);
-        throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers"));
-      }
-
-      try
-      {
-        String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port +
-                           "/" + dbname + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
-        Logger.info("using jdbc url: " + jdbcUrl);
-        return DriverManager.getConnection(jdbcUrl,username,password);
-      }
-      catch (Throwable t)
-      {
-        Logger.error("unable to connect to database",t);
-
-        Throwable tOrig = t.getCause();
-        
-        String msg = t.getLocalizedMessage();
-        if (tOrig != null & tOrig != t)
-          msg += ". " + tOrig.getLocalizedMessage();
-        throw new ApplicationException(msg);
-      }
-    }
-    
-  }
-
-  /**
-   * Hilfsklasse fuer McKoi-Support.
-   */
-  private class McKoi implements DBSupport
-  {
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return "Embedded Datenbank (McKoi)";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[]{"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return this.getClass().getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-      return getID().equals(arg0.getID());
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-     */
-    public void handleAction(Object context) throws ApplicationException
-    {
-      getDBName().disable();
-      getUsername().disable();
-      getHostname().disable();
-      getPort().disable();
-      getPassword().disable();
-      getPassword2().disable();
-    }
-
-    /**
-     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#test()
-     */
-    public void test() throws ApplicationException
-    {
-      // Hier gibts nichts zu testen
-    }
-
-    /**
-     * @see de.willuhn.jameica.fibu.gui.controller.FirstStartControl.DBSupport#getConnection()
-     */
-    public Connection getConnection() throws ApplicationException
-    {
-      try
-      {
-        Class.forName("com.mckoi.JDBCDriver");
-      }
-      catch (Throwable t)
-      {
-        Logger.error("unable to load jdbc driver",t);
-        throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers"));
-      }
-
-      try
-      {
-        PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-        
-        File dbDir = new File(res.getWorkPath(),"db");
-        if (!dbDir.exists())
-          dbDir.mkdirs();
-
-        String jdbcUrl = ":jdbc:mckoi:local://" + dbDir.getAbsolutePath() + "/db.conf";
-        Logger.info("using jdbc url: " + jdbcUrl);
-        return DriverManager.getConnection(jdbcUrl,"syntax","syntax");
-      }
-      catch (Throwable t)
-      {
-        Logger.error("unable to connect to database",t);
-
-        Throwable tOrig = t.getCause();
-        
-        String msg = t.getLocalizedMessage();
-        if (tOrig != null & tOrig != t)
-          msg += ". " + tOrig.getLocalizedMessage();
-        throw new ApplicationException(msg);
-      }
-    
-    
-    }
-    
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.3  2006/06/12 23:05:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/12 15:41:18  willuhn
  * *** empty log message ***
  *

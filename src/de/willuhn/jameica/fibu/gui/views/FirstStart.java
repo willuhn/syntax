@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/12 23:05:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,7 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.fibu.gui.action.FirstStart1ChooseDatabase;
+import de.willuhn.jameica.fibu.gui.action.FirstStart1CreateDatabase;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -35,20 +35,19 @@ public class FirstStart extends AbstractFirstStart
     GUI.getView().setTitle(i18n.tr("SynTAX: Installation"));
     
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Willkommen"));
-    group.addText(i18n.tr("Sie starten SynTAX zum ersten Mal. Dieser Wizard wird Sie bei " +
+    group.addText("\n" + i18n.tr("Sie starten SynTAX zum ersten Mal. Dieser Assistent wird Sie bei " +
         "der Einrichtung der Datenbank sowie Ihrer Stammdaten unterstützen."),true);
     
     FormTextPart t = new FormTextPart();
-    t.setText("<form>" +
-        "<li>Schritt 1: Auswahl der Datenbank</li>" +
-        "<li>Schritt 2: Einrichtung der Datenbank</li>" +
-        "<li>Schritt 3: Anlegen eines Mandanten</li>" +
-        "<li>Schritt 4: Erstellen eines Geschäftsjahres</li>" +
-        "</form>");
+    t.setText("<form><p></p>" +
+        "<li>Einrichtung der Datenbank</li>" +
+        "<li>Anlegen eines Mandanten</li>" +
+        "<li>Erstellen eines Geschäftsjahres</li>" +
+        "<p></p></form>");
 
     group.addPart(t);
     ButtonArea buttons = group.createButtonArea(1);
-    buttons.addButton(i18n.tr("Weiter >>"),new FirstStart1ChooseDatabase(), getController());
+    buttons.addButton(i18n.tr("Weiter >>"),new FirstStart1CreateDatabase(), getController());
     
     
   }
@@ -58,6 +57,9 @@ public class FirstStart extends AbstractFirstStart
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.3  2006/06/12 23:05:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *

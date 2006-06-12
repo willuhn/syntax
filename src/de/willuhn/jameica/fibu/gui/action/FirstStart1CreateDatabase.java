@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart2CreateDatabase.java,v $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart1CreateDatabase.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/06/12 14:08:30 $
+ * $Date: 2006/06/12 23:05:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action zum Erstellen der Datenbank.
  */
-public class FirstStart2CreateDatabase implements Action
+public class FirstStart1CreateDatabase implements Action
 {
 
   /**
@@ -28,14 +28,17 @@ public class FirstStart2CreateDatabase implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart2CreateDatabase.class,context);
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart1CreateDatabase.class,context);
   }
 
 }
 
 
 /*********************************************************************
- * $Log: FirstStart2CreateDatabase.java,v $
+ * $Log: FirstStart1CreateDatabase.java,v $
+ * Revision 1.1  2006/06/12 23:05:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/06/12 14:08:30  willuhn
  * @N DB-Wizard
  *
