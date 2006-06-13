@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 23:05:47 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,10 +34,13 @@ public interface DBSupport extends GenericObject
   
   /**
    * Erstellt die Datenbank.
+   * Die Funktion darf durchaus Fehler werfen oder den User fragen, wenn
+   * die Datenbank schon existiert oder notwendige Daten fehlen.
    * @param monitor Monitor, ueber den die Erstellung der Datenbank beobachtet werden kann.
+   * @throws RemoteException
    * @throws ApplicationException
    */
-  public void create(ProgressMonitor monitor) throws ApplicationException;
+  public void create(ProgressMonitor monitor) throws RemoteException,ApplicationException;
   
   /**
    * Liefert true, wenn die Datenbank einen Usernamen braucht.
@@ -149,6 +152,9 @@ public interface DBSupport extends GenericObject
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.2  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.1  2006/06/12 23:05:47  willuhn
  * *** empty log message ***
  *

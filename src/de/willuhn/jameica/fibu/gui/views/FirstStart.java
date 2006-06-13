@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/12 23:05:47 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,12 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
-import de.willuhn.jameica.fibu.gui.action.FirstStart1CreateDatabase;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.util.ApplicationException;
 
 /**
  * View mit dem Wizard fuer den ersten Start.
@@ -47,7 +48,13 @@ public class FirstStart extends AbstractFirstStart
 
     group.addPart(t);
     ButtonArea buttons = group.createButtonArea(1);
-    buttons.addButton(i18n.tr("Weiter >>"),new FirstStart1CreateDatabase(), getController());
+
+    buttons.addButton(i18n.tr("Weiter >>"),new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        getController().handleForward();
+      }
+    });
     
     
   }
@@ -57,6 +64,9 @@ public class FirstStart extends AbstractFirstStart
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.4  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.3  2006/06/12 23:05:47  willuhn
  * *** empty log message ***
  *

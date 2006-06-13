@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.13 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,12 +21,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.ResultSetExtractor;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.jameica.system.Settings;
 import de.willuhn.logging.Logger;
 
 /**
@@ -38,25 +36,19 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   private HashMap jahre = new HashMap();
   private Geschaeftsjahr jahr = null;
   
-  private static Settings SETTINGS = new Settings(DBService.class);
-
-  static
-  {
-    SETTINGS.setStoreWhenRead(false);
-  }
-  
   /**
    * ct.
    * @throws RemoteException
    */
   public DBServiceImpl() throws RemoteException
   {
-    super(
-      SETTINGS.getString("jdbc.driver","com.mckoi.JDBCDriver"),
-      SETTINGS.getString("jdbc.url",":jdbc:mckoi:local://" + Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath() + "/db/db.conf"),
-      SETTINGS.getString("jdbc.username","fibu"),
-      SETTINGS.getString("jdbc.password","fibu")
-    );
+    super(null,null,null,null);
+//    super(
+//      SETTINGS.getString("jdbc.driver","com.mckoi.JDBCDriver"),
+//      SETTINGS.getString("jdbc.url",":jdbc:mckoi:local://" + Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath() + "/db/db.conf"),
+//      SETTINGS.getString("jdbc.username","fibu"),
+//      SETTINGS.getString("jdbc.password","fibu")
+//    );
     this.setClassloader(Application.getClassLoader());
     this.setClassFinder(Application.getClassLoader().getClassFinder());
   }
@@ -99,8 +91,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   public String getSQLTimestamp(String content) throws RemoteException
   {
     // TODO Scheisse, ist das haesslich ;)
-    String s = SETTINGS.getString("sql.function.timestamp","tonumber({0})");
-    return s.replaceAll("\\{0\\}",content);
+//    String s = SETTINGS.getString("sql.function.timestamp","tonumber({0})");
+//    return s.replaceAll("\\{0\\}",content);
+    return null;
   }
   
   /**
@@ -178,6 +171,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.13  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.12  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *

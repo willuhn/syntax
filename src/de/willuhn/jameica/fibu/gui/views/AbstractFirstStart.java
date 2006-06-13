@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/AbstractFirstStart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,13 +57,25 @@ public abstract class AbstractFirstStart extends AbstractView
    */
   public void bind() throws Exception
   {
-    getController().handleReset();
+    getController().handleBind();
   }
+
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind()
+  {
+    getController().handleUnbind();
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: AbstractFirstStart.java,v $
+ * Revision 1.2  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.1  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *

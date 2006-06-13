@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart1CreateDatabase.java,v $
- * $Revision: 1.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart2CreateMandant.java,v $
+ * $Revision: 1.1 $
  * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.util.ApplicationException;
 
 /**
- * View zum Erstellen der Datenbank.
+ * View zum Erstellen des Mandanten.
  */
-public class FirstStart1CreateDatabase extends AbstractFirstStart
+public class FirstStart2CreateMandant extends AbstractFirstStart
 {
 
   /**
@@ -32,20 +32,10 @@ public class FirstStart1CreateDatabase extends AbstractFirstStart
   {
     super.bind();
     
-    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 1 von 3 - Einrichtung der Datenbank"));
-    
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Datenbank-Einstellungen"));
-    group.addLabelPair(i18n.tr("Typ der Datenbank"),getController().getDBType());
-    group.addLabelPair(i18n.tr("Name der Datenbank"),getController().getDBName());
-    group.addLabelPair(i18n.tr("Username"),getController().getUsername());
-    group.addLabelPair(i18n.tr("Passwort"),getController().getPassword());
-    group.addLabelPair(i18n.tr("Passwortwiederholung"),getController().getPassword2());
-    group.addLabelPair(i18n.tr("Hostname der Datenbank"),getController().getHostname());
-    group.addLabelPair(i18n.tr("TCP-Port"),getController().getPort());
-    
-    group.addHeadline(i18n.tr("Erstellung der Datenbank"));
-    group.addPart(getController().getProgressMonitor());
+    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 2 von 3 - Einrichtung des Mandanten"));
 
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Mandant"));
+    
     ButtonArea buttons = group.createButtonArea(2);
     buttons.addButton(i18n.tr("<< Zurück"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -65,8 +55,8 @@ public class FirstStart1CreateDatabase extends AbstractFirstStart
 
 
 /*********************************************************************
- * $Log: FirstStart1CreateDatabase.java,v $
- * Revision 1.2  2006/06/13 22:52:10  willuhn
+ * $Log: FirstStart2CreateMandant.java,v $
+ * Revision 1.1  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *
  * Revision 1.1  2006/06/12 23:05:47  willuhn

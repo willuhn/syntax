@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 23:05:47 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,37 +13,28 @@
 
 package de.willuhn.jameica.fibu.server;
 
-import java.io.File;
-import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
-import de.willuhn.sql.ScriptExecutor;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
-import de.willuhn.util.ProgressMonitor;
 
 /**
  * Abstrakte Basis-Implementierung von Datenbank-Support-Klassen.
  */
-public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implements
-    DBSupport
+public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implements DBSupport
 {
   
   I18N i18n = null;
   
-  private String username = null;
+  private String username = "syntax";
   private String password = null;
-  private String hostname = null;
-  private String dbName   = null;
-  private int tcpPort     = 0;
+  private String hostname = "192.168.0.1";
+  private String dbName   = "syntax";
+  private int tcpPort     = 3306;
 
   /**
    * @throws java.rmi.RemoteException
@@ -53,63 +44,7 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
     super();
     this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
-   */
-  public void create(ProgressMonitor monitor) throws ApplicationException
-  {
-    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-    File create = new File(res.getPath() + File.separator + "sql" + File.separator + getCreateScript());
-    File init   = new File(res.getPath() + File.separator + "sql" + File.separator + "init.sql");
-
-    Connection conn = null;
-    try
-    {
-      conn = getConnection();
-      ScriptExecutor.execute(new FileReader(create),conn, monitor);
-      monitor.setPercentComplete(0);
-      ScriptExecutor.execute(new FileReader(init),conn, monitor);
-      monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to execute sql scripts",t);
-      throw new ApplicationException(i18n.tr("Fehler beim Initialisieren der Datenbank"),t);
-    }
-    finally
-    {
-      if (conn != null)
-      {
-        try
-        {
-          conn.close();
-        }
-        catch (Throwable t)
-        {
-          Logger.error("unable to close connection",t);
-        }
-      }
-    }
-  }
-  
-  /**
-   * Liefert eine Connection zur Datenbank.
-   * @return Connection.
-   * @throws ApplicationException
-   */
-  abstract Connection getConnection() throws ApplicationException;
-
-  /**
-   * Liefert den Dateinamen des SQL-Create-Scripts.
-   * @return Dateiname des SQL-Create-Scripts.
-   */
-  abstract String getCreateScript(); 
-  
+ 
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#needsUsername()
    */
@@ -271,12 +206,14 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
       return false;
     return this.getID().equals(arg0.getID());
   }
-
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.2  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.1  2006/06/12 23:05:47  willuhn
  * *** empty log message ***
  *

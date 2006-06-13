@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/12 23:05:47 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,9 +22,12 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.FirstStart;
+import de.willuhn.jameica.fibu.gui.action.FirstStart1CreateDatabase;
+import de.willuhn.jameica.fibu.gui.action.FirstStart2CreateMandant;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
@@ -54,7 +57,12 @@ public class FirstStartControl extends AbstractControl
   
   private ProgressBar monitor          = null;
   
+  private DBSupport[] dbTypes          = null;
   private DBSupport dbType             = null;
+  
+  private boolean isForward            = true;
+  private ArrayList pages              = new ArrayList();
+  private int wizardIndex              = 0;
   
   /**
    * @param view
@@ -63,6 +71,9 @@ public class FirstStartControl extends AbstractControl
   {
     super(view);
     this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+    this.pages.add(new FirstStart1());
+    this.pages.add(new FirstStart2());
   }
   
   /**
@@ -74,24 +85,36 @@ public class FirstStartControl extends AbstractControl
   {
     if (this.inputDbType == null)
     {
-      ClassFinder finder = Application.getClassLoader().getClassFinder();
-      Class[] dbs = finder.findImplementors(DBSupport.class);
-      
-      ArrayList list = new ArrayList();
-      for (int i=0;i<dbs.length;++i)
+      if (this.dbTypes == null)
       {
-        Logger.info("trying to init dbsupport " + dbs[i].getName());
+        ClassFinder finder = Application.getClassLoader().getClassFinder();
+        Class[] dbs = null;
+        
         try
         {
-          list.add(dbs[i].newInstance());
+          dbs = finder.findImplementors(DBSupport.class);
         }
-        catch (Throwable t)
+        catch (ClassNotFoundException cnf)
         {
-          Logger.error("unable to init dbsupport " + dbs[i].getName() + ", skipping",t);
+          throw new RemoteException("unable to find implementors for " + DBSupport.class.getName(),cnf);
         }
+        
+        ArrayList list = new ArrayList();
+        for (int i=0;i<dbs.length;++i)
+        {
+          Logger.debug("trying to init dbsupport " + dbs[i].getName());
+          try
+          {
+            list.add(dbs[i].newInstance());
+          }
+          catch (Throwable t)
+          {
+            Logger.error("unable to init dbsupport " + dbs[i].getName() + ", skipping",t);
+          }
+        }
+        this.dbTypes = (DBSupport[]) list.toArray(new DBSupport[list.size()]);
       }
-      DBSupport[] databases = (DBSupport[]) list.toArray(new DBSupport[list.size()]);
-      inputDbType = new SelectInput(PseudoIterator.fromArray(databases),this.dbType);
+      inputDbType = new SelectInput(PseudoIterator.fromArray(this.dbTypes),this.dbType);
       
       
       Listener l = new Listener() {
@@ -99,22 +122,16 @@ public class FirstStartControl extends AbstractControl
         {
           try
           {
-            DBSupport s = (DBSupport) inputDbType.getValue();
-            if(s.needsUsername())  getUsername().enable();
-            else                   getUsername().disable();
+            dbType = (DBSupport) inputDbType.getValue();
+            if (dbType == null)
+              return;
 
-            if(s.needsDatabaseName()) getDBName().enable();
-            else                      getDBName().disable();
-
-            if(s.needsHostname()) getHostname().enable();
-            else                  getHostname().disable();
-
-            if(s.needsPassword()) getPassword().enable();
-            else                  getPassword().disable();
-
-            if(s.needsTcpPort()) getPort().enable();
-            else                 getPort().disable();
-
+            getUsername().setEnabled(dbType.needsUsername());
+            getDBName().setEnabled(dbType.needsDatabaseName());
+            getHostname().setEnabled(dbType.needsHostname());
+            getPassword().setEnabled(dbType.needsPassword());
+            getPassword2().setEnabled(dbType.needsPassword());
+            getPort().setEnabled(dbType.needsTcpPort());
           }
           catch(RemoteException e)
           {
@@ -234,89 +251,69 @@ public class FirstStartControl extends AbstractControl
   }
 
   /**
-   * Wechselt zur Startseite des Wizards.
-   *
+   * Geht einen Schritt zurueck.
    */
-  public void handleFirstStart()
+  public void handleBack()
   {
+    if (this.wizardIndex <= 0)
+    {
+      Logger.info("begin of wizard reached");
+      return;
+    }
+    
+    this.wizardIndex--;
+    Action action = (Action)this.pages.get(this.wizardIndex);
+    Logger.info("launch " + action.getClass().getName());
     try
     {
-      handleApply();
-      new FirstStart().handleAction(this);
+      isForward = false;
+      action.handleAction(null);
     }
     catch (ApplicationException ae)
     {
-      GUI.getView().setErrorText(ae.getMessage());
+      GUI.getView().setErrorText(ae.getLocalizedMessage());
     }
-    catch (RemoteException re)
+    catch (Throwable t)
     {
-      Logger.error("error while starting wizard",re);
-      GUI.getView().setErrorText(i18n.tr("Fehler beim Starten des Wizards"));
+      Logger.error("unable to execute action",t);
+      GUI.getView().setErrorText(i18n.tr("Fehler: {0}",t.getLocalizedMessage()));
     }
   }
   
   /**
-   * Erstellt die ausgewaehlte Datenbank.
+   * Geht einen Schritt vor.
    */
-  public void handle1CreateDatabase()
+  public void handleForward()
   {
+    if (this.wizardIndex > (this.pages.size() - 1))
+    {
+      Logger.info("end of wizard reached");
+      return;
+    }
+    
+    Action action = (Action)this.pages.get(this.wizardIndex);
+    Logger.info("launch " + action.getClass().getName());
     try
     {
-      handleApply();
-      this.dbType.test();
+      isForward = true;
+      action.handleAction(null);
+      this.wizardIndex++;
     }
     catch (ApplicationException ae)
     {
-      GUI.getView().setErrorText(ae.getMessage());
-      return;
+      GUI.getView().setErrorText(ae.getLocalizedMessage());
     }
-    catch (RemoteException re)
+    catch (Throwable t)
     {
-      Logger.error("error while checking database",re);
-      GUI.getView().setErrorText(i18n.tr("Fehler beim Testen der Datenbank"));
-      return;
+      Logger.error("unable to execute action",t);
+      GUI.getView().setErrorText(i18n.tr("Fehler: {0}",t.getLocalizedMessage()));
     }
-
-    
-    
-    
-  }
-
-  /**
-   * Uebernimmt die Daten des Formulars.
-   * @throws RemoteException
-   */
-  public void handleApply() throws RemoteException
-  {
-    this.dbType = (DBSupport) getDBType().getValue();
-    this.dbType.setUsername((String) getUsername().getValue());
-    this.dbType.setPassword((String) getPassword().getValue());
-    this.dbType.setHostname((String) getHostname().getValue());
-    this.dbType.setDatabaseName((String) getDBName().getValue());
-
-    Integer p = (Integer) getPort().getValue();
-    if (p != null)
-      this.dbType.setTcpPort(p.intValue());
-
-//    if (dbname == null || dbname.length() == 0)
-//      throw new ApplicationException(i18n.tr("Bitte geben Sie den Namen der Datenbank an"));
-//    if (username == null || username.length() == 0)
-//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
-//    if (hostname == null || hostname.length() == 0)
-//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Hostnamen für die Datenbank an"));
-//    if (password == null || password.length() == 0)
-//      throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
-//    if (!password.equals(password2))
-//      throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
-//    if (port <= 0 || port > 65535)
-//      throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
-
   }
   
   /**
-   * Resettet das Formular.
+   * Wird aufgerufen, bevor jede Seite des Wizard geladen wird.
    */
-  public void handleReset()
+  public void handleBind()
   {
     this.inputDbname    = null;
     this.inputDbType    = null;
@@ -326,11 +323,116 @@ public class FirstStartControl extends AbstractControl
     this.inputPort      = null;
     this.inputUsername  = null;
   }
+  
+  /**
+   * Wird aufgerufen, wenn jede Seite des Wizward verlassen wird.
+   */
+  public void handleUnbind()
+  {
+    
+  }
+  
+  
+  /**
+   * Action, die fuer Seite 1 des Wizards ausgefuehrt wird.
+   */
+  private class FirstStart1 implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      if (isForward)
+      {
+        new FirstStart1CreateDatabase().handleAction(FirstStartControl.this);
+      }
+      else
+      {
+        try
+        {
+          dbType = (DBSupport) getDBType().getValue();
+          new FirstStart().handleAction(FirstStartControl.this);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while applying database",re);
+          throw new ApplicationException(i18n.tr("Fehler beim Übernehmen der Datenbank-Einstellungen. {0}",re.getLocalizedMessage()));
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Action, die fuer Seite 2 des Wizards ausgefuehrt wird.
+   */
+  private class FirstStart2 implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      if (isForward)
+      {
+        try
+        {
+          dbType = (DBSupport) getDBType().getValue();
+
+          // Das Vergleichen der Passworte machen wir gleich
+          if (dbType.needsPassword())
+          {
+            String pw1 = (String) getPassword().getValue();
+            String pw2 = (String) getPassword2().getValue();
+            if (pw1 == null || pw1.length() == 0)
+              throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
+            if (!pw1.equals(pw2))
+              throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
+          }
+          if (dbType.needsUsername())     dbType.setUsername((String) getUsername().getValue());
+          if (dbType.needsPassword())     dbType.setPassword((String) getPassword().getValue());
+          if (dbType.needsHostname())     dbType.setHostname((String) getHostname().getValue());
+          if (dbType.needsDatabaseName()) dbType.setDatabaseName((String) getDBName().getValue());
+
+          Integer p = (Integer) getPort().getValue();
+          if (p != null && dbType.needsTcpPort())
+            dbType.setTcpPort(p.intValue());
+
+          dbType.create(getProgressMonitor());
+          new FirstStart2CreateMandant().handleAction(FirstStartControl.this);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while checking database",re);
+          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",re.getLocalizedMessage()));
+        }
+      }
+      else
+      {
+        try
+        {
+          dbType = (DBSupport) getDBType().getValue();
+          new FirstStart1CreateDatabase().handleAction(FirstStartControl.this);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("error while applying database",re);
+          throw new ApplicationException(i18n.tr("Fehler beim Übernehmen der Datenbank-Einstellungen. {0}",re.getLocalizedMessage()));
+        }
+      }
+    }
+  }
+  
+  
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.4  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.3  2006/06/12 23:05:47  willuhn
  * *** empty log message ***
  *

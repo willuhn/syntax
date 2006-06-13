@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/12 23:05:47 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/13 22:52:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.io.File;
+import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
@@ -23,7 +24,9 @@ import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.sql.ScriptExecutor;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Implementierung des McKoi-DB-Supports.
@@ -41,44 +44,70 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#getConnection()
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
-  Connection getConnection() throws ApplicationException
+  public void create(ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
+    String username = getUsername();
+
+    // Wir checken nur den Usernamen. Das Passwort darf leer sein.
+    if (username == null || username.length() == 0)
+      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
+
+    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+
+    File create = new File(res.getPath() + File.separator + "sql" + File.separator + "create.sql");
+    File init   = new File(res.getPath() + File.separator + "sql" + File.separator + "init.sql");
+    
+    Connection conn = null;
     try
     {
-      PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-      
-      String username = "syntax";
-      String password = "syntax";
       File dbDir = new File(res.getWorkPath(),"db");
       if (!dbDir.exists())
         dbDir.mkdirs();
       
-      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),username,password);
+      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
       if (db.exists())
-        throw new ApplicationException(i18n.tr("Datenbank existiert bereits"));
-      return db.getConnection();
+      {
+        Logger.warn("database allready exists, asking user to skip this step");
+        String text = i18n.tr("Datenbank existiert bereits.\nMöchten Sie die Erstellung überspringen?");
+        if (Application.getCallback().askUser(text))
+        {
+          Logger.info("creation of database skipped");
+          monitor.setStatusText(i18n.tr("Erstellung der Datenbank übersprungen"));
+          return;
+        }
+      }
+
+      conn = db.getConnection();
+      ScriptExecutor.execute(new FileReader(create),conn, monitor);
+      monitor.setPercentComplete(0);
+      ScriptExecutor.execute(new FileReader(init),conn, monitor);
+      monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
     }
     catch (Throwable t)
     {
-      Logger.error("unable to connect to database",t);
-
-      Throwable tOrig = t.getCause();
-      
-      String msg = t.getLocalizedMessage();
-      if (tOrig != null & tOrig != t)
-        msg += ". " + tOrig.getLocalizedMessage();
-      throw new ApplicationException(msg);
+      Logger.error("unable to execute sql scripts",t);
+      throw new ApplicationException(i18n.tr("Fehler beim Initialisieren der Datenbank. {0}",t.getLocalizedMessage()),t);
     }
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#getCreateScript()
-   */
-  String getCreateScript()
-  {
-    return "create.sql";
+    finally
+    {
+      if (conn != null)
+      {
+        try
+        {
+          conn.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to close connection",t);
+        }
+      }
+    }
   }
 
   /**
@@ -89,11 +118,29 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
     return i18n.tr("Embedded Datenbank (McKoi)");
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#needsPassword()
+   */
+  public boolean needsPassword() throws RemoteException
+  {
+    return true;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#needsUsername()
+   */
+  public boolean needsUsername() throws RemoteException
+  {
+    return true;
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.2  2006/06/13 22:52:10  willuhn
+ * @N Setup wizard redesign and code cleanup
+ *
  * Revision 1.1  2006/06/12 23:05:47  willuhn
  * *** empty log message ***
  *
