@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.35 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.36 $
+ * $Date: 2006/06/19 22:41:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -88,12 +88,7 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
-    // Wir triggern noch das Laden der Jameica-Startseite, damit
-    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
-    if (!Application.inServerMode() && Settings.isFirstStart())
-    {
-      ExtensionRegistry.register(new FirstStart(),Start.class.getName());
-    }
+    ExtensionRegistry.register(new FirstStart(),Start.class.getName());
   }
 
   /**
@@ -120,6 +115,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.36  2006/06/19 22:41:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.35  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

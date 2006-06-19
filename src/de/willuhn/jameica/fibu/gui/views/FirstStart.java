@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/19 22:41:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -75,6 +76,11 @@ public class FirstStart extends AbstractView implements Extension
    */
   public void extend(Extendable extendable)
   {
+    // Wir triggern noch das Laden der Jameica-Startseite, damit
+    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
+    if (Application.inServerMode() || !Settings.isFirstStart())
+      return;
+
     AbstractView view = (AbstractView) extendable;
     this.setParent(view.getParent());
     try
@@ -92,6 +98,9 @@ public class FirstStart extends AbstractView implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.7  2006/06/19 22:41:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

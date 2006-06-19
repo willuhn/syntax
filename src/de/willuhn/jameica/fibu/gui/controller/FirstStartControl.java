@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/19 22:41:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -418,6 +418,8 @@ public class FirstStartControl extends AbstractControl
       {
         if (getFinanzamtControl().handleStore())
           GUI.startView(FirstStart3CreateMandant.class,FirstStartControl.this);
+        else
+          wizardIndex--;
       }
       catch (Exception e)
       {
@@ -442,6 +444,8 @@ public class FirstStartControl extends AbstractControl
       {
         if (getMandantControl().handleStore())
           GUI.startView(FirstStart4CreateGeschaeftsjahr.class,FirstStartControl.this);
+        else
+          wizardIndex--;
       }
       catch (Exception e)
       {
@@ -468,6 +472,8 @@ public class FirstStartControl extends AbstractControl
           Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
           new Welcome().handleAction(null);
         }
+        else
+          wizardIndex--;
       }
       catch (Exception e)
       {
@@ -482,6 +488,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.7  2006/06/19 22:41:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

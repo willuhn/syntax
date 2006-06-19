@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.42 $
+ * $Date: 2006/06/19 22:41:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,7 +89,8 @@ public class Settings
     {
       Logger.info("trying to load " + s);
       Class c = Application.getClassLoader().load(s);
-      return (DBSupport) c.newInstance();
+      dbSupport = (DBSupport) c.newInstance();
+      return dbSupport;
     }
     catch (Exception e)
     {
@@ -316,6 +317,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.42  2006/06/19 22:41:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.41  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *
