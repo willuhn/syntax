@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungstemplateList.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/19 22:54:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,17 @@ public class BuchungstemplateList extends TablePart
    */
   public BuchungstemplateList(Action action) throws RemoteException
   {
-    super(init(), action);
+    this(init(),action);
+  }
+
+  /**
+   * ct.
+   * @param list Liste der Buchungs-Vorlagen.
+   * @param action
+   */
+  public BuchungstemplateList(GenericIterator list, Action action)
+  {
+    super(list, action);
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Buchungstext"),"buchungstext");
@@ -106,6 +116,9 @@ public class BuchungstemplateList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungstemplateList.java,v $
+ * Revision 1.4  2006/06/19 22:54:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

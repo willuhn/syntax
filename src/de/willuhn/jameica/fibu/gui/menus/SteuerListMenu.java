@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/19 22:54:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class SteuerListMenu extends ContextMenu
     {
       try
       {
-        if (strict && !((Steuer)o).isUserObject())
+        if (strict && o != null && !((Steuer)o).isUserObject())
           return false;
       }
       catch (RemoteException e)
@@ -94,6 +94,9 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
+ * Revision 1.6  2006/06/19 22:54:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

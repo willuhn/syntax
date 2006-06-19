@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.23 $
+ * $Date: 2006/06/19 22:54:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,13 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
 import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
+import de.willuhn.jameica.fibu.gui.part.BuchungstemplateList;
 import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.gui.part.SteuerList;
@@ -78,28 +80,17 @@ public class MandantNeu extends AbstractView
     group.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
-    ButtonArea buttonArea = group.createButtonArea(4);
-    buttonArea.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
+    ButtonArea buttonArea = group.createButtonArea(2);
     buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
-
-    Button button3 = new Button(i18n.tr("Geschäftsjahr anlegen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleNewGJ();
-      }
-    });
-    button3.setEnabled(control.storeAllowed());
-    buttonArea.addButton(button3);
-    
-    Button button4 = new Button(i18n.tr("Speichern"), new Action()
+    Button button1 = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,control.storeAllowed());
-    button4.setEnabled(control.storeAllowed());
-    buttonArea.addButton(button4);
+    button1.setEnabled(control.storeAllowed());
+    buttonArea.addButton(button1);
 
     TabFolder folder = new TabFolder(getParent(), SWT.NONE);
     folder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -118,18 +109,29 @@ public class MandantNeu extends AbstractView
 
     TabGroup steuern = new TabGroup(folder,i18n.tr("Steuersätze"));
     DBIterator steuerList = Settings.getDBService().createList(Steuer.class);
-//    steuerList.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    steuerList.addFilter("mandant_id = " + control.getMandant().getID());
     steuerList.setOrder("order by name");
     TablePart t3 = new SteuerList(steuerList, new SteuerNeu());
     t3.paint(steuern.getComposite());
     
     TabGroup vorlagen = new TabGroup(folder,i18n.tr("Buchungsvorlagen"));
     DBIterator vorlagenList = Settings.getDBService().createList(Buchungstemplate.class);
-//    vorlagenList.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    steuerList.addFilter("mandant_id = " + control.getMandant().getID());
     vorlagenList.setOrder("order by name");
-    TablePart t4 = new SteuerList(vorlagenList, new SteuerNeu());
+    TablePart t4 = new BuchungstemplateList(vorlagenList, new BuchungstemplateNeu());
     t4.paint(vorlagen.getComposite());
 
+
+    ButtonArea buttonArea2 = new ButtonArea(getParent(),2);
+    buttonArea2.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
+    Button button2 = new Button(i18n.tr("Geschäftsjahr anlegen"), new Action() {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        control.handleNewGJ();
+      }
+    });
+    button2.setEnabled(control.storeAllowed());
+    buttonArea2.addButton(button2);
   }
 
   /**
@@ -142,6 +144,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.23  2006/06/19 22:54:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *
