@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -133,11 +133,42 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
   {
     return true;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getJdbcUrl()
+   */
+  public String getJdbcUrl() throws RemoteException
+  {
+    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+    File dbDir = new File(res.getWorkPath(),"db");
+    if (!dbDir.exists())
+      dbDir.mkdirs();
+    return ":jdbc:mckoi:local://" + dbDir.getAbsolutePath() + "/db.conf";
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getJdbcDriver()
+   */
+  public String getJdbcDriver() throws RemoteException
+  {
+    return "com.mckoi.JDBCDriver";
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getSQLTimestamp(java.lang.String)
+   */
+  public String getSQLTimestamp(String content) throws RemoteException
+  {
+    return "tonumber({0})".replaceAll("\\{0\\}",content);
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.3  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

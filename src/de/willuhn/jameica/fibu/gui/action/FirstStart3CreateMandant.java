@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart2CreateMandant.java,v $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/FirstStart3CreateMandant.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action zum Erstellen des Mandanten.
  */
-public class FirstStart2CreateMandant implements Action
+public class FirstStart3CreateMandant implements Action
 {
 
   /**
@@ -28,14 +28,17 @@ public class FirstStart2CreateMandant implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart2CreateMandant.class,context);
+    GUI.startView(de.willuhn.jameica.fibu.gui.views.FirstStart3CreateMandant.class,context);
   }
 
 }
 
 
 /*********************************************************************
- * $Log: FirstStart2CreateMandant.java,v $
+ * $Log: FirstStart3CreateMandant.java,v $
+ * Revision 1.1  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

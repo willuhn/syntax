@@ -10,13 +10,9 @@
   <menu>
     <item id="syntax.menu" name="SynTAX">
       <item name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
-      <item name="Aktuelles &amp;Geschäftsjahr öffnen"  shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu" />
       <item name="-" />
 	    <item name="Mandanten" 														action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
-      <item name="&amp;Finanzämter"         						action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
-      <item name="&amp;Steuersätze"         						action="de.willuhn.jameica.fibu.gui.action.SteuerListe" />
-      <item name="&amp;Buchungsvorlagen"     						action="de.willuhn.jameica.fibu.gui.action.BuchungstemplateListe" />
-      <item name="-" />
+	    <item name="Finanzämter"  												action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
       <item name="&amp;Einstellungen"       						action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
     </item>
   </menu>

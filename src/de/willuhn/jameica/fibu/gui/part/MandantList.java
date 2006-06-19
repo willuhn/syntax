@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/MandantList.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.TableItem;
+
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -22,8 +24,11 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.MandantListMenu;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
 /**
@@ -50,6 +55,25 @@ public class MandantList extends TablePart
     setContextMenu(new MandantListMenu());
     setRememberColWidths(true);
     setRememberOrder(true);
+    setFormatter(new TableFormatter() {
+      public void format(TableItem item)
+      {
+        // Wir markieren den aktiven Mandanten
+        try
+        {
+          Mandant m = (Mandant) item.getData();
+          Mandant active = Settings.getActiveGeschaeftsjahr().getMandant();
+          if (active.equals(m))
+            item.setForeground(Color.SUCCESS.getSWTColor());
+          else
+            item.setForeground(Color.WIDGET_FG.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to mark active mandant",e);
+        }
+      }
+    });
   }
 
   /**
@@ -68,6 +92,9 @@ public class MandantList extends TablePart
 
 /*********************************************************************
  * $Log: MandantList.java,v $
+ * Revision 1.6  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

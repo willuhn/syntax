@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.16 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,6 +56,8 @@ public class KontoList extends TablePart
   private GenericIterator list  = null;
   private ArrayList konten      = null;
 
+  private boolean filterEnabled = true;
+
   /**
    * @param list
    * @param action
@@ -106,13 +108,16 @@ public class KontoList extends TablePart
    */
   public void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
-    
-    this.filter = new CheckboxInput(false);
-    this.search = new TextInput("");
-    
-    group.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
-    group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
+    if (filterEnabled)
+    {
+      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+      
+      this.filter = new CheckboxInput(false);
+      this.search = new TextInput("");
+      
+      group.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
+      group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
+    }
     
     super.paint(parent);
 
@@ -126,9 +131,12 @@ public class KontoList extends TablePart
       konten.add(k);
     }
     
-    KL kl = new KL();
-    this.search.getControl().addKeyListener(kl);
-    ((Button)this.filter.getControl()).addSelectionListener(kl);
+    if (filterEnabled)
+    {
+      KL kl = new KL();
+      this.search.getControl().addKeyListener(kl);
+      ((Button)this.filter.getControl()).addSelectionListener(kl);
+    }
   }
   
   private class KL extends KeyAdapter implements SelectionListener
@@ -244,11 +252,23 @@ public class KontoList extends TablePart
     }
   }
 
+  /**
+   * Schaltet die Anzeige der Kontofilter an oder aus.
+   * @param visible true, wenn die Kontofilter angezeigt werden sollen. Default: true.
+   */
+  public void setFilterVisible(boolean visible)
+  {
+    this.filterEnabled = visible;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.16  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

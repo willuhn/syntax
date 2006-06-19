@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.22 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.gui.part.SteuerList;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -109,18 +110,26 @@ public class MandantNeu extends AbstractView
     t1.paint(jahre.getComposite());
 
     TabGroup konten = new TabGroup(folder,i18n.tr("Benutzerdefinierte Konten"),false,1);
-    DBIterator i = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-    i.addFilter("mandant_id = " + control.getMandant().getID());
-    TablePart t2 = new KontoList(i, new KontoNeu());
+    DBIterator kontenList = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+    kontenList.addFilter("mandant_id = " + control.getMandant().getID());
+    KontoList t2 = new KontoList(kontenList, new KontoNeu());
+    t2.setFilterVisible(false);
     t2.paint(konten.getComposite());
 
-    TabGroup steuern = new TabGroup(folder,i18n.tr("Benutzerdefinierte Steuersätze"));
-    DBIterator list = Settings.getDBService().createList(Steuer.class);
-    list.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
-    list.setOrder("order by name");
-    TablePart t3 = new SteuerList(list, new SteuerNeu());
+    TabGroup steuern = new TabGroup(folder,i18n.tr("Steuersätze"));
+    DBIterator steuerList = Settings.getDBService().createList(Steuer.class);
+//    steuerList.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    steuerList.setOrder("order by name");
+    TablePart t3 = new SteuerList(steuerList, new SteuerNeu());
     t3.paint(steuern.getComposite());
     
+    TabGroup vorlagen = new TabGroup(folder,i18n.tr("Buchungsvorlagen"));
+    DBIterator vorlagenList = Settings.getDBService().createList(Buchungstemplate.class);
+//    vorlagenList.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    vorlagenList.setOrder("order by name");
+    TablePart t4 = new SteuerList(vorlagenList, new SteuerNeu());
+    t4.paint(vorlagen.getComposite());
+
   }
 
   /**
@@ -133,6 +142,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.22  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

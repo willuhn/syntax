@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.Service;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.FirstStart;
 import de.willuhn.jameica.fibu.gui.action.FirstStart1CreateDatabase;
-import de.willuhn.jameica.fibu.gui.action.FirstStart2CreateMandant;
+import de.willuhn.jameica.fibu.gui.action.FirstStart2CreateFinanzamt;
+import de.willuhn.jameica.fibu.gui.action.FirstStart3CreateMandant;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -74,6 +76,7 @@ public class FirstStartControl extends AbstractControl
 
     this.pages.add(new FirstStart1());
     this.pages.add(new FirstStart2());
+    this.pages.add(new FirstStart3());
   }
   
   /**
@@ -400,12 +403,20 @@ public class FirstStartControl extends AbstractControl
             dbType.setTcpPort(p.intValue());
 
           dbType.create(getProgressMonitor());
-          new FirstStart2CreateMandant().handleAction(FirstStartControl.this);
+          dbType.store();
+          
+          // Jetzt koennen wir den DBService starten
+          Service service = Application.getServiceFactory().lookup(Fibu.class,"database");
+          service.start();
+          service = Application.getServiceFactory().lookup(Fibu.class,"engine");
+          service.start();
+          
+          new FirstStart2CreateFinanzamt().handleAction(FirstStartControl.this);
         }
-        catch (RemoteException re)
+        catch (Exception e)
         {
-          Logger.error("error while checking database",re);
-          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",re.getLocalizedMessage()));
+          Logger.error("error while checking database",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",e.getLocalizedMessage()));
         }
       }
       else
@@ -424,12 +435,44 @@ public class FirstStartControl extends AbstractControl
     }
   }
   
+
+  /**
+   * Action, die fuer Seite 3 des Wizards ausgefuehrt wird.
+   */
+  private class FirstStart3 implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      if (isForward)
+      {
+        try
+        {
+          new FirstStart3CreateMandant().handleAction(FirstStartControl.this);
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking database",e);
+          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",e.getLocalizedMessage()));
+        }
+      }
+      else
+      {
+        new FirstStart2CreateFinanzamt().handleAction(FirstStartControl.this);
+      }
+    }
+  }
   
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.5  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

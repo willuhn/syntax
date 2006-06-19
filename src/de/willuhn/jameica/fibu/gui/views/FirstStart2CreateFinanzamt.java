@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart2CreateMandant.java,v $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart2CreateFinanzamt.java,v $
  * $Revision: 1.1 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.util.ApplicationException;
 
 /**
- * View zum Erstellen des Mandanten.
+ * View zum Erstellen des Finanz-Amtes.
  */
-public class FirstStart2CreateMandant extends AbstractFirstStart
+public class FirstStart2CreateFinanzamt extends AbstractFirstStart
 {
 
   /**
@@ -32,9 +32,9 @@ public class FirstStart2CreateMandant extends AbstractFirstStart
   {
     super.bind();
     
-    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 2 von 3 - Einrichtung des Mandanten"));
+    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 2 von 4 - Festlegen des Finanzamtes"));
 
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Mandant"));
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Finanzamt"));
     
     ButtonArea buttons = group.createButtonArea(2);
     buttons.addButton(i18n.tr("<< Zurück"),new Action() {
@@ -55,17 +55,8 @@ public class FirstStart2CreateMandant extends AbstractFirstStart
 
 
 /*********************************************************************
- * $Log: FirstStart2CreateMandant.java,v $
- * Revision 1.1  2006/06/13 22:52:10  willuhn
- * @N Setup wizard redesign and code cleanup
- *
- * Revision 1.1  2006/06/12 23:05:47  willuhn
+ * $Log: FirstStart2CreateFinanzamt.java,v $
+ * Revision 1.1  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
- *
- * Revision 1.2  2006/06/12 15:41:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/06/12 14:08:29  willuhn
- * @N DB-Wizard
  *
  **********************************************************************/

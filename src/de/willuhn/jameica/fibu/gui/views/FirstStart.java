@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,17 +13,21 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
  * View mit dem Wizard fuer den ersten Start.
  */
-public class FirstStart extends AbstractFirstStart
+public class FirstStart extends AbstractFirstStart implements Extension
 {
 
   /**
@@ -42,6 +46,7 @@ public class FirstStart extends AbstractFirstStart
     FormTextPart t = new FormTextPart();
     t.setText("<form><p></p>" +
         "<li>Einrichtung der Datenbank</li>" +
+        "<li>Festlegen des Finanzamtes</li>" +
         "<li>Anlegen eines Mandanten</li>" +
         "<li>Erstellen eines Geschäftsjahres</li>" +
         "<p></p></form>");
@@ -59,11 +64,31 @@ public class FirstStart extends AbstractFirstStart
     
   }
 
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
+   */
+  public void extend(Extendable extendable)
+  {
+    AbstractView view = (AbstractView) extendable;
+    this.setParent(view.getParent());
+    try
+    {
+      this.bind();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to extend view",e);
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.5  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

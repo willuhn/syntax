@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,6 +41,26 @@ public interface DBSupport extends GenericObject
    * @throws ApplicationException
    */
   public void create(ProgressMonitor monitor) throws RemoteException,ApplicationException;
+  
+  /**
+   * Speichert die Einstellungen.
+   * @throws RemoteException
+   */
+  public void store() throws RemoteException;
+  
+  /**
+   * Liefert die JDBC-URL.
+   * @return duie JDBC-URL.
+   * @throws RemoteException
+   */
+  public String getJdbcUrl() throws RemoteException;  
+  
+  /**
+   * Liefert den JDBC-Treiber.
+   * @return der JDBC-Treiber.
+   * @throws RemoteException
+   */
+  public String getJdbcDriver() throws RemoteException;
   
   /**
    * Liefert true, wenn die Datenbank einen Usernamen braucht.
@@ -146,12 +166,24 @@ public interface DBSupport extends GenericObject
    * @throws RemoteException
    */
   public String getDatabaseName() throws RemoteException;
+
+  /**
+   * Liefert den Namen der SQL-Funktion, mit der die Datenbank aus einem DATE-Feld einen UNIX-Timestamp macht.
+   * Bei MySQL ist das z.Bsp. "UNIX_TIMESTAMP" und bei McKoi schlicht "TONUMBER".
+   * @param content der Feld-Name.
+   * @return Name der SQL-Funktion.
+   * @throws RemoteException
+   */
+  public String getSQLTimestamp(String content) throws RemoteException;  
   
 }
 
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.3  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

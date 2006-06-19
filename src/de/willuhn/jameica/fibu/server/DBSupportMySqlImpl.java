@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -78,7 +78,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
     {
       try
       {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName(getJdbcDriver());
       }
       catch (Throwable t)
       {
@@ -86,8 +86,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
         throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers. {0}",t.getLocalizedMessage()));
       }
       
-      String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port +
-                       "/" + dbname + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
+      String jdbcUrl = getJdbcUrl();
       Logger.info("using jdbc url: " + jdbcUrl);
 
       try
@@ -198,11 +197,38 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
   {
     return true;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getJdbcUrl()
+   */
+  public String getJdbcUrl() throws RemoteException
+  {
+    return "jdbc:mysql://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getJdbcDriver()
+   */
+  public String getJdbcDriver() throws RemoteException
+  {
+    return "com.mysql.jdbc.Driver";
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getSQLTimestamp(java.lang.String)
+   */
+  public String getSQLTimestamp(String content) throws RemoteException
+  {
+    return "(UNIX_TIMESTAMP({0})*1000)".replaceAll("\\{0\\}",content);
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.3  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

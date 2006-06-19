@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/05/29 23:05:07 $
+ * $Revision: 1.40 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.rmi.DBService;
+import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -35,15 +36,20 @@ import de.willuhn.util.I18N;
  */
 public class Settings
 {
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Fibu.class);
+  /**
+   * Die Settings.
+   */
+  public final static de.willuhn.jameica.system.Settings SETTINGS = new de.willuhn.jameica.system.Settings(Fibu.class);
 
   /**
    * Default-Waehrung.
    */
-  public final static String WAEHRUNG = settings.getString("currency.default","EUR");
+  public final static String WAEHRUNG = SETTINGS.getString("currency.default","EUR");
 
   private static DBService db = null;
 	private static Geschaeftsjahr jahr = null;
+  
+  private static DBSupport dbSupport = null;
   
   /**
    * Liefert true, wenn die Anwendung zum ersten Mal gestartet wird.
@@ -51,16 +57,42 @@ public class Settings
    */
   public static boolean isFirstStart()
   {
-    return settings.getBoolean("firststart",true);
+    return getDBSupport() == null;
+  }
+
+  /**
+   * Legt die Support-Klasse fuer die Datenbankanbindung fest.
+   * @param support die Support-Klasse.
+   */
+  public static void setDBSupport(DBSupport support)
+  {
+    dbSupport = support;
+    if (dbSupport != null)
+      SETTINGS.setAttribute("database.support.class",dbSupport.getClass().getName());
   }
   
   /**
-   * Speichert, ob die Anwendung zum ersten Mal gestartet wird.
-   * @param b.
+   * Liefert die Support-Klasse fuer die Datenbank.
+   * @return die Support-Klasse fuer die Datenbank.
    */
-  public static void setFirstStart(boolean b)
+  public static DBSupport getDBSupport()
   {
-    settings.setAttribute("firststart",b);
+    if (dbSupport != null)
+      return dbSupport;
+    String s = SETTINGS.getString("database.support.class",null);
+    if (s == null || s.length() == 0)
+      return null;
+    try
+    {
+      Logger.info("trying to load " + s);
+      Class c = Application.getClassLoader().load(s);
+      return (DBSupport) c.newInstance();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to load db support class",e);
+      return null;
+    }
   }
   
   /**
@@ -75,7 +107,7 @@ public class Settings
     if (jahr == null)
       return null;
     
-    String id = settings.getString("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),null);
+    String id = SETTINGS.getString("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),null);
     if (id != null && id.length() > 0)
       return (Konto) getDBService().createObject(Konto.class,id);
     return null;
@@ -96,7 +128,7 @@ public class Settings
 
     if (k == null)
     {
-      settings.setAttribute("jahr." + jahr.getID() + ".afakonto",(String)null);
+      SETTINGS.setAttribute("jahr." + jahr.getID() + ".afakonto",(String)null);
       return;
     }
 
@@ -106,7 +138,7 @@ public class Settings
       I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Konto {0} ist kein gültiges Aufwandskonto",k.getKontonummer()));
     }
-    settings.setAttribute("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),k.getID());
+    SETTINGS.setAttribute("jahr." + jahr.getID() + ".afakonto" + (gwg ? ".gwg" : ""),k.getID());
     
   }
   
@@ -116,7 +148,7 @@ public class Settings
    */
   public static int getGeaenderteHalbjahresAbschreibung()
   {
-    return settings.getInt("abschreibung.vereinfachungsregel",2004);
+    return SETTINGS.getInt("abschreibung.vereinfachungsregel",2004);
   }
   
   /**
@@ -132,7 +164,7 @@ public class Settings
     if (jahr == null)
       return gwgDef;
 
-    return settings.getDouble("jahr." + jahr.getID() + ".gwg",gwgDef);
+    return SETTINGS.getDouble("jahr." + jahr.getID() + ".gwg",gwgDef);
   }
   
   /**
@@ -149,7 +181,7 @@ public class Settings
     if (gwg < 0d)
       gwg = 410d;
 
-    settings.setAttribute("jahr." + jahr.getID() + ".gwg",gwg);
+    SETTINGS.setAttribute("jahr." + jahr.getID() + ".gwg",gwg);
   }
  
   /**
@@ -219,7 +251,7 @@ public class Settings
     if (j == null)
     {
       jahr = null;
-      settings.setAttribute("gj.active",(String)null);
+      SETTINGS.setAttribute("gj.active",(String)null);
       try
       {
         getInternalDBService().setActiveGeschaeftsjahr(null);
@@ -235,7 +267,7 @@ public class Settings
     try
     {
       jahr = j;
-      settings.setAttribute("gj.active",jahr.getID());
+      SETTINGS.setAttribute("gj.active",jahr.getID());
       try
       {
         getInternalDBService().setActiveGeschaeftsjahr(jahr);
@@ -263,7 +295,7 @@ public class Settings
   	if (jahr != null && !jahr.isNewObject())
   		return jahr;
 
-    String id = settings.getString("gj.active",null);
+    String id = SETTINGS.getString("gj.active",null);
 
     if (id != null)
     {
@@ -276,7 +308,8 @@ public class Settings
         Logger.warn("defined geschaeftsjahr does not exist");
       }
     }
-    else
+    
+    if (jahr == null)
     {
       try
       {
@@ -392,6 +425,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.40  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2006/05/29 23:05:07  willuhn
  * *** empty log message ***
  *

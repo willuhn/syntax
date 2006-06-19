@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -30,11 +31,11 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
   
   I18N i18n = null;
   
-  private String username = "syntax";
-  private String password = null;
-  private String hostname = "192.168.0.1";
-  private String dbName   = "syntax";
-  private int tcpPort     = 3306;
+  private String username = Settings.SETTINGS.getString("database.support.username","syntax");
+  private String password = Settings.SETTINGS.getString("database.support.password",null);
+  private String hostname = Settings.SETTINGS.getString("database.support.hostname","192.168.0.1");
+  private String dbName   = Settings.SETTINGS.getString("database.support.dbname","syntax");
+  private int tcpPort     = Settings.SETTINGS.getInt("database.support.tcpport",3306);
 
   /**
    * @throws java.rmi.RemoteException
@@ -206,11 +207,28 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
       return false;
     return this.getID().equals(arg0.getID());
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#store()
+   */
+  public void store() throws RemoteException
+  {
+    Settings.SETTINGS.setAttribute("database.support.username",getUsername());
+    Settings.SETTINGS.setAttribute("database.support.password",getPassword());
+    Settings.SETTINGS.setAttribute("database.support.hostname",getHostname());
+    Settings.SETTINGS.setAttribute("database.support.tcpport",getTcpPort());
+    Settings.SETTINGS.setAttribute("database.support.dbname",getDatabaseName());
+    Settings.setDBSupport(this);
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.3  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

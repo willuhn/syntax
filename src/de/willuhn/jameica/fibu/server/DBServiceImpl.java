@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/06/13 22:52:10 $
+ * $Revision: 1.14 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBService;
+import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.ResultSetExtractor;
 import de.willuhn.jameica.system.Application;
@@ -42,13 +44,20 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public DBServiceImpl() throws RemoteException
   {
-    super(null,null,null,null);
-//    super(
-//      SETTINGS.getString("jdbc.driver","com.mckoi.JDBCDriver"),
-//      SETTINGS.getString("jdbc.url",":jdbc:mckoi:local://" + Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath() + "/db/db.conf"),
-//      SETTINGS.getString("jdbc.username","fibu"),
-//      SETTINGS.getString("jdbc.password","fibu")
-//    );
+    this(Settings.getDBSupport());
+  }
+  
+  /**
+   * 
+   * @param support
+   * @throws RemoteException
+   */
+  public DBServiceImpl(DBSupport support) throws RemoteException
+  {
+    super(support == null ? null : support.getJdbcDriver(),
+          support == null ? null : support.getJdbcUrl(),
+          support == null ? null : support.getUsername(),
+          support == null ? null : support.getPassword());
     this.setClassloader(Application.getClassLoader());
     this.setClassFinder(Application.getClassLoader().getClassFinder());
   }
@@ -90,10 +99,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public String getSQLTimestamp(String content) throws RemoteException
   {
-    // TODO Scheisse, ist das haesslich ;)
-//    String s = SETTINGS.getString("sql.function.timestamp","tonumber({0})");
-//    return s.replaceAll("\\{0\\}",content);
-    return null;
+    return Settings.getDBSupport().getSQLTimestamp(content);
   }
   
   /**
@@ -171,6 +177,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.14  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2006/06/13 22:52:10  willuhn
  * @N Setup wizard redesign and code cleanup
  *

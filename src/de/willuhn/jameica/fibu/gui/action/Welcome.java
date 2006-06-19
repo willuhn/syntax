@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/Welcome.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,10 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -29,7 +31,10 @@ public class Welcome implements Action
    */
   public void handleAction(Object context) throws ApplicationException
   {
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.Welcome.class,null);
+    if (!Application.inServerMode() && Settings.isFirstStart())
+      new FirstStart().handleAction(context);
+    else
+      GUI.startView(de.willuhn.jameica.fibu.gui.views.Welcome.class,null);
   }
 
 }
@@ -37,6 +42,9 @@ public class Welcome implements Action
 
 /*********************************************************************
  * $Log: Welcome.java,v $
+ * Revision 1.3  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

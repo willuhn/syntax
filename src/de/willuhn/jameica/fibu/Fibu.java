@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.34 $
- * $Date: 2006/06/12 15:41:18 $
+ * $Revision: 1.35 $
+ * $Date: 2006/06/19 16:25:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,10 +17,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-import de.willuhn.jameica.fibu.gui.action.FirstStart;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.extension.Extension;
+import de.willuhn.jameica.fibu.gui.views.FirstStart;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
@@ -95,20 +92,7 @@ public class Fibu extends AbstractPlugin
     // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
     if (!Application.inServerMode() && Settings.isFirstStart())
     {
-      Extension e = new Extension() {
-        public void extend(Extendable extendable)
-        {
-          try
-          {
-            new FirstStart().handleAction(extendable);
-          }
-          catch (ApplicationException e)
-          {
-            GUI.getStatusBar().setErrorText(e.getMessage());
-          }
-        }
-      };
-      ExtensionRegistry.register(e,Start.class.getName());
+      ExtensionRegistry.register(new FirstStart(),Start.class.getName());
     }
   }
 
@@ -136,6 +120,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.35  2006/06/19 16:25:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.34  2006/06/12 15:41:18  willuhn
  * *** empty log message ***
  *
