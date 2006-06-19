@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart2CreateFinanzamt.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 23:00:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,14 +42,27 @@ public class FirstStart2CreateFinanzamt extends AbstractView
     GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 2 von 4 - Festlegen des Finanzamtes"));
 
     // Gruppe Kontaktdaten erzeugen
-    Container group = new LabelGroup(getParent(),i18n.tr("Anschriftsdaten"));
+    Container group = new LabelGroup(getParent(),i18n.tr("Anschriftsdaten"),true);
 
-    group.addLabelPair(i18n.tr("Name")    , control.getFinanzamtControl().getName());
-    group.addLabelPair(i18n.tr("Strasse") , control.getFinanzamtControl().getStrasse());
-    group.addLabelPair(i18n.tr("Postfach"), control.getFinanzamtControl().getPostfach());
-    group.addLabelPair(i18n.tr("PLZ")     , control.getFinanzamtControl().getPLZ());
-    group.addLabelPair(i18n.tr("Ort")     , control.getFinanzamtControl().getOrt());
-    
+//    DBIterator list = Settings.getDBService().createList(Finanzamt.class);
+//    if (list.size() > 0)
+//    {
+//      new FinanzamtList(new Action() {
+//        public void handleAction(Object context) throws ApplicationException
+//        {
+//        }
+//      }).paint(getParent());
+//    }
+//    else
+//    {
+
+      group.addLabelPair(i18n.tr("Name")    , control.getFinanzamtControl().getName());
+      group.addLabelPair(i18n.tr("Strasse") , control.getFinanzamtControl().getStrasse());
+      group.addLabelPair(i18n.tr("Postfach"), control.getFinanzamtControl().getPostfach());
+      group.addLabelPair(i18n.tr("PLZ")     , control.getFinanzamtControl().getPLZ());
+      group.addLabelPair(i18n.tr("Ort")     , control.getFinanzamtControl().getOrt());
+//    }
+
     ButtonArea buttons = group.createButtonArea(1);
     buttons.addButton(i18n.tr("Weiter >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -57,6 +70,7 @@ public class FirstStart2CreateFinanzamt extends AbstractView
         control.handleForward();
       }
     });
+
   }
 
 }
@@ -64,6 +78,9 @@ public class FirstStart2CreateFinanzamt extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart2CreateFinanzamt.java,v $
+ * Revision 1.3  2006/06/19 23:00:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

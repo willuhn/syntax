@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart1CreateDatabase.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/19 23:00:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public class FirstStart1CreateDatabase extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 1 von 4 - Einrichtung der Datenbank"));
     
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Datenbank-Einstellungen"));
+    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Datenbank-Einstellungen"),true);
     group.addLabelPair(i18n.tr("Typ der Datenbank"),control.getDBType());
     group.addLabelPair(i18n.tr("Name der Datenbank"),control.getDBName());
     group.addLabelPair(i18n.tr("Username"),control.getUsername());
@@ -66,6 +66,9 @@ public class FirstStart1CreateDatabase extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart1CreateDatabase.java,v $
+ * Revision 1.5  2006/06/19 23:00:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *
