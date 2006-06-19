@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -21,13 +23,15 @@ import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * View mit dem Wizard fuer den ersten Start.
  */
-public class FirstStart extends AbstractFirstStart implements Extension
+public class FirstStart extends AbstractView implements Extension
 {
 
   /**
@@ -35,7 +39,9 @@ public class FirstStart extends AbstractFirstStart implements Extension
    */
   public void bind() throws Exception
   {
-    super.bind();
+    final FirstStartControl control = new FirstStartControl(this);
+
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     GUI.getView().setTitle(i18n.tr("SynTAX: Installation"));
     
@@ -57,7 +63,7 @@ public class FirstStart extends AbstractFirstStart implements Extension
     buttons.addButton(i18n.tr("Weiter >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        getController().handleForward();
+        control.handleForward();
       }
     });
     
@@ -86,6 +92,9 @@ public class FirstStart extends AbstractFirstStart implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.6  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.5  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

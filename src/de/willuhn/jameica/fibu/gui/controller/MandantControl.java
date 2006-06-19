@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/08/29 14:54:28 $
+ * $Revision: 1.24 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -232,10 +232,10 @@ public class MandantControl extends AbstractControl
 
   /**
    * Speichert den Mandanten.
+   * @return true, wenn der Mandant gespeichert wurde.
    */
-  public void handleStore()
+  public boolean handleStore()
   {
-    stored = false;
     try {
 
       //////////////////////////////////////////////////////////////////////////
@@ -255,8 +255,8 @@ public class MandantControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getMandant().store();
-      stored = true;
       GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gespeichert."));
+      return true;
     }
     catch (ApplicationException e1)
     {
@@ -267,17 +267,15 @@ public class MandantControl extends AbstractControl
 			Logger.error("unable to store mandant",e);
       GUI.getView().setErrorText("Fehler beim Speichern des Mandanten.");
     }
+    return false;
   }
-  
-  private boolean stored = false;
   
   /**
    * Speichert den Mandanten und legt ein neues Geschaeftsjahr an.
    */
   public void handleNewGJ()
   {
-    handleStore();
-    if (stored)
+    if (handleStore())
     {
       try
       {
@@ -298,6 +296,9 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.24  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.23  2005/08/29 14:54:28  willuhn
  * @B bugfixing
  *

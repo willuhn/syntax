@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.3 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,8 @@ public class GeschaeftsjahrControl extends AbstractControl
     if (this.jahr != null)
       return this.jahr;
     
-   throw new RemoteException(i18n.tr("Kein Mandant ausgewählt")); 
+    this.jahr = (Geschaeftsjahr) Settings.getDBService().createObject(Geschaeftsjahr.class,null);
+    return this.jahr;
   }
   
   /**
@@ -151,8 +152,9 @@ public class GeschaeftsjahrControl extends AbstractControl
 
   /**
    * Speichert das Geschaeftsjahr.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-  public void handleStore()
+  public boolean handleStore()
   {
     try {
 
@@ -173,6 +175,7 @@ public class GeschaeftsjahrControl extends AbstractControl
       // und jetzt speichern wir.
       getGeschaeftsjahr().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr gespeichert."));
+      return true;
     }
     catch (ApplicationException e1)
     {
@@ -183,7 +186,7 @@ public class GeschaeftsjahrControl extends AbstractControl
       Logger.error("unable to store gj",e);
       GUI.getView().setErrorText("Fehler beim Speichern des Geschäftsjahres.");
     }
-    
+    return false;
   }
 
 
@@ -192,6 +195,9 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
+ * Revision 1.3  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.2  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

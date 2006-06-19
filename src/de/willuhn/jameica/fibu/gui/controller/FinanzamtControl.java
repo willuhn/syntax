@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2005/08/16 17:39:24 $
+ * $Revision: 1.17 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -139,8 +139,9 @@ public class FinanzamtControl extends AbstractControl
 
   /**
    * Speichert das Finanzamt.
+   * @return true, wenn das Speichern erfolgreich war.
    */
-  public void handleStore()
+  public boolean handleStore()
   {
     try {
 
@@ -154,6 +155,7 @@ public class FinanzamtControl extends AbstractControl
       // und jetzt speichern wir.
       getFinanzamt().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Daten des Finanzamtes gespeichert."));
+      return true;
     }
     catch (ApplicationException e1)
     {
@@ -164,12 +166,16 @@ public class FinanzamtControl extends AbstractControl
 			Logger.error("unable to store finanzamt",e);
       GUI.getView().setErrorText("Fehler beim Speichern der Daten des Finanzamtes.");
     }
+    return false;
     
   }
 }
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.17  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.16  2005/08/16 17:39:24  willuhn
  * *** empty log message ***
  *

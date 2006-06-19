@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.41 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,17 +14,12 @@ package de.willuhn.jameica.fibu;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
-import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -57,7 +52,15 @@ public class Settings
    */
   public static boolean isFirstStart()
   {
-    return getDBSupport() == null;
+    try
+    {
+      return getDBSupport() == null || getActiveGeschaeftsjahr() == null;
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to load active geschaeftsjahr",e);
+      return true;
+    }
   }
 
   /**
@@ -234,7 +237,6 @@ public class Settings
     {
       jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,jahr.getID());
       getInternalDBService().setActiveGeschaeftsjahr(jahr);
-      setStatus();
     }
     catch (RemoteException e)
     {
@@ -260,7 +262,6 @@ public class Settings
       {
         Logger.error("unable to disable active gj",e);
       }
-      setStatus();
       return;
     }
 
@@ -281,7 +282,6 @@ public class Settings
     {
       Logger.error("error while activating gj",e);
     }
-    setStatus();
   }
   
   /**
@@ -302,129 +302,23 @@ public class Settings
       try
       {
         jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,id);
+        if (jahr != null)
+          setActiveGeschaeftsjahr(jahr);
       }
       catch (ObjectNotFoundException oe)
       {
         Logger.warn("defined geschaeftsjahr does not exist");
       }
     }
-    
-    if (jahr == null)
-    {
-      try
-      {
-        jahr = createGeschaeftsjahr();
-      }
-      catch (ApplicationException ae)
-      {
-        throw new RemoteException(ae.getMessage());
-      }
-    }
-    setActiveGeschaeftsjahr(jahr);
     return jahr;
-  }
-  
-  /**
-   * Liefert das erste gefundene Finanzamt.
-   * Falls keines existiert, wird ein neues angelegt.
-   * @return Finanzamt. Niemals null. 
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  private static Finanzamt createFinanzamt() throws RemoteException, ApplicationException
-  {
-    DBIterator list = getInternalDBService().createList(Finanzamt.class);
-
-    if (list.size() > 0)
-      return (Finanzamt) list.next();
-
-    Finanzamt fa = (Finanzamt) getInternalDBService().createObject(Finanzamt.class,null);
-    fa.setName("default");
-    fa.store();
-    return fa;
-  }
-  
-  /**
-   * Liefert den ersten gefundenen Mandanten.
-   * Falls keiner existiert, wird ein neuer angelegt.
-   * @return Mandant. Niemals null. 
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  private static Mandant createMandant() throws RemoteException, ApplicationException
-  {
-    DBIterator list = getInternalDBService().createList(Mandant.class);
-
-    if (list.size() > 0)
-      return (Mandant) list.next();
-
-    Mandant m = (Mandant) getInternalDBService().createObject(Mandant.class,null);
-    m.setFinanzamt(createFinanzamt());
-    m.setSteuernummer("");
-    m.setFirma("default");
-    m.store();
-    return m;
-  }
-
-  /**
-   * Liefert das erste gefundene Geschaeftsjahr.
-   * Falls keines existiert, wird ein neues angelegt.
-   * @return Geschaeftsjahr. Niemals null. 
-   * @throws RemoteException
-   * @throws ApplicationException
-   */
-  private static Geschaeftsjahr createGeschaeftsjahr() throws RemoteException, ApplicationException
-  {
-    DBIterator list = getInternalDBService().createList(Geschaeftsjahr.class);
-
-    if (list.size() > 0)
-      return (Geschaeftsjahr) list.next();
-
-    Geschaeftsjahr j = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,null);
-    j.setKontenrahmen((Kontenrahmen) getInternalDBService().createObject(Kontenrahmen.class,"2"));
-    j.setMandant(createMandant());
-    j.store();
-    if (!Application.inServerMode())
-      GUI.getStatusBar().setSuccessText("Neues Geschäftsjahr automatisch angelegt");
-    return j;
-  }
-
-  /**
-   * Setzt den Statustext in der Statuszeile.
-   */
-  private static void setStatus()
-  {
-    if (Application.inServerMode())
-      return;
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
-    if (jahr == null)
-    {
-      GUI.getStatusBar().setErrorText(i18n.tr("Kein aktives Geschäftsjahr vorhanden"));
-      return;
-    }
-    try
-    {
-      Logger.debug("aktives Geschaeftsjahr: " + jahr.getAttribute(jahr.getPrimaryAttribute()));
-      Mandant m = jahr.getMandant();
-      String[] params = 
-      {
-        m.getFirma(),
-        (String)jahr.getAttribute(jahr.getPrimaryAttribute()),
-        jahr.isClosed() ? i18n.tr("geschlossen") : "in Bearbeitung"
-      };
-      GUI.getStatusBar().setSuccessText(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params));
-    }
-    catch (RemoteException e)
-    {
-      Logger.error("error while refreshing statusbar",e);
-    }
   }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.41  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.40  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

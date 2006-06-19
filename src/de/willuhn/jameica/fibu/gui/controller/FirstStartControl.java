@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,11 +22,15 @@ import org.eclipse.swt.widgets.Listener;
 import de.willuhn.datasource.Service;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.FirstStart;
-import de.willuhn.jameica.fibu.gui.action.FirstStart1CreateDatabase;
-import de.willuhn.jameica.fibu.gui.action.FirstStart2CreateFinanzamt;
-import de.willuhn.jameica.fibu.gui.action.FirstStart3CreateMandant;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.Welcome;
+import de.willuhn.jameica.fibu.gui.views.FirstStart1CreateDatabase;
+import de.willuhn.jameica.fibu.gui.views.FirstStart2CreateFinanzamt;
+import de.willuhn.jameica.fibu.gui.views.FirstStart3CreateMandant;
+import de.willuhn.jameica.fibu.gui.views.FirstStart4CreateGeschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -56,13 +60,16 @@ public class FirstStartControl extends AbstractControl
   private PasswordInput inputPassword2 = null;
   private TextInput inputHostname      = null;
   private IntegerInput inputPort       = null;
-  
+
+  private FinanzamtControl faControl      = null;
+  private MandantControl maControl        = null;
+  private GeschaeftsjahrControl gjControl = null;
+
   private ProgressBar monitor          = null;
   
   private DBSupport[] dbTypes          = null;
   private DBSupport dbType             = null;
   
-  private boolean isForward            = true;
   private ArrayList pages              = new ArrayList();
   private int wizardIndex              = 0;
   
@@ -77,6 +84,8 @@ public class FirstStartControl extends AbstractControl
     this.pages.add(new FirstStart1());
     this.pages.add(new FirstStart2());
     this.pages.add(new FirstStart3());
+    this.pages.add(new FirstStart4());
+    this.pages.add(new FirstStart5());
   }
   
   /**
@@ -148,6 +157,49 @@ public class FirstStartControl extends AbstractControl
       l.handleEvent(null);
     }
     return inputDbType;
+  }
+  
+  /**
+   * Liefert den Controller fuer das Finanzamt.
+   * @return Controller.
+   */
+  public FinanzamtControl getFinanzamtControl()
+  {
+    if (this.faControl == null)
+      this.faControl = new FinanzamtControl(null);
+    return this.faControl;
+  }
+
+  /**
+   * Liefert den Controller fuer den Mandanten.
+   * @return Controller.
+   * @throws RemoteException
+   */
+  public MandantControl getMandantControl() throws RemoteException
+  {
+    if (this.maControl == null)
+    {
+      this.maControl = new MandantControl(null);
+      Mandant m = this.maControl.getMandant();
+      m.setFinanzamt(getFinanzamtControl().getFinanzamt());
+    }
+    return this.maControl;
+  }
+
+  /**
+   * Liefert den Controller fuer das Geschaeftsjahr.
+   * @return Controller.
+   * @throws RemoteException
+   */
+  public GeschaeftsjahrControl getGeschaeftsjahrControl() throws RemoteException
+  {
+    if (this.gjControl == null)
+    {
+      this.gjControl = new GeschaeftsjahrControl(null);
+      Geschaeftsjahr jahr = this.gjControl.getGeschaeftsjahr();
+      jahr.setMandant(getMandantControl().getMandant());
+    }
+    return this.gjControl;
   }
 
   /**
@@ -254,36 +306,6 @@ public class FirstStartControl extends AbstractControl
   }
 
   /**
-   * Geht einen Schritt zurueck.
-   */
-  public void handleBack()
-  {
-    if (this.wizardIndex <= 0)
-    {
-      Logger.info("begin of wizard reached");
-      return;
-    }
-    
-    this.wizardIndex--;
-    Action action = (Action)this.pages.get(this.wizardIndex);
-    Logger.info("launch " + action.getClass().getName());
-    try
-    {
-      isForward = false;
-      action.handleAction(null);
-    }
-    catch (ApplicationException ae)
-    {
-      GUI.getView().setErrorText(ae.getLocalizedMessage());
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to execute action",t);
-      GUI.getView().setErrorText(i18n.tr("Fehler: {0}",t.getLocalizedMessage()));
-    }
-  }
-  
-  /**
    * Geht einen Schritt vor.
    */
   public void handleForward()
@@ -298,7 +320,6 @@ public class FirstStartControl extends AbstractControl
     Logger.info("launch " + action.getClass().getName());
     try
     {
-      isForward = true;
       action.handleAction(null);
       this.wizardIndex++;
     }
@@ -314,29 +335,6 @@ public class FirstStartControl extends AbstractControl
   }
   
   /**
-   * Wird aufgerufen, bevor jede Seite des Wizard geladen wird.
-   */
-  public void handleBind()
-  {
-    this.inputDbname    = null;
-    this.inputDbType    = null;
-    this.inputHostname  = null;
-    this.inputPassword  = null;
-    this.inputPassword2 = null;
-    this.inputPort      = null;
-    this.inputUsername  = null;
-  }
-  
-  /**
-   * Wird aufgerufen, wenn jede Seite des Wizward verlassen wird.
-   */
-  public void handleUnbind()
-  {
-    
-  }
-  
-  
-  /**
    * Action, die fuer Seite 1 des Wizards ausgefuehrt wird.
    */
   private class FirstStart1 implements Action
@@ -346,23 +344,7 @@ public class FirstStartControl extends AbstractControl
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      if (isForward)
-      {
-        new FirstStart1CreateDatabase().handleAction(FirstStartControl.this);
-      }
-      else
-      {
-        try
-        {
-          dbType = (DBSupport) getDBType().getValue();
-          new FirstStart().handleAction(FirstStartControl.this);
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while applying database",re);
-          throw new ApplicationException(i18n.tr("Fehler beim Übernehmen der Datenbank-Einstellungen. {0}",re.getLocalizedMessage()));
-        }
-      }
+      GUI.startView(FirstStart1CreateDatabase.class,FirstStartControl.this);
     }
   }
 
@@ -377,60 +359,46 @@ public class FirstStartControl extends AbstractControl
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      if (isForward)
+      try
       {
-        try
+        dbType = (DBSupport) getDBType().getValue();
+
+        // Das Vergleichen der Passworte machen wir gleich
+        if (dbType.needsPassword())
         {
-          dbType = (DBSupport) getDBType().getValue();
-
-          // Das Vergleichen der Passworte machen wir gleich
-          if (dbType.needsPassword())
-          {
-            String pw1 = (String) getPassword().getValue();
-            String pw2 = (String) getPassword2().getValue();
-            if (pw1 == null || pw1.length() == 0)
-              throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
-            if (!pw1.equals(pw2))
-              throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
-          }
-          if (dbType.needsUsername())     dbType.setUsername((String) getUsername().getValue());
-          if (dbType.needsPassword())     dbType.setPassword((String) getPassword().getValue());
-          if (dbType.needsHostname())     dbType.setHostname((String) getHostname().getValue());
-          if (dbType.needsDatabaseName()) dbType.setDatabaseName((String) getDBName().getValue());
-
-          Integer p = (Integer) getPort().getValue();
-          if (p != null && dbType.needsTcpPort())
-            dbType.setTcpPort(p.intValue());
-
-          dbType.create(getProgressMonitor());
-          dbType.store();
-          
-          // Jetzt koennen wir den DBService starten
-          Service service = Application.getServiceFactory().lookup(Fibu.class,"database");
-          service.start();
-          service = Application.getServiceFactory().lookup(Fibu.class,"engine");
-          service.start();
-          
-          new FirstStart2CreateFinanzamt().handleAction(FirstStartControl.this);
+          String pw1 = (String) getPassword().getValue();
+          String pw2 = (String) getPassword2().getValue();
+          if (pw1 == null || pw1.length() == 0)
+            throw new ApplicationException(i18n.tr("Bitte geben Sie ein Passwort für die Datenbank an"));
+          if (!pw1.equals(pw2))
+            throw new ApplicationException(i18n.tr("Die beiden Passwörter stimmen nicht überein"));
         }
-        catch (Exception e)
-        {
-          Logger.error("error while checking database",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",e.getLocalizedMessage()));
-        }
+        if (dbType.needsUsername())     dbType.setUsername((String) getUsername().getValue());
+        if (dbType.needsPassword())     dbType.setPassword((String) getPassword().getValue());
+        if (dbType.needsHostname())     dbType.setHostname((String) getHostname().getValue());
+        if (dbType.needsDatabaseName()) dbType.setDatabaseName((String) getDBName().getValue());
+
+        Integer p = (Integer) getPort().getValue();
+        if (p != null && dbType.needsTcpPort())
+          dbType.setTcpPort(p.intValue());
+
+        dbType.create(getProgressMonitor());
+        dbType.store();
+        
+        // Jetzt koennen wir den DBService starten
+        Service service = Application.getServiceFactory().lookup(Fibu.class,"database");
+        if (!service.isStarted())
+          service.start();
+        service = Application.getServiceFactory().lookup(Fibu.class,"engine");
+        if (!service.isStarted())
+          service.start();
+        
+        GUI.startView(FirstStart2CreateFinanzamt.class,FirstStartControl.this);
       }
-      else
+      catch (Exception e)
       {
-        try
-        {
-          dbType = (DBSupport) getDBType().getValue();
-          new FirstStart1CreateDatabase().handleAction(FirstStartControl.this);
-        }
-        catch (RemoteException re)
-        {
-          Logger.error("error while applying database",re);
-          throw new ApplicationException(i18n.tr("Fehler beim Übernehmen der Datenbank-Einstellungen. {0}",re.getLocalizedMessage()));
-        }
+        Logger.error("error while checking database",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",e.getLocalizedMessage()));
       }
     }
   }
@@ -446,30 +414,77 @@ public class FirstStartControl extends AbstractControl
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      if (isForward)
+      try
       {
-        try
-        {
-          new FirstStart3CreateMandant().handleAction(FirstStartControl.this);
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while checking database",e);
-          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Datenbank. {0}",e.getLocalizedMessage()));
-        }
+        if (getFinanzamtControl().handleStore())
+          GUI.startView(FirstStart3CreateMandant.class,FirstStartControl.this);
       }
-      else
+      catch (Exception e)
       {
-        new FirstStart2CreateFinanzamt().handleAction(FirstStartControl.this);
+        Logger.error("error while creating finanzamt",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Finanzamtes. {0}",e.getLocalizedMessage()));
       }
     }
   }
   
+
+  /**
+   * Action, die fuer Seite 4 des Wizards ausgefuehrt wird.
+   */
+  private class FirstStart4 implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      try
+      {
+        if (getMandantControl().handleStore())
+          GUI.startView(FirstStart4CreateGeschaeftsjahr.class,FirstStartControl.this);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while creating mandant",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Mandanten. {0}",e.getLocalizedMessage()));
+      }
+    }
+  }
+
+  /**
+   * Action, die fuer Seite 5 des Wizards ausgefuehrt wird.
+   */
+  private class FirstStart5 implements Action
+  {
+    /**
+     * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
+     */
+    public void handleAction(Object context) throws ApplicationException
+    {
+      try
+      {
+        if (getGeschaeftsjahrControl().handleStore())
+        {
+          Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
+          new Welcome().handleAction(null);
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while creating gj",e);
+        throw new ApplicationException(i18n.tr("Fehler beim Erstellen des Geschäftsjahres. {0}",e.getLocalizedMessage()));
+      }
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.6  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.5  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

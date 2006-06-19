@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart1CreateDatabase.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/19 22:23:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,21 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
+import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * View zum Erstellen der Datenbank.
  */
-public class FirstStart1CreateDatabase extends AbstractFirstStart
+public class FirstStart1CreateDatabase extends AbstractView
 {
 
   /**
@@ -30,33 +35,28 @@ public class FirstStart1CreateDatabase extends AbstractFirstStart
    */
   public void bind() throws Exception
   {
-    super.bind();
-    
+    final FirstStartControl control = (FirstStartControl) getCurrentObject();
+
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 1 von 4 - Einrichtung der Datenbank"));
     
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Datenbank-Einstellungen"));
-    group.addLabelPair(i18n.tr("Typ der Datenbank"),getController().getDBType());
-    group.addLabelPair(i18n.tr("Name der Datenbank"),getController().getDBName());
-    group.addLabelPair(i18n.tr("Username"),getController().getUsername());
-    group.addLabelPair(i18n.tr("Passwort"),getController().getPassword());
-    group.addLabelPair(i18n.tr("Passwortwiederholung"),getController().getPassword2());
-    group.addLabelPair(i18n.tr("Hostname der Datenbank"),getController().getHostname());
-    group.addLabelPair(i18n.tr("TCP-Port"),getController().getPort());
+    group.addLabelPair(i18n.tr("Typ der Datenbank"),control.getDBType());
+    group.addLabelPair(i18n.tr("Name der Datenbank"),control.getDBName());
+    group.addLabelPair(i18n.tr("Username"),control.getUsername());
+    group.addLabelPair(i18n.tr("Passwort"),control.getPassword());
+    group.addLabelPair(i18n.tr("Passwortwiederholung"),control.getPassword2());
+    group.addLabelPair(i18n.tr("Hostname der Datenbank"),control.getHostname());
+    group.addLabelPair(i18n.tr("TCP-Port"),control.getPort());
     
     group.addHeadline(i18n.tr("Erstellung der Datenbank"));
-    group.addPart(getController().getProgressMonitor());
+    group.addPart(control.getProgressMonitor());
 
-    ButtonArea buttons = group.createButtonArea(2);
-    buttons.addButton(i18n.tr("<< Zurück"),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        getController().handleBack();
-      }
-    });
+    ButtonArea buttons = group.createButtonArea(1);
     buttons.addButton(i18n.tr("Weiter >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
-        getController().handleForward();
+        control.handleForward();
       }
     });
   }
@@ -66,6 +66,9 @@ public class FirstStart1CreateDatabase extends AbstractFirstStart
 
 /*********************************************************************
  * $Log: FirstStart1CreateDatabase.java,v $
+ * Revision 1.4  2006/06/19 22:23:47  willuhn
+ * @N Wizard
+ *
  * Revision 1.3  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *
