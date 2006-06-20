@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/20 18:09:46 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/20 21:05:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -208,9 +208,8 @@ public class FirstStartControl extends AbstractControl
   /**
    * Liefert den Controller fuer den Mandanten.
    * @return Controller.
-   * @throws RemoteException
    */
-  public MandantControl getMandantControl() throws RemoteException
+  public MandantControl getMandantControl()
   {
     if (this.maControl == null)
       this.maControl = new MandantControl(null);
@@ -220,9 +219,8 @@ public class FirstStartControl extends AbstractControl
   /**
    * Liefert den Controller fuer das Geschaeftsjahr.
    * @return Controller.
-   * @throws RemoteException
    */
-  public GeschaeftsjahrControl getGeschaeftsjahrControl() throws RemoteException
+  public GeschaeftsjahrControl getGeschaeftsjahrControl()
   {
     if (this.gjControl == null)
       this.gjControl = new GeschaeftsjahrControl(null);
@@ -313,12 +311,13 @@ public class FirstStartControl extends AbstractControl
   /**
    * Eingabe-Feld fuer das zweite Passwort zur Kontrolle.
    * @return Eingabe-Feld.
+   * @throws RemoteException
    */
-  public PasswordInput getPassword2()
+  public PasswordInput getPassword2() throws RemoteException
   {
     if (this.inputPassword2 == null)
     {
-      this.inputPassword2 = new PasswordInput("");
+      this.inputPassword2 = new PasswordInput(((DBSupport)getDBType().getValue()).getPassword());
       this.inputPassword2.setComment(i18n.tr("Geben Sie hier das Passwort nochmal zur Kontrolle ein"));
     }
     return this.inputPassword2;
@@ -625,6 +624,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.9  2006/06/20 21:05:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2006/06/20 18:09:46  willuhn
  * @N Wizard seems to work now
  *
