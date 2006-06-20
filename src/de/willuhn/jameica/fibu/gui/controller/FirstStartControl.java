@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/19 22:41:47 $
+ * $Revision: 1.8 $
+ * $Date: 2006/06/20 18:09:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,14 +21,18 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.willuhn.datasource.Service;
 import de.willuhn.datasource.pseudo.PseudoIterator;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.Welcome;
+import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
+import de.willuhn.jameica.fibu.gui.part.MandantList;
 import de.willuhn.jameica.fibu.gui.views.FirstStart1CreateDatabase;
 import de.willuhn.jameica.fibu.gui.views.FirstStart2CreateFinanzamt;
 import de.willuhn.jameica.fibu.gui.views.FirstStart3CreateMandant;
 import de.willuhn.jameica.fibu.gui.views.FirstStart4CreateGeschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
+import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -64,6 +68,13 @@ public class FirstStartControl extends AbstractControl
   private FinanzamtControl faControl      = null;
   private MandantControl maControl        = null;
   private GeschaeftsjahrControl gjControl = null;
+  
+  private MandantList maList           = null;
+  private GeschaeftsjahrList gjList    = null;
+  
+  private Finanzamt fa                 = null;
+  private Mandant ma                   = null;
+  private Geschaeftsjahr gj            = null;
 
   private ProgressBar monitor          = null;
   
@@ -158,6 +169,30 @@ public class FirstStartControl extends AbstractControl
     }
     return inputDbType;
   }
+
+  /**
+   * Liefert eine Liste mit verfuegbaren Mandanten.
+   * @return Liste der Mandanten.
+   * @throws RemoteException
+   */
+  public MandantList getMandantList() throws RemoteException
+  {
+    if (this.maList == null)
+      this.maList = new MandantList(null);
+    return this.maList;
+  }
+  
+  /**
+   * Liefert eine Liste der Geschaeftsjahre des Mandanten.
+   * @return Liste der Geschaeftsjahre des Mandanten.
+   * @throws RemoteException
+   */
+  public GeschaeftsjahrList getGeschaeftsjahrList() throws RemoteException
+  {
+    if (this.gjList == null)
+      this.gjList = new GeschaeftsjahrList(this.ma,null);
+    return this.gjList;
+  }
   
   /**
    * Liefert den Controller fuer das Finanzamt.
@@ -178,11 +213,7 @@ public class FirstStartControl extends AbstractControl
   public MandantControl getMandantControl() throws RemoteException
   {
     if (this.maControl == null)
-    {
       this.maControl = new MandantControl(null);
-      Mandant m = this.maControl.getMandant();
-      m.setFinanzamt(getFinanzamtControl().getFinanzamt());
-    }
     return this.maControl;
   }
 
@@ -194,12 +225,44 @@ public class FirstStartControl extends AbstractControl
   public GeschaeftsjahrControl getGeschaeftsjahrControl() throws RemoteException
   {
     if (this.gjControl == null)
-    {
       this.gjControl = new GeschaeftsjahrControl(null);
-      Geschaeftsjahr jahr = this.gjControl.getGeschaeftsjahr();
-      jahr.setMandant(getMandantControl().getMandant());
-    }
     return this.gjControl;
+  }
+  
+  /**
+   * Liefert das Finanzamt.
+   * @return das Finanzamt.
+   * @throws RemoteException
+   */
+  public Finanzamt getFinanzamt() throws RemoteException
+  {
+    if (this.fa == null)
+      this.fa = getFinanzamtControl().getFinanzamt();
+    return this.fa;
+  }
+  
+  /**
+   * Liefert den Mandanten.
+   * @return der Mandant.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    if (this.ma == null)
+      this.ma = getMandantControl().getMandant();
+    return this.ma;
+  }
+  
+  /**
+   * Liefert das Geschaeftsjahr.
+   * @return das Geschaeftsjahr.
+   * @throws RemoteException
+   */
+  public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
+  {
+    if (this.gj == null)
+      this.gj = getGeschaeftsjahrControl().getGeschaeftsjahr();
+    return this.gj;
   }
 
   /**
@@ -392,8 +455,44 @@ public class FirstStartControl extends AbstractControl
         service = Application.getServiceFactory().lookup(Fibu.class,"engine");
         if (!service.isStarted())
           service.start();
-        
-        GUI.startView(FirstStart2CreateFinanzamt.class,FirstStartControl.this);
+
+        // Mal schauen, ob wir vielleicht schon ein Geschaeftsjahr haben, dann
+        // koennen wir die Erstellung des Finanzamtes und Mandanten ueberspringen
+        DBIterator gjList = Settings.getDBService().createList(Geschaeftsjahr.class);
+        DBIterator maList = Settings.getDBService().createList(Mandant.class);
+        DBIterator faList = Settings.getDBService().createList(Finanzamt.class);
+        if (gjList.size() > 0)
+        {
+          Geschaeftsjahr j = (Geschaeftsjahr) gjList.next();
+          ma = j.getMandant();
+          fa = ma.getFinanzamt();
+          wizardIndex+=2;
+          GUI.startView(FirstStart4CreateGeschaeftsjahr.class,FirstStartControl.this);
+        }
+        else if(maList.size() > 0)
+        {
+          // Wenn schon ein Mandant existiert, muss auch ein Finanzamt
+          // existieren. Also ueberspringen wir Auswahl/Erstellung des Finanzamtes
+          ma = (Mandant) maList.next();
+          fa = ma.getFinanzamt();
+          wizardIndex++;
+          GUI.startView(FirstStart3CreateMandant.class,FirstStartControl.this);
+        }
+        else if(faList.size() > 0)
+        {
+          // Es existiert schon ein Finanzamt. Also koennen wir gleich zu
+          // den Mandant-Details wechseln
+          wizardIndex++;
+          GUI.startView(FirstStart3CreateMandant.class,FirstStartControl.this);
+        }
+        else
+        {
+          GUI.startView(FirstStart2CreateFinanzamt.class,FirstStartControl.this);
+        }
+      }
+      catch (ApplicationException ae)
+      {
+        throw ae;
       }
       catch (Exception e)
       {
@@ -442,10 +541,32 @@ public class FirstStartControl extends AbstractControl
     {
       try
       {
-        if (getMandantControl().handleStore())
+        DBIterator maList = Settings.getDBService().createList(Mandant.class);
+        if (maList.size() > 0)
+        {
+          // Es existiert ein Mandant, also muss der User einen auswaehlen
+          ma = (Mandant) getMandantList().getSelection();
+          if (ma == null)
+            throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Mandanten aus"));
           GUI.startView(FirstStart4CreateGeschaeftsjahr.class,FirstStartControl.this);
+        }
         else
-          wizardIndex--;
+        {
+          getMandantControl().getMandant().setFinanzamt(fa);
+          if (getMandantControl().handleStore())
+          {
+            // Speichern des neuen Mandant erfolgreich.
+            GUI.startView(FirstStart4CreateGeschaeftsjahr.class,FirstStartControl.this);
+          }
+          else
+          {
+            wizardIndex--;
+          }
+        }
+      }
+      catch (ApplicationException ae)
+      {
+        throw ae;
       }
       catch (Exception e)
       {
@@ -467,13 +588,29 @@ public class FirstStartControl extends AbstractControl
     {
       try
       {
-        if (getGeschaeftsjahrControl().handleStore())
+        DBIterator gjList = Settings.getDBService().createList(Geschaeftsjahr.class);
+        if (gjList.size() > 0)
         {
-          Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
+          // Es existiert ein Geschaeftsjahr, also muss der User eins auswaehlen
+          gj = (Geschaeftsjahr) getGeschaeftsjahrList().getSelection();
+          if (gj == null)
+            throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
+          Settings.setActiveGeschaeftsjahr(gj);
           new Welcome().handleAction(null);
         }
         else
-          wizardIndex--;
+        {
+          getGeschaeftsjahrControl().getGeschaeftsjahr().setMandant(ma);
+          if (getGeschaeftsjahrControl().handleStore())
+          {
+            Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
+            new Welcome().handleAction(null);
+          }
+          else
+          {
+            wizardIndex--;
+          }
+        }
       }
       catch (Exception e)
       {
@@ -488,6 +625,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.8  2006/06/20 18:09:46  willuhn
+ * @N Wizard seems to work now
+ *
  * Revision 1.7  2006/06/19 22:41:47  willuhn
  * *** empty log message ***
  *

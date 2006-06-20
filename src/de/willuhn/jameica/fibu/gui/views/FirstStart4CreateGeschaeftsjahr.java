@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart4CreateGeschaeftsjahr.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.2 $
+ * $Date: 2006/06/20 18:09:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.fibu.gui.views;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -39,14 +40,26 @@ public class FirstStart4CreateGeschaeftsjahr extends AbstractView
     final FirstStartControl control = (FirstStartControl) getCurrentObject();
     
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 4 von 4 - Erstellen eines Geschäftsjahres"));
+    GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 4 von 4 - Geschäftsjahr, Mandant: {0}", control.getMandant().getFirma()));
 
-    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
+    Container group = null;
 
-    group.addLabelPair(i18n.tr("Kontenrahmen"), control.getGeschaeftsjahrControl().getKontenrahmenAuswahl());
-    group.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getGeschaeftsjahrControl().getBeginn());
-    group.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getGeschaeftsjahrControl().getEnde());
-
+    DBIterator list = control.getMandant().getGeschaeftsjahre();
+    if (list.size() > 0)
+    {
+      group = new LabelGroup(getParent(),i18n.tr("Bereits existierende Geschäftsjahre"),true);
+      // Es existieren schon Mandanten. Dann soll er einen auswaehlen.
+      control.getGeschaeftsjahrList().paint(group.getComposite());
+    }
+    else
+    {
+      group = new LabelGroup(getParent(),i18n.tr("Neues Geschäftsjahr"));
+  
+      group.addLabelPair(i18n.tr("Kontenrahmen"), control.getGeschaeftsjahrControl().getKontenrahmenAuswahl());
+      group.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getGeschaeftsjahrControl().getBeginn());
+      group.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getGeschaeftsjahrControl().getEnde());
+    }
+      
     ButtonArea buttons = group.createButtonArea(1);
     buttons.addButton(i18n.tr("Fertigstellen >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -61,6 +74,9 @@ public class FirstStart4CreateGeschaeftsjahr extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart4CreateGeschaeftsjahr.java,v $
+ * Revision 1.2  2006/06/20 18:09:46  willuhn
+ * @N Wizard seems to work now
+ *
  * Revision 1.1  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

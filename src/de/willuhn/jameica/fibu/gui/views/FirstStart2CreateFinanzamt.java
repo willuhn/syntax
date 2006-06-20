@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart2CreateFinanzamt.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 23:00:47 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/20 18:09:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,27 +41,12 @@ public class FirstStart2CreateFinanzamt extends AbstractView
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     GUI.getView().setTitle(i18n.tr("SynTAX: Schritt 2 von 4 - Festlegen des Finanzamtes"));
 
-    // Gruppe Kontaktdaten erzeugen
-    Container group = new LabelGroup(getParent(),i18n.tr("Anschriftsdaten"),true);
-
-//    DBIterator list = Settings.getDBService().createList(Finanzamt.class);
-//    if (list.size() > 0)
-//    {
-//      new FinanzamtList(new Action() {
-//        public void handleAction(Object context) throws ApplicationException
-//        {
-//        }
-//      }).paint(getParent());
-//    }
-//    else
-//    {
-
-      group.addLabelPair(i18n.tr("Name")    , control.getFinanzamtControl().getName());
-      group.addLabelPair(i18n.tr("Strasse") , control.getFinanzamtControl().getStrasse());
-      group.addLabelPair(i18n.tr("Postfach"), control.getFinanzamtControl().getPostfach());
-      group.addLabelPair(i18n.tr("PLZ")     , control.getFinanzamtControl().getPLZ());
-      group.addLabelPair(i18n.tr("Ort")     , control.getFinanzamtControl().getOrt());
-//    }
+    Container group = new LabelGroup(getParent(),i18n.tr("Neues Finanzamt"),true);
+    group.addLabelPair(i18n.tr("Name")    , control.getFinanzamtControl().getName());
+    group.addLabelPair(i18n.tr("Strasse") , control.getFinanzamtControl().getStrasse());
+    group.addLabelPair(i18n.tr("Postfach"), control.getFinanzamtControl().getPostfach());
+    group.addLabelPair(i18n.tr("PLZ")     , control.getFinanzamtControl().getPLZ());
+    group.addLabelPair(i18n.tr("Ort")     , control.getFinanzamtControl().getOrt());
 
     ButtonArea buttons = group.createButtonArea(1);
     buttons.addButton(i18n.tr("Weiter >>"),new Action() {
@@ -78,6 +63,9 @@ public class FirstStart2CreateFinanzamt extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart2CreateFinanzamt.java,v $
+ * Revision 1.4  2006/06/20 18:09:46  willuhn
+ * @N Wizard seems to work now
+ *
  * Revision 1.3  2006/06/19 23:00:47  willuhn
  * *** empty log message ***
  *

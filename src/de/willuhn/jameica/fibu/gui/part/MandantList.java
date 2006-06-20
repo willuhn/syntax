@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/MandantList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.7 $
+ * $Date: 2006/06/20 18:09:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.MandantListMenu;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
@@ -62,7 +63,10 @@ public class MandantList extends TablePart
         try
         {
           Mandant m = (Mandant) item.getData();
-          Mandant active = Settings.getActiveGeschaeftsjahr().getMandant();
+          Geschaeftsjahr activeGJ = Settings.getActiveGeschaeftsjahr();
+          if (activeGJ == null)
+            return;
+          Mandant active = activeGJ.getMandant();
           if (active.equals(m))
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
@@ -92,6 +96,9 @@ public class MandantList extends TablePart
 
 /*********************************************************************
  * $Log: MandantList.java,v $
+ * Revision 1.7  2006/06/20 18:09:46  willuhn
+ * @N Wizard seems to work now
+ *
  * Revision 1.6  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *
