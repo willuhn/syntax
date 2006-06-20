@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.5 $
+ * $Date: 2006/06/20 23:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -52,8 +53,14 @@ public class GeschaeftsjahrDelete implements Action
         return;
       }
 
-      ((Geschaeftsjahr)context).delete();
+      Geschaeftsjahr jahr = (Geschaeftsjahr)context;
+      Geschaeftsjahr vorjahr = jahr.getVorjahr();
+      jahr.delete();
+      if (vorjahr != null)
+        Settings.setActiveGeschaeftsjahr(vorjahr);
       GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr gelöscht"));
+      // Seite aktualisieren
+      GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
     }
     catch (Exception e)
     {
@@ -67,6 +74,10 @@ public class GeschaeftsjahrDelete implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrDelete.java,v $
+ * Revision 1.5  2006/06/20 23:27:17  willuhn
+ * @C Anzeige des aktuellen Geschaeftsjahres
+ * @C Oeffnen/Schliessen eines Geschaeftsjahres
+ *
  * Revision 1.4  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *

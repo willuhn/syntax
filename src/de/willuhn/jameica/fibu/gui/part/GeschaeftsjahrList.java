@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/20 23:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,8 +60,8 @@ public class GeschaeftsjahrList extends TablePart
       public String format(Object o)
       {
         if (o == null)
-          return null;
-        return ((Integer)o).intValue() == 1 ? i18n.tr("Geschlossen") : i18n.tr("Offen");
+          return i18n.tr("in Bearbeitung");
+        return ((Integer)o).intValue() == 1 ? i18n.tr("Geschlossen") : i18n.tr("in Bearbeitung");
       }
     });
     setFormatter(new TableFormatter() {
@@ -109,6 +109,10 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.9  2006/06/20 23:27:17  willuhn
+ * @C Anzeige des aktuellen Geschaeftsjahres
+ * @C Oeffnen/Schliessen eines Geschaeftsjahres
+ *
  * Revision 1.8  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

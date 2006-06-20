@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/06/19 22:41:47 $
+ * $Revision: 1.43 $
+ * $Date: 2006/06/20 23:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,9 @@ import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.View;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -238,6 +241,7 @@ public class Settings
     {
       jahr = (Geschaeftsjahr) getInternalDBService().createObject(Geschaeftsjahr.class,jahr.getID());
       getInternalDBService().setActiveGeschaeftsjahr(jahr);
+      setStatus();
     }
     catch (RemoteException e)
     {
@@ -263,6 +267,7 @@ public class Settings
       {
         Logger.error("unable to disable active gj",e);
       }
+      setStatus();
       return;
     }
 
@@ -283,6 +288,7 @@ public class Settings
     {
       Logger.error("error while activating gj",e);
     }
+    setStatus();
   }
   
   /**
@@ -313,10 +319,49 @@ public class Settings
     }
     return jahr;
   }
+
+  /**
+   * Setzt den Statustext zum aktuellen Geschaeftsjahr.
+   */
+  public static void setStatus()
+  {
+    if (Application.inServerMode())
+      return;
+
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+    if (jahr == null)
+    {
+      View view = GUI.getView();
+      if (view != null)
+        view.setLogoText(i18n.tr("Kein aktives Geschäftsjahr definiert"));
+      return;
+    }
+
+    try
+    {
+      Mandant mandant = jahr.getMandant();
+      String[] params = {mandant.getFirma(),
+                         (String)jahr.getAttribute(jahr.getPrimaryAttribute()),
+                         jahr.isClosed() ? i18n.tr("geschlossen") : "in Bearbeitung"};
+      
+      View view = GUI.getView();
+      if (view != null)
+        view.setLogoText(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while refreshing statusbar",e);
+    }
+  }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.43  2006/06/20 23:27:17  willuhn
+ * @C Anzeige des aktuellen Geschaeftsjahres
+ * @C Oeffnen/Schliessen eines Geschaeftsjahres
+ *
  * Revision 1.42  2006/06/19 22:41:47  willuhn
  * *** empty log message ***
  *

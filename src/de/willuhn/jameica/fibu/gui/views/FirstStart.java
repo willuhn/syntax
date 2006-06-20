@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/06/19 22:41:47 $
+ * $Revision: 1.8 $
+ * $Date: 2006/06/20 23:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,20 +76,28 @@ public class FirstStart extends AbstractView implements Extension
    */
   public void extend(Extendable extendable)
   {
-    // Wir triggern noch das Laden der Jameica-Startseite, damit
-    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
-    if (Application.inServerMode() || !Settings.isFirstStart())
+    if (Application.inServerMode())
       return;
 
-    AbstractView view = (AbstractView) extendable;
-    this.setParent(view.getParent());
-    try
+    // Wir triggern noch das Laden der Jameica-Startseite, damit
+    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
+    if (Settings.isFirstStart())
     {
-      this.bind();
+      AbstractView view = (AbstractView) extendable;
+      this.setParent(view.getParent());
+      try
+      {
+        this.bind();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to extend view",e);
+      }
     }
-    catch (Exception e)
+    else
     {
-      Logger.error("unable to extend view",e);
+      // Ansonsten aktualisieren wir die Anzeige des Geschaeftsjahres
+      Settings.setStatus();
     }
   }
 
@@ -98,6 +106,10 @@ public class FirstStart extends AbstractView implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.8  2006/06/20 23:27:17  willuhn
+ * @C Anzeige des aktuellen Geschaeftsjahres
+ * @C Oeffnen/Schliessen eines Geschaeftsjahres
+ *
  * Revision 1.7  2006/06/19 22:41:47  willuhn
  * *** empty log message ***
  *

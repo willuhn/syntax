@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.6 $
+ * $Date: 2006/06/20 23:27:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,10 @@
 
 package de.willuhn.jameica.fibu.gui.menus;
 
-import java.rmi.RemoteException;
-
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenExport;
 import de.willuhn.jameica.fibu.gui.action.BuchungListExport;
-import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrExport;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
@@ -33,7 +30,6 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -55,8 +51,7 @@ public class GeschaeftsjahrListMenu extends ContextMenu
     this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new GeschaeftsjahrNeu()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new GeschaeftsjahrDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neues Geschäftsjahr"), new GNeu()));
-    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new ContextMenuItem(i18n.tr("Neues Geschäftsjahr..."), new GNeu()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Als aktives Geschäftsjahr festlegen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -67,7 +62,6 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
     }));
-    this.addItem(new MenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Anlagevermögen"), new AnlagevermoegenExport()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Buchungsjournal"), new BuchungListExport()));
@@ -89,48 +83,15 @@ public class GeschaeftsjahrListMenu extends ContextMenu
       super.handleAction(mandant);
     }
   }
-  
-  /**
-   * Hilfs-Item.
-   */
-  private class MenuItem extends CheckedContextMenuItem
-  {
-    /**
-     * @param text
-     * @param a
-     */
-    public MenuItem(String text, Action a)
-    {
-      super(text, a);
-    }
-
-    /**
-     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
-     */
-    public boolean isEnabledFor(Object o)
-    {
-      if (o != null && (o instanceof Geschaeftsjahr))
-      {
-        Geschaeftsjahr jahr = (Geschaeftsjahr) o;
-        try
-        {
-          if (jahr.isClosed())
-            return false;
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("error while checking gj status",e);
-        }
-      }
-        
-      return super.isEnabledFor(o);
-    }
-  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.6  2006/06/20 23:27:17  willuhn
+ * @C Anzeige des aktuellen Geschaeftsjahres
+ * @C Oeffnen/Schliessen eines Geschaeftsjahres
+ *
  * Revision 1.5  2005/09/26 15:15:39  willuhn
  * *** empty log message ***
  *
