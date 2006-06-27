@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/06/20 23:27:17 $
+ * $Revision: 1.9 $
+ * $Date: 2006/06/27 23:30:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,11 +19,13 @@ import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -83,10 +85,15 @@ public class FirstStart extends AbstractView implements Extension
     // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
     if (Settings.isFirstStart())
     {
-      AbstractView view = (AbstractView) extendable;
-      this.setParent(view.getParent());
       try
       {
+        // Wir deaktivieren auch gleich noch die Navigation
+        PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
+        NavigationItem navi = pc.getManifest().getNavigation();
+        navi.setEnabled(false,true);
+        AbstractView view = (AbstractView) extendable;
+        this.setParent(view.getParent());
+
         this.bind();
       }
       catch (Exception e)
@@ -106,6 +113,9 @@ public class FirstStart extends AbstractView implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.9  2006/06/27 23:30:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2006/06/20 23:27:17  willuhn
  * @C Anzeige des aktuellen Geschaeftsjahres
  * @C Oeffnen/Schliessen eines Geschaeftsjahres

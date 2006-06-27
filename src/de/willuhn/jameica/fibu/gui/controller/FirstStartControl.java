@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/20 21:05:09 $
+ * $Revision: 1.10 $
+ * $Date: 2006/06/27 23:30:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,11 +39,13 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ProgressBar;
+import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -595,7 +597,7 @@ public class FirstStartControl extends AbstractControl
           if (gj == null)
             throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
           Settings.setActiveGeschaeftsjahr(gj);
-          new Welcome().handleAction(null);
+          handleStart();
         }
         else
         {
@@ -603,7 +605,7 @@ public class FirstStartControl extends AbstractControl
           if (getGeschaeftsjahrControl().handleStore())
           {
             Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
-            new Welcome().handleAction(null);
+            handleStart();
           }
           else
           {
@@ -619,11 +621,26 @@ public class FirstStartControl extends AbstractControl
     }
   }
 
+  /**
+   * Beendet den Wizard und startet die Welcome-Seite.
+   * @throws Exception
+   */
+  private void handleStart() throws Exception
+  {
+    PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
+    NavigationItem navi = pc.getManifest().getNavigation();
+    navi.setEnabled(true,true);
+
+    new Welcome().handleAction(null);
+  }
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.10  2006/06/27 23:30:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2006/06/20 21:05:09  willuhn
  * *** empty log message ***
  *
