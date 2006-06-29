@@ -1,0 +1,12 @@
+<form>
+	<p>
+		<span color="header" font="header">Anlegen eines Mandanten</span>
+	</p>
+
+  <p>
+    Bitte geben Sie hier die Kenndaten Ihres Unternehmens (insb. Steuernummer
+    und Firmenname) ein oder wählen Sie einen bereits existierenden Mandanten
+    aus.
+  </p>
+
+</form>

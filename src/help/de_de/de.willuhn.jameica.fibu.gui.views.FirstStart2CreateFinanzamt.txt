@@ -1,0 +1,11 @@
+<form>
+	<p>
+		<span color="header" font="header">Festlegen des Finanzamtes</span>
+	</p>
+
+  <p>
+    Bitte geben Sie hier die Daten Ihres Finanzamtes ein. Diese Informationen
+    werden für die Erstellung der Auswertungen benötigt.
+  </p>
+
+</form>
