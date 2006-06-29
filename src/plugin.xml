@@ -9,26 +9,27 @@
 
   <menu>
     <item id="syntax.menu" name="SynTAX">
-      <item name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
-      <item name="-" />
-	    <item name="Mandanten" 														action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
-	    <item name="Finanzämter"  												action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
-      <item name="&amp;Einstellungen"       						action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
+      <item enabled="false" name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+	    <item enabled="false" name="Geschäftsjahr auswählen" 							shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrChoose" />
+      <item enabled="false" name="-" />
+	    <item enabled="false" name="Mandanten" 														action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
+	    <item enabled="false" name="Finanzämter"  												action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
+      <item enabled="false" name="&amp;Einstellungen"       						action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
     </item>
   </menu>
 
   <navigation>
-	  <item id="syntax.navi" 									 name="SynTAX"					  icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
-	    <item id="syntax.navi.buchungen" 			 name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
-	    <item id="syntax.navi.konten" 				 name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
-	    <item id="syntax.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
-	    <item id="syntax.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
-	    <item id="syntax.navi.auswertungen"    name="Auswertungen"   		icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
+	  <item enabled="false" id="syntax.navi" 									 name="SynTAX"					  icon-close="folder.gif" icon-open="folderopen.gif" 	action="de.willuhn.jameica.fibu.gui.action.Welcome">
+	    <item enabled="false" id="syntax.navi.buchungen" 			 name="Buchungen" 				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
+	    <item enabled="false" id="syntax.navi.konten" 				 name="Konten"    				icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
+	    <item enabled="false" id="syntax.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
+	    <item enabled="false" id="syntax.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
+	    <item enabled="false" id="syntax.navi.auswertungen"    name="Auswertungen"   		icon-close="page.gif" 															action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
 	  </item>
   </navigation>
 
   <services>
-    <service name="database" depends="" autostart="true" class="de.willuhn.jameica.fibu.rmi.DBService" />
+    <service name="database" depends=""         autostart="true" class="de.willuhn.jameica.fibu.rmi.DBService" />
     <service name="engine"   depends="database" autostart="true" class="de.willuhn.jameica.fibu.rmi.BuchungsEngine" />
   </services>
 

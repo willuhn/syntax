@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/27 23:30:47 $
+ * $Revision: 1.10 $
+ * $Date: 2006/06/29 15:11:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,12 +19,14 @@ import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -87,13 +89,8 @@ public class FirstStart extends AbstractView implements Extension
     {
       try
       {
-        // Wir deaktivieren auch gleich noch die Navigation
-        PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
-        NavigationItem navi = pc.getManifest().getNavigation();
-        navi.setEnabled(false,true);
         AbstractView view = (AbstractView) extendable;
         this.setParent(view.getParent());
-
         this.bind();
       }
       catch (Exception e)
@@ -103,8 +100,29 @@ public class FirstStart extends AbstractView implements Extension
     }
     else
     {
-      // Ansonsten aktualisieren wir die Anzeige des Geschaeftsjahres
-      Settings.setStatus();
+      try
+      {
+        // Wir koennen starten. Navigation freigeben.
+        // Wir deaktivieren auch gleich noch die Navigation
+        PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
+        Manifest manifest  = pc.getManifest();
+        NavigationItem navi = manifest.getNavigation();
+        if (navi != null)
+          navi.setEnabled(true,true);
+        
+        MenuItem menu = manifest.getMenu();
+        if (menu != null)
+          menu.setEnabled(true,true);
+
+        // Ansonsten aktualisieren wir die Anzeige des Geschaeftsjahres
+        Settings.setStatus();
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to activate navigation",e);
+      }
+      
+      
     }
   }
 
@@ -113,6 +131,10 @@ public class FirstStart extends AbstractView implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.10  2006/06/29 15:11:31  willuhn
+ * @N Setup-Wizard fertig
+ * @N Auswahl des Geschaeftsjahres
+ *
  * Revision 1.9  2006/06/27 23:30:47  willuhn
  * *** empty log message ***
  *

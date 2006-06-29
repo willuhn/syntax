@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/06/27 23:30:47 $
+ * $Revision: 1.11 $
+ * $Date: 2006/06/29 15:11:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,12 +39,14 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.ProgressBar;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -462,6 +464,7 @@ public class FirstStartControl extends AbstractControl
         DBIterator gjList = Settings.getDBService().createList(Geschaeftsjahr.class);
         DBIterator maList = Settings.getDBService().createList(Mandant.class);
         DBIterator faList = Settings.getDBService().createList(Finanzamt.class);
+        
         if (gjList.size() > 0)
         {
           Geschaeftsjahr j = (Geschaeftsjahr) gjList.next();
@@ -628,9 +631,15 @@ public class FirstStartControl extends AbstractControl
   private void handleStart() throws Exception
   {
     PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
-    NavigationItem navi = pc.getManifest().getNavigation();
-    navi.setEnabled(true,true);
-
+    Manifest manifest  = pc.getManifest();
+    NavigationItem navi = manifest.getNavigation();
+    if (navi != null)
+      navi.setEnabled(true,true);
+    
+    MenuItem menu = manifest.getMenu();
+    if (menu != null)
+      menu.setEnabled(true,true);
+    
     new Welcome().handleAction(null);
   }
 }
@@ -638,6 +647,10 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.11  2006/06/29 15:11:31  willuhn
+ * @N Setup-Wizard fertig
+ * @N Auswahl des Geschaeftsjahres
+ *
  * Revision 1.10  2006/06/27 23:30:47  willuhn
  * *** empty log message ***
  *

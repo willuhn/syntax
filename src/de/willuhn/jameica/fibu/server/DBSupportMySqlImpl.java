@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/29 15:11:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import java.sql.SQLException;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -103,20 +104,20 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
       rs = conn.getMetaData().getTables(null,null,null,null);
       if (rs.next())
       {
-        Logger.warn("database seems to exist, asking user to skip this step");
-        String text = i18n.tr("Die Datenbank-Tabellen scheinen bereits zu existieren.\nMöchten Sie die Erstellung überspringen?");
-        if (Application.getCallback().askUser(text))
-        {
-          Logger.info("creation of database skipped");
-          monitor.setStatusText(i18n.tr("Erstellung der Datenbank übersprungen"));
-          return;
-        }
+        Logger.warn("database seems to exist, skip database creation");
+        String msg = i18n.tr("Datenbank existiert bereits. Überspringe Erstellung");
+        monitor.setStatusText(msg);
+        monitor.setPercentComplete(100);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(msg, StatusBarMessage.TYPE_SUCCESS));
+      }
+      else
+      {
+        ScriptExecutor.execute(new FileReader(create),conn, monitor);
+        monitor.setPercentComplete(0);
+        ScriptExecutor.execute(new FileReader(init),conn, monitor);
+        monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
       }
 
-      ScriptExecutor.execute(new FileReader(create),conn, monitor);
-      monitor.setPercentComplete(0);
-      ScriptExecutor.execute(new FileReader(init),conn, monitor);
-      monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
     }
     catch (Throwable t)
     {
@@ -226,6 +227,10 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.4  2006/06/29 15:11:31  willuhn
+ * @N Setup-Wizard fertig
+ * @N Auswahl des Geschaeftsjahres
+ *
  * Revision 1.3  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *
