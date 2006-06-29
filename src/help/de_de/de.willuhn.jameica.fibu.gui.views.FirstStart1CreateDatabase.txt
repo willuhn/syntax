@@ -1,0 +1,32 @@
+<form>
+	<p>
+		<span color="header" font="header">Einrichtung der Datenbank.</span>
+	</p>
+
+  <p>
+    Wenn Sie <b>MySQL</b> als Datenbank wählen, dann stellen Sie sicher,
+    dass auf dem angegebenen Hostnamen eine MySQL-Datenbank zur Verfügung
+    steht, die folgende Kriterien erfüllt:
+  </p>
+
+  <li>
+    Der Tabellen-Typ <b>InnoDB</b> (transaktionssichere Tabellen) muss
+    unterstützt werden.
+  </li>
+  
+  <li>
+    Der Datenbankbenutzer muss auf dem Datenbank-Server existieren und
+    die Rechte <b>INSERT, UPDATE, DELETE, ALTER und CREATE</b> für die
+    angegebene Datenbank besitzen.
+  </li>
+  
+  <li>
+    Eine (leere) Datenbank mit dem angegebenen Namen muss existieren.
+    Der Assistent erkennt dann selbständig, ob die benötigten Tabellen
+    darin bereits existieren und legt diese nur dann an, wenn die
+    Datenbank leer ist. Sie können den Assistenten daher gefahrlos
+    mehrmals ausführen ohne zu befürchten, dass bereits existierende
+    Tabellen oder Daten überschrieben werden.
+  </li>
+  
+</form>

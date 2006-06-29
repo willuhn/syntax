@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.4 $
+ * $Date: 2006/06/29 16:38:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
   
   private String username = Settings.SETTINGS.getString("database.support.username","syntax");
   private String password = Settings.SETTINGS.getString("database.support.password",null);
-  private String hostname = Settings.SETTINGS.getString("database.support.hostname","192.168.0.1");
+  private String hostname = Settings.SETTINGS.getString("database.support.hostname","127.0.0.1");
   private String dbName   = Settings.SETTINGS.getString("database.support.dbname","syntax");
   private int tcpPort     = Settings.SETTINGS.getInt("database.support.tcpport",3306);
 
@@ -226,6 +226,9 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.4  2006/06/29 16:38:09  willuhn
+ * @N Hilfetext
+ *
  * Revision 1.3  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *
