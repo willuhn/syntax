@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Revision: 1.12 $
+ * $Date: 2006/06/29 23:09:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.Welcome;
 import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.fibu.gui.part.MandantList;
 import de.willuhn.jameica.fibu.gui.views.FirstStart1CreateDatabase;
@@ -45,6 +44,7 @@ import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.PasswordInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.internal.action.Start;
 import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.plugin.PluginContainer;
@@ -640,13 +640,16 @@ public class FirstStartControl extends AbstractControl
     if (menu != null)
       menu.setEnabled(true,true);
     
-    new Welcome().handleAction(null);
+    new Start().handleAction(null);
   }
 }
 
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.12  2006/06/29 23:09:28  willuhn
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.11  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres

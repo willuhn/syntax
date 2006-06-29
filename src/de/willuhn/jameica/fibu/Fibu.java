@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.36 $
- * $Date: 2006/06/19 22:41:47 $
+ * $Revision: 1.37 $
+ * $Date: 2006/06/29 23:09:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,11 +17,17 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-import de.willuhn.jameica.fibu.gui.views.FirstStart;
+import de.willuhn.jameica.gui.MenuItem;
+import de.willuhn.jameica.gui.NavigationItem;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
+import de.willuhn.jameica.plugin.Manifest;
+import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -88,7 +94,44 @@ public class Fibu extends AbstractPlugin
    */
   public void init() throws ApplicationException
   {
-    ExtensionRegistry.register(new FirstStart(),Start.class.getName());
+    // Wir registrieren noch einen Hook, der nach dem Starten der GUI
+    // aktiv wird, um Menu und Navi freizuschalten, wenn DB,Mandant und GJ
+    // eingerichtet sind.
+    if (!Application.inServerMode())
+    {
+      ExtensionRegistry.register(new Extension() {
+        /**
+         * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
+         */
+        public void extend(Extendable extendable)
+        {
+          if (!Settings.isFirstStart())
+          {
+            try
+            {
+              // Wir koennen starten. Navigation und Menu freigeben.
+              PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
+              Manifest manifest  = pc.getManifest();
+              NavigationItem navi = manifest.getNavigation();
+              if (navi != null)
+                navi.setEnabled(true,true);
+              
+              MenuItem menu = manifest.getMenu();
+              if (menu != null)
+                menu.setEnabled(true,true);
+
+              // Ansonsten aktualisieren wir die Anzeige des Geschaeftsjahres
+              Settings.setStatus();
+            }
+            catch (Exception e)
+            {
+              Logger.error("unable to activate navigation/menu",e);
+            }
+            return;
+          }
+        }
+      }, Start.class.getName());
+    }
   }
 
   /**
@@ -115,6 +158,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.37  2006/06/29 23:09:28  willuhn
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.36  2006/06/19 22:41:47  willuhn
  * *** empty log message ***
  *

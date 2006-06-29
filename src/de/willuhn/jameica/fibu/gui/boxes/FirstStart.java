@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Attic/FirstStart.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/boxes/FirstStart.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2006/06/29 23:09:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,46 +11,86 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.gui.views;
+package de.willuhn.jameica.fibu.gui.boxes;
+
+import java.rmi.RemoteException;
+
+import org.eclipse.swt.widgets.Composite;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
-import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.MenuItem;
-import de.willuhn.jameica.gui.NavigationItem;
-import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.extension.Extension;
+import de.willuhn.jameica.gui.boxes.AbstractBox;
 import de.willuhn.jameica.gui.parts.FormTextPart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
-import de.willuhn.jameica.plugin.Manifest;
-import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * View mit dem Wizard fuer den ersten Start.
+ * Wizard fuer den ersten Start.
  */
-public class FirstStart extends AbstractView implements Extension
+public class FirstStart extends AbstractBox
 {
-
   /**
-   * @see de.willuhn.jameica.gui.AbstractView#bind()
+   * @see de.willuhn.jameica.gui.boxes.Box#isActive()
    */
-  public void bind() throws Exception
+  public boolean isActive()
   {
-    final FirstStartControl control = new FirstStartControl(this);
+    // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
+    return Settings.isFirstStart();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultEnabled()
+   */
+  public boolean getDefaultEnabled()
+  {
+    // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
+    return Settings.isFirstStart();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#getDefaultIndex()
+   */
+  public int getDefaultIndex()
+  {
+    return 0;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#getName()
+   */
+  public String getName()
+  {
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    return "SynTAX: " + i18n.tr("Installation");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.boxes.Box#isEnabled()
+   */
+  public boolean isEnabled()
+  {
+    // Diese Box kann nur beim ersten Start ausgewaehlt/angezeigt werden.
+    return Settings.isFirstStart();
+  }
+  
+  /**
+   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public void paint(Composite parent) throws RemoteException
+  {
+    final FirstStartControl control = new FirstStartControl(null);
 
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     GUI.getView().setTitle(i18n.tr("SynTAX: Installation"));
     
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Willkommen"));
+    LabelGroup group = new LabelGroup(parent,i18n.tr("Willkommen"));
     group.addText("\n" + i18n.tr("Sie starten SynTAX zum ersten Mal. Dieser Assistent wird Sie bei " +
         "der Einrichtung der Datenbank sowie Ihrer Stammdaten unterstützen."),true);
     
@@ -72,58 +112,6 @@ public class FirstStart extends AbstractView implements Extension
       }
     });
     
-    
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
-   */
-  public void extend(Extendable extendable)
-  {
-    if (Application.inServerMode())
-      return;
-
-    // Wir triggern noch das Laden der Jameica-Startseite, damit
-    // wir ggf. einen Wizard zum Einrichten der Datenbank anzeigen koennen.
-    if (Settings.isFirstStart())
-    {
-      try
-      {
-        AbstractView view = (AbstractView) extendable;
-        this.setParent(view.getParent());
-        this.bind();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to extend view",e);
-      }
-    }
-    else
-    {
-      try
-      {
-        // Wir koennen starten. Navigation freigeben.
-        // Wir deaktivieren auch gleich noch die Navigation
-        PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
-        Manifest manifest  = pc.getManifest();
-        NavigationItem navi = manifest.getNavigation();
-        if (navi != null)
-          navi.setEnabled(true,true);
-        
-        MenuItem menu = manifest.getMenu();
-        if (menu != null)
-          menu.setEnabled(true,true);
-
-        // Ansonsten aktualisieren wir die Anzeige des Geschaeftsjahres
-        Settings.setStatus();
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to activate navigation",e);
-      }
-      
-      
-    }
   }
 
 }
@@ -131,6 +119,9 @@ public class FirstStart extends AbstractView implements Extension
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
+ * Revision 1.1  2006/06/29 23:09:28  willuhn
+ * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
+ *
  * Revision 1.10  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres
