@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="syntax" version="1.2">
+<plugin name="syntax" version="1.2" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>http://www.willuhn.de/projects/syntax</url>
   <homepage>http://www.willuhn.de/projects/syntax</homepage>
   <license>proprietary</license>
+
+  <classfinder>
+    <include>syntax\.jar</include>
+    <include>.*\.class</include>
+  </classfinder>
 
   <menu>
     <item id="syntax.menu" name="SynTAX">
