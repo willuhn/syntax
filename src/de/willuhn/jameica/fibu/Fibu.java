@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/06/29 23:09:28 $
+ * $Revision: 1.38 $
+ * $Date: 2006/06/30 14:09:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
-import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -110,8 +109,7 @@ public class Fibu extends AbstractPlugin
             try
             {
               // Wir koennen starten. Navigation und Menu freigeben.
-              PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
-              Manifest manifest  = pc.getManifest();
+              Manifest manifest = Application.getPluginLoader().getManifest(Fibu.class);
               NavigationItem navi = manifest.getNavigation();
               if (navi != null)
                 navi.setEnabled(true,true);
@@ -158,6 +156,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.38  2006/06/30 14:09:56  willuhn
+ * @N merged new pluginloader into HEAD
+ *
  * Revision 1.37  2006/06/29 23:09:28  willuhn
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
  *

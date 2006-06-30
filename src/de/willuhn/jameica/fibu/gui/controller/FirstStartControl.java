@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/06/29 23:09:28 $
+ * $Revision: 1.13 $
+ * $Date: 2006/06/30 14:09:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,6 @@ import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.internal.action.Start;
 import de.willuhn.jameica.gui.parts.ProgressBar;
 import de.willuhn.jameica.plugin.Manifest;
-import de.willuhn.jameica.plugin.PluginContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -630,8 +629,7 @@ public class FirstStartControl extends AbstractControl
    */
   private void handleStart() throws Exception
   {
-    PluginContainer pc = Application.getPluginLoader().getPluginContainer(Fibu.class);
-    Manifest manifest  = pc.getManifest();
+    Manifest manifest = Application.getPluginLoader().getManifest(Fibu.class);
     NavigationItem navi = manifest.getNavigation();
     if (navi != null)
       navi.setEnabled(true,true);
@@ -647,6 +645,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.13  2006/06/30 14:09:56  willuhn
+ * @N merged new pluginloader into HEAD
+ *
  * Revision 1.12  2006/06/29 23:09:28  willuhn
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
  *
