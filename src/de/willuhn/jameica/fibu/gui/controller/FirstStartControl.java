@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.13 $
- * $Date: 2006/06/30 14:09:56 $
+ * $Revision: 1.14 $
+ * $Date: 2006/07/03 14:23:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,6 +140,8 @@ public class FirstStartControl extends AbstractControl
         }
         this.dbTypes = (DBSupport[]) list.toArray(new DBSupport[list.size()]);
       }
+      if (this.dbType == null)
+        this.dbType = Settings.getDBSupport();
       inputDbType = new SelectInput(PseudoIterator.fromArray(this.dbTypes),this.dbType);
       
       
@@ -645,6 +647,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.14  2006/07/03 14:23:54  willuhn
+ * @B preselection
+ *
  * Revision 1.13  2006/06/30 14:09:56  willuhn
  * @N merged new pluginloader into HEAD
  *
