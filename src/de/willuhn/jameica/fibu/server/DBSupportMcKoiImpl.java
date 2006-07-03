@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Revision: 1.5 $
+ * $Date: 2006/07/03 14:19:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.fibu.Fibu;
@@ -61,14 +64,42 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
     File init   = new File(res.getPath() + File.separator + "sql" + File.separator + "init.sql");
     
     Connection conn = null;
+    ResultSet rs    = null;
     try
     {
+      
+      // Verzeichnisse und leere DB ggf. erzeugen
       File dbDir = new File(res.getWorkPath(),"db");
       if (!dbDir.exists())
         dbDir.mkdirs();
+      new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
+
+      try
+      {
+        Class.forName(getJdbcDriver());
+      }
+      catch (Throwable t)
+      {
+        Logger.error("unable to load jdbc driver",t);
+        throw new ApplicationException(i18n.tr("Fehler beim Laden des JDBC-Treibers. {0}",t.getLocalizedMessage()));
+      }
       
-      EmbeddedDatabase db = new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
-      if (db.exists())
+      String jdbcUrl = getJdbcUrl();
+      Logger.info("using jdbc url: " + jdbcUrl);
+
+      try
+      {
+        conn = DriverManager.getConnection(jdbcUrl,username,getPassword());
+      }
+      catch (SQLException se)
+      {
+        Logger.error("unable to open sql connection",se);
+        throw new ApplicationException(i18n.tr("Fehler beim Aufbau der Datenbankverbindung. {0}",se.getLocalizedMessage()));
+      }
+      
+      // Wir schauen mal, ob vielleicht schon Tabellen existieren
+      rs = conn.getMetaData().getTables(null,"APP",null,null);
+      if (rs.next())
       {
         Logger.warn("database seems to exist, skip database creation");
         String msg = i18n.tr("Datenbank existiert bereits. Überspringe Erstellung");
@@ -78,24 +109,31 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
       }
       else
       {
-        conn = db.getConnection();
         ScriptExecutor.execute(new FileReader(create),conn, monitor);
         monitor.setPercentComplete(0);
         ScriptExecutor.execute(new FileReader(init),conn, monitor);
         monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
       }
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
+
     }
     catch (Throwable t)
     {
       Logger.error("unable to execute sql scripts",t);
-      throw new ApplicationException(i18n.tr("Fehler beim Initialisieren der Datenbank. {0}",t.getLocalizedMessage()),t);
+      throw new ApplicationException(i18n.tr("Fehler beim Initialisieren der Datenbank. {0}", t.getLocalizedMessage()),t);
     }
     finally
     {
+      if (rs != null)
+      {
+        try
+        {
+          rs.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("unable to close resultset",t);
+        }
+      }
       if (conn != null)
       {
         try
@@ -166,6 +204,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.5  2006/07/03 14:19:30  willuhn
+ * @B Fehler bei Erstellung der McKoi-Datenbank
+ *
  * Revision 1.4  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres
