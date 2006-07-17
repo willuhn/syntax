@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.41 $
+ * $Date: 2006/07/17 21:58:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,13 +42,13 @@ public class BuchungNeu extends AbstractView
   public void bind() throws Exception
   {
 
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    final I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     // Headline malen
 		GUI.getView().setTitle(i18n.tr("Buchung bearbeiten"));
 
     final BuchungControl control = new BuchungControl(this);
-
+    
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
@@ -75,6 +75,11 @@ public class BuchungNeu extends AbstractView
     boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
     if (closed) GUI.getView().setErrorText(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"));
 
+    // BUGZILLA 245
+    // Deaktiviert. Damit koennte das vielleicht zu langsam werden
+//    new Headline(getParent(),i18n.tr("Buchungsliste"));
+//    control.getBuchungList().paint(getParent());
+    
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = kontoGroup.createButtonArea(4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
@@ -88,11 +93,11 @@ public class BuchungNeu extends AbstractView
       {
         control.handleStore(false);
       }
-    },null);
+    });
     store.setEnabled(!closed);
     buttonArea.addButton(store);
 
-    Button storeNew = new Button(i18n.tr("Speichern und Neue Buchung"),new Action() {
+    Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore(true);
@@ -100,7 +105,6 @@ public class BuchungNeu extends AbstractView
     },null,true);
     storeNew.setEnabled(!closed);
     buttonArea.addButton(storeNew);
-
   }
 
   /**
@@ -113,6 +117,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.41  2006/07/17 21:58:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.40  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

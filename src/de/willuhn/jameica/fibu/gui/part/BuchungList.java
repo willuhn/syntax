@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/05/30 23:33:09 $
+ * $Revision: 1.23 $
+ * $Date: 2006/07/17 21:58:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -53,9 +54,29 @@ public class BuchungList extends TablePart
   private I18N i18n             = null;
 
   private TextInput search      = null;
+  private boolean showFilter    = true;
 
   private GenericIterator list  = null;
   private ArrayList buchungen   = null;
+
+  /**
+   * ct.
+   * @throws RemoteException
+   */
+  public BuchungList() throws RemoteException
+  {
+    this(new BuchungNeu());
+  }
+
+  /**
+   * ct.
+   * @param action
+   * @throws RemoteException
+   */
+  public BuchungList(Action action) throws RemoteException
+  {
+    this((Konto)null,action);
+  }
 
   /**
    * ct.
@@ -68,16 +89,6 @@ public class BuchungList extends TablePart
     this(init(konto), action);
   }
   
-  /**
-   * ct.
-   * @param action
-   * @throws RemoteException
-   */
-  public BuchungList(Action action) throws RemoteException
-  {
-    this((Konto)null,action);
-  }
-
   /**
    * ct.
    * @param buchungen die Liste der Buchungen.
@@ -179,28 +190,44 @@ public class BuchungList extends TablePart
   
 
   /**
+   * Legt fest, ob der Filter angezeigt werden soll.
+   * @param filter true, wenn der Filter angezeigt werden soll.
+   * Default: true.
+   */
+  public void showFilter(boolean filter)
+  {
+    this.showFilter = filter;
+  }
+  
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+    if (showFilter)
+    {
+      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
 
-    // Eingabe-Feld fuer die Suche mit Button hinten dran.
-    this.search = new TextInput("");
-    group.addLabelPair(i18n.tr("Buchungstext enthält"), this.search);
+      // Eingabe-Feld fuer die Suche mit Button hinten dran.
+      this.search = new TextInput("");
+      group.addLabelPair(i18n.tr("Buchungstext enthält"), this.search);
 
-    this.search.getControl().addKeyListener(new KL());
+      this.search.getControl().addKeyListener(new KL());
+    }
 
     super.paint(parent);
 
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    buchungen = new ArrayList();
-    list.begin();
-    while (list.hasNext())
+    if (showFilter)
     {
-      BaseBuchung a = (BaseBuchung) list.next();
-      buchungen.add(a);
+      // Wir kopieren den ganzen Kram in eine ArrayList, damit die
+      // Objekte beim Filter geladen bleiben
+      buchungen = new ArrayList();
+      list.begin();
+      while (list.hasNext())
+      {
+        BaseBuchung a = (BaseBuchung) list.next();
+        buchungen.add(a);
+      }
     }
   }
 
@@ -336,6 +363,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.23  2006/07/17 21:58:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2006/05/30 23:33:09  willuhn
  * *** empty log message ***
  *

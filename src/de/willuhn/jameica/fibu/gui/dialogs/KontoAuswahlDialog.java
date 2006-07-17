@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/25 23:00:02 $
+ * $Revision: 1.5 $
+ * $Date: 2006/07/17 21:58:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public class KontoAuswahlDialog extends AbstractDialog
         choosen = (Konto) o;
         close();
       }
-    });
+    },null,true);
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -115,6 +115,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.5  2006/07/17 21:58:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2005/08/25 23:00:02  willuhn
  * *** empty log message ***
  *

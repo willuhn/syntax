@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.66 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.67 $
+ * $Date: 2006/07/17 21:58:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,6 +31,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
+import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
@@ -82,6 +83,8 @@ public class BuchungControl extends AbstractControl
   private CheckboxInput anlageVermoegen = null;
   private Input anlagevermoegenLink     = null;
   
+  private BuchungList buchungList       = null;
+
   private I18N i18n;
 
   /**
@@ -112,6 +115,21 @@ public class BuchungControl extends AbstractControl
 		return buchung;
 		
 	}
+  
+  /**
+   * Liefert eine Liste der existierenden Buchungen.
+   * @return Liste der Buchungen.
+   * @throws RemoteException
+   */
+  public BuchungList getBuchungList() throws RemoteException
+  {
+    if (this.buchungList == null)
+    {
+      this.buchungList = new BuchungList();
+      this.buchungList.showFilter(false);
+    }
+    return this.buchungList;
+  }
 
   /**
    * Liefert eine Auswahlbox mit Buchungsvorlagen.
@@ -501,8 +519,14 @@ public class BuchungControl extends AbstractControl
       getBuchung().setText((String)getText().getValue());
       
       // und jetzt speichern wir.
+//      boolean isNew = getBuchung().isNewObject();
 			getBuchung().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
+
+      // BUGZILLA 245
+      // Deaktiviert. Damit koennte das vielleicht zu langsam werden
+//      if (isNew)
+//        getBuchungList().addItem(getBuchung(),0);
       
       //////////////////////////////////////////////////////////////////////////
       // Anlagevermoegen
@@ -756,6 +780,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.67  2006/07/17 21:58:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.66  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *
