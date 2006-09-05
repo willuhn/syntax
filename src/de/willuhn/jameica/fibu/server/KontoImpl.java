@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.48 $
- * $Date: 2006/09/05 20:57:27 $
+ * $Revision: 1.49 $
+ * $Date: 2006/09/05 20:57:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,6 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
-import de.willuhn.jameica.fibu.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
@@ -484,6 +483,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.49  2006/09/05 20:57:51  willuhn
+ * @B wrong import
+ *
  * Revision 1.48  2006/09/05 20:57:27  willuhn
  * @ResultsetIterator merged into datasource lib
  *
