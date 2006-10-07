@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/01/02 17:38:16 $
+ * $Revision: 1.8 $
+ * $Date: 2006/10/07 19:34:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -64,7 +64,7 @@ public class VelocityExporter
 
     AbstractPlugin plugin = Application.getPluginLoader().getPlugin(Fibu.class);
     Manifest manifest = plugin.getManifest();
-    String version = manifest.getName() + " " + manifest.getVersion() + " [Build: " + plugin.getBuildnumber() + " - " + plugin.getBuildDate() + "]";
+    String version = manifest.getName() + " " + manifest.getVersion() + " [Build: " + plugin.getManifest().getBuildnumber() + " - " + plugin.getManifest().getBuildDate() + "]";
     context.put("version",        version);
 
     BufferedWriter writer = null;
@@ -100,6 +100,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8  2006/10/07 19:34:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2006/01/02 17:38:16  willuhn
  * @N moved Velocity to Jameica
  *
