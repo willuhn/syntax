@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.67 $
- * $Date: 2006/07/17 21:58:06 $
+ * $Revision: 1.68 $
+ * $Date: 2006/10/09 23:48:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -713,6 +713,8 @@ public class BuchungControl extends AbstractControl
 		{
       try
       {
+        if (!(event.widget instanceof Text))
+          return;
         Text t = (Text) event.widget;
         if (t == null)
           return;
@@ -780,6 +782,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.68  2006/10/09 23:48:41  willuhn
+ * @B bug 140
+ *
  * Revision 1.67  2006/07/17 21:58:06  willuhn
  * *** empty log message ***
  *

@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS buchung (
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
   geprueft int(1) NULL,
+  hb_umsatz_id char(7),
   UNIQUE (id),
   PRIMARY KEY (id)
 ) TYPE = INNODB;
@@ -166,6 +167,7 @@ CREATE INDEX idx_buchung_gj           ON buchung(geschaeftsjahr_id);
 CREATE INDEX idx_buchung_self         ON buchung(buchung_id);
 CREATE INDEX idx_buchung_sk           ON buchung(sollkonto_id);
 CREATE INDEX idx_buchung_hk           ON buchung(habenkonto_id);
+CREATE INDEX idx_buchung_hb_umsatz_id ON buchung(hb_umsatz_id);
 
 CREATE INDEX idx_bt_hk                ON buchungstemplate(habenkonto_id);
 CREATE INDEX idx_bt_sk                ON buchungstemplate(sollkonto_id);
@@ -188,7 +190,6 @@ CREATE INDEX idx_av_buchung           ON anlagevermoegen(buchung_id);
 
 CREATE INDEX idx_abschreibung_av      ON abschreibung(av_id);
 CREATE INDEX idx_abschreibung_buchung ON abschreibung(buchung_id);
-
 
 ALTER TABLE kontenrahmen ADD CONSTRAINT fk_kontenrahmen_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 

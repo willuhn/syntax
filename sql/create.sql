@@ -149,7 +149,6 @@ CREATE TABLE abschreibung (
   PRIMARY KEY (id)
 );
 
-
 CREATE INDEX idx_kr_mandant           ON kontenrahmen(mandant_id);
 
 CREATE INDEX idx_steuer_steuerkonto   ON steuer(steuerkonto_id);
@@ -167,6 +166,7 @@ CREATE INDEX idx_buchung_gj           ON buchung(geschaeftsjahr_id);
 CREATE INDEX idx_buchung_self         ON buchung(buchung_id);
 CREATE INDEX idx_buchung_sk           ON buchung(sollkonto_id);
 CREATE INDEX idx_buchung_hk           ON buchung(habenkonto_id);
+CREATE INDEX idx_buchung_hb_umsatz_id ON buchung(hb_umsatz_id);
 
 CREATE INDEX idx_bt_hk                ON buchungstemplate(habenkonto_id);
 CREATE INDEX idx_bt_sk                ON buchungstemplate(sollkonto_id);

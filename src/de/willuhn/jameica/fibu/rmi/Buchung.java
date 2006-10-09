@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.19 $
+ * $Date: 2006/10/09 23:48:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,11 +44,27 @@ public interface Buchung extends BaseBuchung
    */
   public Anlagevermoegen getAnlagevermoegen() throws RemoteException;
 
+  /**
+   * Liefert die optionale ID eines Hibiscus-Umsatzes.
+   * @return optionale zugeordnete ID eines Hibiscus-Umsatzes.
+   * @throws RemoteException
+   */
+  public String getHibiscusUmsatzID() throws RemoteException;
+  
+  /**
+   * Speichert eine optionale Hibiscus-Umsatz-ID.
+   * @param id die optionale Umsatz-ID.
+   * @throws RemoteException
+   */
+  public void setHibiscusUmsatzID(String id) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Buchung.java,v $
+ * Revision 1.19  2006/10/09 23:48:41  willuhn
+ * @B bug 140
+ *
  * Revision 1.18  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

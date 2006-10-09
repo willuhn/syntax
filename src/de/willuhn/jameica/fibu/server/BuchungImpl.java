@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.49 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.50 $
+ * $Date: 2006/10/09 23:48:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -154,6 +154,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
         av.setBuchung(null);
         av.store();
       }
+
       super.delete();
       transactionCommit();
     }
@@ -228,11 +229,29 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
     return null;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getHibiscusUmsatzID()
+   */
+  public String getHibiscusUmsatzID() throws RemoteException
+  {
+    return(String) getAttribute("hb_umsatz_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setHibiscusUmsatzID(java.lang.String)
+   */
+  public void setHibiscusUmsatzID(String id) throws RemoteException
+  {
+    setAttribute("hb_umsatz_id",id);
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.50  2006/10/09 23:48:41  willuhn
+ * @B bug 140
+ *
  * Revision 1.49  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

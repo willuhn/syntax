@@ -3,6 +3,7 @@
 <project basedir=".." default="rmic">
 
 	<path id="compilepath">
+    <pathelement location="../hibiscus/bin/" />
 		<pathelement location="../jameica/bin/" />
 		<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
 		<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />

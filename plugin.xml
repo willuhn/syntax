@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="syntax" version="1.2" class="de.willuhn.jameica.fibu.Fibu">
+<plugin name="syntax" version="1.3" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>http://www.willuhn.de/projects/syntax</url>
@@ -37,6 +37,11 @@
     <service name="database" depends=""         autostart="true" class="de.willuhn.jameica.fibu.rmi.DBService" />
     <service name="engine"   depends="database" autostart="true" class="de.willuhn.jameica.fibu.rmi.BuchungsEngine" />
   </services>
+  
+  <extensions>
+    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart" extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList"/>
+    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu" extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList"/>
+  </extensions>
 
 </plugin>
 
