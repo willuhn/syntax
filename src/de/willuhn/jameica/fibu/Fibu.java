@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/06/30 14:09:56 $
+ * $Revision: 1.39 $
+ * $Date: 2006/10/10 22:30:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -55,6 +56,11 @@ public class Fibu extends AbstractPlugin
    * Dateformatter fuer Buchungen.
    */
   public final static DateFormat BUCHUNGDATEFORMAT   = new SimpleDateFormat("ddMMyy");
+  
+  /**
+   * Unser eigenes kombiniertes Dateformat.
+   */
+  public final static DateFormat CUSTOM_DATEFORMAT   = new CustomDateFormat();
 
   /**
    * Wochentage
@@ -156,6 +162,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.39  2006/10/10 22:30:07  willuhn
+ * @C DialogInput gegen DateInput ersetzt
+ *
  * Revision 1.38  2006/06/30 14:09:56  willuhn
  * @N merged new pluginloader into HEAD
  *

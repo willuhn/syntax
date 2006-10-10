@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.68 $
- * $Date: 2006/10/09 23:48:41 $
+ * $Revision: 1.69 $
+ * $Date: 2006/10/10 22:30:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +23,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -43,11 +41,10 @@ import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.ButtonInput;
 import de.willuhn.jameica.gui.input.CheckboxInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -76,7 +73,7 @@ public class BuchungControl extends AbstractControl
 	private Input betrag				   = null;
 
   private DecimalInput steuer				    = null;
-  private DialogInput datum             = null;
+  private DateInput datum               = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
   
@@ -185,11 +182,11 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DialogInput getDatum() throws RemoteException
+  public DateInput getDatum() throws RemoteException
 	{
 		if (datum != null)
 			return datum;
-		
+
     Date d = getBuchung().getDatum();
     if (d == null)
     {
@@ -212,30 +209,35 @@ public class BuchungControl extends AbstractControl
       }
     }
 
-    CalendarDialog cd = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    cd.setTitle(i18n.tr("Datum"));
-    cd.setText(i18n.tr("Bitte wählen Sie das Datum für diese Buchung"));
-    cd.setDate(d);
-    cd.addCloseListener(new Listener() {
+    datum = new DateInput(d,Fibu.CUSTOM_DATEFORMAT);
+    datum.setTitle(i18n.tr("Datum"));
+    datum.setText(i18n.tr("Bitte wählen Sie das Datum für diese Buchung"));
+    datum.setComment("");
+
+    
+    // Mit dem Listener ergaenzen wir den Wochentag als Kommentar
+    datum.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
+        Date d = (Date) datum.getValue();
+
+        if (d == null)
           return;
-        String s = Fibu.DATEFORMAT.format((Date)event.data);
-        datum.setText(s);
-        datum.setValue(s);
+
+        // Wochentag ergaenzen
+        Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
+        cal.setTime(d);
+        int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (i < 0 || i >= Fibu.WEEKDAYS.length)
+          return;
+
+        datum.setComment(i18n.tr(Fibu.WEEKDAYS[i]));
       }
+    
     });
-    String s = Fibu.DATEFORMAT.format(d);
-    datum = new DialogInput(s,cd);
-    datum.setValue(s);
-    datum.setComment("");
-    datum.enableClientControl();
-    datum.addListener(new WochentagListener());
     if (getBuchung().getGeschaeftsjahr().isClosed())
       datum.disable();
     return datum;
-  
   }
 
 	/**
@@ -488,22 +490,7 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Datum checken
       
-      Object o = getDatum().getValue();
-      Date   d = null;
-      if (o instanceof Date)
-      {
-        d = (Date) o;
-      }
-      else
-      {
-        try {
-          d = parse(o.toString());
-        }
-        catch (ParseException e)
-        {
-          throw new ApplicationException(i18n.tr("Datum ungültig."));
-        }
-      }
+      Date d = (Date) getDatum().getValue();
       if (d == null)
       {
         Logger.warn("no date given, using actual date");
@@ -700,88 +687,13 @@ public class BuchungControl extends AbstractControl
 
     }
   }
-
-  /**
-   * Listener, der hinter dem Buchungsdatum den Wochentag anzeigt.
-   */
-  private class WochentagListener implements Listener
-	{
-		/**
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
-		public void handleEvent(Event event)
-		{
-      try
-      {
-        if (!(event.widget instanceof Text))
-          return;
-        Text t = (Text) event.widget;
-        if (t == null)
-          return;
-
-        // Parsen
-        Date d = parse(t.getText());
-
-        // Wochentag ergaenzen
-        Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
-        cal.setTime(d);
-        int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        if (i < 0 || i >= Fibu.WEEKDAYS.length)
-          return;
-
-        String s = Fibu.DATEFORMAT.format(d);
-        getDatum().setText(s);
-        getDatum().setValue(s);
-        getDatum().setComment(i18n.tr(Fibu.WEEKDAYS[i]));
-      }
-      catch (Exception e)
-      {
-        GUI.getView().setErrorText(i18n.tr("Datumsformat ungültig"));
-        Logger.error("unable to update week day",e);
-      }
-		}
-	}
-
-  /**
-   * Parst ein Datum.
-   * @param datum
-   * @return das Datum.
-   * @throws ParseException
-   * @throws RemoteException
-   */
-  private Date parse(String datum) throws ParseException, RemoteException
-  {
-    // BUGZILLA 122
-    DateFormat df = null;
-    switch (datum.length())
-    {
-      case 10:
-        df = Fibu.DATEFORMAT;
-        break;
-      case 8:
-        df = Fibu.FASTDATEFORMAT;
-        break;
-      case 6:
-        df = Fibu.BUCHUNGDATEFORMAT;
-        break;
-      case 4:
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
-        datum += cal.get(Calendar.YEAR);
-        df = Fibu.FASTDATEFORMAT;
-        break;
-      default:
-        throw new ParseException("unknown date format: " + datum,0);
-    }
-
-    // Parsen
-    return df.parse(datum);
-    
-  }
 }
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.69  2006/10/10 22:30:07  willuhn
+ * @C DialogInput gegen DateInput ersetzt
+ *
  * Revision 1.68  2006/10/09 23:48:41  willuhn
  * @B bug 140
  *
