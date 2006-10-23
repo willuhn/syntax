@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2005/10/06 14:48:40 $
+ * $Revision: 1.15 $
+ * $Date: 2006/10/23 22:33:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,13 +102,16 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
    */
   protected String getListQuery()
   {
-    return "select " + getIDField() + " from " + getTableName() + " where buchung_id is NOT NULL";
+    return "select * from " + getTableName() + " where buchung_id is NOT NULL";
   }
 
 }
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
+ * Revision 1.15  2006/10/23 22:33:20  willuhn
+ * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
+ *
  * Revision 1.14  2005/10/06 14:48:40  willuhn
  * @N Sonderregelung fuer Abschreibunsgbuchungen
  *

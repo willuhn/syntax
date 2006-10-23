@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.50 $
- * $Date: 2006/10/09 23:48:41 $
+ * $Revision: 1.51 $
+ * $Date: 2006/10/23 22:33:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   protected String getListQuery()
   {
-    return "select " + getIDField() + " from " + getTableName() + " where buchung_id is NULL";
+    return "select * from " + getTableName() + " where buchung_id is NULL";
   }
 
   /**
@@ -249,6 +249,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.51  2006/10/23 22:33:20  willuhn
+ * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
+ *
  * Revision 1.50  2006/10/09 23:48:41  willuhn
  * @B bug 140
  *
