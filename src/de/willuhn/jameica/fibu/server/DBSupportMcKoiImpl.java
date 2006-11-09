@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/07/03 14:19:30 $
+ * $Revision: 1.6 $
+ * $Date: 2006/11/09 16:56:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +25,7 @@ import java.sql.SQLException;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
@@ -109,9 +112,17 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
       }
       else
       {
-        ScriptExecutor.execute(new FileReader(create),conn, monitor);
+        Logger.info("file encoding to use for sql import: " + Settings.ENCODING);
+        Reader r = new InputStreamReader(new FileInputStream(create),Settings.ENCODING);
+        monitor.setStatusText(i18n.tr("Erstelle Datenbank"));
+        ScriptExecutor.execute(r,conn, monitor);
+        
+        // Monitor zurueckgesetzt
         monitor.setPercentComplete(0);
-        ScriptExecutor.execute(new FileReader(init),conn, monitor);
+
+        r = new InputStreamReader(new FileInputStream(init),Settings.ENCODING);
+        monitor.setStatusText(i18n.tr("Erstelle Kontenrahmen"));
+        ScriptExecutor.execute(r,conn, monitor);
         monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
       }
 
@@ -204,6 +215,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.6  2006/11/09 16:56:09  willuhn
+ * @B Beruecksichtigung des Encodings beim Import der SQL-Files.
+ *
  * Revision 1.5  2006/07/03 14:19:30  willuhn
  * @B Fehler bei Erstellung der McKoi-Datenbank
  *

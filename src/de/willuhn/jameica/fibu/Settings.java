@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.43 $
- * $Date: 2006/06/20 23:27:17 $
+ * $Revision: 1.44 $
+ * $Date: 2006/11/09 16:56:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,11 @@ public class Settings
    * Default-Waehrung.
    */
   public final static String WAEHRUNG = SETTINGS.getString("currency.default","EUR");
+
+  /**
+   * Encoding, welches zum Einlesen der SQL-Scripts verwendet wird.
+   */
+  public final static String ENCODING = SETTINGS.getString("encoding","ISO-8859-15");
 
   private static DBService db = null;
 	private static Geschaeftsjahr jahr = null;
@@ -358,6 +363,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.44  2006/11/09 16:56:09  willuhn
+ * @B Beruecksichtigung des Encodings beim Import der SQL-Files.
+ *
  * Revision 1.43  2006/06/20 23:27:17  willuhn
  * @C Anzeige des aktuellen Geschaeftsjahres
  * @C Oeffnen/Schliessen eines Geschaeftsjahres
