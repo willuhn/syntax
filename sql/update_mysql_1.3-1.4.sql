@@ -3,9 +3,11 @@
 ------------------------------------------------
 -- SKR03
 
+#set($id = ${id.newID("steuer")})
+
 -- Neue Steuersaetze
-INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (8,'Vorsteuer 19%', '16', 1);
-INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (9,'Umsatzsteuer 19%', '16', 3);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES ($id,'Vorsteuer 19%', '16', 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES ($id+1,'Umsatzsteuer 19%', '16', 3);
 
 -- Vorsteuer auf neuen Default-Steuersatz aendern
 UPDATE konto SET steuer_id=8 where steuer_id=1;
