@@ -52,6 +52,7 @@ CREATE TABLE buchung (
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
   geprueft int(1) NULL,
+  hb_umsatz_id char(7),
   UNIQUE (id),
   PRIMARY KEY (id)
 );
