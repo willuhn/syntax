@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/10/10 22:30:07 $
+ * $Revision: 1.40 $
+ * $Date: 2006/11/17 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,10 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
+import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -157,11 +159,55 @@ public class Fibu extends AbstractPlugin
    */
   public void update(double oldVersion) throws ApplicationException
   {
+    if (Application.inClientMode())
+      return; // Kein Update im Client-Mode noetig.
+
+    Logger.info("starting update process for syntax");
+
+    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+    df.setMaximumFractionDigits(1);
+    df.setMinimumFractionDigits(1);
+    df.setGroupingUsed(false);
+
+    double newVersion = oldVersion + 0.1d;
+
+    try
+    {
+      // OK, wir haben eine bekannte Version, dann koennen wir jetzt das Update starten
+      File f = new File(getResources().getPath() + "/sql/update_" + 
+          df.format(oldVersion) + "-" + 
+          df.format(newVersion) + ".sql");
+
+      Logger.info("checking sql file " + f.getAbsolutePath());
+      while (f.exists())
+      {
+        Logger.info("  file exists, executing");
+        DBSupport db = Settings.getDBSupport();
+        db.executeSQLScript(f);
+        oldVersion = newVersion;
+        newVersion = oldVersion + 0.1d;
+        f = new File(getResources().getPath() + "/sql/update_" + 
+                     df.format(oldVersion) + "-" + 
+                     df.format(newVersion) + ".sql");
+      }
+      Logger.info("Update completed");
+    }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
+    catch (Exception e)
+    {
+      throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
+    }
   }
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.40  2006/11/17 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.39  2006/10/10 22:30:07  willuhn
  * @C DialogInput gegen DateInput ersetzt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Revision: 1.5 $
+ * $Date: 2006/11/17 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -152,6 +152,47 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#executeSQLScript(java.io.File)
+   */
+  public void executeSQLScript(File f) throws RemoteException, ApplicationException
+  {
+//    VelocityContext context = new VelocityContext();
+//
+//    context.put("sql",new Math());
+//
+//    BufferedWriter writer = null;
+//    try
+//    {
+//      writer = new BufferedWriter(new OutputStreamWriter(export.getTarget()));
+//
+//      Template t = Velocity.getTemplate("template.vm");
+//      t.merge(context,writer);
+//    }
+//    catch (Exception e)
+//    {
+//      Logger.error("error while writing into velocity file " + template,e);
+//      throw new ApplicationException(i18n.tr("Fehler beim Schreiben in die Export-Datei"));
+//    }
+//    finally
+//    {
+//      if (writer != null)
+//      {
+//        try
+//        {
+//          writer.close();
+//        }
+//        catch (Exception e)
+//        {
+//          Logger.error("error while closing outputstream",e);
+//        }
+//      }
+//    }
+//    
+//    ScriptExecutor.execute(new FileReader(f),conn, monitor);
+  }
+
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#getName()
    */
   public String getName() throws RemoteException
@@ -227,6 +268,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.5  2006/11/17 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres

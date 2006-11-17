@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.4 $
+ * $Date: 2006/11/17 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 
 package de.willuhn.jameica.fibu.rmi;
 
+import java.io.File;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.GenericObject;
@@ -41,6 +42,14 @@ public interface DBSupport extends GenericObject
    * @throws ApplicationException
    */
   public void create(ProgressMonitor monitor) throws RemoteException,ApplicationException;
+  
+  /**
+   * Fuehrt das SQL-Script auf der Datenbank aus.
+   * @param f das auszufuehrende Script.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void executeSQLScript(File f) throws RemoteException, ApplicationException;
   
   /**
    * Speichert die Einstellungen.
@@ -181,6 +190,9 @@ public interface DBSupport extends GenericObject
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.4  2006/11/17 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

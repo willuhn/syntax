@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/11/09 16:56:09 $
+ * $Revision: 1.7 $
+ * $Date: 2006/11/17 00:11:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,11 +210,23 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
   {
     return "tonumber({0})".replaceAll("\\{0\\}",content);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#executeSQLScript(java.io.File)
+   */
+  public void executeSQLScript(File f) throws RemoteException, ApplicationException
+  {
+    // TODO Auto-generated method stub
+    
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.7  2006/11/17 00:11:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2006/11/09 16:56:09  willuhn
  * @B Beruecksichtigung des Encodings beim Import der SQL-Files.
  *
