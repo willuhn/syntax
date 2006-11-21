@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/11/17 00:11:20 $
+ * $Revision: 1.6 $
+ * $Date: 2006/11/21 13:17:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,10 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
@@ -112,9 +116,17 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
       }
       else
       {
-        ScriptExecutor.execute(new FileReader(create),conn, monitor);
+        Logger.info("file encoding to use for sql import: " + Settings.ENCODING);
+        Reader r = new InputStreamReader(new FileInputStream(create),Settings.ENCODING);
+        monitor.setStatusText(i18n.tr("Erstelle Datenbank"));
+        ScriptExecutor.execute(r,conn, monitor);
+        
+        // Monitor zurueckgesetzt
         monitor.setPercentComplete(0);
-        ScriptExecutor.execute(new FileReader(init),conn, monitor);
+
+        r = new InputStreamReader(new FileInputStream(init),Settings.ENCODING);
+        monitor.setStatusText(i18n.tr("Erstelle Kontenrahmen"));
+        ScriptExecutor.execute(r,conn, monitor);
         monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
       }
 
@@ -268,6 +280,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.6  2006/11/21 13:17:56  willuhn
+ * @B merged encoding bug into mysql support
+ *
  * Revision 1.5  2006/11/17 00:11:20  willuhn
  * *** empty log message ***
  *
