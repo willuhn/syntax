@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/11/17 00:11:20 $
+ * $Revision: 1.8 $
+ * $Date: 2006/12/27 15:58:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -210,20 +210,14 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
   {
     return "tonumber({0})".replaceAll("\\{0\\}",content);
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.DBSupport#executeSQLScript(java.io.File)
-   */
-  public void executeSQLScript(File f) throws RemoteException, ApplicationException
-  {
-    // TODO Auto-generated method stub
-    
-  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.8  2006/12/27 15:58:08  willuhn
+ * @R removed unused method
+ *
  * Revision 1.7  2006/11/17 00:11:20  willuhn
  * *** empty log message ***
  *
