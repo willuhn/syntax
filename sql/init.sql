@@ -81,7 +81,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (149, 2, '3100', 'Fremdleistungen', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (150, 2, '3200', 'Wareneingang', 1, 6);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (151, 2, '3300', 'Wareneingang 7% Vorsteuer', 1, 2);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (152, 2, '3400', 'Wareneingang 16% Vorsteuer', 1, 8);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (152, 2, '3400', 'Wareneingang 19% Vorsteuer', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (153, 2, '4100', 'Löhne und Gehälter', 1, 6);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (154, 2, '4110', 'Löhne', 1, 6);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (155, 2, '4120', 'Gehälter', 1, 6);
@@ -210,7 +210,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1147, 2, '5900', 'Fremdleistungen', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1148, 2, '5200', 'Wareneingang', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1149, 2, '5300', 'Wareneingang 7% Vorsteuer', 2, 1002);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1150, 2, '5400', 'Wareneingang 16% Vorsteuer', 2, 1008);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1150, 2, '5400', 'Wareneingang 19% Vorsteuer', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1151, 2, '6000', 'Löhne und Gehälter', 2, 1006);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1152, 2, '6010', 'Löhne', 2, 1006);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1153, 2, '6020', 'Gehälter', 2, 1006);
