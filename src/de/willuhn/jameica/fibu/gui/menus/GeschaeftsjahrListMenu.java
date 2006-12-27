@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/06/20 23:27:17 $
+ * $Revision: 1.7 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,13 +15,8 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenExport;
-import de.willuhn.jameica.fibu.gui.action.BuchungListExport;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
-import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrExport;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
-import de.willuhn.jameica.fibu.gui.action.KontoExport;
-import de.willuhn.jameica.fibu.gui.action.SaldenExport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
@@ -62,12 +57,6 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
     }));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Anlagevermögen"), new AnlagevermoegenExport()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Buchungsjournal"), new BuchungListExport()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Konto-Auszüge"), new KontoExport()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Summen- und Saldenliste"), new SaldenExport()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Auswertung: Überschuss-Rechnung"), new GeschaeftsjahrExport()));
   }
   
   /**
@@ -88,6 +77,9 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.7  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.6  2006/06/20 23:27:17  willuhn
  * @C Anzeige des aktuellen Geschaeftsjahres
  * @C Oeffnen/Schliessen eines Geschaeftsjahres

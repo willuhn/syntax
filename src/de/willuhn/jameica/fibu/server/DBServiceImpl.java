@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/09/05 20:57:27 $
+ * $Revision: 1.17 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,10 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 
 import de.willuhn.jameica.fibu.Settings;
@@ -128,11 +132,74 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   {
     return Settings.getDBSupport().getUsername();
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBService#executeUpdate(java.lang.String, java.lang.Object[])
+   */
+  public void executeUpdate(String sql, Object[] params) throws RemoteException
+  {
+    if (!isStarted())
+      throw new RemoteException("db service not started");
+
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try
+    {
+      ps = getConnection().prepareStatement(sql);
+      if (params != null)
+      {
+        for (int i=0;i<params.length;++i)
+        {
+          Object o = params[i];
+          if (o == null)
+            ps.setNull((i+1), Types.NULL);
+          else
+            ps.setObject((i+1),params[i]);
+        }
+      }
+
+      ps.executeUpdate();
+    }
+    catch (SQLException e)
+    {
+      Logger.error("error while executing sql update statement \"" + sql + "\"",e);
+      throw new RemoteException("error while executing sql update statement: " + e.getMessage(),e);
+    }
+    finally
+    {
+      if (rs != null)
+      {
+        try
+        {
+          rs.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing resultset",t);
+        }
+      }
+      if (ps != null)
+      {
+        try
+        {
+          ps.close();
+        }
+        catch (Throwable t2)
+        {
+          Logger.error("error while closing statement",t2);
+        }
+      }
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.17  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.16  2006/09/05 20:57:27  willuhn
  * @ResultsetIterator merged into datasource lib
  *

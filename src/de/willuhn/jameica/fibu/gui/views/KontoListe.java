@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.19 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.KontoExport;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -58,9 +57,8 @@ public class KontoListe extends AbstractView
     Part p = new KontoList(jahr.getKontenrahmen().getKonten(),new KontoNeu());
     p.paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+    ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Konto-Auszug drucken"), new KontoExport());
     buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
 
   }
@@ -76,6 +74,9 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.19  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.18  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

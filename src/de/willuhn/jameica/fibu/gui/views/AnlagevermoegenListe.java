@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.4 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenExport;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.fibu.gui.part.AnlagevermoegenList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -44,9 +43,8 @@ public class AnlagevermoegenListe extends AbstractView
     Part p = new AnlagevermoegenList(new AnlagevermoegenNeu());
     p.paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+    ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Gesamt-Übersicht drucken"), new AnlagevermoegenExport());
     buttons.addButton(i18n.tr("Anlagevermögen hinzufügen"), new AnlagevermoegenNeu(),null,true);
   }
 
@@ -62,6 +60,9 @@ public class AnlagevermoegenListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenListe.java,v $
+ * Revision 1.4  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.3  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

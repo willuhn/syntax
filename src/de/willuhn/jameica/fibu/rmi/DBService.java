@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBService.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/09/05 20:57:27 $
+ * $Revision: 1.7 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,11 +42,23 @@ public interface DBService extends de.willuhn.datasource.rmi.DBService
    * @throws RemoteException
    */
   public String getSQLTimestamp(String content) throws RemoteException;
+  
+  /**
+   * Fuehrt ein SQL-Update-Statement aus.
+   * @param sql das Statement.
+   * @param params die Parameter zur Erzeugung des PreparedStatements.
+   * @throws RemoteException
+   */
+  public void executeUpdate(String sql, Object[] params) throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.7  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.6  2006/09/05 20:57:27  willuhn
  * @ResultsetIterator merged into datasource lib
  *

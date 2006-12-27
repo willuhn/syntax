@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/KontoListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.4 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.KontoDelete;
-import de.willuhn.jameica.fibu.gui.action.KontoExport;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
@@ -40,8 +39,6 @@ public class KontoListMenu extends ContextMenu
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new KontoDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GJContextMenuItem(i18n.tr("Neues Konto"), new KNeu()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Report erzeugen..."), new KontoExport()));
   }
   
   /**
@@ -87,6 +84,9 @@ public class KontoListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: KontoListMenu.java,v $
+ * Revision 1.4  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.3  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

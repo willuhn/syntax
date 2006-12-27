@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.6 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,6 @@ package de.willuhn.jameica.fibu.gui.views;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
-import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrExport;
 import de.willuhn.jameica.fibu.gui.controller.GeschaeftsjahrControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -54,10 +53,9 @@ public class GeschaeftsjahrNeu extends AbstractView
     group.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getBeginn());
     group.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getEnde());
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),5);
+    ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new GeschaeftsjahrDelete());
-    buttonArea.addButton(i18n.tr("Überschuss-Rechnung exportieren"), new GeschaeftsjahrExport(), control.getCurrentObject());
     
     Button close = new Button(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
     close.setEnabled(!control.getGeschaeftsjahr().isClosed());
@@ -86,6 +84,9 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.6  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.5  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

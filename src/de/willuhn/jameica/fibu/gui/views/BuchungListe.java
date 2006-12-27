@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.26 $
+ * $Date: 2006/12/27 15:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@ package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.BuchungListExport;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.gui.AbstractView;
@@ -48,9 +47,8 @@ public class BuchungListe extends AbstractView
     Part p = new BuchungList(new BuchungNeu());
     p.paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),3);
+    ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(i18n.tr("Buchungsjournal drucken"), new BuchungListExport());
     
     Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
     create.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
@@ -68,6 +66,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.26  2006/12/27 15:23:33  willuhn
+ * @C merged update 1.3 and 1.4 to 1.3
+ *
  * Revision 1.25  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *
