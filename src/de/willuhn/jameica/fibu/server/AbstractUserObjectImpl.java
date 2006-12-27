@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractUserObjectImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.2 $
+ * $Date: 2006/12/27 14:42:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.UserObject;
 import de.willuhn.jameica.system.Application;
@@ -96,7 +97,7 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
    */
   public boolean isUserObject() throws RemoteException
   {
-    return getMandant() != null;
+    return getMandant() != null || Settings.inUpdate();
   }
 
   /**
@@ -120,6 +121,9 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AbstractUserObjectImpl.java,v $
+ * Revision 1.2  2006/12/27 14:42:23  willuhn
+ * @N Update fuer MwSt.-Erhoehung
+ *
  * Revision 1.1  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

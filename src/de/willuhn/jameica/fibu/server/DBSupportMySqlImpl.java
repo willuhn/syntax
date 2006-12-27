@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/11/21 13:17:56 $
+ * $Revision: 1.7 $
+ * $Date: 2006/12/27 14:42:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.jameica.fibu.server;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.rmi.RemoteException;
@@ -280,6 +279,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.7  2006/12/27 14:42:23  willuhn
+ * @N Update fuer MwSt.-Erhoehung
+ *
  * Revision 1.6  2006/11/21 13:17:56  willuhn
  * @B merged encoding bug into mysql support
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/11/17 00:11:20 $
+ * $Revision: 1.41 $
+ * $Date: 2006/12/27 14:42:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,10 +16,9 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
-import de.willuhn.jameica.fibu.rmi.DBSupport;
+import de.willuhn.jameica.fibu.update.Update;
 import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -31,6 +30,7 @@ import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ClassFinder;
 
 /**
  * Basisklasse des Fibu-Plugins fuer das Jameica-Framework.
@@ -160,37 +160,37 @@ public class Fibu extends AbstractPlugin
   public void update(double oldVersion) throws ApplicationException
   {
     if (Application.inClientMode())
-      return; // Kein Update im Client-Mode noetig.
+      return; // Kein Update im Client-Mode oder beim ersten Start noetig.
 
-    Logger.info("starting update process for syntax");
+    Settings.setInUpdate(true);
+    double newVersion = getManifest().getVersion();
 
-    DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-    df.setMaximumFractionDigits(1);
-    df.setMinimumFractionDigits(1);
-    df.setGroupingUsed(false);
-
-    double newVersion = oldVersion + 0.1d;
-
+    Logger.info("starting update process for syntax [" + oldVersion + " -> " + newVersion + "]");
+    
+    ClassFinder finder = Application.getClassLoader().getClassFinder();
+    
     try
     {
-      // OK, wir haben eine bekannte Version, dann koennen wir jetzt das Update starten
-      File f = new File(getResources().getPath() + "/sql/update_" + 
-          df.format(oldVersion) + "-" + 
-          df.format(newVersion) + ".sql");
-
-      Logger.info("checking sql file " + f.getAbsolutePath());
-      while (f.exists())
+      Class[] updates = finder.findImplementors(Update.class);
+      if (updates == null || updates.length == 0)
       {
-        Logger.info("  file exists, executing");
-        DBSupport db = Settings.getDBSupport();
-        db.executeSQLScript(f);
-        oldVersion = newVersion;
-        newVersion = oldVersion + 0.1d;
-        f = new File(getResources().getPath() + "/sql/update_" + 
-                     df.format(oldVersion) + "-" + 
-                     df.format(newVersion) + ".sql");
+        Logger.info("no updates found");
+        return;
       }
-      Logger.info("Update completed");
+      Logger.info("found " + updates.length + " update(s)");
+      for (int i=0;i<updates.length;++i)
+      {
+        Logger.info("applying update " + updates[i].getName());
+        Update update = (Update) updates[i].newInstance();
+        update.update(Application.getCallback().getStartupMonitor(),oldVersion,newVersion);
+        Logger.info("update applied");
+      }
+      Logger.info("all updates applied");
+    }
+    catch (ClassNotFoundException cne)
+    {
+      Logger.info("no updates found");
+      return;
     }
     catch (ApplicationException ae)
     {
@@ -200,11 +200,18 @@ public class Fibu extends AbstractPlugin
     {
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
     }
+    finally
+    {
+      Settings.setInUpdate(false);
+    }
   }
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.41  2006/12/27 14:42:23  willuhn
+ * @N Update fuer MwSt.-Erhoehung
+ *
  * Revision 1.40  2006/11/17 00:11:20  willuhn
  * *** empty log message ***
  *
