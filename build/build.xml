@@ -57,12 +57,12 @@
 
 
 		<path id="compilepath">
-			<pathelement location="../jameica_1_4/lib/swt/linux/swt.jar" />
-      <pathelement location="../jameica_1_4/lib/velocity/velocity-1.4.jar" />
-			<pathelement location="../jameica_1_4/bin/" />
-			<pathelement location="../jameica_1_4/lib/de_willuhn_ds/de_willuhn_ds.jar" />
-			<pathelement location="../jameica_1_4/lib/de_willuhn_util/de_willuhn_util.jar" />
-      <pathelement location="../hibiscus_1_6/bin/" />
+			<pathelement location="../jameica/lib/swt/linux/swt.jar" />
+      <pathelement location="../jameica/lib/velocity/velocity-1.4.jar" />
+			<pathelement location="../jameica/bin/" />
+			<pathelement location="../jameica/lib/de_willuhn_ds/de_willuhn_ds.jar" />
+			<pathelement location="../jameica/lib/de_willuhn_util/de_willuhn_util.jar" />
+      <pathelement location="../hibiscus/bin/" />
 		</path>
 
 	</target>
