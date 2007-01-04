@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/util/CustomDateFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/10/10 22:30:07 $
+ * $Revision: 1.2 $
+ * $Date: 2007/01/04 13:03:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,6 @@ public class CustomDateFormat extends SimpleDateFormat
 {
   /**
    * ct.
-   * @param pattern
    */
   public CustomDateFormat()
   {
@@ -84,6 +83,9 @@ public class CustomDateFormat extends SimpleDateFormat
 
 /*********************************************************************
  * $Log: CustomDateFormat.java,v $
+ * Revision 1.2  2007/01/04 13:03:49  willuhn
+ * @C javadoc
+ *
  * Revision 1.1  2006/10/10 22:30:07  willuhn
  * @C DialogInput gegen DateInput ersetzt
  *
