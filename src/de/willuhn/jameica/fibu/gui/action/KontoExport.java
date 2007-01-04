@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.15 $
+ * $Date: 2007/01/04 12:58:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -92,8 +92,8 @@ public class KontoExport extends AbstractExportAction
 
         Konto start = getStartKonto();
         Konto end = getEndKonto();
-        if (start != null) konten.addFilter("kontonummer >= " + start.getKontonummer());
-        if (end != null) konten.addFilter("kontonummer <= " + end.getKontonummer());
+        if (start != null) konten.addFilter("kontonummer >= ?", new String[]{start.getKontonummer()});
+        if (end != null) konten.addFilter("kontonummer <= ?", new String[]{end.getKontonummer()});
 
         ArrayList l = new ArrayList();
         while (konten.hasNext())
@@ -169,6 +169,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.15  2007/01/04 12:58:50  willuhn
+ * @B wrong type for kontonummer
+ *
  * Revision 1.14  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

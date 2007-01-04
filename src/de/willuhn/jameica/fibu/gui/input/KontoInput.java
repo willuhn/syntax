@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/input/KontoInput.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.3 $
+ * $Date: 2007/01/04 12:58:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,7 +113,7 @@ public class KontoInput extends ButtonInput
         try
         {
           DBIterator dbi = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-          dbi.addFilter("kontonummer = '" + s + "'");
+          dbi.addFilter("kontonummer = ?", new String[]{s});
           if (!dbi.hasNext())
           {
             GUI.getView().setErrorText(i18n.tr("Das Konto {0} wurde nicht gefunden",s));
@@ -176,6 +176,9 @@ public class KontoInput extends ButtonInput
 
 /*********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.3  2007/01/04 12:58:50  willuhn
+ * @B wrong type for kontonummer
+ *
  * Revision 1.2  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *
