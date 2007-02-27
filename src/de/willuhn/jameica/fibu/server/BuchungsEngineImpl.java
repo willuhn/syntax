@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.7 $
+ * $Date: 2007/02/27 18:06:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -166,9 +166,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
             // Wir wollen den Saldo des alten Jahres
             Konto k = (Konto) list.next();
             Kontoart ka = k.getKontoArt();
-            if (ka.getKontoArt() == Kontoart.KONTOART_PRIVAT)
+            if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
             {
-              monitor.log(i18n.tr("Überspringe Konto " + k.getKontonummer() + " da Privat-Konto"));
+              monitor.log(i18n.tr("Überspringe Konto " + k.getKontonummer()));
               continue;
             }
               
@@ -478,6 +478,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.7  2007/02/27 18:06:20  willuhn
+ * @N Ueberspringe alle Konten ausser Geld und Anlage beim Erstellen der Anfangsbestaende
+ *
  * Revision 1.6  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *
