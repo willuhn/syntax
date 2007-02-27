@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2007/02/27 18:17:32 $
+ * $Revision: 1.13 $
+ * $Date: 2007/02/27 18:28:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,6 +83,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
       Kontoart ka = k.getKontoArt();
+      System.out.println(ka.getKontoArt());
       if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
         throw new ApplicationException(i18n.tr("Nur Anlage- und Geldkonten dürfen einen Anfangsbestand haben"));
 
@@ -99,6 +100,15 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     }
     super.insertCheck();
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  protected void updateCheck() throws ApplicationException
+  {
+    insertCheck();
+  }
+
   /**
    * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
@@ -180,6 +190,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.13  2007/02/27 18:28:33  willuhn
+ * @B fehlender updateCheck Aufruf
+ *
  * Revision 1.12  2007/02/27 18:17:32  willuhn
  * @B Anfangsbestaende nur von Anlage- und Geldkonten erzeugen
  *
