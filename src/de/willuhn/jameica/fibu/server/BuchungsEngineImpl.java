@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/12 14:08:29 $
+ * $Revision: 1.6 $
+ * $Date: 2007/02/27 15:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import java.util.Date;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
@@ -334,12 +335,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     
     // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch
     // _vor_ dem Ende des Geschaeftsjahres liegt
-    Calendar cal1 = Calendar.getInstance();
-    cal1.setTime(jahr.getEnde());
-    cal1.set(Calendar.HOUR_OF_DAY,0);
-    cal1.set(Calendar.MINUTE,0);
-    cal1.set(Calendar.SECOND,1);
-    Date end = cal1.getTime();
+    Date end = CustomDateFormat.startOfDay(jahr.getEnde());
 
     AbschreibungsBuchung buchung = (AbschreibungsBuchung) Settings.getDBService().createObject(AbschreibungsBuchung.class,null);
     buchung.setDatum(end);
@@ -482,6 +478,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.6  2007/02/27 15:46:17  willuhn
+ * @N Anzeige des vorherigen Kontostandes im Kontoauszug
+ *
  * Revision 1.5  2006/06/12 14:08:29  willuhn
  * @N DB-Wizard
  *

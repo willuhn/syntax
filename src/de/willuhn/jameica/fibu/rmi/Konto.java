@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.21 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.22 $
+ * $Date: 2007/02/27 15:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,6 +45,22 @@ public interface Konto extends UserObject
    * @throws RemoteException
    */
   public double getSaldo(Geschaeftsjahr jahr) throws RemoteException;
+  
+  /**
+   * Liefert den Umsatz des Kontos exclusive dem angegeben Datum.
+   * @param date Datum.
+   * @return Umsatz
+   * @throws RemoteException
+   */
+  public double getUmsatzBefore(Date date) throws RemoteException;
+  
+  /**
+   * Liefert den Umsatz des Kontos inclusive dem angegebenen Datum.
+   * @param date Datum.
+   * @return Umsatz.
+   * @throws RemoteException
+   */
+  public double getUmsatzAfter(Date date) throws RemoteException;
 
   /**
    * Liefert den Umsatz auf dem Konto im aktuellen Geschaeftsjahr.
@@ -188,6 +204,9 @@ public interface Konto extends UserObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.22  2007/02/27 15:46:17  willuhn
+ * @N Anzeige des vorherigen Kontostandes im Kontoauszug
+ *
  * Revision 1.21  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

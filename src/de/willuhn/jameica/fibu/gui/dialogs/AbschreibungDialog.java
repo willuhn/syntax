@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/AbschreibungDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.5 $
+ * $Date: 2007/02/27 15:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.gui.dialogs;
 
 import java.rmi.RemoteException;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.swt.widgets.Composite;
@@ -22,6 +21,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -133,12 +133,7 @@ public class AbschreibungDialog extends AbstractDialog
           {
             // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch
             // _vor_ dem Ende des Geschaeftsjahres liegt
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(jahr.getEnde());
-            cal.set(Calendar.HOUR_OF_DAY,0);
-            cal.set(Calendar.MINUTE,0);
-            cal.set(Calendar.SECOND,1);
-            d = cal.getTime();
+            d = CustomDateFormat.startOfDay(jahr.getEnde());
           }
           
           buchung.setDatum(d);
@@ -248,6 +243,9 @@ public class AbschreibungDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AbschreibungDialog.java,v $
+ * Revision 1.5  2007/02/27 15:46:17  willuhn
+ * @N Anzeige des vorherigen Kontostandes im Kontoauszug
+ *
  * Revision 1.4  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

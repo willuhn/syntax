@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.49 $
- * $Date: 2006/09/05 20:57:51 $
+ * $Revision: 1.50 $
+ * $Date: 2007/02/27 15:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,8 @@ import java.util.Date;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -111,9 +113,78 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatzAfter(java.util.Date)
    */
-  public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException
+  public double getUmsatzAfter(Date date) throws RemoteException
+  {
+    // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
+    if (getID() == null || getID().length() == 0 || date == null)
+      return 0;
+
+    Geschaeftsjahr jahr = findGeschaeftsjahr(date);
+    if (jahr == null)
+    {
+      Logger.warn("no geschaeftsjahr found for date " + date);
+      return 0.0d;
+    }
+
+    // Wir setzen noch die Uhrzeit auf das Ende des Tages, um sicherzustellen,
+    // dass die Buchungen des Tages dabei sind
+    return getUmsatz(getHauptBuchungen(jahr,jahr.getBeginn(),CustomDateFormat.endOfDay(date)),
+                     getHilfsBuchungen(jahr,jahr.getBeginn(),CustomDateFormat.endOfDay(date)));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatzBefore(java.util.Date)
+   */
+  public double getUmsatzBefore(Date date) throws RemoteException
+  {
+    // Da der aktuelle Tag nicht mitzaehlen soll, ziehen wir einen ab
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.add(Calendar.DATE,-1);
+    
+    // Wir pruefen noch, ob wir mit dem neuen Datum aus dem Geschaeftsjahr fliegen
+    // wuerden:
+    Date dayBefore = cal.getTime();
+    Geschaeftsjahr j = findGeschaeftsjahr(date);
+    if (!j.check(dayBefore))
+      return 0.0d; // Jepp, also liefern wir 0.0, denn wir sind ganz am Anfang des Geschaeftsjahres angekommen
+    return getUmsatzAfter(dayBefore);
+  }
+  
+  /**
+   * Sucht das zum Datum gehoerende Geschaeftsjahr beim aktuellen Mandanten.
+   * @param date das Datum.
+   * @return das Geschaeftsjahr oder null.
+   * @throws RemoteException
+   */
+  private Geschaeftsjahr findGeschaeftsjahr(Date date) throws RemoteException
+  {
+    // Wir ermitteln das Geschaeftsjahr, in dem sich das Datum befindet
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    if (jahr.check(date))
+      return jahr;
+    
+    // Ist nicht das aktuielle, dann muessen wir es suchen
+    DBIterator list = jahr.getMandant().getGeschaeftsjahre();
+    while (list.hasNext())
+    {
+      jahr = (Geschaeftsjahr) list.next();
+      if (jahr.check(date))
+        return jahr;
+    }
+    return null;
+  }
+  
+  /**
+   * Liefert den Umsatz aus der Liste der uebergebenen Buchungen.
+   * @param buchungen Liste der Buchungen.
+   * @param hilfsbuchungen Liste der Hilfsbuchungen.
+   * @return Umsatz.
+   * @throws RemoteException
+   */
+  private double getUmsatz(DBIterator buchungen, DBIterator hilfsbuchungen) throws RemoteException
   {
     // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
     if (getID() == null || getID().length() == 0)
@@ -126,7 +197,6 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     Kontotyp typ = getKontoTyp();
     
     // Erst die Hauptbuchungen
-    DBIterator buchungen = getHauptBuchungen(jahr);
     while (buchungen.hasNext())
     {
       Transfer t = (Transfer) buchungen.next();
@@ -137,7 +207,6 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     }
 
     // Und jetzt noch die Hilfs-Buchungen
-    DBIterator hilfsbuchungen = getHilfsBuchungen(jahr);
     while (hilfsbuchungen.hasNext())
     {
       Transfer t = (Transfer) hilfsbuchungen.next();
@@ -151,6 +220,14 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     if (kontoArt == Kontoart.KONTOART_ERLOES || (kontoArt == Kontoart.KONTOART_STEUER && typ != null && typ.getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME))
       return haben - soll;
     return soll - haben;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException
+  {
+    return getUmsatz(getHauptBuchungen(jahr), getHilfsBuchungen(jahr));
   }
 
   /**
@@ -384,30 +461,11 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     Date start = null;
     if (von != null)
-    {
-      // Uhrzeiten noch zurueckdrehen
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(von);
-      cal.set(Calendar.HOUR_OF_DAY,0);
-      cal.set(Calendar.MINUTE,0);
-      cal.set(Calendar.SECOND,0);
-      cal.set(Calendar.MILLISECOND,0);
-
-      start = cal.getTime();
-    }
+      start = CustomDateFormat.startOfDay(von);
 
     Date end = null;
     if (bis != null)
-    {
-      // Uhrzeiten auf Ende des Tages setzen
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(bis);
-      cal.set(Calendar.HOUR_OF_DAY,23);
-      cal.set(Calendar.MINUTE,59);
-      cal.set(Calendar.SECOND,59);
-      end = cal.getTime();
-    }
-
+      end = CustomDateFormat.endOfDay(bis);
     
     DBService db = ((DBService)getService());
 
@@ -483,6 +541,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.50  2007/02/27 15:46:17  willuhn
+ * @N Anzeige des vorherigen Kontostandes im Kontoauszug
+ *
  * Revision 1.49  2006/09/05 20:57:51  willuhn
  * @B wrong import
  *

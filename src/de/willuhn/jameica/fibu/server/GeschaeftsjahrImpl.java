@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/05/30 23:33:09 $
+ * $Revision: 1.26 $
+ * $Date: 2007/02/27 15:46:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,7 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
@@ -79,27 +80,18 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     Date d = (Date) getAttribute("beginn");
 
-    Calendar cal = Calendar.getInstance();
-
     if (d == null)
     {
       // Wir erstellen automatisch ein neues, wenn keins existiert.
       Logger.info("no geschaeftsjahr start given, using current year");
+      Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH,Calendar.JANUARY);
       cal.set(Calendar.DAY_OF_MONTH,1);
-    }
-    else
-    {
-      cal.setTime(d);
+      d = cal.getTime();
     }
 
     // Jetzt noch auf den Anfang des Tages setzen.
-    cal.set(Calendar.HOUR_OF_DAY,0);
-    cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,0);
-    cal.set(Calendar.MILLISECOND,0);
-
-    d = cal.getTime();
+    d = CustomDateFormat.startOfDay(d);
     setBeginn(d);
     return d;
   }
@@ -119,26 +111,18 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     Date d = (Date) getAttribute("ende");
 
-    Calendar cal = Calendar.getInstance();
-
     if (d == null)
     {
       // Wir erstellen automatisch ein neues, wenn keins existiert.
       Logger.info("no geschaeftsjahr start given, using current year");
+      Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH,Calendar.DECEMBER);
       cal.set(Calendar.DAY_OF_MONTH,31);
-    }
-    else
-    {
-      cal.setTime(d);
+      d = cal.getTime();
     }
 
     // Jetzt noch auf das Ende des Tages setzen
-    cal.set(Calendar.HOUR_OF_DAY,23);
-    cal.set(Calendar.MINUTE,59);
-    cal.set(Calendar.SECOND,59);
-
-    d = cal.getTime();
+    d = CustomDateFormat.endOfDay(d);
     setEnde(d);
     return d;
   }
@@ -565,6 +549,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.26  2007/02/27 15:46:17  willuhn
+ * @N Anzeige des vorherigen Kontostandes im Kontoauszug
+ *
  * Revision 1.25  2006/05/30 23:33:09  willuhn
  * *** empty log message ***
  *
