@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2007/02/27 18:30:23 $
+ * $Revision: 1.15 $
+ * $Date: 2007/02/27 18:40:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,31 +65,12 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
   protected void insertCheck() throws ApplicationException
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    
+
+    updateCheck();
     try
     {
-      Geschaeftsjahr jahr = getGeschaeftsjahr();
-
-      if (jahr == null || jahr.isNewObject())
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
-
-      if (jahr.isClosed())
-        throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
-
       Konto k = getKonto();
-      
-      
-      if (k == null || k.isNewObject())
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
-
-      Kontoart ka = k.getKontoArt();
-      if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
-        throw new ApplicationException(i18n.tr("Nur Anlage- und Geldkonten dürfen einen Anfangsbestand haben"));
-
-      if (getBetrag() == 0.0d)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
-        
-      if (k.getAnfangsbestand(jahr) != null)
+      if (k.getAnfangsbestand(getGeschaeftsjahr()) != null)
         throw new ApplicationException(i18n.tr("Für das Konto {0} existiert bereits ein Anfangsbestand",k.getKontonummer()));
     }
     catch (RemoteException e)
@@ -105,7 +86,36 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   protected void updateCheck() throws ApplicationException
   {
-    insertCheck();
+    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    
+    try
+    {
+      Geschaeftsjahr jahr = getGeschaeftsjahr();
+
+      if (jahr == null || jahr.isNewObject())
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus"));
+
+      if (jahr.isClosed())
+        throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
+
+      Konto k = getKonto();
+      
+      if (k == null || k.isNewObject())
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
+
+      Kontoart ka = k.getKontoArt();
+      if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
+        throw new ApplicationException(i18n.tr("Nur Anlage- und Geldkonten dürfen einen Anfangsbestand haben"));
+
+      if (getBetrag() == 0.0d)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("error while checking anfangsbestand",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Prüfen des Anfangsbestandes"));
+    }
+    super.updateCheck();
   }
 
   /**
@@ -189,6 +199,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.15  2007/02/27 18:40:14  willuhn
+ * @B fehlender updateCheck Aufruf
+ *
  * Revision 1.14  2007/02/27 18:30:23  willuhn
  * @R removed debug output
  *
