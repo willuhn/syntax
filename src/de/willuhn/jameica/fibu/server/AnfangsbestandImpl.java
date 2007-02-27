@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2005/10/18 23:28:55 $
+ * $Revision: 1.12 $
+ * $Date: 2007/02/27 18:17:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -80,9 +81,13 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
-      
+
+      Kontoart ka = k.getKontoArt();
+      if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
+        throw new ApplicationException(i18n.tr("Nur Anlage- und Geldkonten dürfen einen Anfangsbestand haben"));
+
       if (getBetrag() == 0.0d)
-          throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
         
       if (k.getAnfangsbestand(jahr) != null)
         throw new ApplicationException(i18n.tr("Für das Konto {0} existiert bereits ein Anfangsbestand",k.getKontonummer()));
@@ -175,6 +180,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.12  2007/02/27 18:17:32  willuhn
+ * @B Anfangsbestaende nur von Anlage- und Geldkonten erzeugen
+ *
  * Revision 1.11  2005/10/18 23:28:55  willuhn
  * @N client/server tauglichkeit
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/01/06 00:05:51 $
+ * $Revision: 1.10 $
+ * $Date: 2007/02/27 18:17:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,9 +91,7 @@ public class AnfangsbestandControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     konten.addFilter("(kontoart_id = " + Kontoart.KONTOART_ANLAGE + " or " +
-                     " kontoart_id = " + Kontoart.KONTOART_GELD + " or " +
-                     " kontoart_id = " + Kontoart.KONTOART_PRIVAT
-                     + ")");
+                     " kontoart_id = " + Kontoart.KONTOART_GELD + ")");
     
     konto = new KontoInput(konten,getAnfangsbestand().getKonto());
     return konto;
@@ -177,6 +175,9 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.10  2007/02/27 18:17:32  willuhn
+ * @B Anfangsbestaende nur von Anlage- und Geldkonten erzeugen
+ *
  * Revision 1.9  2006/01/06 00:05:51  willuhn
  * @N MySQL Support
  *
