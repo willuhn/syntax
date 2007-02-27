@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/update/Attic/Update_1_2_to_1_3.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.2 $
+ * $Date: 2007/02/27 15:50:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,6 +36,12 @@ public class Update_1_2_to_1_3 implements Update
    */
   public void update(ProgressMonitor monitor, double oldVersion, double newVersion) throws ApplicationException
   {
+    if (oldVersion != 1.2d && newVersion != 1.3d)
+    {
+      Logger.info("skip update " + this.getClass().getName());
+      return;
+    }
+    
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     Konto konto       = null;
@@ -226,6 +232,9 @@ public class Update_1_2_to_1_3 implements Update
 
 /*********************************************************************
  * $Log: Update_1_2_to_1_3.java,v $
+ * Revision 1.2  2007/02/27 15:50:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2006/12/27 15:23:33  willuhn
  * @C merged update 1.3 and 1.4 to 1.3
  *
