@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/12/27 14:42:23 $
+ * $Revision: 1.42 $
+ * $Date: 2007/02/27 18:50:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ public class Fibu extends AbstractPlugin
   /**
    * Dateformatter.
    */
-  public final static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+  public final static DateFormat LONGDATEFORMAT   = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
   /**
    * Dateformatter.
@@ -209,6 +209,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.42  2007/02/27 18:50:59  willuhn
+ * @B 12- statt 24h-Format
+ *
  * Revision 1.41  2006/12/27 14:42:23  willuhn
  * @N Update fuer MwSt.-Erhoehung
  *
