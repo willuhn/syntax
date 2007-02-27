@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/02/27 18:06:20 $
+ * $Revision: 1.8 $
+ * $Date: 2007/02/27 18:53:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,6 +173,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
             }
               
             double saldo = k.getSaldo(jahr);
+            
+            // TODO: Falls hier 0.000000123 rauskommt, wuerde das fehlschlagen
             if (saldo == 0.0)
               continue;
             
@@ -478,6 +480,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.8  2007/02/27 18:53:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2007/02/27 18:06:20  willuhn
  * @N Ueberspringe alle Konten ausser Geld und Anlage beim Erstellen der Anfangsbestaende
  *
