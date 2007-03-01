@@ -11,7 +11,7 @@
     }
 
     p,h1,h2,h3,h4,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
-      font-family              : Verdana, Helvetica, Arial;
+      font-family              : Tahoma, Verdana, Helvetica, Arial;
       color                    : #000000;
       font-size                : 9pt;
     }
