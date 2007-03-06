@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2007/02/27 18:53:00 $
+ * $Revision: 1.9 $
+ * $Date: 2007/03/06 15:22:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -278,21 +278,33 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     if (restwert == 0.0d)
       return null; // bereits abgeschrieben
 
-    String name = i18n.tr("Abschreibung");
-    Date datum = av.getAnschaffungsdatum();
+    String name    = i18n.tr("Abschreibung");
+    Date datum     = av.getAnschaffungsdatum();
+    Konto afaKonto = av.getAbschreibungskonto();
 
     monitor.log(i18n.tr("  Abschreibungsbuchung für " + av.getName()));monitor.addPercentComplete(1);
 
     
     // GWGs voll abschreiben
-    if (anschaffung <= Settings.getGwgWert(jahr) && av.getNutzungsdauer() == 1)
+    // Das geschieht unter folgenden Bedingungen
+    // 1) Nutzungsdauer ist 1 Jahr
+    // und 2a)  Anschaffungskosten < GWG-Wert
+    // oder 2b) Das Abschreibungskonto ist das in den Einstellungen hinterlegte GWG-Abschreibungskonto
+    if (av.getNutzungsdauer() == 1)
     {
-      monitor.log(i18n.tr("    GWG: Schreibe voll ab"));
-      name = i18n.tr("GWG-Abschreibung");
-      betrag = anschaffung;
-      if (betrag > restwert)
-        betrag = restwert;
-      gwg = true;
+      Konto gwgKonto = Settings.getAbschreibunsgKonto(jahr,true);
+      
+      gwg  = (gwgKonto != null && gwgKonto.getKontonummer().equals(afaKonto.getKontonummer()));
+      gwg |=  anschaffung <= Settings.getGwgWert(jahr);
+
+      if (gwg)
+      {
+        monitor.log(i18n.tr("    GWG: Schreibe voll ab"));
+        name = i18n.tr("GWG-Abschreibung");
+        betrag = anschaffung;
+        if (betrag > restwert)
+          betrag = restwert;
+      }
     }
 
     // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
@@ -342,7 +354,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     AbschreibungsBuchung buchung = (AbschreibungsBuchung) Settings.getDBService().createObject(AbschreibungsBuchung.class,null);
     buchung.setDatum(end);
     buchung.setGeschaeftsjahr(jahr);
-    buchung.setSollKonto(av.getAbschreibungskonto());
+    buchung.setSollKonto(afaKonto);
     buchung.setHabenKonto(av.getKonto());
     Buchung b = av.getBuchung();
     if (b != null)
@@ -480,6 +492,11 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.9  2007/03/06 15:22:36  willuhn
+ * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
+ * @B Formatierungsfehler bei Betraegen ("-0,00")
+ * @C Afa-Buchungen werden nun auch als GWG gebucht, wenn Betrag zwar groesser als GWG-Grenze aber Afa-Konto=GWG-Afa-Konto (laut Einstellungen)
+ *
  * Revision 1.8  2007/02/27 18:53:00  willuhn
  * *** empty log message ***
  *

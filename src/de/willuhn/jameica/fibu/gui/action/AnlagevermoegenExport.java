@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/01/06 00:30:01 $
+ * $Revision: 1.10 $
+ * $Date: 2007/03/06 15:22:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,8 @@ public class AnlagevermoegenExport extends AbstractExportAction
       while (i.hasNext())
       {
         Anlagevermoegen av = (Anlagevermoegen) i.next();
-        // if (av.getRestwert(jahr) > 0.0d) // Auch AV mit Restwert 0 ausgeben.
+        if (av.getAnfangsbestand(jahr) <= 0.0)
+          continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
           list.add(av);
       }
       
@@ -145,6 +146,11 @@ public class AnlagevermoegenExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.10  2007/03/06 15:22:36  willuhn
+ * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
+ * @B Formatierungsfehler bei Betraegen ("-0,00")
+ * @C Afa-Buchungen werden nun auch als GWG gebucht, wenn Betrag zwar groesser als GWG-Grenze aber Afa-Konto=GWG-Afa-Konto (laut Einstellungen)
+ *
  * Revision 1.9  2006/01/06 00:30:01  willuhn
  * @C report fixes
  *

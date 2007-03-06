@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.42 $
- * $Date: 2007/02/27 18:50:59 $
+ * $Revision: 1.43 $
+ * $Date: 2007/03/06 15:22:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
+import de.willuhn.jameica.fibu.gui.util.CustomDecimalFormat;
 import de.willuhn.jameica.fibu.update.Update;
 import de.willuhn.jameica.gui.MenuItem;
 import de.willuhn.jameica.gui.NavigationItem;
@@ -80,12 +81,7 @@ public class Fibu extends AbstractPlugin
   /**
    * DecimalFormat.
    */
-  public final static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
-
-  static {
-    DECIMALFORMAT.applyPattern("###,###,##0.00");
-    DECIMALFORMAT.setGroupingUsed(true);
-  }
+  public final static DecimalFormat DECIMALFORMAT = new CustomDecimalFormat();
 
   /**
    * @param file
@@ -209,6 +205,11 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.43  2007/03/06 15:22:36  willuhn
+ * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
+ * @B Formatierungsfehler bei Betraegen ("-0,00")
+ * @C Afa-Buchungen werden nun auch als GWG gebucht, wenn Betrag zwar groesser als GWG-Grenze aber Afa-Konto=GWG-Afa-Konto (laut Einstellungen)
+ *
  * Revision 1.42  2007/02/27 18:50:59  willuhn
  * @B 12- statt 24h-Format
  *

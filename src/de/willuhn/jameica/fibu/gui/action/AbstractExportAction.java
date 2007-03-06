@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AbstractExportAction.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.5 $
+ * $Date: 2007/03/06 15:22:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -70,10 +70,11 @@ public abstract class AbstractExportAction implements ExportAction
         throw new OperationCanceledException(i18n.tr("Export abgebrochen"));
 
       File file = new File(s);
+
+      // Wir merken uns noch das Verzeichnis vom letzten mal
+      settings.setAttribute("lastdir",file.getParent());
       if (!file.exists())
       {
-        // Wir merken uns noch das Verzeichnis vom letzten mal
-        settings.setAttribute("lastdir",file.getParent());
         return file;
         
       }
@@ -164,6 +165,11 @@ public abstract class AbstractExportAction implements ExportAction
 
 /*********************************************************************
  * $Log: AbstractExportAction.java,v $
+ * Revision 1.5  2007/03/06 15:22:36  willuhn
+ * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
+ * @B Formatierungsfehler bei Betraegen ("-0,00")
+ * @C Afa-Buchungen werden nun auch als GWG gebucht, wenn Betrag zwar groesser als GWG-Grenze aber Afa-Konto=GWG-Afa-Konto (laut Einstellungen)
+ *
  * Revision 1.4  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *
