@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/10/12 21:51:10 $
+ * $Revision: 1.3 $
+ * $Date: 2007/03/23 10:15:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,10 +115,9 @@ public class UmsatzListMenu implements Extension
      */
     public boolean isEnabledFor(Object o)
     {
-      if (o == null)
+      // Nur einzeln und nur Umsaetze
+      if (o == null || !(o instanceof Umsatz))
         return false;
-      if (o instanceof Umsatz[])
-        return false; // Nene, einer nach dem andern ;)
       
       Umsatz u = (Umsatz) o;
       boolean found = false;
@@ -145,6 +144,9 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
+ * Revision 1.3  2007/03/23 10:15:35  willuhn
+ * @B classcastexception
+ *
  * Revision 1.2  2006/10/12 21:51:10  willuhn
  * @Uebernahme der Buchungen aus Hibiscus.
  *
