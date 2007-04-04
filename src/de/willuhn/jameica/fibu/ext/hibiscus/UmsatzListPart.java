@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/10/09 23:48:41 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/04 22:19:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -60,7 +61,13 @@ public class UmsatzListPart implements Extension
 
     try
     {
-      DBIterator list = Settings.getActiveGeschaeftsjahr().getHauptBuchungen();
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      if (jahr == null)
+      {
+        // noch kein Mandant/Geschaeftsjahr eingerichtet
+        return;
+      }
+      DBIterator list = jahr.getHauptBuchungen();
       list.addFilter("hb_umsatz_id is not null");
       while (list.hasNext())
       {
@@ -103,6 +110,9 @@ public class UmsatzListPart implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListPart.java,v $
+ * Revision 1.2  2007/04/04 22:19:09  willuhn
+ * @B Umsatzliste nur erweitern, wenn GJ vorhanden
+ *
  * Revision 1.1  2006/10/09 23:48:41  willuhn
  * @B bug 140
  *
