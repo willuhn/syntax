@@ -3,8 +3,7 @@
 #set($buchungen = $!{export.getObjects("buchungen.${konto.Kontonummer}")})
 #foreach($buchung in $buchungen)
 
-  #set($netto   = $buchung.Betrag)
-  #set($brutto  = $math.brutto($netto,$buchung.Steuer))
+  #set($netto = $buchung.Betrag)
   <tr>
     <td>$!{dateformat.format(${buchung.Datum})}</td>
     <td style="text-align:right">$!{buchung.Belegnummer}</td>
