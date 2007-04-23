@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.16 $
- * $Date: 2006/06/19 16:25:42 $
+ * $Revision: 1.17 $
+ * $Date: 2007/04/23 23:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -54,7 +53,6 @@ public class KontoList extends TablePart
   private CheckboxInput filter  = null;
   
   private GenericIterator list  = null;
-  private ArrayList konten      = null;
 
   private boolean filterEnabled = true;
 
@@ -65,8 +63,7 @@ public class KontoList extends TablePart
    */
   public KontoList(GenericIterator list, Action action) throws RemoteException
   {
-    super(list, action);
-
+    super(list,action);
     this.list = list;
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
@@ -117,26 +114,14 @@ public class KontoList extends TablePart
       
       group.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
       group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
-    }
-    
-    super.paint(parent);
 
-    // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-    // Objekte beim Filter geladen bleiben
-    konten = new ArrayList();
-    list.begin();
-    while (list.hasNext())
-    {
-      Konto k = (Konto) list.next();
-      konten.add(k);
-    }
-    
-    if (filterEnabled)
-    {
       KL kl = new KL();
       this.search.getControl().addKeyListener(kl);
       ((Button)this.filter.getControl()).addSelectionListener(kl);
     }
+
+    super.paint(parent);
+    
   }
   
   private class KL extends KeyAdapter implements SelectionListener
@@ -179,6 +164,8 @@ public class KontoList extends TablePart
                   // Erstmal alle rausschmeissen
                   removeAll();
 
+                  list.begin();
+
                   // Wir holen uns den aktuellen Text
                   String text = (String) search.getValue();
                   if (text != null) text = text.toLowerCase();
@@ -189,16 +176,13 @@ public class KontoList extends TablePart
                   String name = null;
                   String nr   = null;
 
-                  for (int i=0;i<konten.size();++i)
+                  while (list.hasNext())
                   {
-                    k = (Konto) konten.get(i);
+                    k = (Konto) list.next();
 
                     // BUGZILLA 128
                     if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr()) == 0)
                       continue;
-
-                    name = k.getName();
-                    nr   = k.getKontonummer();
 
                     // Was zum Filtern da?
                     if (text == null || text.length() == 0)
@@ -207,6 +191,9 @@ public class KontoList extends TablePart
                       addItem(k);
                       continue;
                     }
+
+                    name = k.getName();
+                    nr   = k.getKontonummer();
                     
                     if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
                       addItem(k);
@@ -266,6 +253,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.17  2007/04/23 23:41:26  willuhn
+ * @B reset des Konten-Iterators
+ *
  * Revision 1.16  2006/06/19 16:25:42  willuhn
  * *** empty log message ***
  *

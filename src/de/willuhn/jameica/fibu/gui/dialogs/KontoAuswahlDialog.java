@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/07/17 21:58:06 $
+ * $Revision: 1.6 $
+ * $Date: 2007/04/23 23:41:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,8 @@ public class KontoAuswahlDialog extends AbstractDialog
         choosen = (Konto) context;
         close();
       }
-    };    
+    };
+    this.konten.begin();
 		final KontoList konten = new KontoList(this.konten,a);
     konten.setContextMenu(null);
     konten.setMulti(false);
@@ -115,6 +116,9 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.6  2007/04/23 23:41:26  willuhn
+ * @B reset des Konten-Iterators
+ *
  * Revision 1.5  2006/07/17 21:58:06  willuhn
  * *** empty log message ***
  *
