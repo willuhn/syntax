@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/07/03 14:23:54 $
+ * $Revision: 1.15 $
+ * $Date: 2007/04/23 23:23:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -278,6 +278,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputUsername == null)
     {
       this.inputUsername = new TextInput(((DBSupport)getDBType().getValue()).getUsername());
+      this.inputUsername.setEnabled(((DBSupport)getDBType().getValue()).needsUsername());
       this.inputUsername.setComment(i18n.tr("Username des Datenbank-Benutzers"));
     }
     return this.inputUsername;
@@ -293,6 +294,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputDbname == null)
     {
       this.inputDbname = new TextInput(((DBSupport)getDBType().getValue()).getDatabaseName());
+      this.inputDbname.setEnabled(((DBSupport)getDBType().getValue()).needsDatabaseName());
       this.inputDbname.setComment(i18n.tr("Name der Datenbank"));
     }
     return this.inputDbname;
@@ -308,6 +310,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputPassword == null)
     {
       this.inputPassword = new PasswordInput(((DBSupport)getDBType().getValue()).getPassword());
+      this.inputPassword.setEnabled(((DBSupport)getDBType().getValue()).needsPassword());
       this.inputPassword.setComment(i18n.tr("Passwort des Datenbank-Benutzers"));
     }
     return this.inputPassword;
@@ -323,6 +326,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputPassword2 == null)
     {
       this.inputPassword2 = new PasswordInput(((DBSupport)getDBType().getValue()).getPassword());
+      this.inputPassword2.setEnabled(((DBSupport)getDBType().getValue()).needsPassword());
       this.inputPassword2.setComment(i18n.tr("Geben Sie hier das Passwort nochmal zur Kontrolle ein"));
     }
     return this.inputPassword2;
@@ -338,6 +342,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputHostname == null)
     {
       this.inputHostname = new TextInput(((DBSupport)getDBType().getValue()).getHostname());
+      this.inputHostname.setEnabled(((DBSupport)getDBType().getValue()).needsHostname());
       this.inputHostname.setComment(i18n.tr("Hostname des Datenbank-Servers"));
     }
     return this.inputHostname;
@@ -353,6 +358,7 @@ public class FirstStartControl extends AbstractControl
     if (this.inputPort == null)
     {
       this.inputPort = new IntegerInput(((DBSupport)getDBType().getValue()).getTcpPort());
+      this.inputPort.setEnabled(((DBSupport)getDBType().getValue()).needsTcpPort());
       this.inputPort.setComment(i18n.tr("TCP-Port des Datenbank-Servers"));
     }
     return this.inputPort;
@@ -647,6 +653,9 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.15  2007/04/23 23:23:52  willuhn
+ * @B sofortige Aktivierung/Deaktivierung nicht benoetigter Felder
+ *
  * Revision 1.14  2006/07/03 14:23:54  willuhn
  * @B preselection
  *
