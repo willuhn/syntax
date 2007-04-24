@@ -136,8 +136,8 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (204, 2, '4985', 'Werkzeuge und Kleingeräte', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (205, 1, '8100', 'Steuerfreie Umsätze', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (206, 1, '8200', 'Erlöse (keine UST)', 1, 7);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (207, 1, '8300', 'Erlöse (ermäßigte UST)', 1, 5);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (208, 1, '8400', 'Erlöse (volle UST)', 1, 9);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (207, 1, '8300', 'Erlöse (7% UST)', 1, 5);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (208, 1, '8400', 'Erlöse (19% UST)', 1, 9);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (209, 1, '8800', 'Erlöse aus Anlagenverkäufen', 1, 9);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (210, 1, '8900', 'Eigenverbrauch', 1, 9);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (211, 1, '8955', 'Umsatzsteuervergütungen', 1, NULL);
@@ -265,8 +265,8 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1202, 2, '6845', 'Werkzeuge und Kleingeräte', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1203, 1, '4100', 'Steuerfreie Umsätze', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1204, 1, '4200', 'Erlöse (keine UST)', 2, 1007);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1205, 1, '4300', 'Erlöse (ermäßigte UST)', 2, 1005);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1206, 1, '4400', 'Erlöse (volle UST)', 2, 1009);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1205, 1, '4300', 'Erlöse (7% UST)', 2, 1005);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1206, 1, '4400', 'Erlöse (19% UST)', 2, 1009);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1207, 1, '4855', 'Erlöse aus Anlagenverkäufen', 2, 1009);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1208, 1, '4600', 'Eigenverbrauch', 2, 1009);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1209, 1, '4695', 'Umsatzsteuervergütungen', 2, NULL);
