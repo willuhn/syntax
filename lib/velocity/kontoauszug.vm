@@ -77,7 +77,7 @@
 
     <tr>
       <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand (zum $!{dateformat.format(${end})}):</td>
-      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("umsatz"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($konto.getUmsatzAfter($end))} ${eur}</b></td>
     </tr>
   </table>
 
