@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.18 $
+ * $Date: 2007/07/26 23:56:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,6 +135,16 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   }
 
   /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
+   */
+  protected int getTransactionIsolationLevel() throws RemoteException
+  {
+    // damit sehen wir Datenbank-Updates durch andere
+    // ohne vorher ein COMMIT machen zu muessen
+    return Connection.TRANSACTION_READ_COMMITTED;
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.DBService#executeUpdate(java.lang.String, java.lang.Object[])
    */
   public void executeUpdate(String sql, Object[] params) throws RemoteException
@@ -197,6 +208,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.18  2007/07/26 23:56:37  willuhn
+ * @B Changed transaction isolation level
+ *
  * Revision 1.17  2006/12/27 15:23:33  willuhn
  * @C merged update 1.3 and 1.4 to 1.3
  *
