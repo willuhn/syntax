@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.9 $
+ * $Date: 2007/10/08 22:54:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.rmi.DBIterator;
 
 /**
- * Bildet die verschiedenen Kontenrahmen in Fibu ab.
+ * Bildet die verschiedenen Kontenrahmen ab.
  * @author willuhn
  */
 public interface Kontenrahmen extends UserObject
@@ -31,6 +31,13 @@ public interface Kontenrahmen extends UserObject
   public String getName() throws RemoteException;
   
   /**
+   * Speichert den Namen des Kontenrahmen.
+   * @param name Name des Kontenrahmen.
+   * @throws RemoteException
+   */
+  public void setName(String name) throws RemoteException;
+  
+  /**
    * Liefert eine Liste aller Konten in diesem Kontenrahmen.
    * @return Konten.
    * @throws RemoteException
@@ -41,6 +48,9 @@ public interface Kontenrahmen extends UserObject
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.9  2007/10/08 22:54:47  willuhn
+ * @N Kopieren eines kompletten Kontenrahmen auf einen Mandanten
+ *
  * Revision 1.8  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

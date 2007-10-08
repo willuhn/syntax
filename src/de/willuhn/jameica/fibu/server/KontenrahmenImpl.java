@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.15 $
+ * $Date: 2007/10/08 22:54:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -122,11 +122,22 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
     return list;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#setName(java.lang.String)
+   */
+  public void setName(String name) throws RemoteException
+  {
+    setAttribute("name",name);
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.15  2007/10/08 22:54:47  willuhn
+ * @N Kopieren eines kompletten Kontenrahmen auf einen Mandanten
+ *
  * Revision 1.14  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *
