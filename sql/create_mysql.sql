@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS kontenrahmen (
   name varchar(100) NOT NULL,
   mandant_id int(10) NULL,
   UNIQUE (id),
-  UNIQUE (name),
+  UNIQUE (name,mandant_id),
   PRIMARY KEY (id)
 ) TYPE = INNODB;
 
