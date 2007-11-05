@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.51 $
+ * $Date: 2007/11/05 01:05:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -334,20 +334,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
       // Jetzt muessen wir noch pruefen, ob die Kontonummer schon bei einem anderen
       // Konto vergeben ist
-      DBIterator konten = kr.getKonten();
-      while(konten.hasNext())
-      {
-        Konto k = (Konto) konten.next();
-        
-        // 1. Kontonummer stimmt ueberein
-        // 2. ID des Konto verschieden
-        if (k.getKontonummer().equals(kontonummer) &&
-            !k.getID().equals(getID())
-        )
-        {
-          throw new ApplicationException(i18n.tr("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen."));
-        }
-      }
+      Konto other = kr.findByKontonummer(kontonummer);
+      if (other != null && !other.equals(this))
+        throw new ApplicationException(i18n.tr("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen."));
     }
     catch (RemoteException e)
     {
@@ -541,6 +530,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.51  2007/11/05 01:05:43  willuhn
+ * @C refactoring
+ *
  * Revision 1.50  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *
