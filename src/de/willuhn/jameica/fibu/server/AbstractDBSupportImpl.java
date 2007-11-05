@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/29 16:38:09 $
+ * $Revision: 1.5 $
+ * $Date: 2007/11/05 01:02:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -221,11 +221,21 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
     Settings.setDBSupport(this);
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException
+  {
+    return -1;
+  }
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.5  2007/11/05 01:02:26  willuhn
+ * @C Transaction-Isolation-Level in SynTAX
+ *
  * Revision 1.4  2006/06/29 16:38:09  willuhn
  * @N Hilfetext
  *

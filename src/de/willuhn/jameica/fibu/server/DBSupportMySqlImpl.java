@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/12/27 15:58:08 $
+ * $Revision: 1.9 $
+ * $Date: 2007/11/05 01:02:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -233,11 +233,25 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
   {
     return "(UNIX_TIMESTAMP({0})*1000)".replaceAll("\\{0\\}",content);
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException
+  {
+    // damit sehen wir Datenbank-Updates durch andere
+    // ohne vorher ein COMMIT machen zu muessen
+    // Insbesondere bei MySQL sinnvoll.
+    return Connection.TRANSACTION_READ_COMMITTED;
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.9  2007/11/05 01:02:27  willuhn
+ * @C Transaction-Isolation-Level in SynTAX
+ *
  * Revision 1.8  2006/12/27 15:58:08  willuhn
  * @R removed unused method
  *
