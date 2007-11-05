@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/10/08 22:54:47 $
+ * $Revision: 1.10 $
+ * $Date: 2007/11/05 01:04:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,11 +43,23 @@ public interface Kontenrahmen extends UserObject
    * @throws RemoteException
    */
   public DBIterator getKonten() throws RemoteException;
+  
+  /**
+   * Sucht ein Konto anhand der Kontonummer.
+   * @param kto Kontonummer.
+   * @return das gefundene Konto oder <code>null</code>.
+   * @throws RemoteException
+   */
+  public Konto findByKontonummer(String kto) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.10  2007/11/05 01:04:49  willuhn
+ * @N Beim Speichern testen, ob fuer den Mandanten schon ein gleichnamiger Kontenrahmen existiert
+ * @N findByKontonummer
+ *
  * Revision 1.9  2007/10/08 22:54:47  willuhn
  * @N Kopieren eines kompletten Kontenrahmen auf einen Mandanten
  *
