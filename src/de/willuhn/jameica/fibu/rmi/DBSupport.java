@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/12/27 15:58:08 $
+ * $Revision: 1.6 $
+ * $Date: 2007/11/05 01:02:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -176,11 +176,20 @@ public interface DBSupport extends GenericObject
    */
   public String getSQLTimestamp(String content) throws RemoteException;  
   
+  /**
+   * Liefert das Transaction-Isolation-Level.
+   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
+   */
+  public int getTransactionIsolationLevel() throws RemoteException;
+
 }
 
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.6  2007/11/05 01:02:46  willuhn
+ * @C Transaction-Isolation-Level in SynTAX
+ *
  * Revision 1.5  2006/12/27 15:58:08  willuhn
  * @R removed unused method
  *
