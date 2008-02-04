@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE DataSet SYSTEM "gdpdu-01-08-2002.dtd">
+<DataSet>
+	<Version>1.2</Version>
+	<DataSupplier>
+		<Name>Audicon GmbH</Name>
+		<Location>Germany</Location>
+		<Comment>A compressed sample DataSet</Comment>
+	</DataSupplier>
+	<Command>uncompress.bat</Command>
+	<Media>
+		<Name>Disk 1</Name>
+		<Table>
+			<URL>dummy.csv</URL>
+			<VariableLength>
+				<VariablePrimaryKey>
+					<Name>dummy</Name>
+					<Numeric/>
+				</VariablePrimaryKey>
+			</VariableLength>
+		</Table>
+	</Media>
+</DataSet>

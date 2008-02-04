@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE DataSet SYSTEM "gdpdu-01-08-2002.dtd">
+<DataSet>
+	<Version>1.0</Version>
+	<DataSupplier>
+		<Name>Glaswerk AG</Name>
+		<Location>Singen/Deutschland</Location>
+		<Comment>Datentraegerüberlassung nach GDPdU vom 14.August 2002, Dr. Grässle, Tel: 07544 934266</Comment>
+	</DataSupplier>
+	<Media>
+		<Name>CD Nummer 1</Name>
+		<Table>
+			<URL>Account.csv</URL>
+			<Name>Account</Name>
+			<Description>Accounts Receivables</Description>
+			<!-- Diese Tabelle gilt von 1.Januar 2000- 31.Dezember 2002 -->
+			<Validity>
+				<Range>
+					<From>20000101</From>
+					<To>20021231</To>
+				</Range>
+				<Format>YYYYMMDD</Format>
+			</Validity>
+			<!-- Spezifiziert den Dezimaltrenner -->
+			<DecimalSymbol>.</DecimalSymbol>
+			<!-- Spezifiziert den Tausender-Separator -->
+			<DigitGroupingSymbol>,</DigitGroupingSymbol>
+			<VariableLength>
+				<!-- ein zusammengesetzter Primaerschlüssel -->
+				<VariablePrimaryKey>
+					<Name>RegionId</Name>
+					<AlphaNumeric/>
+				</VariablePrimaryKey>
+				<VariablePrimaryKey>
+					<Name>Id</Name>
+					<AlphaNumeric/>
+				</VariablePrimaryKey>
+				<VariableColumn>
+					<Name>Account Description</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Balance</Name>
+					<Numeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Old Balance</Name>
+					<Numeric/>
+				</VariableColumn>
+			</VariableLength>
+		</Table>
+		<Table>
+			<URL>Region.csv</URL>
+			<VariableLength>
+				<VariablePrimaryKey>
+					<Name>RegionId</Name>
+					<AlphaNumeric/>
+				</VariablePrimaryKey>
+				<VariableColumn>
+					<Name>Description</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+			</VariableLength>
+		</Table>
+	</Media>
+	<Media>
+		<Name>CD Nummer 2</Name>
+		<Table>
+			<URL>Sales.csv</URL>
+			<Range>
+				<From>56</From>
+			</Range>
+			<FixedLength>
+				<FixedPrimaryKey>
+					<Name>SalesId</Name>
+					<AlphaNumeric/>
+					<FixedRange>
+						<!-- Position des Feldes: -->
+						<From>1</From>
+						<To>10</To>
+					</FixedRange>
+				</FixedPrimaryKey>
+				<FixedColumn>
+					<Name>RegionId</Name>
+					<AlphaNumeric/>
+					<FixedRange>
+						<From>11</From>
+						<Length>10</Length>
+					</FixedRange>
+				</FixedColumn>
+				<FixedColumn>
+					<Name>Id</Name>
+					<AlphaNumeric/>
+					<FixedRange>
+						<From>21</From>
+						<To>30</To>
+					</FixedRange>
+				</FixedColumn>
+				<FixedColumn>
+					<Name>SalesComplete</Name>
+					<AlphaNumeric/>
+					<!-- Redefinition des Wertes "1" nach "True" und "0" nach "False" -->
+					<Map>
+						<From>1</From>
+						<To>True</To>
+					</Map>
+					<Map>
+						<From>0</From>
+						<To>False</To>
+					</Map>
+					<FixedRange>
+						<From>31</From>
+						<To>32</To>
+					</FixedRange>
+				</FixedColumn>
+				<!-- ein zusammengesetzter Fremdschluessel der den Primaerschluessel in Tabelle Account referenziert -->
+				<ForeignKey>
+					<Name>RegionId</Name>
+					<Name>Id</Name>
+					<References>Account</References>
+				</ForeignKey>
+			</FixedLength>
+		</Table>
+		<Table>
+			<URL>kunden.csv</URL>
+			<Name>Kunden</Name>
+			<Description>Kunden-Stammdaten</Description>
+			<VariableLength>
+				<VariablePrimaryKey>
+					<Name>Kunden-Code</Name>
+					<AlphaNumeric/>
+				</VariablePrimaryKey>
+				<VariableColumn>
+					<Name>Firma</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Kontaktperson</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<!-- weitere columns... -->
+			</VariableLength>
+		</Table>
+		<Table>
+			<URL>artikel.csv</URL>
+			<Name>Artikel</Name>
+			<Description>Artikel-Stammdaten</Description>
+			<VariableLength>
+				<VariablePrimaryKey>
+					<Name>Artikel-Nr</Name>
+					<AlphaNumeric/>
+				</VariablePrimaryKey>
+				<VariableColumn>
+					<Name>Artikelname</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Lieferanten-Nr</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<!-- weitere columns... -->
+			</VariableLength>
+		</Table>
+		<Table>
+			<URL>bestellungen.csv</URL>
+			<Name>Bestellungen</Name>
+			<Description>Bestellungen-Bewegungsdaten</Description>
+			<VariableLength>
+				<VariableColumn>
+					<Name>Artikel-Nr</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Kunden-Code</Name>
+					<AlphaNumeric/>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Bestelldatum</Name>
+					<Date>
+						<Format>YYYYMMDD</Format>
+					</Date>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Lieferdatum</Name>
+					<Date>
+						<Format>YYYYMMDD</Format>
+					</Date>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Bestelldatum</Name>
+					<Date>
+						<Format>YYYYMMDD</Format>
+					</Date>
+				</VariableColumn>
+				<VariableColumn>
+					<Name>Frachtkosten</Name>
+					<Numeric/>
+				</VariableColumn>
+				<!-- weitere columns... -->
+				<ForeignKey>
+					<Name>Kunden-Code</Name>
+					<References>Kunden</References>
+				</ForeignKey>
+				<ForeignKey>
+					<Name>Artikel-ID</Name>
+					<References>Artikel</References>
+				</ForeignKey>
+			</VariableLength>
+		</Table>
+	</Media>
+</DataSet>
