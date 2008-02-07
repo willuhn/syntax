@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.44 $
+ * $Date: 2008/02/07 23:08:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -86,9 +85,9 @@ public class Fibu extends AbstractPlugin
   /**
    * @param file
    */
-  public Fibu(File file)
+  public Fibu()
   {
-    super(file);
+    super();
   }
 
 
@@ -205,6 +204,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.44  2008/02/07 23:08:39  willuhn
+ * @R KontenrahmenUtil#move() entfernt - hoffnungsloses Unterfangen
+ *
  * Revision 1.43  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")
