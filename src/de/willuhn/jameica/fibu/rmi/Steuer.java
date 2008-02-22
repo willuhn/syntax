@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.9 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import java.rmi.RemoteException;
  * immer auch nur die initialen sowie die des aktuellen Mandanten geladen.
  * @author willuhn
  */
-public interface Steuer extends UserObject
+public interface Steuer extends KontenrahmenObject
 {
 
   /**
@@ -47,7 +47,7 @@ public interface Steuer extends UserObject
    * @return das Steuersammel-Konto
    * @throws RemoteException
    */
-  public Konto getSteuerKonto() throws RemoteException;
+  public Konto getKonto() throws RemoteException;
   
   /**
    * Setzt den Namen des Steuersatzes.
@@ -68,11 +68,14 @@ public interface Steuer extends UserObject
    * @param k das zu verwendende Steuersammel-Konto.
    * @throws RemoteException
    */
-  public void setSteuerKonto(Konto k) throws RemoteException;
+  public void setKonto(Konto k) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.9  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.8  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *

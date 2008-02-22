@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/12/27 14:42:23 $
+ * $Revision: 1.46 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,8 +53,6 @@ public class Settings
 	private static Geschaeftsjahr jahr = null;
   
   private static DBSupport dbSupport = null;
-  
-  private static boolean inUpdate = false;
   
   /**
    * Liefert true, wenn die Anwendung zum ersten Mal gestartet wird.
@@ -361,28 +359,13 @@ public class Settings
       Logger.error("error while refreshing statusbar",e);
     }
   }
-  
-  /**
-   * Legt fest, ob sich die Anwendung gerade im Update-Prozess befindet.
-   * @param b true, wenn sie sich im Update befindet.
-   */
-  static void setInUpdate(boolean b)
-  {
-    inUpdate = b;
-  }
-  
-  /**
-   * Prueft, ob sich die Anwendung gerade in einem Update befindet.
-   * @return true, wenn sie sich in einem Update befindet.
-   */
-  public static boolean inUpdate()
-  {
-    return inUpdate;
-  }
 }
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.46  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.45  2006/12/27 14:42:23  willuhn
  * @N Update fuer MwSt.-Erhoehung
  *

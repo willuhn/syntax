@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/02/27 18:40:14 $
+ * $Revision: 1.16 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,7 +123,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public String getPrimaryAttribute() throws RemoteException
   {
-    return "konto_id";
+    return "betrag";
   }
 
   /**
@@ -155,7 +155,10 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public Konto getKonto() throws RemoteException
   {
-    return (Konto) getAttribute("konto_id");
+    Geschaeftsjahr jahr = getGeschaeftsjahr();
+    if (jahr == null)
+      return null;
+    return jahr.getKontenrahmen().findByKontonummer((String)getAttribute("konto"));
   }
 
   /**
@@ -163,7 +166,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public void setKonto(Konto k) throws RemoteException
   {
-    setAttribute("konto_id",k);
+    setAttribute("konto",k == null ? null : k.getKontonummer());
   }
 
   /**
@@ -190,8 +193,6 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
   {
     if ("geschaeftsjahr_id".equals(arg0))
       return Geschaeftsjahr.class;
-    if ("konto_id".equals(arg0))
-      return Konto.class;
     return super.getForeignObject(arg0);
   }
 }
@@ -199,6 +200,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
+ * Revision 1.16  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.15  2007/02/27 18:40:14  willuhn
  * @B fehlender updateCheck Aufruf
  *

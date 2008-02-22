@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungstemplateImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.3 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
-import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -68,6 +68,27 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
     {
       if (getName() == null || getName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitten geben Sie eine Bezeichnung an."));
+
+      Kontenrahmen kr = getKontenrahmen();
+      
+      if (kr == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
+
+      if (getBetrag() == 0.0d)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ungleich 0 ein."));
+
+      Konto soll = getSollKonto();
+      Konto haben = getHabenKonto();
+      
+      if (soll == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto für die Soll-Buchung ein."));
+
+      if (haben == null)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie ein Konto für die Haben-Buchung ein."));
+
+      if (soll.equals(haben))
+        throw new ApplicationException(i18n.tr("Soll- und Haben-Konto dürfen nicht identisch sein."));
+    
     }
     catch (RemoteException e)
     {
@@ -93,23 +114,7 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#getMandant()
-   */
-  public Mandant getMandant() throws RemoteException
-  {
-    return (Mandant) getAttribute("mandant_id");
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
-   */
-  public void setMandant(Mandant m) throws RemoteException
-  {
-    setAttribute("mandant_id",m);
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#getKontenrahmen()
+   * @see de.willuhn.jameica.fibu.rmi.KontenrahmenObject#getKontenrahmen()
    */
   public Kontenrahmen getKontenrahmen() throws RemoteException
   {
@@ -117,7 +122,7 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
+   * @see de.willuhn.jameica.fibu.rmi.KontenrahmenObject#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
    */
   public void setKontenrahmen(Kontenrahmen kr) throws RemoteException
   {
@@ -129,18 +134,53 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
    */
   public Class getForeignObject(String field) throws RemoteException
   {
-    if ("mandant_id".equals(field))
-      return Mandant.class;
     if ("kontenrahmen_id".equals(field))
       return Kontenrahmen.class;
     
     return super.getForeignObject(field);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getHabenKonto()
+   */
+  public Konto getHabenKonto() throws RemoteException
+  {
+    Kontenrahmen kr = getKontenrahmen();
+    return kr == null ? null : kr.findByKontonummer((String)getAttribute("habenkonto"));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSollKonto()
+   */
+  public Konto getSollKonto() throws RemoteException
+  {
+    Kontenrahmen kr = getKontenrahmen();
+    return kr == null ? null : kr.findByKontonummer((String)getAttribute("sollkonto"));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setHabenKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setHabenKonto(Konto k) throws RemoteException
+  {
+    setAttribute("habenkonto",k == null ? null : k.getKontonummer());
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setSollKonto(Konto k) throws RemoteException
+  {
+    setAttribute("sollkonto",k == null ? null : k.getKontonummer());
   }
 }
 
 
 /*********************************************************************
  * $Log: BuchungstemplateImpl.java,v $
+ * Revision 1.3  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.2  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

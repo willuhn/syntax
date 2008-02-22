@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/01/09 01:52:40 $
+ * $Revision: 1.24 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -210,13 +211,71 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
+    // Fuer's Logging:
+    Logger.info(getAttribute("sollkonto") + " an " + getAttribute("habenkonto") + ": " + Fibu.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
     SaldenCache.remove(getSollKonto().getKontonummer());
     SaldenCache.remove(getHabenKonto().getKontonummer());
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#isGeprueft()
+   */
+  public boolean isGeprueft() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("geprueft");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setGeprueft(boolean)
+   */
+  public void setGeprueft(boolean b) throws RemoteException
+  {
+    setAttribute("geprueft",new Integer(b ? 1 : 0));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getHabenKonto()
+   */
+  public Konto getHabenKonto() throws RemoteException
+  {
+    Geschaeftsjahr jahr = getGeschaeftsjahr();
+    return jahr == null ? null : jahr.getKontenrahmen().findByKontonummer((String)getAttribute("habenkonto"));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSollKonto()
+   */
+  public Konto getSollKonto() throws RemoteException
+  {
+    Geschaeftsjahr jahr = getGeschaeftsjahr();
+    return jahr == null ? null : jahr.getKontenrahmen().findByKontonummer((String)getAttribute("sollkonto"));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setHabenKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setHabenKonto(Konto k) throws RemoteException
+  {
+    setAttribute("habenkonto",k == null ? null : k.getKontonummer());
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setSollKonto(Konto k) throws RemoteException
+  {
+    setAttribute("sollkonto",k == null ? null : k.getKontonummer());
+  }
+  
+  
 }
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.24  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.23  2006/01/09 01:52:40  willuhn
  * *** empty log message ***
  *

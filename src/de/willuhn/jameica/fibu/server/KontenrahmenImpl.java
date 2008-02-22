@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2007/11/05 01:04:49 $
+ * $Revision: 1.17 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -30,7 +31,7 @@ import de.willuhn.util.I18N;
 /**
  * @author willuhn
  */
-public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenrahmen
+public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 {
 
   private I18N i18n = null;
@@ -67,18 +68,28 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
+
     try {
       String name = (String) getAttribute("name");
       if (name == null || "".equals(name))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen für den Kontenrahmen ein."));
       
+      Mandant m = getMandant();
+      if (m == null)
+      {
+        m = Settings.getActiveGeschaeftsjahr().getMandant();
+        setMandant(m);
+      }
+      
+      if (m == null)
+        throw new ApplicationException(i18n.tr("Kein Mandant ausgewählt."));
+
       // Checken, ob fuer diesen Mandanten schon ein
       // gleichnamiger Kontenrahmen existiert
-      Mandant m = getMandant();
+        
       DBIterator list = getService().createList(Kontenrahmen.class);
       list.addFilter("name = ?",new String[]{name});
-      if (m != null)
-        list.addFilter("mandant_id = " + m.getID());
+      list.addFilter("mandant_id = " + m.getID());
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Für diesen Mandanten existiert bereits ein gleichnamiger Kontenrahmen."));
     }
@@ -89,12 +100,31 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   }
 
   /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  protected void updateCheck() throws ApplicationException
+  {
+    try {
+      if (isSystemKontenrahmen())
+        throw new ApplicationException(i18n.tr("System-Kontenrahmen darf nicht geändert werden."));
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Kontenrahmens."),e);
+    }
+
+    this.insertCheck();
+  }
+
+  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
   {
     super.deleteCheck();
     try {
+      if (isSystemKontenrahmen())
+        throw new ApplicationException(i18n.tr("System-Kontenrahmen darf nicht gelöscht werden."));
 
       DBIterator list = Settings.getDBService().createList(Konto.class);
       list.addFilter("kontenrahmen_id = " + this.getID());
@@ -151,11 +181,48 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
     return konten.hasNext() ? (Konto) konten.next() : null;
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  protected Class getForeignObject(String arg0) throws RemoteException
+  {
+    if ("mandant_id".equals(arg0))
+      return Mandant.class;
+    return super.getForeignObject(arg0);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#getMandant()
+   */
+  public Mandant getMandant() throws RemoteException
+  {
+    return (Mandant) getAttribute("mandant_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
+   */
+  public void setMandant(Mandant mandant) throws RemoteException
+  {
+    setAttribute("mandant_id",mandant);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#isSystemKontenrahmen()
+   */
+  public boolean isSystemKontenrahmen() throws RemoteException
+  {
+    return !this.isNewObject() && this.getMandant() == null;
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.17  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.16  2007/11/05 01:04:49  willuhn
  * @N Beim Speichern testen, ob fuer den Mandanten schon ein gleichnamiger Kontenrahmen existiert
  * @N findByKontonummer

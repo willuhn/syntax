@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/11/05 01:04:49 $
+ * $Revision: 1.11 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,12 +16,13 @@ package de.willuhn.jameica.fibu.rmi;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 
 /**
  * Bildet die verschiedenen Kontenrahmen ab.
  * @author willuhn
  */
-public interface Kontenrahmen extends UserObject
+public interface Kontenrahmen extends DBObject
 {
   /**
    * Liefert den Namen des Kontenrahmens.
@@ -51,11 +52,35 @@ public interface Kontenrahmen extends UserObject
    * @throws RemoteException
    */
   public Konto findByKontonummer(String kto) throws RemoteException;
+  
+  /**
+   * Liefert den Mandanten.
+   * @return der Mandant.
+   * @throws RemoteException
+   */
+  public Mandant getMandant() throws RemoteException;
+  
+  /**
+   * Speichert den Mandanten.
+   * @param mandant
+   * @throws RemoteException
+   */
+  public void setMandant(Mandant mandant) throws RemoteException;
+  
+  /**
+   * Prueft, ob es ein System-Kontenrahmen ist, der nicht geaendert werden darf.
+   * @return true, wenn es ein System-Kontenrahmen ist.
+   * @throws RemoteException
+   */
+  public boolean isSystemKontenrahmen() throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.11  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.10  2007/11/05 01:04:49  willuhn
  * @N Beim Speichern testen, ob fuer den Mandanten schon ein gleichnamiger Kontenrahmen existiert
  * @N findByKontonummer

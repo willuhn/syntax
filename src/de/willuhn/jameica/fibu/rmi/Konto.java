@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.22 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.23 $
+ * $Date: 2008/02/22 10:41:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.datasource.rmi.DBIterator;
  * Diese Klasse bildet die Konten in Fibu ab.
  * @author willuhn
  */
-public interface Konto extends UserObject
+public interface Konto extends KontenrahmenObject
 {
 
   /**
@@ -30,13 +30,6 @@ public interface Konto extends UserObject
    * @throws RemoteException
    */
   public String getKontonummer() throws RemoteException;
-
-  /**
-   * Liefert den Kontenrahmen, in dem sich das Konto befindet.
-   * @return Kontenrahmen des Kontos.
-   * @throws RemoteException
-   */
-  public Kontenrahmen getKontenrahmen() throws RemoteException;
 
   /**
    * Liefert den Saldo des Kontos.
@@ -107,13 +100,6 @@ public interface Konto extends UserObject
    * @throws RemoteException
    */
   public void setKontonummer(String kontonummer) throws RemoteException;
-
-  /**
-   * Setzt den Kontenrahmen, in dem sich das Konto befindet.
-   * @param k Kontenrahmen des Kontos.
-   * @throws RemoteException
-   */
-  public void setKontenrahmen(Kontenrahmen k) throws RemoteException;
 
   /**
    * Setzt den Namen des Kontos.
@@ -204,6 +190,9 @@ public interface Konto extends UserObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
+ * Revision 1.23  2008/02/22 10:41:41  willuhn
+ * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ *
  * Revision 1.22  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *
