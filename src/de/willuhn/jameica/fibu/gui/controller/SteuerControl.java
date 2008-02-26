@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/01/03 17:55:53 $
+ * $Revision: 1.25 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,9 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -45,7 +45,7 @@ public class SteuerControl extends AbstractControl
 	private Steuer steuer = null;
 
 	// Eingabe-Felder
-  private Input mandant       = null;
+  private Input kontenrahmen   = null;
 	private Input name					= null;
 	private Input satz    			= null;
 
@@ -63,20 +63,19 @@ public class SteuerControl extends AbstractControl
   }
 
   /**
-   * Liefert ein Anzeigefeld fuer den Mandanten.
+   * Liefert ein Anzeigefeld fuer den Kontenrahmen.
    * @return Mandant.
    * @throws RemoteException
    */
-  public Input getMandant() throws RemoteException
+  public Input getKontenrahmen() throws RemoteException
   {
-    if (this.mandant != null)
-      return this.mandant;
-    Mandant m = getSteuer().getMandant();
+    if (this.kontenrahmen != null)
+      return this.kontenrahmen;
+    Kontenrahmen m = getSteuer().getKontenrahmen();
     if (m == null)
-      m = Settings.getActiveGeschaeftsjahr().getMandant();
-    this.mandant = new LabelInput(m.getFirma());
-    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
-    return this.mandant;
+      m = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    this.kontenrahmen = new LabelInput(m.getName());
+    return this.kontenrahmen;
   }
 
 	/**
@@ -94,7 +93,9 @@ public class SteuerControl extends AbstractControl
 			return steuer;
 
 		steuer = (Steuer) Settings.getDBService().createObject(Steuer.class,null);
-    steuer.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    steuer.setKontenrahmen(jahr.getKontenrahmen());
 		return steuer;
 
 	}
@@ -110,10 +111,6 @@ public class SteuerControl extends AbstractControl
 			return name;
 
     name = new TextInput(getSteuer().getName());
-    if (!getSteuer().isUserObject())
-      name.disable();
-    else
-      name.enable();
 		return name;
 	}
 
@@ -129,10 +126,6 @@ public class SteuerControl extends AbstractControl
 
     satz = new DecimalInput(getSteuer().getSatz(), Fibu.DECIMALFORMAT);
 		satz.setComment(i18n.tr("Angabe in \"%\""));
-    if (!getSteuer().isUserObject())
-      satz.disable();
-    else
-      satz.enable();
 		return satz;
 	}
 
@@ -149,13 +142,8 @@ public class SteuerControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
-    kontoauswahl = new KontoInput(list,getSteuer().getSteuerKonto());
+    kontoauswahl = new KontoInput(list,getSteuer().getKonto());
 
-    if (!getSteuer().isUserObject())
-      kontoauswahl.disable();
-    else
-      kontoauswahl.enable();
-    
     return kontoauswahl;
 	}
 
@@ -167,15 +155,9 @@ public class SteuerControl extends AbstractControl
   {
     try {
 
-      if (!getSteuer().isUserObject())
-      {
-        GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
-        return;
-      }
-
       getSteuer().setName((String)  getName().getValue());
       getSteuer().setSatz(((Double) getSatz().getValue()).doubleValue());
-      getSteuer().setSteuerKonto((Konto)getKontoAuswahl().getValue());
+      getSteuer().setKonto((Konto)getKontoAuswahl().getValue());
 
       // und jetzt speichern wir.
       getSteuer().store();
@@ -196,6 +178,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.25  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2006/01/03 17:55:53  willuhn
  * @N a lot more checks
  * @B NPEs

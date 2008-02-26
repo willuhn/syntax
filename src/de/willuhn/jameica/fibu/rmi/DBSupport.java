@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/11/05 01:02:46 $
+ * $Revision: 1.7 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,7 +178,8 @@ public interface DBSupport extends GenericObject
   
   /**
    * Liefert das Transaction-Isolation-Level.
-   * @see de.willuhn.datasource.db.DBServiceImpl#getTransactionIsolationLevel()
+   * @return Transaction-Isolation-Level
+   * @throws RemoteException 
    */
   public int getTransactionIsolationLevel() throws RemoteException;
 
@@ -187,6 +188,9 @@ public interface DBSupport extends GenericObject
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.7  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2007/11/05 01:02:46  willuhn
  * @C Transaction-Isolation-Level in SynTAX
  *

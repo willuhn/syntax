@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.27 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -32,29 +31,22 @@ import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Implementierung eines Geschaeftsjahres.
  */
-public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsjahr
+public class GeschaeftsjahrImpl extends AbstractKontenrahmenObjectImpl implements Geschaeftsjahr
 {
 
-  private transient I18N i18n  = null;
-  
   /**
    * @throws java.rmi.RemoteException
    */
   public GeschaeftsjahrImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
   }
 
   /**
@@ -155,27 +147,14 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public Mandant getMandant() throws RemoteException
   {
-    return (Mandant) this.getAttribute("mandant_id");
+    return getKontenrahmen().getMandant();
   }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
-   */
-  public void setMandant(Mandant m) throws RemoteException
-  {
-    setAttribute("mandant_id",m);
-  }
-  
 
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
   protected Class getForeignObject(String arg0) throws RemoteException
   {
-    if ("mandant_id".equals(arg0))
-      return Mandant.class;
-    if ("kontenrahmen_id".equals(arg0))
-      return Kontenrahmen.class;
     if ("vorjahr_id".equals(arg0))
       return Geschaeftsjahr.class;
     
@@ -187,8 +166,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
-    if ("this".equals(arg0))
-      return this;
     if ("name".equals(arg0))
       return Fibu.DATEFORMAT.format(getBeginn()) + " - " + Fibu.DATEFORMAT.format(getEnde());
 
@@ -202,12 +179,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     try
     {
-      if (getMandant() == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Mandanten aus"));
-
-      if (getKontenrahmen() == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
-
       Date beginn = getBeginn();
       Date ende = getEnde();
       
@@ -255,16 +226,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       {
         if (hasChanged("kontenrahmen_id"))
           throw new ApplicationException(i18n.tr("Wechsel des Kontenrahmens nicht mehr möglich, da bereits Buchungen vorliegen"));
-        
-        if (hasChanged("mandant_id"))
-          throw new ApplicationException(i18n.tr("Wechsel des Mandanten nicht mehr möglich, da bereits Buchungen vorliegen"));
-
-// Das schlaegt ggf. fehl, da die beiden Getter getBeginn und getEnde die Uhrzeit aendern
-//        if (hasChanged("beginn"))
-//          throw new ApplicationException(i18n.tr("Beginn des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
-//
-//        if (hasChanged("ende"))
-//          throw new ApplicationException(i18n.tr("Ende des Geschäftsjahres kann nicht mehr geändert werden, da bereits Buchungen vorliegen"));
       }
     }
     catch (RemoteException e)
@@ -274,22 +235,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     }
   }
   
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
-   */
-  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException
-  {
-    setAttribute("kontenrahmen_id",kontenrahmen);
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getKontenrahmen()
-   */
-  public Kontenrahmen getKontenrahmen() throws RemoteException
-  {
-    return (Kontenrahmen) getAttribute("kontenrahmen_id");
-  }
-
   /**
    * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen()
    */
@@ -549,6 +494,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.27  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.26  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *

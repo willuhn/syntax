@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.18 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,10 +19,12 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -158,8 +160,30 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
   public DBIterator getKonten() throws RemoteException
   {
     DBIterator list = getService().createList(Konto.class);
-    list.addFilter("(kontenrahmen_id = " + this.getID() + ")");
+    list.addFilter("kontenrahmen_id = " + this.getID());
     list.setOrder("order by kontonummer");
+    return list;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#getSteuersaetze()
+   */
+  public DBIterator getSteuersaetze() throws RemoteException
+  {
+    DBIterator list = getService().createList(Steuer.class);
+    list.addFilter("kontenrahmen_id = " + this.getID());
+    list.setOrder("order by name");
+    return list;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Kontenrahmen#getBuchungstemplates()
+   */
+  public DBIterator getBuchungstemplates() throws RemoteException
+  {
+    DBIterator list = getService().createList(Buchungstemplate.class);
+    list.addFilter("kontenrahmen_id = " + this.getID());
+    list.setOrder("order by name");
     return list;
   }
 
@@ -220,6 +244,9 @@ public class KontenrahmenImpl extends AbstractDBObject implements Kontenrahmen
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
+ * Revision 1.18  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2008/02/22 10:41:41  willuhn
  * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
  *

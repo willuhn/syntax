@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Kontenrahmen.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.12 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,20 @@ public interface Kontenrahmen extends DBObject
   public DBIterator getKonten() throws RemoteException;
   
   /**
+   * Liefert eine Liste aller Steuersaetze in diesem Kontenrahmen.
+   * @return Steuer-Saetze.
+   * @throws RemoteException
+   */
+  public DBIterator getSteuersaetze() throws RemoteException;
+
+  /**
+   * Liefert eine Liste aller Buchungs-Vorlagen in diesem Kontenrahmen.
+   * @return Buchungsvorlagen.
+   * @throws RemoteException
+   */
+  public DBIterator getBuchungstemplates() throws RemoteException;
+
+  /**
    * Sucht ein Konto anhand der Kontonummer.
    * @param kto Kontonummer.
    * @return das gefundene Konto oder <code>null</code>.
@@ -78,6 +92,9 @@ public interface Kontenrahmen extends DBObject
 
 /*********************************************************************
  * $Log: Kontenrahmen.java,v $
+ * Revision 1.12  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2008/02/22 10:41:41  willuhn
  * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
  *

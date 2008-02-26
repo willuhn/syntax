@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Attic/AbstractKontenrahmenObjectImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.2 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,7 +43,7 @@ public abstract class AbstractKontenrahmenObjectImpl extends AbstractDBObject im
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("kontenrahmen_id".equals(field))
       return Kontenrahmen.class;
@@ -71,15 +71,19 @@ public abstract class AbstractKontenrahmenObjectImpl extends AbstractDBObject im
    */
   protected void insertCheck() throws ApplicationException
   {
-    super.insertCheck();
     try {
-      if (getKontenrahmen() == null)
+      Kontenrahmen kr = getKontenrahmen();
+      if (kr == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
+      
+      if (kr.isSystemKontenrahmen())
+        throw new ApplicationException(i18n.tr("System-Kontenrahmen darf nicht ausgewählt werden."));
     }
     catch (RemoteException e)
     {
       throw new ApplicationException(i18n.tr("Fehler bei der Prüfung des Datensatzes."),e);
     }
+    super.insertCheck();
   }
 
   /**

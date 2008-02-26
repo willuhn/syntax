@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/23 23:41:26 $
+ * $Revision: 1.18 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -31,11 +30,9 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -75,28 +72,6 @@ public class KontoList extends TablePart
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
-
-    setFormatter(new TableFormatter()
-    {
-      /**
-       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
-       */
-      public void format(TableItem item)
-      {
-        try
-        {
-          if (item == null)
-            return;
-          Konto k = (Konto) item.getData();
-          if (k.isUserObject())
-            item.setForeground(Color.SUCCESS.getSWTColor());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to check konto",e);
-        }
-      }
-    });
   }
   
   /**
@@ -253,6 +228,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.18  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2007/04/23 23:41:26  willuhn
  * @B reset des Konten-Iterators
  *

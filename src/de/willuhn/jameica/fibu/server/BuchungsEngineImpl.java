@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.10 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,6 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           monitor.setStatusText(i18n.tr("Erzeuge neues Geschäftsjahr"));monitor.addPercentComplete(1);
           Geschaeftsjahr jahrNeu = (Geschaeftsjahr) db.createObject(Geschaeftsjahr.class,null);
           
-          jahrNeu.setMandant(m);
           jahrNeu.setKontenrahmen(jahr.getKontenrahmen());
           
           monitor.log(i18n.tr("  Berechne Dauer des Geschäftsjahres"));monitor.addPercentComplete(1);
@@ -426,8 +425,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag);                                        // Steuer-Betrag
     hb.setDatum(buchung.getDatum());                              // Datum
-    hb.setSollKonto(sSteuer != null ? sSteuer.getSteuerKonto() : sKonto);   // Das Steuer-Konto
-    hb.setHabenKonto(hSteuer != null ? hSteuer.getSteuerKonto() : hKonto);  // Haben-Konto
+    hb.setSollKonto(sSteuer != null ? sSteuer.getKonto() : sKonto);   // Das Steuer-Konto
+    hb.setHabenKonto(hSteuer != null ? hSteuer.getKonto() : hKonto);  // Haben-Konto
     hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
     hb.setText(buchung.getText());                                // Text identisch mit Haupt-Buchung
      
@@ -492,6 +491,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.10  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.9  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")

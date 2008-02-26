@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.44 $
- * $Date: 2008/02/07 23:08:39 $
+ * $Revision: 1.45 $
+ * $Date: 2008/02/26 19:13:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,7 @@ public class Fibu extends AbstractPlugin
   public final static DecimalFormat DECIMALFORMAT = new CustomDecimalFormat();
 
   /**
-   * @param file
+   * ct
    */
   public Fibu()
   {
@@ -157,7 +157,6 @@ public class Fibu extends AbstractPlugin
     if (Application.inClientMode())
       return; // Kein Update im Client-Mode oder beim ersten Start noetig.
 
-    Settings.setInUpdate(true);
     double newVersion = getManifest().getVersion();
 
     Logger.info("starting update process for syntax [" + oldVersion + " -> " + newVersion + "]");
@@ -195,15 +194,14 @@ public class Fibu extends AbstractPlugin
     {
       throw new ApplicationException(getResources().getI18N().tr("Fehler beim Update der Datenbank"),e);
     }
-    finally
-    {
-      Settings.setInUpdate(false);
-    }
   }
 }
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.45  2008/02/26 19:13:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.44  2008/02/07 23:08:39  willuhn
  * @R KontenrahmenUtil#move() entfernt - hoffnungsloses Unterfangen
  *

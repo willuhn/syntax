@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/util/KontenrahmenUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/07 23:08:39 $
+ * $Revision: 1.4 $
+ * $Date: 2008/02/26 19:13:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,10 @@
 package de.willuhn.jameica.fibu.util;
 
 import java.rmi.RemoteException;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -63,65 +62,53 @@ public class KontenrahmenUtil
       kr.setMandant(mandant);
       kr.store();
       
-      // Wir cachen die angelegten Steuersaetze um Doppler zu vermeiden
-      Hashtable steuerCache = new Hashtable();
-      Hashtable kontoCache  = new Hashtable();
-      
-      // Konten anlegen
-      if (monitor != null) monitor.setStatusText(i18n.tr("Erstelle Konten"));
-      DBIterator konten = template.getKonten();
-      konten.addFilter("mandant_id is null");
+      DBIterator konten    = template.getKonten();
+      DBIterator steuern   = template.getSteuersaetze();
+      DBIterator templates = template.getBuchungstemplates();
       
       if (monitor != null) monitor.setPercentComplete(0);
-      double factor = 100d / konten.size();
+      double factor = 100d / (konten.size() + steuern.size() + templates.size());
       int count = 0;
 
+      if (monitor != null) monitor.setStatusText(i18n.tr("Kopiere Konten"));
       while (konten.hasNext())
       {
         if (monitor != null) monitor.setPercentComplete((int)((++count) * factor));
 
-        Konto kt  = (Konto) konten.next();
-        Konto k   = (Konto) service.createObject(Konto.class,null);
+        Konto source = (Konto) konten.next();
+        Konto target = (Konto) service.createObject(Konto.class,null);
         
-        k.overwrite(kt);
-        k.setKontenrahmen(kr);
-        k.setMandant(mandant);
-
-        // ggf. vorhandener Steuersatz
-        Steuer st = (Steuer) kt.getSteuer();
-        if (st != null)
-        {
-          // checken, ob wir den Steuersatz schon angelegt haben
-          Steuer s = (Steuer) steuerCache.get(st.getID());
-          if (s == null)
-          {
-            // Haben wir noch nicht, also anlegen
-            s = (Steuer) service.createObject(Steuer.class,null);
-            s.overwrite(st);
-            s.setMandant(mandant);
-            s.store();
-            steuerCache.put(st.getID(),s);
-          }
-          k.setSteuer(s);
-        }
-        k.store();
-        kontoCache.put(kt.getID(),k);
-        if (monitor != null) monitor.addPercentComplete(1);
+        target.overwrite(source);
+        target.setKontenrahmen(kr); // Neuen Kontenrahmen angeben
+        target.store();
       }
       
-      
-      // Jetzt muessen wir noch die bei den neu angelegten
-      // Steuersaetzen hinterlegten Steuerkonten auf die
-      // neuen Konten des Mandanten umbiegen
-      Enumeration e = steuerCache.elements();
-      while (e.hasMoreElements())
+      if (monitor != null) monitor.setStatusText(i18n.tr("Kopiere Steuersätze"));
+      while (steuern.hasNext())
       {
-        Steuer s = (Steuer) e.nextElement();
-        Konto  k = (Konto) kontoCache.get(s.getSteuerKonto().getID());
-        s.setSteuerKonto(k);
-        s.store();
+        if (monitor != null) monitor.setPercentComplete((int)((++count) * factor));
+
+        Steuer source = (Steuer) steuern.next();
+        Steuer target = (Steuer) service.createObject(Steuer.class,null);
+        
+        target.overwrite(source);
+        target.setKontenrahmen(kr); // Neuen Kontenrahmen angeben
+        target.store();
       }
-      
+
+      if (monitor != null) monitor.setStatusText(i18n.tr("Kopiere Buchungsvorlagen"));
+      while (templates.hasNext())
+      {
+        if (monitor != null) monitor.setPercentComplete((int)((++count) * factor));
+
+        Buchungstemplate source = (Buchungstemplate) templates.next();
+        Buchungstemplate target = (Buchungstemplate) service.createObject(Buchungstemplate.class,null);
+        
+        target.overwrite(source);
+        target.setKontenrahmen(kr); // Neuen Kontenrahmen angeben
+        target.store();
+      }
+
       kr.transactionCommit();
       return kr;
     }
@@ -136,6 +123,9 @@ public class KontenrahmenUtil
 
 /**********************************************************************
  * $Log: KontenrahmenUtil.java,v $
+ * Revision 1.4  2008/02/26 19:13:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2008/02/07 23:08:39  willuhn
  * @R KontenrahmenUtil#move() entfernt - hoffnungsloses Unterfangen
  *
