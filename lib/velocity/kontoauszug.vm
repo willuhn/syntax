@@ -55,6 +55,7 @@
     #set($ab = $!{anfangsbestand.toString()})
 
     $math.reset("oldsaldo")
+    $math.reset("newsaldo")
     $math.add("oldsaldo",$konto.getUmsatzBefore($start))
     $math.add("newsaldo",$konto.getUmsatzAfter($end))
 
