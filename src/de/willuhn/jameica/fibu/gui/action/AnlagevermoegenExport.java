@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.11 $
+ * $Date: 2008/03/13 10:56:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,7 +93,9 @@ public class AnlagevermoegenExport extends AbstractExportAction
         Anlagevermoegen av = (Anlagevermoegen) i.next();
         if (av.getAnfangsbestand(jahr) <= 0.0)
           continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
-          list.add(av);
+        if (av.getAnschaffungsdatum().after(jahr.getEnde()))
+          continue; // Wurde in einem Folge-Jahr angeschafft
+        list.add(av);
       }
       
       Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
@@ -146,6 +148,9 @@ public class AnlagevermoegenExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.11  2008/03/13 10:56:13  willuhn
+ * @B Anlagevermoegen ignorieren, wenn es nach dem Geschaeftsjahresende angeschafft wurde
+ *
  * Revision 1.10  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")
