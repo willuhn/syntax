@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="syntax" version="1.3" class="de.willuhn.jameica.fibu.Fibu">
+<plugin name="syntax" version="1.4" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>http://www.willuhn.de/projects/syntax</url>
