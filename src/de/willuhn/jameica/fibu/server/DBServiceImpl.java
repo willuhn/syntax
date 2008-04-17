@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2007/11/05 01:02:26 $
+ * $Revision: 1.20 $
+ * $Date: 2008/04/17 23:10:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,7 +170,6 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     }
     catch (SQLException e)
     {
-      Logger.error("error while executing sql update statement \"" + sql + "\"",e);
       throw new RemoteException("error while executing sql update statement: " + e.getMessage(),e);
     }
     finally
@@ -205,6 +204,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.20  2008/04/17 23:10:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2007/11/05 01:02:26  willuhn
  * @C Transaction-Isolation-Level in SynTAX
  *
