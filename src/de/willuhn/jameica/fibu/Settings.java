@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.45.2.1 $
- * $Date: 2008/06/25 10:06:19 $
+ * $Revision: 1.45.2.2 $
+ * $Date: 2008/06/25 10:06:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -193,7 +193,7 @@ public class Settings
       return;
     
     if (gwg < 0d)
-      gwg = 410d;
+      gwg = 150d;
 
     SETTINGS.setAttribute("jahr." + jahr.getID() + ".gwg",gwg);
   }
@@ -383,6 +383,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.45.2.2  2008/06/25 10:06:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.45.2.1  2008/06/25 10:06:19  willuhn
  * @C Default-GWG-Wert aktualisiert
  *
