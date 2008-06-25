@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.44 $
- * $Date: 2008/02/07 23:08:39 $
+ * $Revision: 1.44.2.1 $
+ * $Date: 2008/06/25 09:17:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,7 +83,6 @@ public class Fibu extends AbstractPlugin
   public final static DecimalFormat DECIMALFORMAT = new CustomDecimalFormat();
 
   /**
-   * @param file
    */
   public Fibu()
   {
@@ -204,6 +203,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.44.2.1  2008/06/25 09:17:18  willuhn
+ * @N First code in 1.3 branch
+ *
  * Revision 1.44  2008/02/07 23:08:39  willuhn
  * @R KontenrahmenUtil#move() entfernt - hoffnungsloses Unterfangen
  *
