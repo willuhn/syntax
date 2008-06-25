@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.51 $
- * $Date: 2006/10/23 22:33:20 $
+ * $Revision: 1.51.2.1 $
+ * $Date: 2008/06/25 09:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,7 +234,8 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   public String getHibiscusUmsatzID() throws RemoteException
   {
-    return(String) getAttribute("hb_umsatz_id");
+    String s = (String) getAttribute("hb_umsatz_id");
+    return s == null ? null : s.trim();
   }
 
   /**
@@ -249,6 +250,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
+ * Revision 1.51.2.1  2008/06/25 09:40:02  willuhn
+ * @B Buchungsnummer wurde unter Umstaenden nicht korrekt angezeigt
+ *
  * Revision 1.51  2006/10/23 22:33:20  willuhn
  * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/04 22:19:09 $
+ * $Revision: 1.2.2.1 $
+ * $Date: 2008/06/25 09:40:02 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,9 +90,13 @@ public class UmsatzListPart implements Extension
           return null;
 
         Buchung b = (Buchung) matches.get(o.toString());
+        if (b == null)
+          return null;
         try
         {
-          return b == null ? null : Integer.toString(b.getBelegnummer());
+          String s = Integer.toString(b.getBelegnummer());
+          System.out.println("+++" + s);
+          return s;
         }
         catch (RemoteException re)
         {
@@ -110,6 +114,9 @@ public class UmsatzListPart implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListPart.java,v $
+ * Revision 1.2.2.1  2008/06/25 09:40:02  willuhn
+ * @B Buchungsnummer wurde unter Umstaenden nicht korrekt angezeigt
+ *
  * Revision 1.2  2007/04/04 22:19:09  willuhn
  * @B Umsatzliste nur erweitern, wenn GJ vorhanden
  *
