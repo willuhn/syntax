@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.45 $
- * $Date: 2006/12/27 14:42:23 $
+ * $Revision: 1.45.2.1 $
+ * $Date: 2008/06/25 10:06:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,7 +173,7 @@ public class Settings
    */
   public static double getGwgWert(Geschaeftsjahr jahr) throws RemoteException
   {
-    double gwgDef = 410d;
+    double gwgDef = 150d;
     
     if (jahr == null)
       return gwgDef;
@@ -383,6 +383,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.45.2.1  2008/06/25 10:06:19  willuhn
+ * @C Default-GWG-Wert aktualisiert
+ *
  * Revision 1.45  2006/12/27 14:42:23  willuhn
  * @N Update fuer MwSt.-Erhoehung
  *
