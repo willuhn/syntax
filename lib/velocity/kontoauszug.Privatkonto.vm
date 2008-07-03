@@ -1,1 +1,1 @@
-#parse("kontoauszug.netto.vm")
+#parse("kontoauszug.brutto.vm")
