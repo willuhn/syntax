@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.8.2.1 $
+ * $Date: 2008/07/03 09:56:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -80,6 +80,7 @@ public class AnlagevermoegenList extends TablePart
   private static DBIterator init() throws RemoteException
   {
     DBIterator list = Settings.getDBService().createList(Anlagevermoegen.class);
+    list.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
     list.setOrder("order by anschaffungsdatum desc");
     return list;
   }
@@ -88,6 +89,9 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.8.2.1  2008/07/03 09:56:04  willuhn
+ * @C Nur Anlagevermoegen des aktiven Mandanten anzeigen
+ *
  * Revision 1.8  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *
