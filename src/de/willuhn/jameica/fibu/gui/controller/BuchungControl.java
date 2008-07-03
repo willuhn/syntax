@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.69 $
- * $Date: 2006/10/10 22:30:07 $
+ * $Revision: 1.69.2.1 $
+ * $Date: 2008/07/03 10:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,7 +137,13 @@ public class BuchungControl extends AbstractControl
   {
     if (this.template != null)
       return this.template;
+    
     DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
+    
+    list.addFilter("(mandant_id is null or mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID() + ")");
+    list.addFilter("(kontenrahmen_id is null or kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID() + ")");
+    list.setOrder("order by name");
+
     if (list.size() == 0)
     {
       this.template = new LabelInput(i18n.tr("Keine Buchungsvorlagen vorhanden"));
@@ -691,6 +697,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.69.2.1  2008/07/03 10:37:08  willuhn
+ * @N Effektivere Erzeugung neuer Buchungsnummern
+ * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
+ *
  * Revision 1.69  2006/10/10 22:30:07  willuhn
  * @C DialogInput gegen DateInput ersetzt
  *

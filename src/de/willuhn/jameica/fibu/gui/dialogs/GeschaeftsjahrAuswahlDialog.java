@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/GeschaeftsjahrAuswahlDialog.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2008/07/03 10:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,10 +71,16 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
   {
     LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl"));
 			
-    // Wir laden per Default den ersten Mandanten, den wir finden
-    DBIterator list = Settings.getDBService().createList(Mandant.class);
-    if (list.hasNext())
-      mandant = (Mandant) list.next();
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    if (jahr != null)
+      mandant = jahr.getMandant();
+    else
+    {
+      // Wir laden per Default den ersten Mandanten, den wir finden
+      DBIterator list = Settings.getDBService().createList(Mandant.class);
+      if (list.hasNext())
+        mandant = (Mandant) list.next();
+    }
 
     group.addText(i18n.tr("Bitte wählen Sie Mandant und Geschäftsjahr."),true);
 
@@ -89,7 +95,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
           mandant = (Mandant) event.data;
           choosen = null;
           
-          ma.setValue(mandant.getFirma());
+          ma.setText(mandant.getFirma());
           ma.setComment(i18n.tr("Steuernummer: {0}",mandant.getSteuernummer()));
           if (jahre != null)
             jahre.removeAll();
@@ -169,6 +175,10 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: GeschaeftsjahrAuswahlDialog.java,v $
+ * Revision 1.4.2.1  2008/07/03 10:37:08  willuhn
+ * @N Effektivere Erzeugung neuer Buchungsnummern
+ * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
+ *
  * Revision 1.4  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/01/09 01:52:40 $
+ * $Revision: 1.23.2.1 $
+ * $Date: 2008/07/03 10:37:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,11 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
-import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -112,12 +114,20 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   private int createBelegnummer() throws RemoteException
   {
-    // TODO Create Belegnummer noch nicht schoen
-    DBIterator iterator = this.getList();
-    iterator.setOrder("order by id desc");
-    if (!iterator.hasNext())
-      return 1;
-    return ((BaseBuchung) iterator.next()).getBelegnummer() + 1;
+    Geschaeftsjahr jahr = getGeschaeftsjahr();
+    if (jahr == null)
+      return 1; // Kein Geschaeftsjahr, keine Buchungsnummer
+    
+      Number n = (Number) getService().execute("select max(belegnummer)+1 from buchung where geschaeftsjahr_id = " + jahr.getID(),new Object[0],new ResultSetExtractor() {
+      public Object extract(ResultSet rs) throws RemoteException, SQLException
+      {
+        if (rs.next())
+          return rs.getObject(1);
+        return new Integer(1);
+      }
+    
+    });
+    return n == null ? 1 : n.intValue();
   }
   
   /**
@@ -217,6 +227,10 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.23.2.1  2008/07/03 10:37:08  willuhn
+ * @N Effektivere Erzeugung neuer Buchungsnummern
+ * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
+ *
  * Revision 1.23  2006/01/09 01:52:40  willuhn
  * *** empty log message ***
  *
