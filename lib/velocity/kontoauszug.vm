@@ -37,7 +37,8 @@
       <th>Gegenkonto</th>
     </tr>
 
-    #parse("kontoauszug.$!{konto.KontoArt.Name}.vm")
+    #set($filenames = $!{export.getObjects("filenames")})
+    #parse("kontoauszug.${filenames.get(${konto.KontoArt.Name})}.vm")
 
     <tr>
       <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
@@ -51,16 +52,17 @@
   <table>
 
     #set($anfangsbestand = "")
-    #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
+    #if(${konto.getAnfangsbestand(${jahr})})
+      #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
+    #end
     #set($ab = $!{anfangsbestand.toString()})
 
     $math.reset("oldsaldo")
     $math.add("oldsaldo",$konto.getUmsatzBefore($start))
-    $math.add("newsaldo",$konto.getUmsatzAfter($end))
 
     #if($ab != "")
       $math.add("oldsaldo",${anfangsbestand})
-      $math.add("newsaldo",${anfangsbestand})
+      $math.add("umsatz",${anfangsbestand})
       <tr>
         <td style="color:#909090">Anfangsbestand (zum $!{dateformat.format(${jahr.Beginn})}):</td>
         <td style="color:#909090;text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
@@ -78,7 +80,7 @@
 
     <tr>
       <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand (zum $!{dateformat.format(${end})}):</td>
-      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("newsaldo"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($konto.getUmsatzAfter($end))} ${eur}</b></td>
     </tr>
   </table>
 

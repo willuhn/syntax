@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.15 $
- * $Date: 2007/01/04 12:58:50 $
+ * $Revision: 1.15.2.1 $
+ * $Date: 2008/07/09 10:15:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -40,6 +42,18 @@ import de.willuhn.util.I18N;
  */
 public class KontoExport extends AbstractExportAction
 {
+  private static Map filenameMap = new HashMap();
+  
+  static
+  {
+    filenameMap.put("Anlagevermögen"    ,"anlagevermoegen");
+    filenameMap.put("Aufwände"          ,"aufwaende");
+    filenameMap.put("Erlöse"            ,"erloese");
+    filenameMap.put("Geldkonto"         ,"geldkonto");
+    filenameMap.put("Privatkonto"       ,"privatkonto");
+    filenameMap.put("Steuer-Sammelkonto","steuer-sammelkonto");
+  }
+  
   private I18N i18n = null;
   
   /**
@@ -113,6 +127,7 @@ public class KontoExport extends AbstractExportAction
       export.addObject("end",getEnd());
       export.addObject("startkonto",getStartKonto());
       export.addObject("endkonto",getEndKonto());
+      export.addObject("filenames",filenameMap);
 
       Date start = getStart();
       Date end = getEnd();
@@ -169,6 +184,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.15.2.1  2008/07/09 10:15:18  willuhn
+ * @B Umlaut-Problem in Dateinamen gefixt
+ *
  * Revision 1.15  2007/01/04 12:58:50  willuhn
  * @B wrong type for kontonummer
  *
