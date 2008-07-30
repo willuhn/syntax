@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.9.2.1 $
+ * $Date: 2008/07/30 08:43:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,12 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           check.addFilter(jahrNeu.getBeginn().getTime() + " < " + db.getSQLTimestamp("ende"));
           check.addFilter(jahrNeu.getEnde().getTime() + " > " + db.getSQLTimestamp("beginn"));
           if (check.hasNext())
-            throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
+          {
+            if (!Settings.SETTINGS.getBoolean("gj.close.use-existing",false))
+              throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
+            jahrNeu = (Geschaeftsjahr) check.next();
+            monitor.log(i18n.tr("  Verwende bereits existierendes Geschäftsjahr {0}",(String) jahrNeu.getAttribute(jahrNeu.getPrimaryAttribute())));
+          }
 
           jahrNeu.setVorjahr(jahr);
           jahrNeu.store();
@@ -492,6 +497,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.9.2.1  2008/07/30 08:43:20  willuhn
+ * @N Wiederverwenden eines existierenden Geschaeftsjahres beim Abschluss, falls "gj.close.use-existing=true"
+ *
  * Revision 1.9  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")
