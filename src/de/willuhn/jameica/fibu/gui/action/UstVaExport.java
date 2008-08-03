@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/UstVaExport.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2008/08/03 23:02:47 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2008/08/03 23:10:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -120,7 +120,7 @@ public class UstVaExport extends AbstractExportAction
       export.addObject("erloes",erloese);
       export.addObject("ust",new Double(ust));
       export.addObject("vst",new Double(vst));
-      export.addObject("betrag",new Double(vst - ust));
+      export.addObject("betrag",new Double(ust - vst));
       
       export.addObject("jahr",jahr);
       export.addObject("start",getStart());
@@ -179,6 +179,9 @@ public class UstVaExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: UstVaExport.java,v $
+ * Revision 1.1.2.2  2008/08/03 23:10:44  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1.2.1  2008/08/03 23:02:47  willuhn
  * @N UST-Voranmeldung
  * @B Typos
