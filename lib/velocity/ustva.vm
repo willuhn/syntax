@@ -1,0 +1,68 @@
+#set($erloes  = $!{export.getObjects("erloes")})
+#set($betrag  = $!{export.getObjects("betrag")})
+#set($ust     = $!{export.getObjects("ust")})
+#set($vst     = $!{export.getObjects("vst")})
+
+#set($start = $!{export.getObjects("start")})
+#set($end = $!{export.getObjects("end")})
+
+#if($start)
+  #if($end)
+    <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
+    <br/>
+  #end
+#end
+
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Kz</th>
+    <th style="text-align:right">Bemessungsgrundlage</th>
+    <th>Kz</th>
+    <th style="text-align:right">Steuer</th>
+  </tr>
+  <tr><td colspan="5">&nbsp;</td></tr>
+  <tr>
+    <td colspan="5"><h2>Steuerpflichtige Umsätze</h2></td>
+  </tr>
+  <tr>
+    <td>zum Steuersatz von 19 v.H.</td>
+    <td>81</td>
+    <td style="text-align:right">$!{decimalformat.format(${erloes.get("19.0")})} ${eur}</td>
+    <td>&nbsp;</td>
+    <td style="text-align:right">$!{decimalformat.format($ust)} ${eur}</td>
+  </tr>
+  #set($erlErm = $!{decimalformat.format(${erloes.get("7.0")})})
+  #if($erlErm != "0,00")
+    <tr>
+      <td>zum Steuersatz von 7 v.H.</td>
+      <td>35</td>
+      <td style="text-align:right">$erlErm ${eur}</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  #end
+  <tr><td colspan="5">&nbsp;</td></tr>
+  <tr>
+    <td colspan="5"><h2>Abziehbare Vorsteuer</h2></td>
+  </tr>
+  <tr>
+    <td>Vorsteuerbeträge</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>66</td>
+    <td style="text-align:right">$!{decimalformat.format($vst)} ${eur}</td>
+  </tr>
+  <tr><td colspan="5">&nbsp;</td></tr>
+  <tr>
+    <td colspan="5"><h2>Verbleibende Umsatzsteuer-Vorauszahlung</h2></td>
+  </tr>
+  <tr>
+    <td><b><u>Verbleibender Überschuss</u></b></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>83</td>
+    <td style="text-align:right"><b><u>$!{decimalformat.format($betrag)} ${eur}</u></b></td>
+  </tr>
+</table>

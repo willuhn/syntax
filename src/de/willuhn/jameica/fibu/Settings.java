@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.45.2.2 $
- * $Date: 2008/06/25 10:06:51 $
+ * $Revision: 1.45.2.3 $
+ * $Date: 2008/08/03 23:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,7 +116,7 @@ public class Settings
    * @return das Konto oder <code>null</code> wenn noch keines definiert ist.
    * @throws RemoteException
    */
-  public static Konto getAbschreibunsgKonto(Geschaeftsjahr jahr, boolean gwg) throws RemoteException
+  public static Konto getAbschreibungsKonto(Geschaeftsjahr jahr, boolean gwg) throws RemoteException
   {
     if (jahr == null)
       return null;
@@ -383,6 +383,11 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.45.2.3  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.45.2.2  2008/06/25 10:06:51  willuhn
  * *** empty log message ***
  *

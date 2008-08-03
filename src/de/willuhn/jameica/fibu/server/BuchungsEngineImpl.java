@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.9.2.1 $
- * $Date: 2008/07/30 08:43:20 $
+ * $Revision: 1.9.2.2 $
+ * $Date: 2008/08/03 23:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -297,7 +297,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     // oder 2b) Das Abschreibungskonto ist das in den Einstellungen hinterlegte GWG-Abschreibungskonto
     if (av.getNutzungsdauer() == 1)
     {
-      Konto gwgKonto = Settings.getAbschreibunsgKonto(jahr,true);
+      Konto gwgKonto = Settings.getAbschreibungsKonto(jahr,true);
       
       gwg  = (gwgKonto != null && gwgKonto.getKontonummer().equals(afaKonto.getKontonummer()));
       gwg |=  anschaffung <= Settings.getGwgWert(jahr);
@@ -497,6 +497,11 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.9.2.2  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.9.2.1  2008/07/30 08:43:20  willuhn
  * @N Wiederverwenden eines existierenden Geschaeftsjahres beim Abschluss, falls "gj.close.use-existing=true"
  *

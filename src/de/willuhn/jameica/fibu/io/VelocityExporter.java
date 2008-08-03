@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/10/07 19:34:23 $
+ * $Revision: 1.8.2.1 $
+ * $Date: 2008/08/03 23:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ import de.willuhn.util.I18N;
 public class VelocityExporter
 {
 
-  private static I18N i18n        = null;
+  private static I18N i18n        = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
    * Exportiert die Daten in den angegebenen OutputStream.
@@ -78,7 +78,7 @@ public class VelocityExporter
     catch (Exception e)
     {
       Logger.error("error while writing into velocity file " + template,e);
-      throw new ApplicationException(i18n.tr("Fehler beim Schreiben in die Export-Datei"));
+      throw new ApplicationException(i18n.tr("Fehler beim Erzeugen der Export-Datei: {0}",e.getMessage()));
     }
     finally
     {
@@ -100,6 +100,11 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8.2.1  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.8  2006/10/07 19:34:23  willuhn
  * *** empty log message ***
  *

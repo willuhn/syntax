@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Einstellungen.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/03 23:58:36 $
+ * $Revision: 1.3.2.1 $
+ * $Date: 2008/08/03 23:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,8 +45,8 @@ public class Einstellungen extends AbstractView
     final EinstellungenControl control = new EinstellungenControl(this);
 
     LabelGroup group = new LabelGroup(getParent(),i18n.tr("Buchungsrelevante Einstellungen"));
-    group.addLabelPair(i18n.tr("Vorgabe Abschreibunsgkonto"),control.getAbschreibungsKonto());
-    group.addLabelPair(i18n.tr("Vorgabe Abschreibunsgkonto für GWG"),control.getAbschreibungsKontoGWG());
+    group.addLabelPair(i18n.tr("Vorgabe Abschreibungskonto"),control.getAbschreibungsKonto());
+    group.addLabelPair(i18n.tr("Vorgabe Abschreibungskonto für GWG"),control.getAbschreibungsKontoGWG());
     group.addLabelPair(i18n.tr("Nettogrenze GWG"),control.getGwgWert());
 
     ButtonArea buttonArea = group.createButtonArea(2);
@@ -73,6 +73,11 @@ public class Einstellungen extends AbstractView
 
 /*********************************************************************
  * $Log: Einstellungen.java,v $
+ * Revision 1.3.2.1  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.3  2006/01/03 23:58:36  willuhn
  * @N Afa- und GWG-Handling
  *
