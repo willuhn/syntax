@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenExport.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.10.2.1 $
+ * $Date: 2008/08/04 22:33:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,107 +13,48 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Program;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Exporter fuer Uebersicht des Anlagevermoegens.
  */
 public class AnlagevermoegenExport extends AbstractExportAction
 {
-  private I18N i18n = null;
-  
   /**
-   * ct.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
    */
-  public AnlagevermoegenExport()
-  {
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
-  public void handleAction(Object context) throws ApplicationException
+  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
   {
     Geschaeftsjahr jahr = null;
     if (context != null && context instanceof Geschaeftsjahr)
-    {
       jahr = (Geschaeftsjahr) context;
-      
-    }
     else
+      jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+    
+    // Liste des Anlagevermoegens ermitteln
+    ArrayList list = new ArrayList();
+    DBIterator i = de.willuhn.jameica.fibu.Settings.getDBService().createList(Anlagevermoegen.class);
+    while (i.hasNext())
     {
-      try
-      {
-        jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("unable to determine active geschaeftsjahr",e);
-        throw new ApplicationException(i18n.tr("Aktuelles Geschäftsjahr kann nicht ermittelt werden"));
-      }
+      Anlagevermoegen av = (Anlagevermoegen) i.next();
+      if (av.getAnfangsbestand(jahr) <= 0.0)
+        continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
+        list.add(av);
     }
     
-    File file = null;
-    try
-    {
-      file = storeTo(getOutputFile());
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.info("operation cancelled");
-      return;
-    }
-    
-    try
-    {
-      // Liste des Anlagevermoegens ermitteln
-      ArrayList list = new ArrayList();
-      DBIterator i = de.willuhn.jameica.fibu.Settings.getDBService().createList(Anlagevermoegen.class);
-      while (i.hasNext())
-      {
-        Anlagevermoegen av = (Anlagevermoegen) i.next();
-        if (av.getAnfangsbestand(jahr) <= 0.0)
-          continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
-          list.add(av);
-      }
-      
-      Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
-      Export export = new Export();
-      export.addObject("anlagevermoegen",av);
-      export.addObject("jahr",jahr);
-      export.setTarget(new FileOutputStream(file));
-      export.setTitle(getName());
-      export.setTemplate(getTemplate());
-
-      VelocityExporter.export(export);
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
-      new Program().handleAction(file);
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
-    }
+    Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
+    export.addObject("anlagevermoegen",av);
+    export.addObject("jahr",jahr);
+    export.setTemplate("anlagevermoegen.vm");
   }
 
   /**
@@ -125,27 +66,21 @@ public class AnlagevermoegenExport extends AbstractExportAction
   }
   
   /**
-   * Liefert den Namen des Templates.
-   * @return Dateiname des Templates.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
    */
-  String getTemplate()
+  protected String getFilename()
   {
-    return "anlagevermoegen.vm";
-  }
-  
-  /**
-   * Liefert den vorzuschlagenden Dateinamen fuer den Report.
-   * @return Dateiname.
-   */
-  String getOutputFile()
-  {
-    return i18n.tr("fibu-anlagevermoegen-{0}.html",Fibu.FASTDATEFORMAT.format(new Date()));    
+    return i18n.tr("syntax-{0}-av.html",DATEFORMAT.format(new Date()));    
   }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenExport.java,v $
+ * Revision 1.10.2.1  2008/08/04 22:33:16  willuhn
+ * @N UST-Voranmeldung aufgehuebscht ;)
+ * @C Redesign Exporter
+ *
  * Revision 1.10  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/UstVaExport.java,v $
- * $Revision: 1.1.2.2 $
- * $Date: 2008/08/03 23:10:44 $
+ * $Revision: 1.1.2.3 $
+ * $Date: 2008/08/04 22:33:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,136 +13,99 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Program;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Exporter fuer die Auswertung zur UST-Voranmeldung.
  */
 public class UstVaExport extends AbstractExportAction
 {
-  private I18N i18n = null;
+  private static Map kennzeichen = new HashMap();
+  static
+  {
+    kennzeichen.put(new Double(0d), "48");
+    kennzeichen.put(new Double(19d),"81");
+    kennzeichen.put(new Double(7d), "86");
+    kennzeichen.put(null, "35");
+  }
+
   private Geschaeftsjahr jahr = null;
   
   /**
-   * ct.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
    */
-  public UstVaExport()
+  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
   {
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
+    if (context != null && (context instanceof Geschaeftsjahr))
+      jahr = (Geschaeftsjahr) context;
+    else
+      jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+      
+    DBIterator konten = jahr.getKontenrahmen().getKonten();
 
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
-  public void handleAction(Object context) throws ApplicationException
-  {
-    File file = null;
-    try
+    double vst = 0.0d;
+
+    Hashtable erloese = new Hashtable();
+
+    while (konten.hasNext())
     {
-      file = storeTo(i18n.tr("fibu-ust-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.info("operation cancelled");
-      return;
+      Konto kt = (Konto) konten.next();
+      int type = kt.getKontoArt().getKontoArt();
+      switch (type)
+      {
+        case Kontoart.KONTOART_ERLOES:
+          Steuer st = kt.getSteuer();
+          Double satz = new Double(st != null ? st.getSatz() : 0.0d);
+
+          Erloes e = (Erloes) erloese.get(satz);
+          if (e == null)
+          {
+            e = new Erloes(satz.doubleValue());
+            erloese.put(satz,e);
+          }
+          e.add(getUmsatz(kt));
+          break;
+        case Kontoart.KONTOART_STEUER:
+          Kontotyp ktyp = kt.getKontoTyp();
+          if (ktyp != null && ktyp.getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE)
+            vst += getUmsatz(kt);
+          break;
+      }
     }
     
-    try
+    // Wir fischen jetzt noch die UST-Gruppen raus, in denen keine Umsaetze vorliegen
+    ArrayList list = new ArrayList();
+    Iterator i = erloese.values().iterator();
+    while (i.hasNext())
     {
-      if (context != null && (context instanceof Geschaeftsjahr))
-        jahr = (Geschaeftsjahr) context;
-      else
-        jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+      Erloes e = (Erloes) i.next();
+      if (e.getBemessungsgrundlage() > 0.0d)
+        list.add(e);
+    }
       
-      DBIterator konten = jahr.getKontenrahmen().getKonten();
-
-      double vst     = 0.0d;
-      double ust     = 0.0d;
-
-      Hashtable erloese = new Hashtable();
-
-      while (konten.hasNext())
-      {
-        Konto kt = (Konto) konten.next();
-        int type = kt.getKontoArt().getKontoArt();
-        switch (type)
-        {
-          case Kontoart.KONTOART_ERLOES:
-            String satz = "0.0";
-            Steuer st = kt.getSteuer();
-            if (st != null)
-              satz = Double.toString(st.getSatz());
-            Double betrag = (Double) erloese.get(satz);
-            if (betrag == null)
-              betrag = new Double(0.0d);
-
-            betrag = new Double(betrag.doubleValue() + getUmsatz(kt));
-            erloese.put(satz,betrag);
-            break;
-          case Kontoart.KONTOART_STEUER:
-            Kontotyp ktyp = kt.getKontoTyp();
-            if (ktyp == null)
-              Logger.warn("SUSPEKT: Steuerkonto " + kt.getKontonummer() + " besitzt keinen Konto-Typ");
-            else if (ktyp.getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME)
-              ust += getUmsatz(kt);
-            else if (ktyp.getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE)
-              vst += getUmsatz(kt);
-            else
-              Logger.warn("SUSPEKT: Steuerkonto " + kt.getKontonummer() + " besitzt einen ungueltigen Konto-Typ");
-
-            break;
-        }
-      }
-        
-      Export export = new Export();
-      export.addObject("erloes",erloese);
-      export.addObject("ust",new Double(ust));
-      export.addObject("vst",new Double(vst));
-      export.addObject("betrag",new Double(ust - vst));
-      
-      export.addObject("jahr",jahr);
-      export.addObject("start",getStart());
-      export.addObject("end",getEnd());
-      export.setTarget(new FileOutputStream(file));
-      export.setTitle(getName());
-      export.setTemplate("ustva.vm");
-
-      VelocityExporter.export(export);
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
-      new Program().handleAction(file);
-    }
-    catch (ApplicationException ae)
-    {
-      throw ae;
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
-    }
+    Collections.sort(list);
+    export.addObject("erloese",list.toArray(new Erloes[list.size()]));
+    export.addObject("vst",new Double(vst));
+    export.addObject("jahr",jahr);
+    export.setTemplate("ustva.vm");
   }
   
   /**
@@ -174,11 +137,119 @@ public class UstVaExport extends AbstractExportAction
   {
     return i18n.tr("Umsatzsteuer-Voranmeldung");
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
+   */
+  protected String getFilename()
+  {
+    return i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date()));
+  }
+  
+  /**
+   * Hilfsklasse zum Gruppieren der Erloese nach Steuerklasse.
+   */
+  public class Erloes implements Comparable
+  {
+    private double satz = 0.0d;
+    private double summe = 0.0d;
+    
+    /**
+     * ct.
+     * @param satz Steuersatz.
+     */
+    private Erloes(double satz)
+    {
+      this.satz = satz;
+    }
+    
+    /**
+     * Fuegt einen weiteren Betrag hinzu.
+     * @param value der Betrag.
+     */
+    private void add(double value)
+    {
+      this.summe += value;
+    }
+    
+    /**
+     * Liefert die Summe der Erloese abgerundet auf volle Euro.
+     * @return Summe.
+     */
+    public double getBemessungsgrundlage()
+    {
+      return Math.floor(this.summe);
+    }
+    
+    /**
+     * Liefert den Steuerbetrag basierend auf Steuersatz und Bemessungsgrundlage.
+     * @return Steuerbetrag.
+     */
+    public double getSteuer()
+    {
+      return this.getBemessungsgrundlage() / 100d * this.satz;
+    }
+    
+    /**
+     * Liefert das Kennzeichen der Steuerklasse.
+     * @return Kennzeichen.
+     */
+    public String getKennzeichen()
+    {
+      String kz = (String) kennzeichen.get(new Double(this.satz));
+      return kz != null ? kz : (String) kennzeichen.get(null);
+    }
+    
+    /**
+     * Liefert die Bezeichnung der Erloes-Kategorie.
+     * @return Bezeichnung der Erloes-Kategorie.
+     */
+    public String getName()
+    {
+      return i18n.tr("zum Steuersatz von {0}%",Integer.toString((int)satz));
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object other)
+    {
+      if (this == other)
+        return true;
+      
+      if (other == null || !(other instanceof Erloes))
+        return false;
+      
+      return this.satz == ((Erloes)other).satz;
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode()
+    {
+      return new Double(this.satz).hashCode();
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o)
+    {
+      if (o == null || !(o instanceof Erloes))
+        return -1;
+      return Double.compare(this.satz,((Erloes)o).satz);
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: UstVaExport.java,v $
+ * Revision 1.1.2.3  2008/08/04 22:33:16  willuhn
+ * @N UST-Voranmeldung aufgehuebscht ;)
+ * @C Redesign Exporter
+ *
  * Revision 1.1.2.2  2008/08/03 23:10:44  willuhn
  * *** empty log message ***
  *

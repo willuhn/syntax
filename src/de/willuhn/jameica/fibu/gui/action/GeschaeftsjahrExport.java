@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/GeschaeftsjahrExport.java,v $
- * $Revision: 1.7 $
- * $Date: 2005/10/06 22:50:32 $
+ * $Revision: 1.7.2.1 $
+ * $Date: 2008/08/04 22:33:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,74 +13,29 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.rmi.RemoteException;
 import java.util.Date;
 
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Program;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Exporter fuer Uebersicht die Uberschuss-Rechnung.
  */
 public class GeschaeftsjahrExport extends AbstractExportAction
 {
-  private I18N i18n;
-  
   /**
-   * ct.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
    */
-  public GeschaeftsjahrExport()
-  {
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
-  public void handleAction(Object context) throws ApplicationException
+  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
   {
     if (context == null || !(context instanceof Geschaeftsjahr))
-      return;
+      throw new ApplicationException("Kein Geschäftsjahr angegeben");
     
-    File file = null;
-    try
-    {
-      file = storeTo(i18n.tr("fibu-ueberschussrechnung-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.info("operation cancelled");
-      return;
-    }
-
-    try
-    {
-      Export export = new Export();
-      export.addObject("jahr",context);
-      export.setTarget(new FileOutputStream(file));
-      export.setTitle(getName());
-      export.setTemplate("ueberschussrechnung.vm");
-
-      VelocityExporter.export(export);
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
-      new Program().handleAction(file);
-    }
-    catch (Exception e)
-    {
-      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
-    }
+    export.addObject("jahr",context);
+    export.setTemplate("ueberschussrechnung.vm");
   }
 
   /**
@@ -90,11 +45,23 @@ public class GeschaeftsjahrExport extends AbstractExportAction
   {
     return i18n.tr("Überschuss-Rechnung");
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
+   */
+  protected String getFilename()
+  {
+    return i18n.tr("syntax-{0}-einnahme-ueberschuss.html",DATEFORMAT.format(new Date()));
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrExport.java,v $
+ * Revision 1.7.2.1  2008/08/04 22:33:16  willuhn
+ * @N UST-Voranmeldung aufgehuebscht ;)
+ * @C Redesign Exporter
+ *
  * Revision 1.7  2005/10/06 22:50:32  willuhn
  * @N auswertungen
  *

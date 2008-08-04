@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/BuchungListExport.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/05/30 23:33:09 $
+ * $Revision: 1.9.2.1 $
+ * $Date: 2008/08/04 22:33:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,117 +13,54 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Program;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Exporter fuer das Buchungsjournal.
  */
 public class BuchungListExport extends AbstractExportAction
 {
-  private I18N i18n = null;
-  
   /**
-   * ct.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
    */
-  public BuchungListExport()
-  {
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-  
-  /**
-   * Erwartet null oder ein Geschaeftsjahr.
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
-  public void handleAction(Object context) throws ApplicationException
+  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
   {
     Geschaeftsjahr jahr = null;
     if (context != null && context instanceof Geschaeftsjahr)
-    {
       jahr = (Geschaeftsjahr) context;
-      
-    }
     else
-    {
-      try
-      {
-        jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
-      }
-      catch (RemoteException e)
-      {
-        Logger.error("unable to determine active geschaeftsjahr",e);
-        throw new ApplicationException(i18n.tr("Aktuelles Geschäftsjahr kann nicht ermittelt werden"));
-      }
-    }
+      jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
 
-    File file = null;
-    try
+    DBIterator list = jahr.getHauptBuchungen();
+    list.setOrder("order by datum");
+    Buchung[] b = new Buchung[list.size()];
+    int count = 0;
+    while (list.hasNext())
     {
-      file = storeTo(i18n.tr("fibu-buchungsjournal-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
-    }
-    catch (OperationCanceledException oce)
-    {
-      Logger.info("operation cancelled");
-      return;
+      b[count++] = (Buchung) list.next();
     }
     
-    try
+    list = jahr.getAnfangsbestaende();
+    Anfangsbestand[] ab = new Anfangsbestand[list.size()];
+    count = 0;
+    while (list.hasNext())
     {
-
-      DBIterator list = jahr.getHauptBuchungen();
-      list.setOrder("order by datum");
-      Buchung[] b = new Buchung[list.size()];
-      int count = 0;
-      while (list.hasNext())
-      {
-        b[count++] = (Buchung) list.next();
-      }
-      
-      list = jahr.getAnfangsbestaende();
-      Anfangsbestand[] ab = new Anfangsbestand[list.size()];
-      count = 0;
-      while (list.hasNext())
-      {
-        ab[count++] = (Anfangsbestand) list.next();
-      }
-
-      Export export = new Export();
-      export.addObject("buchungen",b);
-      export.addObject("anfangsbestaende",ab);
-      export.addObject("jahr",jahr);
-      export.addObject("start",getStart());
-      export.addObject("end",getEnd());
-      export.setTarget(new FileOutputStream(file));
-      export.setTitle(getName());
-      export.setTemplate("buchungsjournal.vm");
-
-      VelocityExporter.export(export);
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
-      new Program().handleAction(file);
+      ab[count++] = (Anfangsbestand) list.next();
     }
-    catch (Exception e)
-    {
-      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
-    }
+
+    export.addObject("buchungen",b);
+    export.addObject("anfangsbestaende",ab);
+    export.addObject("jahr",jahr);
+    export.setTemplate("buchungsjournal.vm");
   }
 
   /**
@@ -133,11 +70,23 @@ public class BuchungListExport extends AbstractExportAction
   {
     return i18n.tr("Buchungsjournal");
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
+   */
+  protected String getFilename()
+  {
+    return i18n.tr("syntax-{0}-journal.html",DATEFORMAT.format(new Date()));
+  }
 }
 
 
 /*********************************************************************
  * $Log: BuchungListExport.java,v $
+ * Revision 1.9.2.1  2008/08/04 22:33:16  willuhn
+ * @N UST-Voranmeldung aufgehuebscht ;)
+ * @C Redesign Exporter
+ *
  * Revision 1.9  2006/05/30 23:33:09  willuhn
  * *** empty log message ***
  *

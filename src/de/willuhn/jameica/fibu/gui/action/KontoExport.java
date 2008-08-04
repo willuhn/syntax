@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.15.2.1 $
- * $Date: 2008/07/09 10:15:18 $
+ * $Revision: 1.15.2.2 $
+ * $Date: 2008/08/04 22:33:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,7 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,20 +21,13 @@ import java.util.Map;
 import java.util.Vector;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.VelocityExporter;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Program;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.I18N;
 
 /**
  * Exporter fuer Konten.
@@ -54,122 +46,80 @@ public class KontoExport extends AbstractExportAction
     filenameMap.put("Steuer-Sammelkonto","steuer-sammelkonto");
   }
   
-  private I18N i18n = null;
-  
   /**
-   * ct.
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
    */
-  public KontoExport()
-  {
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
-   */
-  public void handleAction(Object context) throws ApplicationException
+  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
   {
     if (context == null)
       throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens ein Konto/Geschäftsjahr aus"));
 
-    File file = null;
-    try
+    Geschaeftsjahr jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+
+    Konto[] k = null;
+    if (context instanceof Konto)
     {
-      file = storeTo(i18n.tr("fibu-kontoauszug-{0}.html",Fibu.FASTDATEFORMAT.format(new Date())));
+      k = new Konto[1];
+      k[0] = (Konto) context;
     }
-    catch (OperationCanceledException oce)
+    else if (context instanceof Konto[])
     {
-      Logger.info("operation cancelled");
-      return;
+      k = (Konto[]) context;
     }
-    
-    try
+    else if (context instanceof Geschaeftsjahr)
     {
-      Export export = new Export();
+      jahr = (Geschaeftsjahr) context;
+      DBIterator konten = jahr.getKontenrahmen().getKonten();
 
-      Geschaeftsjahr jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
+      Konto start = getStartKonto();
+      Konto end = getEndKonto();
+      if (start != null) konten.addFilter("kontonummer >= ?", new String[]{start.getKontonummer()});
+      if (end != null) konten.addFilter("kontonummer <= ?", new String[]{end.getKontonummer()});
 
-      Konto[] k = null;
-      if (context instanceof Konto)
+      ArrayList l = new ArrayList();
+      while (konten.hasNext())
       {
-        k = new Konto[1];
-        k[0] = (Konto) context;
+        Konto k1 = (Konto) konten.next();
+        Anfangsbestand ab = k1.getAnfangsbestand(jahr);
+        if (k1.getUmsatz(jahr) == 0.0d && (ab == null || ab.getBetrag() == 0.0d))
+          continue;
+        l.add(k1);
       }
-      else if (context instanceof Konto[])
-      {
-        k = (Konto[]) context;
-      }
-      else if (context instanceof Geschaeftsjahr)
-      {
-        jahr = (Geschaeftsjahr) context;
-        DBIterator konten = jahr.getKontenrahmen().getKonten();
-
-        Konto start = getStartKonto();
-        Konto end = getEndKonto();
-        if (start != null) konten.addFilter("kontonummer >= ?", new String[]{start.getKontonummer()});
-        if (end != null) konten.addFilter("kontonummer <= ?", new String[]{end.getKontonummer()});
-
-        ArrayList l = new ArrayList();
-        while (konten.hasNext())
-        {
-          Konto k1 = (Konto) konten.next();
-          Anfangsbestand ab = k1.getAnfangsbestand(jahr);
-          if (k1.getUmsatz(jahr) == 0.0d && (ab == null || ab.getBetrag() == 0.0d))
-            continue;
-          l.add(k1);
-        }
-        k = (Konto[]) l.toArray(new Konto[l.size()]);
-      }
+      k = (Konto[]) l.toArray(new Konto[l.size()]);
+    }
         
-      export.addObject("konten",k);
-      export.addObject("jahr",jahr);
-      export.addObject("start",getStart());
-      export.addObject("end",getEnd());
-      export.addObject("startkonto",getStartKonto());
-      export.addObject("endkonto",getEndKonto());
-      export.addObject("filenames",filenameMap);
+    export.addObject("konten",k);
+    export.addObject("jahr",jahr);
+    export.addObject("filenames",filenameMap);
 
-      Date start = getStart();
-      Date end = getEnd();
+    Date start = getStart();
+    Date end = getEnd();
       
-      for (int i=0;i<k.length;++i)
-      {
-        Vector buchungen = new Vector();
-        DBIterator list = null;
-        Kontoart ka = k[i].getKontoArt();
-        if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
-        {
-          // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
-          // erzeugte Hilfsbuchungen. Da der User aber auch echte
-          // Hauptbuchungen darauf erzeugen kann, muss die Liste
-          // hier noch um die Hauptbuchungen ergaenzt werden.
-          list = k[i].getHilfsBuchungen(jahr,start,end);
-        }
-        else
-        {
-          list = k[i].getHauptBuchungen(jahr,start,end);
-        }
-        
-        while (list.hasNext())
-        {
-          buchungen.add(list.next());
-        }
-        export.addObject("buchungen." + k[i].getKontonummer(),buchungen);
-      }
-      export.setTarget(new FileOutputStream(file));
-      export.setTitle(getName());
-      export.setTemplate("kontoauszug.vm");
-
-      VelocityExporter.export(export);
-
-      GUI.getStatusBar().setSuccessText(i18n.tr("Daten exportiert nach {0}",file.getAbsolutePath()));
-      new Program().handleAction(file);
-    }
-    catch (Exception e)
+    for (int i=0;i<k.length;++i)
     {
-      Logger.error("error while writing objects to " + file.getAbsolutePath(),e);
-      throw new ApplicationException(i18n.tr("Fehler beim Exportieren der Daten in {0}",file.getAbsolutePath()),e);
+      Vector buchungen = new Vector();
+      DBIterator list = null;
+      Kontoart ka = k[i].getKontoArt();
+      if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+      {
+        // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+        // erzeugte Hilfsbuchungen. Da der User aber auch echte
+        // Hauptbuchungen darauf erzeugen kann, muss die Liste
+        // hier noch um die Hauptbuchungen ergaenzt werden.
+        list = k[i].getHilfsBuchungen(jahr,start,end);
+      }
+      else
+      {
+        list = k[i].getHauptBuchungen(jahr,start,end);
+      }
+      
+      while (list.hasNext())
+      {
+        buchungen.add(list.next());
+      }
+      export.addObject("buchungen." + k[i].getKontonummer(),buchungen);
     }
+    export.setTemplate("kontoauszug.vm");
   }
 
   /**
@@ -179,11 +129,23 @@ public class KontoExport extends AbstractExportAction
   {
     return i18n.tr("Konto-Auszug");
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
+   */
+  protected String getFilename()
+  {
+    return i18n.tr("syntax-{0}-kontoauszug.html",DATEFORMAT.format(new Date()));
+  }
 }
 
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.15.2.2  2008/08/04 22:33:16  willuhn
+ * @N UST-Voranmeldung aufgehuebscht ;)
+ * @C Redesign Exporter
+ *
  * Revision 1.15.2.1  2008/07/09 10:15:18  willuhn
  * @B Umlaut-Problem in Dateinamen gefixt
  *
