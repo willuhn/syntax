@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.6.2.1 $
+ * $Date: 2008/09/08 09:03:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,11 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
 import de.willuhn.jameica.fibu.gui.controller.GeschaeftsjahrControl;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -55,7 +57,13 @@ public class GeschaeftsjahrNeu extends AbstractView
 
     ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new GeschaeftsjahrDelete());
+    
+    boolean canDelete = true;
+    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    if (current != null) canDelete = !current.equals(control.getGeschaeftsjahr());
+    Button delete = new Button(i18n.tr("Löschen"),new GeschaeftsjahrDelete(),getCurrentObject());
+    delete.setEnabled(canDelete);
+    buttonArea.addButton(delete);
     
     Button close = new Button(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
     close.setEnabled(!control.getGeschaeftsjahr().isClosed());
@@ -84,6 +92,9 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.6.2.1  2008/09/08 09:03:51  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.6  2006/12/27 15:23:33  willuhn
  * @C merged update 1.3 and 1.4 to 1.3
  *

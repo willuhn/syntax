@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.26.2.1 $
+ * $Date: 2008/09/08 09:03:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -524,6 +524,13 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     // Wir pruefen daher, ob es ein Folge-Jahre gibt.
     try
     {
+      Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+      if (current != null)
+      {
+        if (current.equals(this))
+          throw new ApplicationException(i18n.tr("Aktives Geschäftsjahr kann nicht gelöscht werden. Bitte aktivieren Sie zuerst ein anderes Jahr."));
+      }
+
       DBIterator list = getService().createList(Geschaeftsjahr.class);
       while (list.hasNext())
       {
@@ -549,6 +556,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.26.2.1  2008/09/08 09:03:51  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.26  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *

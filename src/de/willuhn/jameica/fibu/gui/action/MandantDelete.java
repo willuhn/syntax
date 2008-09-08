@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/08/29 12:17:29 $
+ * $Revision: 1.3.2.1 $
+ * $Date: 2008/09/08 09:03:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,6 +55,10 @@ public class MandantDelete implements Action
       ((Mandant)context).delete();
       GUI.getStatusBar().setSuccessText(i18n.tr("Mandant gelöscht"));
     }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete mandant",e);
@@ -67,6 +71,9 @@ public class MandantDelete implements Action
 
 /*********************************************************************
  * $Log: MandantDelete.java,v $
+ * Revision 1.3.2.1  2008/09/08 09:03:51  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.3  2005/08/29 12:17:29  willuhn
  * @N Geschaeftsjahr
  *
