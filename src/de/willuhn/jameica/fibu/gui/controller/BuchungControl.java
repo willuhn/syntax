@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.69.2.1 $
- * $Date: 2008/07/03 10:37:08 $
+ * $Revision: 1.69.2.2 $
+ * $Date: 2008/10/06 10:38:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -562,25 +562,27 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
-        if (!getSteuer().isEnabled())
-          return;
-        
-        Double d = (Double) getSteuer().getValue();
-        if (d == null)
-          return;
-        double satz = d.doubleValue();
-          
-//        if (satz == 0.0d)
-//          return;
-
-        Math math = new Math();
         Double betrag = (Double) getBetrag().getValue();
         double brutto = betrag == null ? getBuchung().getBruttoBetrag() : betrag.doubleValue();
-        double netto  = math.netto(brutto,satz);
-        double steuer = math.steuer(brutto,satz);
+        double steuer = 0d;
+        double netto  = brutto;
+
+        if (getSteuer().isEnabled())
+        {
+          Double d = (Double) getSteuer().getValue();
+          if (d != null)
+          {
+            double satz = d.doubleValue();
+            
+            Math math = new Math();
+            netto  = math.netto(brutto,satz);
+            steuer = math.steuer(brutto,satz);
+          }
+        }
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
         getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
+        
       }
       catch (RemoteException e)
       {
@@ -697,6 +699,9 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.69.2.2  2008/10/06 10:38:36  willuhn
+ * @C Bei Konten ohne Steuer Netto=Brutto anzeigen
+ *
  * Revision 1.69.2.1  2008/07/03 10:37:08  willuhn
  * @N Effektivere Erzeugung neuer Buchungsnummern
  * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
