@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Fibu.java,v $
- * $Revision: 1.44.2.1 $
- * $Date: 2008/06/25 09:17:18 $
+ * $Revision: 1.44.2.2 $
+ * $Date: 2008/12/30 15:21:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,6 +27,7 @@ import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.internal.views.Start;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
+import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -149,15 +150,15 @@ public class Fibu extends AbstractPlugin
   }
   
   /**
-   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(double)
+   * @see de.willuhn.jameica.plugin.AbstractPlugin#update(de.willuhn.jameica.plugin.Version)
    */
-  public void update(double oldVersion) throws ApplicationException
+  public void update(Version oldVersion) throws ApplicationException
   {
     if (Application.inClientMode())
       return; // Kein Update im Client-Mode oder beim ersten Start noetig.
 
     Settings.setInUpdate(true);
-    double newVersion = getManifest().getVersion();
+    Version newVersion = getManifest().getVersion();
 
     Logger.info("starting update process for syntax [" + oldVersion + " -> " + newVersion + "]");
     
@@ -176,7 +177,9 @@ public class Fibu extends AbstractPlugin
       {
         Logger.info("applying update " + updates[i].getName());
         Update update = (Update) updates[i].newInstance();
-        update.update(Application.getCallback().getStartupMonitor(),oldVersion,newVersion);
+        double ov = Double.parseDouble(oldVersion.getMajor() + "." + oldVersion.getMinor());
+        double nv = Double.parseDouble(newVersion.getMajor() + "." + newVersion.getMinor());
+        update.update(Application.getCallback().getStartupMonitor(),ov,nv);
         Logger.info("update applied");
       }
       Logger.info("all updates applied");
@@ -203,6 +206,9 @@ public class Fibu extends AbstractPlugin
 
 /*********************************************************************
  * $Log: Fibu.java,v $
+ * Revision 1.44.2.2  2008/12/30 15:21:33  willuhn
+ * @N Umstellung auf neue Versionierung
+ *
  * Revision 1.44.2.1  2008/06/25 09:17:18  willuhn
  * @N First code in 1.3 branch
  *
