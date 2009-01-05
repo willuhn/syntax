@@ -7,6 +7,8 @@
   <homepage>http://www.willuhn.de/projects/syntax</homepage>
   <license>proprietary</license>
 
+  <requires jameica="1.7+"/>
+
   <classfinder>
     <include>syntax\.jar</include>
     <include>.*\.class</include>
