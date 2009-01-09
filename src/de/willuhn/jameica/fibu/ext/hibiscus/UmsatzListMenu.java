@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/03/23 10:15:35 $
+ * $Revision: 1.3.2.1 $
+ * $Date: 2009/01/09 11:19:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
@@ -123,10 +124,13 @@ public class UmsatzListMenu implements Extension
       boolean found = false;
       try
       {
-        DBIterator list = Settings.getActiveGeschaeftsjahr().getHauptBuchungen();
-        list.addFilter("hb_umsatz_id = ?",new Object[]{u.getID()});
-        found = list.hasNext();
-        
+        Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+        if (jahr != null)
+        {
+          DBIterator list = jahr.getHauptBuchungen();
+          list.addFilter("hb_umsatz_id = ?",new Object[]{u.getID()});
+          found = list.hasNext();
+        }
       }
       catch (Exception e)
       {
@@ -144,6 +148,9 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
+ * Revision 1.3.2.1  2009/01/09 11:19:41  willuhn
+ * @B NPE wenn noch kein Geschaeftsjahr existiert
+ *
  * Revision 1.3  2007/03/23 10:15:35  willuhn
  * @B classcastexception
  *
