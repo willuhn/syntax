@@ -87,8 +87,6 @@
       </td>
       <td style="text-align:right;">
       	Druck: $!{longdateformat.format(${datum})}
-      	<br/>
-      	Version: $!{version}
       </td>
     </tr>
   </table>

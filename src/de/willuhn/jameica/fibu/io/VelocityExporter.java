@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.8.2.1 $
- * $Date: 2008/08/03 23:02:47 $
+ * $Revision: 1.8.2.2 $
+ * $Date: 2009/02/16 10:19:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,6 @@ import org.apache.velocity.app.Velocity;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.server.Math;
-import de.willuhn.jameica.plugin.AbstractPlugin;
-import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -62,11 +60,6 @@ public class VelocityExporter
     context.put("decimalformat",  Fibu.DECIMALFORMAT);
     context.put("export",         export);
 
-    AbstractPlugin plugin = Application.getPluginLoader().getPlugin(Fibu.class);
-    Manifest manifest = plugin.getManifest();
-    String version = manifest.getName() + " " + manifest.getVersion() + " [Build: " + plugin.getManifest().getBuildnumber() + " - " + plugin.getManifest().getBuildDate() + "]";
-    context.put("version",        version);
-
     BufferedWriter writer = null;
     try
     {
@@ -100,6 +93,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8.2.2  2009/02/16 10:19:55  willuhn
+ * @B Abfrage der Versionsnummer fuehrte zu einer Inkompatibilitaet zwischen Jameica 1.7 und Jameica 1.8 - Versionsnummer aus Report entfernt
+ *
  * Revision 1.8.2.1  2008/08/03 23:02:47  willuhn
  * @N UST-Voranmeldung
  * @B Typos
