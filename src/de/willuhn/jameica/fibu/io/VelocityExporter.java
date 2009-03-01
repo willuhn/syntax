@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.8.2.2 $
- * $Date: 2009/02/16 10:19:55 $
+ * $Revision: 1.8.2.3 $
+ * $Date: 2009/03/01 23:37:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,7 @@ public class VelocityExporter
     {
       writer = new BufferedWriter(new OutputStreamWriter(export.getTarget()));
 
-      Template t = Velocity.getTemplate("template.vm");
+      Template t = Velocity.getTemplate("template.vm","ISO-8859-15");
       t.merge(context,writer);
     }
     catch (Exception e)
@@ -93,6 +93,9 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8.2.3  2009/03/01 23:37:55  willuhn
+ * @C Templates sollten explizit mit Latin1-Encoding gelesen werden, da sie von mir in diesem Encoding erstellt wurden
+ *
  * Revision 1.8.2.2  2009/02/16 10:19:55  willuhn
  * @B Abfrage der Versionsnummer fuehrte zu einer Inkompatibilitaet zwischen Jameica 1.7 und Jameica 1.8 - Versionsnummer aus Report entfernt
  *
