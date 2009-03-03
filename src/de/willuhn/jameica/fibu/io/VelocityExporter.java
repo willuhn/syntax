@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExporter.java,v $
- * $Revision: 1.8.2.3 $
- * $Date: 2009/03/01 23:37:55 $
+ * $Revision: 1.8.2.4 $
+ * $Date: 2009/03/03 23:28:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,6 +59,7 @@ public class VelocityExporter
     context.put("longdateformat", Fibu.LONGDATEFORMAT);
     context.put("decimalformat",  Fibu.DECIMALFORMAT);
     context.put("export",         export);
+    context.put("charset",        System.getProperty("file.encoding"));
 
     BufferedWriter writer = null;
     try
@@ -93,6 +94,10 @@ public class VelocityExporter
 
 /**********************************************************************
  * $Log: VelocityExporter.java,v $
+ * Revision 1.8.2.4  2009/03/03 23:28:39  willuhn
+ * @B Fehlende Encoding-Angabe im HTML-Export
+ * @N HTML-Title mit Name des Exports
+ *
  * Revision 1.8.2.3  2009/03/01 23:37:55  willuhn
  * @C Templates sollten explizit mit Latin1-Encoding gelesen werden, da sie von mir in diesem Encoding erstellt wurden
  *
