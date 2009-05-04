@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenEinzelExport.java,v $
- * $Revision: 1.1.2.2 $
- * $Date: 2009/05/04 09:48:59 $
+ * $Revision: 1.1.2.3 $
+ * $Date: 2009/05/04 10:55:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,8 @@ public class AnlagevermoegenEinzelExport extends AbstractExportAction
     else
       jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
     
+    Date end = jahr.getEnde();
+
     // Liste des Anlagevermoegens ermitteln
     ArrayList list = new ArrayList();
     DBIterator i = de.willuhn.jameica.fibu.Settings.getDBService().createList(Anlagevermoegen.class);
@@ -48,7 +50,12 @@ public class AnlagevermoegenEinzelExport extends AbstractExportAction
       Anlagevermoegen av = (Anlagevermoegen) i.next();
       if (av.getAnfangsbestand(jahr) <= 0.0)
         continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
-        list.add(av);
+
+      // Wurde nach dem aktuellen Jahr angeschafft -> ignorieren wir
+      if (av.getAnschaffungsdatum().after(end))
+        continue;
+      
+      list.add(av);
     }
     
     Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
@@ -86,6 +93,9 @@ public class AnlagevermoegenEinzelExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenEinzelExport.java,v $
+ * Revision 1.1.2.3  2009/05/04 10:55:51  willuhn
+ * @B AV ignorieren, wenn es nach dem GJ-Ende angeschafft wurde
+ *
  * Revision 1.1.2.2  2009/05/04 09:48:59  willuhn
  * @B falsches Template
  *
