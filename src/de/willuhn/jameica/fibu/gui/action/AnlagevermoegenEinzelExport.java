@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/AnlagevermoegenEinzelExport.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2008/08/04 22:33:16 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/05/04 09:48:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,7 +54,7 @@ public class AnlagevermoegenEinzelExport extends AbstractExportAction
     Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
     export.addObject("anlagevermoegen",av);
     export.addObject("jahr",jahr);
-    export.setTemplate("anlagevermoegen.vm");
+    export.setTemplate("anlagevermoegen-einzel.vm");
   }
 
   /**
@@ -86,6 +86,9 @@ public class AnlagevermoegenEinzelExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: AnlagevermoegenEinzelExport.java,v $
+ * Revision 1.1.2.2  2009/05/04 09:48:59  willuhn
+ * @B falsches Template
+ *
  * Revision 1.1.2.1  2008/08/04 22:33:16  willuhn
  * @N UST-Voranmeldung aufgehuebscht ;)
  * @C Redesign Exporter
