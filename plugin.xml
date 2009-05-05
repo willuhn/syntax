@@ -3,8 +3,8 @@
 <plugin name="syntax" version="1.3" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
-  <url>https://www.willuhn.de/projects/syntax/releases/beta/syntax.zip</url>
-  <homepage>http://www.willuhn.de/projects/syntax</homepage>
+  <url>https://www.willuhn.de/products/syntax/releases/beta/syntax.zip</url>
+  <homepage>http://www.willuhn.de/products/syntax</homepage>
   <license>proprietary</license>
 
   <requires jameica="1.7+"/>
