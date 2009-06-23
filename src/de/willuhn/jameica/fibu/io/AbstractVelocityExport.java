@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/23 17:22:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.io;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -30,7 +29,6 @@ import org.apache.velocity.app.Velocity;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.server.Math;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -88,14 +86,6 @@ public abstract class AbstractVelocityExport extends AbstractExport
     Writer writer = null;
     try
     {
-      File file = new File(target);
-      if (file.exists())
-      {
-        String ask = i18n.tr("Die Datei {0} existiert bereits.\n‹berschreiben?",file.getAbsolutePath());
-        if (!Application.getCallback().askUser(ask))
-          throw new OperationCanceledException();
-      }
-      
       timer.schedule(fakeProgress,0,200);
 
       VelocityExportData vData = getData(data);
@@ -114,10 +104,12 @@ public abstract class AbstractVelocityExport extends AbstractExport
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
 
-      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
       Template t = Velocity.getTemplate("template.vm","ISO-8859-15");
       t.merge(context,writer);
+      monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Auswertung erstellt"));
+      monitor.setPercentComplete(100);
     }
     catch (OperationCanceledException oce)
     {
@@ -151,6 +143,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.1.2.2  2009/06/23 17:22:28  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *
