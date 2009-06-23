@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.24.2.1 $
- * $Date: 2009/06/23 10:45:53 $
+ * $Revision: 1.24.2.2 $
+ * $Date: 2009/06/23 11:04:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -143,6 +145,7 @@ public class BuchungList extends TablePart
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
+    setRememberState(true);
     
     setFormatter(new TableFormatter() {
       public void format(TableItem item)
@@ -180,16 +183,24 @@ public class BuchungList extends TablePart
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
+      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr);
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
-        // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+        DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr);
+        if (hauptbuchungen.size() == 0)
+          return hilfsbuchungen;
+        
+        // Ein Steuerkonto enthaelt normalerweise nur automatisch
         // erzeugte Hilfsbuchungen. Da der User aber auch echte
         // Hauptbuchungen darauf erzeugen kann, muss die Liste
-        // hier noch um die Hauptbuchungen ergaenzt werden.
-        return konto.getHilfsBuchungen(jahr);
+        // ggf. um die Hauptbuchungen ergaenzt werden.
+        List l = new ArrayList();
+        while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
+        while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
+        return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
-      return konto.getHauptBuchungen(jahr);
+      return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
@@ -415,6 +426,9 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.24.2.2  2009/06/23 11:04:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24.2.1  2009/06/23 10:45:53  willuhn
  * @N Buchung nach Aenderung live aktualisieren
  *
