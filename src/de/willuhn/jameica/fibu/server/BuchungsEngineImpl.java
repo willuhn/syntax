@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.9.2.2 $
- * $Date: 2008/08/03 23:02:47 $
+ * $Revision: 1.9.2.3 $
+ * $Date: 2009/06/23 10:08:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -179,8 +179,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
               
             double saldo = k.getSaldo(jahr);
             
-            // TODO: Falls hier 0.000000123 rauskommt, wuerde das fehlschlagen
-            if (saldo == 0.0)
+            // Wenn der Saldo kleiner als 1 Cent ist, brauchen
+            // wir keinen Anfangsbestand im Folgejahr
+            if (Double.compare(saldo,0.01) < 0)
               continue;
             
             monitor.addPercentComplete(1);
@@ -361,17 +362,14 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     buchung.setGeschaeftsjahr(jahr);
     buchung.setSollKonto(afaKonto);
     buchung.setHabenKonto(av.getKonto());
-    Buchung b = av.getBuchung();
-    if (b != null)
-    {
-      // Wenn die Buchung zur Erzeugung des Anlagegutes noch existiert, uebernehmen wir die Belegnummer.
-      buchung.setBelegnummer(b.getBelegnummer());
-    }
-    else
-    {
-      // TODO: Die erzeugten Belegnummern sind Unfug
-      buchung.setBelegnummer(buchung.getBelegnummer());
-    }
+    
+    // Forciert das Erzeugen der Belegnnummer
+    // In vorherigen SynTAX-Versionen wurde die Belegnummer der Anschaffungsbuchung
+    // fuer die Abschreibungsbuchung verwendet. Das sah im Anschaffungsjahr schoen
+    // aus, weil die Abschreibung dann optisch der Anschaffung zugeordnet werden
+    // konnte. In den Folgejahren passte das dann aber nicht mehr, weil dort die
+    // Belegnummern ja wieder bei 1 anfangen
+    buchung.setBelegnummer(buchung.getBelegnummer());
     buchung.setText(name + ": " + av.getName());
     buchung.setBetrag(betrag);
     return buchung; 
@@ -497,6 +495,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.9.2.3  2009/06/23 10:08:29  willuhn
+ * @C kleinere Todos
+ *
  * Revision 1.9.2.2  2008/08/03 23:02:47  willuhn
  * @N UST-Voranmeldung
  * @B Typos

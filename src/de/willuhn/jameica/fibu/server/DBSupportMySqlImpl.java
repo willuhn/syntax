@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2007/11/05 01:02:27 $
+ * $Revision: 1.9.2.1 $
+ * $Date: 2009/06/23 10:08:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.messaging.StatusBarMessage;
-import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.ScriptExecutor;
@@ -71,10 +70,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
     if (port <= 0 || port > 65535)
       throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
 
-
-    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
-    File create = new File(res.getPath() + File.separator + "sql" + File.separator + "create_mysql.sql");
-    File init   = new File(res.getPath() + File.separator + "sql" + File.separator + "init.sql");
+    String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
+    File create = new File(appdir + File.separator + "sql" + File.separator + "create_mysql.sql");
+    File init   = new File(appdir + File.separator + "sql" + File.separator + "init.sql");
 
     Connection conn = null;
     ResultSet rs    = null;
@@ -249,6 +247,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.9.2.1  2009/06/23 10:08:29  willuhn
+ * @C kleinere Todos
+ *
  * Revision 1.9  2007/11/05 01:02:27  willuhn
  * @C Transaction-Isolation-Level in SynTAX
  *
