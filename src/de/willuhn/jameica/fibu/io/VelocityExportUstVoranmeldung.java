@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/UstVaExport.java,v $
- * $Revision: 1.1.2.3 $
- * $Date: 2008/08/04 22:33:16 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
+ * $Revision: 1.1.2.1 $
+ * $Date: 2009/06/23 16:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.gui.action;
+package de.willuhn.jameica.fibu.io;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -23,20 +23,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
-import de.willuhn.jameica.system.OperationCanceledException;
-import de.willuhn.util.ApplicationException;
 
 /**
  * Exporter fuer die Auswertung zur UST-Voranmeldung.
  */
-public class UstVaExport extends AbstractExportAction
+public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 {
   private static Map kennzeichen = new HashMap();
   static
@@ -47,24 +44,20 @@ public class UstVaExport extends AbstractExportAction
     kennzeichen.put(null, "35");
   }
 
-  private Geschaeftsjahr jahr = null;
-  
   /**
-   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#fill(de.willuhn.jameica.fibu.io.Export, java.lang.Object)
+   * @see de.willuhn.jameica.fibu.io.AbstractVelocityExport#getData(de.willuhn.jameica.fibu.io.ExportData)
    */
-  protected void fill(Export export, Object context) throws ApplicationException, RemoteException, OperationCanceledException
+  protected VelocityExportData getData(ExportData data) throws Exception
   {
-    if (context != null && (context instanceof Geschaeftsjahr))
-      jahr = (Geschaeftsjahr) context;
-    else
-      jahr = de.willuhn.jameica.fibu.Settings.getActiveGeschaeftsjahr();
-      
-    DBIterator konten = jahr.getKontenrahmen().getKonten();
-
+    Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+    Date start          = data.getStartDatum();
+    Date end            = data.getEndDatum();
+    
     double vst = 0.0d;
 
     Hashtable erloese = new Hashtable();
 
+    DBIterator konten = jahr.getKontenrahmen().getKonten();
     while (konten.hasNext())
     {
       Konto kt = (Konto) konten.next();
@@ -81,12 +74,12 @@ public class UstVaExport extends AbstractExportAction
             e = new Erloes(satz.doubleValue());
             erloese.put(satz,e);
           }
-          e.add(getUmsatz(kt));
+          e.add(getUmsatz(jahr,kt,start,end));
           break;
         case Kontoart.KONTOART_STEUER:
           Kontotyp ktyp = kt.getKontoTyp();
           if (ktyp != null && ktyp.getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE)
-            vst += getUmsatz(kt);
+            vst += getUmsatz(jahr,kt,start,end);
           break;
       }
     }
@@ -102,26 +95,32 @@ public class UstVaExport extends AbstractExportAction
     }
       
     Collections.sort(list);
+    VelocityExportData export = new VelocityExportData();
     export.addObject("erloese",list.toArray(new Erloes[list.size()]));
     export.addObject("vst",new Double(vst));
     export.addObject("jahr",jahr);
     export.setTemplate("ustva.vm");
+    return export;
   }
-  
+
+
   /**
    * Liefert den Umsatz des Kontos im genannten Zeitraum.
+   * @param jahr Geschaeftsjahr.
    * @param konto Konto.
+   * @param start Start-Datum.
+   * @param end End-Datum.
    * @return Umsatz
    * @throws RemoteException
    */
-  private double getUmsatz(Konto konto) throws RemoteException
+  private double getUmsatz(Geschaeftsjahr jahr, Konto konto, Date start, Date end) throws RemoteException
   {
     double sum = 0.0d;
     DBIterator buchungen = null;
     if (konto.getKontoArt().getKontoArt() == Kontoart.KONTOART_STEUER)
-      buchungen = konto.getHilfsBuchungen(jahr,getStart(),getEnd());
+      buchungen = konto.getHilfsBuchungen(jahr,start,end);
     else
-      buchungen = konto.getHauptBuchungen(jahr,getStart(),getEnd());
+      buchungen = konto.getHauptBuchungen(jahr,start,end);
     while (buchungen.hasNext())
     {
       BaseBuchung b = (BaseBuchung) buchungen.next();
@@ -131,7 +130,7 @@ public class UstVaExport extends AbstractExportAction
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.gui.action.ExportAction#getName()
+   * @see de.willuhn.jameica.fibu.io.Export#getName()
    */
   public String getName()
   {
@@ -139,13 +138,16 @@ public class UstVaExport extends AbstractExportAction
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.gui.action.AbstractExportAction#getFilename()
+   * @see de.willuhn.jameica.fibu.io.AbstractExport#createPreset()
    */
-  protected String getFilename()
+  public ExportData createPreset()
   {
-    return i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date()));
+    ExportData data = super.createPreset();
+    data.setNeedKonto(false);
+    data.setTarget(i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date())));
+    return data;
   }
-  
+
   /**
    * Hilfsklasse zum Gruppieren der Erloese nach Steuerklasse.
    */
@@ -245,17 +247,8 @@ public class UstVaExport extends AbstractExportAction
 
 
 /*********************************************************************
- * $Log: UstVaExport.java,v $
- * Revision 1.1.2.3  2008/08/04 22:33:16  willuhn
- * @N UST-Voranmeldung aufgehuebscht ;)
- * @C Redesign Exporter
- *
- * Revision 1.1.2.2  2008/08/03 23:10:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.1.2.1  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
+ * @N Velocity-Export komplett ueberarbeitet
  *
  **********************************************************************/

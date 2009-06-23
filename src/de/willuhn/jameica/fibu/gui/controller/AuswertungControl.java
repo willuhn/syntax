@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2009/06/23 16:53:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,52 +13,56 @@
 
 package de.willuhn.jameica.fibu.gui.controller;
 
+import java.io.File;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.GenericObject;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.ExportAction;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
+import de.willuhn.jameica.fibu.io.Export;
+import de.willuhn.jameica.fibu.io.ExportData;
+import de.willuhn.jameica.fibu.io.ExportRegistry;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.ClassFinder;
 import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
 
 /**
  * Controller fuer die Auswertungen.
  */
 public class AuswertungControl extends AbstractControl
 {
-  private I18N i18n           = null;
-  private Input auswertungen  = null;
-  private Input jahr          = null;
-  private Input start         = null;
-  private Input end           = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Export.class);
   
-  private Input startKonto    = null;
-  private Input endKonto      = null;
+  private SelectInput auswertungen = null;
+  private Input jahr               = null;
+  private DateInput start          = null;
+  private DateInput end            = null;
+  
+  private KontoInput startKonto    = null;
+  private KontoInput endKonto      = null;
   
   /**
    * @param view
@@ -66,7 +70,6 @@ public class AuswertungControl extends AbstractControl
   public AuswertungControl(AbstractView view)
   {
     super(view);
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
   
   /**
@@ -74,43 +77,35 @@ public class AuswertungControl extends AbstractControl
    * @return Liste der Auswertungen.
    * @throws RemoteException
    */
-  public Input getAuswertungen() throws RemoteException
+  public SelectInput getAuswertungen() throws RemoteException
   {
     if (auswertungen != null)
       return auswertungen;
     
-    ClassFinder cf = Application.getClassLoader().getClassFinder();
-    Class[] impls = new Class[0];
-    try
-    {
-      impls = cf.findImplementors(ExportAction.class);
-    }
-    catch (ClassNotFoundException e)
-    {
-      Logger.warn("no exports found");
-      auswertungen = new LabelInput(i18n.tr("Keine Auswertungen verfügbar"));
-      return auswertungen;
-    }
-
-    ArrayList list = new ArrayList();
-    
-    Class c = null;
-    for (int i=0;i<impls.length;++i)
-    {
-      c = impls[i];
-      try
-      {
-        list.add(new ExportObject((ExportAction)c.newInstance()));
-      }
-      catch (Exception e)
-      {
-        Logger.error("error while loading class " + c,e);
-      }
-    }
-    Collections.sort(list);
-    GenericIterator gi = PseudoIterator.fromArray((ExportObject[]) list.toArray(new ExportObject[list.size()]));
-    auswertungen = new SelectInput(gi,null);
+    auswertungen = new SelectInput(ExportRegistry.getExporters(),null);
+    auswertungen.setPleaseChoose(i18n.tr("Bitte wählen..."));
+    auswertungen.setAttribute("name");
     auswertungen.setComment("");
+    auswertungen.addListener(new Listener()
+    {
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Export e = (Export) auswertungen.getValue();
+          ExportData data = e == null ? null : e.createPreset();
+          getJahr().setEnabled(data == null || data.isNeedGeschaeftsjahr());
+          getStartKonto().setEnabled(data == null || data.isNeedKonto());
+          getEndKonto().setEnabled(data == null || data.isNeedKonto());
+          getStart().setEnabled(data == null || data.isNeedDatum());
+          getEnd().setEnabled(data == null || data.isNeedDatum());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to update view",e);
+        }
+      }
+    });
     return auswertungen;
   }
   
@@ -163,35 +158,10 @@ public class AuswertungControl extends AbstractControl
     if (this.start != null)
       return this.start;
     
-    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
-    Date begin = current.getBeginn();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setDate(begin);
-    d.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
-    d.setText(i18n.tr("Wählen Sie bitte den Beginn des Geschäftsjahres aus"));
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        try
-        {
-          Date d = (Date) event.data;
-          getStart().setValue(d);
-          ((DialogInput)getStart()).setText(Fibu.DATEFORMAT.format(d));
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to set start date",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
-        }
-        
-      }
-    });
-    this.start = new DialogInput(Fibu.DATEFORMAT.format(begin),d);
-    this.start.setValue(begin);
+    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Fibu.DATEFORMAT);
+    this.start.setText(i18n.tr("Wählen Sie bitte den Beginn des Geschäftsjahres aus"));
+    this.start.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
     this.start.setComment("");
-    ((DialogInput)this.start).disableClientControl();
     return this.start;
   }
   
@@ -205,35 +175,10 @@ public class AuswertungControl extends AbstractControl
     if (this.end != null)
       return this.end;
     
-    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
-    Date e = current.getEnde();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setDate(e);
-    d.setTitle(i18n.tr("Ende des Geschäftsjahres"));
-    d.setText(i18n.tr("Wählen Sie bitte das Ende des Geschäftsjahres aus"));
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        try
-        {
-          Date d = (Date) event.data;
-          getEnd().setValue(d);
-          ((DialogInput)getEnd()).setText(Fibu.DATEFORMAT.format(d));
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to set end date",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Datums"));
-        }
-        
-      }
-    });
-    this.end = new DialogInput(Fibu.DATEFORMAT.format(e),d);
-    this.end.setValue(e);
+    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Fibu.DATEFORMAT);
+    this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Geschäftsjahres aus"));
+    this.end.setTitle(i18n.tr("Ende des Geschäftsjahres"));
     this.end.setComment("");
-    ((DialogInput)this.end).disableClientControl();
     return this.end;
   }
   
@@ -280,113 +225,102 @@ public class AuswertungControl extends AbstractControl
   {
     try
     {
-      ExportObject o = (ExportObject) getAuswertungen().getValue();
-      ExportAction action = o.action;
-      action.setStart((Date)getStart().getValue());
-      action.setEnd((Date)getEnd().getValue());
-      action.setStartKonto((Konto) getStartKonto().getValue());
-      action.setEndKonto((Konto) getEndKonto().getValue());
-      action.handleAction(getJahr().getValue());
+      final Export e = (Export) getAuswertungen().getValue();
+      final ExportData data = e.createPreset();
+      data.setGeschaeftsjahr((Geschaeftsjahr)getJahr().getValue());
+      data.setStartKonto((Konto)getStartKonto().getValue());
+      data.setEndKonto((Konto)getEndKonto().getValue());
+      data.setStartDatum((Date)getStart().getValue());
+      data.setEndDatum((Date)getEnd().getValue());
+
+      String dir = settings.getString("lastdir",System.getProperty("user.home"));
+      FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
+      fd.setText(i18n.tr("Bitte wählen Sie eine Datei aus, in der die Auswertung gespeichert werden sollen."));
+      fd.setFileName(data.getTarget());
+      
+      if (dir != null)
+        fd.setFilterPath(dir);
+
+      String s = fd.open();
+        
+      if (s == null || s.length() == 0)
+        throw new OperationCanceledException(i18n.tr("Auswertung abgebrochen"));
+        
+      File file = new File(s);
+
+      // Wir merken uns noch das Verzeichnis vom letzten mal
+      settings.setAttribute("lastdir",file.getParent());
+
+      if (file.exists())
+      {
+        try
+        {
+          String q = i18n.tr("Datei existiert bereits. Überschreiben?");
+          if (!Application.getCallback().askUser(q))
+            throw new OperationCanceledException("Abgebrochen, User möchte Datei nicht überschreiben");
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception ex)
+        {
+          Logger.error("error while saving export file",ex);
+          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Auswertung: {0}",ex.getMessage()));
+        }
+      }
+      data.setTarget(file.getAbsolutePath());
+      
+      Application.getController().start(new BackgroundTask()
+      {
+        public void run(ProgressMonitor monitor) throws ApplicationException
+        {
+          e.doExport(data,monitor);
+        }
+      
+        /**
+         * @see de.willuhn.jameica.system.BackgroundTask#isInterrupted()
+         */
+        public boolean isInterrupted()
+        {
+          return false;
+        }
+      
+        /**
+         * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
+         */
+        public void interrupt()
+        {
+        }
+      });
     }
     catch (ApplicationException ae)
     {
-      GUI.getStatusBar().setErrorText(ae.getMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
-    catch (RemoteException e)
+    catch (OperationCanceledException oce)
+    {
+      Logger.debug(oce.getMessage());
+    }
+    catch (Exception e)
     {
       Logger.error("unable to create report",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Erstellen der Auswertung"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
     
   }
-  
-  /**
-   * Hilfsklasse.
-   */
-  private class ExportObject implements GenericObject, Comparable
-  {
-    private ExportAction action = null;
-    
-    /**
-     * @param action
-     */
-    private ExportObject(ExportAction action)
-    {
-      this.action = action;
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String arg0) throws RemoteException
-    {
-      return action.getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-     */
-    public String[] getAttributeNames() throws RemoteException
-    {
-      return new String[]{"name"};
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getID()
-     */
-    public String getID() throws RemoteException
-    {
-      return action.getClass().getName();
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-     */
-    public String getPrimaryAttribute() throws RemoteException
-    {
-      return "name";
-    }
-
-    /**
-     * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-     */
-    public boolean equals(GenericObject arg0) throws RemoteException
-    {
-      if (arg0 == null)
-        return false;
-      return this.action.getClass().equals(((ExportObject)arg0).action.getClass());
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o)
-    {
-      if (o == null || !(o instanceof ExportObject))
-        return 1;
-      
-      try
-      {
-        ExportObject other = (ExportObject) o;
-        String myName    = (String) getAttribute(getPrimaryAttribute());
-        String otherName = (String) other.getAttribute(other.getPrimaryAttribute());
-        return myName.compareTo(otherName);
-      }
-      catch (Exception e)
-      {
-        Logger.error("unable to compare objects",e);
-        return 0;
-      }
-      
-    }
-    
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.4.2.1  2009/06/23 16:53:22  willuhn
+ * @N Velocity-Export komplett ueberarbeitet
+ *
  * Revision 1.4  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

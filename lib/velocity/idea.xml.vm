@@ -1,142 +1,145 @@
-<?xml version="1.0" encoding="iso-8859-15"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE DataSet SYSTEM "gdpdu-01-08-2002.dtd">
 <DataSet>
-	<Version>1.0</Version>
-	<DataSupplier>
-		<Name>$!{mandant.Name1} $!{mandant.Name2} $!{mandant.Firma}</Name>
-		<Location>$!{mandant.PLZ} $!{mandant.Ort}</Location>
-		<Comment>Datenträgerüberlassung nach GDPdU vom $!{longdateformat.format(${datum})}</Comment>
-	</DataSupplier>
-	<Media>
-		<Name>Geschäftsjahr $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}</Name>
 
-		<Table>
-			<URL>steuer.csv</URL>
-			<Name>steuer</Name>
-			<Description>Steuerdefinitionen</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+  <Version>1.0</Version>
 
-			<VariableLength>
+  <DataSupplier>
+    <Name>$!{mandant.Name1} $!{mandant.Name2} $!{mandant.Firma}</Name>
+    <Location>$!{mandant.PLZ} $!{mandant.Ort}</Location>
+    <Comment>Datenträgerüberlassung nach GDPdU vom $!{longdateformat.format(${datum})}</Comment>
+  </DataSupplier>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+  <Media>
 
-				<VariableColumn>
-					<Name>name</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
+    <Name>Geschäftsjahr $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}</Name>
 
-				<VariableColumn>
-					<Name>satz</Name>
-					<Numeric/>
-				</VariableColumn>
-				
+    <Table>
+      <URL>steuer.csv</URL>
+      <Name>steuer</Name>
+      <Description>Steuerdefinitionen</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
+
+      <VariableLength>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
+
+        <VariableColumn>
+          <Name>name</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
+
+        <VariableColumn>
+          <Name>satz</Name>
+          <Numeric/>
+        </VariableColumn>
+
         <ForeignKey>
           <Name>steuerkonto_id</Name>
           <References>konto</References>
         </ForeignKey>
 
-			</VariableLength>
-		</Table>
+      </VariableLength>
+    </Table>
 
 
-		<Table>
-			<URL>kontoart.csv</URL>
-			<Name>kontoart</Name>
-			<Description>Konto-Arten</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+    <Table>
+      <URL>kontoart.csv</URL>
+      <Name>kontoart</Name>
+      <Description>Konto-Arten</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+      <VariableLength>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
-				<VariableColumn>
-					<Name>name</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>name</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
 
-			</VariableLength>
-		</Table>
-
-
-
-		<Table>
-			<URL>kontotyp.csv</URL>
-			<Name>kontotyp</Name>
-			<Description>Konto-Typen</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
-
-			<VariableLength>
-
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
-
-				<VariableColumn>
-					<Name>name</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
-
-			</VariableLength>
-		</Table>
+      </VariableLength>
+    </Table>
 
 
-		<Table>
-			<URL>konto.csv</URL>
-			<Name>konto</Name>
-			<Description>Konten gemäß Kontenrahmen</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+    <Table>
+      <URL>kontotyp.csv</URL>
+      <Name>kontotyp</Name>
+      <Description>Konto-Typen</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+      <VariableLength>
+
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
+
+        <VariableColumn>
+          <Name>name</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
+
+      </VariableLength>
+    </Table>
+
+
+    <Table>
+      <URL>konto.csv</URL>
+      <Name>konto</Name>
+      <Description>Konten gemäß Kontenrahmen</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
+
+      <VariableLength>
+
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
         <ForeignKey>
           <Name>kontoart_id</Name>
           <References>kontoart</References>
         </ForeignKey>
-        
+
         <ForeignKey>
           <Name>kontotyp_id</Name>
           <References>kontotyp</References>
@@ -147,84 +150,84 @@
           <References>steuer</References>
         </ForeignKey>
 
-				<VariableColumn>
-					<Name>name</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>name</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>kontonummer</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
-				
-			</VariableLength>
-		</Table>
+        <VariableColumn>
+          <Name>kontonummer</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
+
+      </VariableLength>
+    </Table>
 
 
 
-		<Table>
-			<URL>konto_ab.csv</URL>
-			<Name>konto_ab</Name>
-			<Description>Anfangsbestände</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+    <Table>
+      <URL>konto_ab.csv</URL>
+      <Name>konto_ab</Name>
+      <Description>Anfangsbestände</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+      <VariableLength>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
         <ForeignKey>
           <Name>konto_id</Name>
           <References>konto</References>
         </ForeignKey>
 
-				<VariableColumn>
-					<Name>betrag</Name>
-					<Numeric/>
-				</VariableColumn>
-				
-			</VariableLength>
-		</Table>
+        <VariableColumn>
+          <Name>betrag</Name>
+          <Numeric/>
+        </VariableColumn>
+
+      </VariableLength>
+    </Table>
 
 
 
-		<Table>
-			<URL>buchung.csv</URL>
-			<Name>buchung</Name>
-			<Description>Liste der Buchungen im Geschäftsjahr</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+    <Table>
+      <URL>buchung.csv</URL>
+      <Name>buchung</Name>
+      <Description>Liste der Buchungen im Geschäftsjahr</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+      <VariableLength>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
-				<VariableColumn>
-					<Name>datum</Name>
-					<Date>
-						<Format>DD.MM.YYYY</Format>
-					</Date>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>datum</Name>
+          <Date>
+            <Format>DD.MM.YYYY</Format>
+          </Date>
+        </VariableColumn>
 
         <ForeignKey>
           <Name>sollkonto_id</Name>
@@ -236,114 +239,114 @@
           <References>konto</References>
         </ForeignKey>
 
-				<VariableColumn>
-					<Name>buchungstext</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>buchungstext</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>belegnummer</Name>
-					<Numeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>belegnummer</Name>
+          <Numeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>betrag</Name>
-					<Numeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>betrag</Name>
+          <Numeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>steuer</Name>
-					<Numeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>steuer</Name>
+          <Numeric/>
+        </VariableColumn>
 
         <ForeignKey>
           <Name>buchung_id</Name>
           <References>buchung</References>
         </ForeignKey>
-				
-			</VariableLength>
-		</Table>
+
+      </VariableLength>
+    </Table>
 
 
 
-		<Table>
-			<URL>anlagevermoegen.csv</URL>
-			<Name>anlagevermoegen</Name>
-			<Description>Anlagevermögen</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+    <Table>
+      <URL>anlagevermoegen.csv</URL>
+      <Name>anlagevermoegen</Name>
+      <Description>Anlagevermögen</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+      <VariableLength>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
-				<VariableColumn>
-					<Name>name</Name>
-					<AlphaNumeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>name</Name>
+          <AlphaNumeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>anschaffungskosten</Name>
-					<Numeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>anschaffungskosten</Name>
+          <Numeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>restwert</Name>
-					<Numeric/>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>restwert</Name>
+          <Numeric/>
+        </VariableColumn>
 
-				<VariableColumn>
-					<Name>anschaffungsdatum</Name>
-					<Date>
-						<Format>DD.MM.YYYY</Format>
-					</Date>
-				</VariableColumn>
+        <VariableColumn>
+          <Name>anschaffungsdatum</Name>
+          <Date>
+            <Format>DD.MM.YYYY</Format>
+          </Date>
+        </VariableColumn>
 
         <ForeignKey>
           <Name>konto_id</Name>
           <References>konto</References>
         </ForeignKey>
-				
-				<VariableColumn>
-					<Name>nutzungsdauer</Name>
-					<Numeric/>
-				</VariableColumn>
 
-			</VariableLength>
-		</Table>
+        <VariableColumn>
+          <Name>nutzungsdauer</Name>
+          <Numeric/>
+        </VariableColumn>
+
+      </VariableLength>
+    </Table>
 
 
 
-		<Table>
-			<URL>abschreibung.csv</URL>
-			<Name>abschreibung</Name>
-			<Description>Liste der Abschreibungsbuchungen</Description>
-			<Validity>
-				<Range>
-					<From>$!{dateformat.format(${jahr.Beginn})}</From>
-					<To>$!{dateformat.format(${jahr.Ende})}</To>
-				</Range>
-				<Format>DD.MM.YYYY</Format>
-			</Validity>
-			<DecimalSymbol>,</DecimalSymbol>
-			<DigitGroupingSymbol></DigitGroupingSymbol>
+    <Table>
+      <URL>abschreibung.csv</URL>
+      <Name>abschreibung</Name>
+      <Description>Liste der Abschreibungsbuchungen</Description>
+      <Validity>
+        <Range>
+          <From>$!{dateformat.format(${jahr.Beginn})}</From>
+          <To>$!{dateformat.format(${jahr.Ende})}</To>
+        </Range>
+        <Format>DD.MM.YYYY</Format>
+      </Validity>
+      <DecimalSymbol>,</DecimalSymbol>
+      <DigitGroupingSymbol></DigitGroupingSymbol>
 
-			<VariableLength>
+      <VariableLength>
 
-				<VariablePrimaryKey>
-					<Name>id</Name>
-					<Numeric/>
-				</VariablePrimaryKey>
+        <VariablePrimaryKey>
+          <Name>id</Name>
+          <Numeric/>
+        </VariablePrimaryKey>
 
         <ForeignKey>
           <Name>av_id</Name>
@@ -355,21 +358,21 @@
           <References>buchung</References>
         </ForeignKey>
 
-				<VariableColumn>
-					<Name>sonderabschreibung</Name>
-					<Numeric/>
-					<Map>
-						<From>0</From>
-						<To>False</To>
-					</Map>
-					<Map>
-						<From>1</From>
-						<To>True</To>
-					</Map>
-				</VariableColumn>
-			</VariableLength>
-		</Table>
+        <VariableColumn>
+          <Name>sonderabschreibung</Name>
+          <Numeric/>
+          <Map>
+            <From>0</From>
+            <To>False</To>
+          </Map>
+          <Map>
+            <From>1</From>
+            <To>True</To>
+          </Map>
+        </VariableColumn>
+      </VariableLength>
+    </Table>
 
 
-	</Media>
+  </Media>
 </DataSet>
