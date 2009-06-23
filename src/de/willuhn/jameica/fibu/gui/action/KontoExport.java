@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/Attic/KontoExport.java,v $
- * $Revision: 1.15.2.2 $
- * $Date: 2008/08/04 22:33:16 $
+ * $Revision: 1.15.2.3 $
+ * $Date: 2009/06/23 11:07:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,25 +98,23 @@ public class KontoExport extends AbstractExportAction
     for (int i=0;i<k.length;++i)
     {
       Vector buchungen = new Vector();
-      DBIterator list = null;
+
+      DBIterator list = k[i].getHauptBuchungen(jahr,start,end);
+      while (list.hasNext())
+        buchungen.add(list.next());
+
       Kontoart ka = k[i].getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
-        // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+        // Ein Steuerkonto enthaelt normalerweise nur automatisch
         // erzeugte Hilfsbuchungen. Da der User aber auch echte
         // Hauptbuchungen darauf erzeugen kann, muss die Liste
         // hier noch um die Hauptbuchungen ergaenzt werden.
         list = k[i].getHilfsBuchungen(jahr,start,end);
-      }
-      else
-      {
-        list = k[i].getHauptBuchungen(jahr,start,end);
+        while (list.hasNext())
+          buchungen.add(list.next());
       }
       
-      while (list.hasNext())
-      {
-        buchungen.add(list.next());
-      }
       export.addObject("buchungen." + k[i].getKontonummer(),buchungen);
     }
     export.setTemplate("kontoauszug.vm");
@@ -142,6 +140,9 @@ public class KontoExport extends AbstractExportAction
 
 /*********************************************************************
  * $Log: KontoExport.java,v $
+ * Revision 1.15.2.3  2009/06/23 11:07:03  willuhn
+ * @N Haupt- und Hilfsbuchungen in Steuerkonten anzeigen
+ *
  * Revision 1.15.2.2  2008/08/04 22:33:16  willuhn
  * @N UST-Voranmeldung aufgehuebscht ;)
  * @C Redesign Exporter
