@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.17 $
- * $Date: 2007/04/23 23:41:26 $
+ * $Revision: 1.17.2.1 $
+ * $Date: 2009/06/23 11:04:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -75,6 +75,7 @@ public class KontoList extends TablePart
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
+    setRememberState(true);
 
     setFormatter(new TableFormatter()
     {
@@ -253,6 +254,9 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.17.2.1  2009/06/23 11:04:32  willuhn
+ * @N Haupt- und Hilfsbuchungen in Steuerkonten anzeigen
+ *
  * Revision 1.17  2007/04/23 23:41:26  willuhn
  * @B reset des Konten-Iterators
  *
