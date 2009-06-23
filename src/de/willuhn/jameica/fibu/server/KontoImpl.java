@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.51 $
- * $Date: 2007/11/05 01:05:43 $
+ * $Revision: 1.51.2.1 $
+ * $Date: 2009/06/23 11:04:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -465,7 +465,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime());
     if (end != null)
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
-    list.setOrder("order by datum");
+    list.setOrder("order by datum,belegnummer");
 
     return list;
   }
@@ -530,6 +530,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
+ * Revision 1.51.2.1  2009/06/23 11:04:49  willuhn
+ * @N auch nach Belegnummer sortieren
+ *
  * Revision 1.51  2007/11/05 01:05:43  willuhn
  * @C refactoring
  *
