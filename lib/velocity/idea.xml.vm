@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE DataSet SYSTEM "gdpdu-01-08-2002.dtd">
+
+#set($jahr    = ${export.getObjects("jahr")})
+#set($mandant = ${jahr.Mandant})
+
 <DataSet>
 
   <Version>1.0</Version>
