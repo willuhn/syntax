@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.1.2.2 $
- * $Date: 2009/06/23 17:22:28 $
+ * $Revision: 1.1.2.3 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.io;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -28,7 +29,9 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.messaging.ExportMessage;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -78,7 +81,7 @@ public abstract class AbstractVelocityExport extends AbstractExport
             // ignore
           }
         }
-        monitor.addPercentComplete(2);
+        monitor.addPercentComplete(1);
       }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -86,16 +89,23 @@ public abstract class AbstractVelocityExport extends AbstractExport
     Writer writer = null;
     try
     {
-      timer.schedule(fakeProgress,0,200);
+      monitor.setStatusText(i18n.tr("Erstelle Auswertung"));
+
+      timer.schedule(fakeProgress,0,100);
 
       VelocityExportData vData = getData(data);
       String template = vData.getTemplate();
       if (template == null || template.length() == 0)
         throw new ApplicationException(i18n.tr("Kein Template angegeben"));
       
-      monitor.setStatusText(i18n.tr("Erstelle Auswertung"));
-      VelocityContext context = new VelocityContext();
+      // Basis-Daten der User-Eingaben noch uebernehmen
+      vData.addObject("jahr",       data.getGeschaeftsjahr());
+      vData.addObject("start",      data.getStartDatum());
+      vData.addObject("end",        data.getEndDatum());
+      vData.addObject("startkonto", data.getStartKonto());
+      vData.addObject("endkonto",   data.getEndKonto());
 
+      VelocityContext context = new VelocityContext();
       context.put("math",           new Math());
       context.put("datum",          new Date());
       context.put("dateformat",     Fibu.DATEFORMAT);
@@ -104,12 +114,15 @@ public abstract class AbstractVelocityExport extends AbstractExport
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
 
+
       writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
       Template t = Velocity.getTemplate("template.vm","ISO-8859-15");
       t.merge(context,writer);
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Auswertung erstellt"));
       monitor.setPercentComplete(100);
+
+      Application.getMessagingFactory().sendMessage(new ExportMessage(i18n.tr("Auswertung erstellt"),new File(target)));
     }
     catch (OperationCanceledException oce)
     {
@@ -143,6 +156,10 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.1.2.3  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.1.2.2  2009/06/23 17:22:28  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.17.2.1 $
- * $Date: 2009/06/23 11:04:32 $
+ * $Revision: 1.17.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,13 +30,15 @@ import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -44,7 +46,7 @@ import de.willuhn.util.I18N;
 /**
  * Vorkonfigurierte Tabelle mit Konten.
  */
-public class KontoList extends TablePart
+public class KontoList extends TablePart implements Extendable
 {
   
   private I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
@@ -75,7 +77,6 @@ public class KontoList extends TablePart
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
-    setRememberState(true);
 
     setFormatter(new TableFormatter()
     {
@@ -98,8 +99,17 @@ public class KontoList extends TablePart
         }
       }
     });
+    ExtensionRegistry.extend(this);
   }
-  
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  }
+
   /**
    * Ueberschrieben, um noch weitere Details anzuzeigen.
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
@@ -108,13 +118,13 @@ public class KontoList extends TablePart
   {
     if (filterEnabled)
     {
-      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+      SimpleContainer container = new SimpleContainer(parent);
       
       this.filter = new CheckboxInput(false);
       this.search = new TextInput("");
       
-      group.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
-      group.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
+      container.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
+      container.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
 
       KL kl = new KL();
       this.search.getControl().addKeyListener(kl);
@@ -254,6 +264,10 @@ public class KontoList extends TablePart
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.17.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.17.2.1  2009/06/23 11:04:32  willuhn
  * @N Haupt- und Hilfsbuchungen in Steuerkonten anzeigen
  *

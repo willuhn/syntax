@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,7 +98,6 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
     VelocityExportData export = new VelocityExportData();
     export.addObject("erloese",list.toArray(new Erloes[list.size()]));
     export.addObject("vst",new Double(vst));
-    export.addObject("jahr",jahr);
     export.setTemplate("ustva.vm");
     return export;
   }
@@ -134,7 +133,7 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
    */
   public String getName()
   {
-    return i18n.tr("Umsatzsteuer-Voranmeldung");
+    return i18n.tr("Ergebnis: Umsatzsteuer-Voranmeldung");
   }
 
   /**
@@ -248,6 +247,10 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *

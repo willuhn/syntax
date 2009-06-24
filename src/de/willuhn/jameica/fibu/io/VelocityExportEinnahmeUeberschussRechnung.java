@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportEinnahmeUeberschussRechnung.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,6 @@ public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityE
   protected VelocityExportData getData(ExportData data) throws Exception
   {
     VelocityExportData export = new VelocityExportData();
-    export.addObject("jahr",data.getGeschaeftsjahr());
     export.setTemplate("ueberschussrechnung.vm");
     return export;
   }
@@ -36,7 +35,7 @@ public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityE
    */
   public String getName()
   {
-    return i18n.tr("Überschuss-Rechnung");
+    return i18n.tr("Ergebnis: Einnahme-Überschuss-Rechnung (EÜR)");
   }
 
   
@@ -56,6 +55,10 @@ public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityE
 
 /*********************************************************************
  * $Log: VelocityExportEinnahmeUeberschussRechnung.java,v $
+ * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *

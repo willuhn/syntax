@@ -1,6 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/ObjectChangedMessage.java,v $
- * $Revision: 1.1.2.2 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/Attic/ExportMessage.java,v $
+ * $Revision: 1.1.2.1 $
  * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
@@ -13,31 +13,33 @@
 
 package de.willuhn.jameica.fibu.messaging;
 
+import java.io.File;
+
 import de.willuhn.jameica.messaging.QueryMessage;
 
 /**
- * Kann versendet werden, wenn ein Objekt geaendert wurde.
+ * Wird versendet, wenn ein Export erstellt wurde.
+ * Als Context-Data enthaelt die Message ein File-Objekt mit
+ * dem erzeugten Export.
  */
-public class ObjectChangedMessage extends QueryMessage
+public class ExportMessage extends QueryMessage
 {
   /**
    * ct.
-   * @param data das geaenderte Objekt.
+   * @param text Hinweis-Text.
+   * @param file die exportierte Datei. 
    */
-  public ObjectChangedMessage(Object data)
+  public ExportMessage(String text, File file)
   {
-    super(data);
+    super(text,file);
   }
 }
 
 
 /**********************************************************************
- * $Log: ObjectChangedMessage.java,v $
- * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
+ * $Log: ExportMessage.java,v $
+ * Revision 1.1.2.1  2009/06/24 10:35:55  willuhn
  * @N Jameica 1.7 Kompatibilitaet
  * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.1.2.1  2009/06/23 10:45:53  willuhn
- * @N Buchung nach Aenderung live aktualisieren
  *
  **********************************************************************/

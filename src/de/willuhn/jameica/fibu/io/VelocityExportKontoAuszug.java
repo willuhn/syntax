@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportKontoAuszug.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,6 @@ public class VelocityExportKontoAuszug extends AbstractVelocityExport
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
 
     VelocityExportData export = new VelocityExportData();
-    export.addObject("jahr",jahr);
     export.addObject("filenames",filenameMap);
     export.setTemplate("kontoauszug.vm");
 
@@ -122,13 +121,17 @@ public class VelocityExportKontoAuszug extends AbstractVelocityExport
    */
   public String getName()
   {
-    return i18n.tr("Konto-Auszug");
+    return i18n.tr("Konten: Auszug");
   }
 }
 
 
 /*********************************************************************
  * $Log: VelocityExportKontoAuszug.java,v $
+ * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *

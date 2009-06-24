@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.24.2.2 $
- * $Date: 2009/06/23 11:04:10 $
+ * $Revision: 1.24.2.3 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,8 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -58,7 +60,7 @@ import de.willuhn.util.I18N;
 /**
  * Fertig vorkonfigurierte Tabelle mit Buchungen.
  */
-public class BuchungList extends TablePart
+public class BuchungList extends TablePart implements Extendable
 {
   
   private I18N i18n             = null;
@@ -145,7 +147,6 @@ public class BuchungList extends TablePart
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
-    setRememberState(true);
     
     setFormatter(new TableFormatter() {
       public void format(TableItem item)
@@ -168,6 +169,15 @@ public class BuchungList extends TablePart
         }
       }
     });
+    ExtensionRegistry.extend(this);
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
   }
 
   /**
@@ -394,7 +404,7 @@ public class BuchungList extends TablePart
     public void handleMessage(Message message) throws Exception
     {
       ObjectChangedMessage m = (ObjectChangedMessage) message;
-      final Object buchung = m.getObject();
+      final Object buchung = m.getData();
       if (buchung == null || !(buchung instanceof BaseBuchung))
         return;
       
@@ -426,6 +436,10 @@ public class BuchungList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.24.2.3  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.24.2.2  2009/06/23 11:04:10  willuhn
  * *** empty log message ***
  *

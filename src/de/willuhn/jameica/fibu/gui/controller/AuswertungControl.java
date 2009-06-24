@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.4.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.4.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,7 +175,7 @@ public class AuswertungControl extends AbstractControl
     if (this.end != null)
       return this.end;
     
-    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Fibu.DATEFORMAT);
+    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Fibu.DATEFORMAT);
     this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Geschäftsjahres aus"));
     this.end.setTitle(i18n.tr("Ende des Geschäftsjahres"));
     this.end.setComment("");
@@ -255,7 +255,7 @@ public class AuswertungControl extends AbstractControl
       {
         try
         {
-          String q = i18n.tr("Datei existiert bereits. Überschreiben?");
+          String q = i18n.tr("Die Datei {0} existiert bereits. Überschreiben?",file.getAbsolutePath());
           if (!Application.getCallback().askUser(q))
             throw new OperationCanceledException("Abgebrochen, User möchte Datei nicht überschreiben");
         }
@@ -318,6 +318,10 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.4.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.4.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *

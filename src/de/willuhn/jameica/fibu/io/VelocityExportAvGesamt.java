@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportAvGesamt.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/23 16:53:22 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/24 10:35:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,6 @@ public class VelocityExportAvGesamt extends AbstractVelocityExport
     
     VelocityExportData export = new VelocityExportData();
     export.addObject("anlagevermoegen",av);
-    export.addObject("jahr",jahr);
     export.setTemplate("anlagevermoegen.vm");
     return export;
   }
@@ -82,6 +81,10 @@ public class VelocityExportAvGesamt extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportAvGesamt.java,v $
+ * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
  * @N Velocity-Export komplett ueberarbeitet
  *

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<plugin name="syntax" version="1.3" class="de.willuhn.jameica.fibu.Fibu">
+<plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.0.xsd"
+        name="syntax" version="1.3" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>https://www.willuhn.de/products/syntax/releases/beta/syntax.zip</url>
@@ -41,8 +44,14 @@
   </services>
   
   <extensions>
+    <!-- Hibiscus-Extensions -->
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart" extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList"/>
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu" extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList"/>
+    
+    <!-- Jameica Compatibility Extensions -->
+    <extension class="de.willuhn.jameica.fibu.ext.JameicaCompatibility"
+               extends="de.willuhn.jameica.fibu.gui.part.BuchungList,de.willuhn.jameica.fibu.gui.part.KontoList"
+    />
   </extensions>
 
 </plugin>
