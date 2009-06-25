@@ -33,6 +33,8 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
+
         <VariablePrimaryKey>
           <Name>id</Name>
           <Numeric/>
@@ -72,6 +74,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>
@@ -103,6 +106,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>
@@ -133,7 +137,8 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
-
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
+        
         <VariablePrimaryKey>
           <Name>id</Name>
           <Numeric/>
@@ -184,6 +189,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>
@@ -220,6 +226,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>
@@ -288,6 +295,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>
@@ -346,6 +354,7 @@
       <DigitGroupingSymbol></DigitGroupingSymbol>
 
       <VariableLength>
+        <RecordDelimiter>$!{lineseparator}</RecordDelimiter>
 
         <VariablePrimaryKey>
           <Name>id</Name>

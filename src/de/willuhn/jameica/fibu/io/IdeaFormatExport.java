@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.1.2.1 $
- * $Date: 2009/06/24 17:28:37 $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2009/06/25 15:21:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,26 +13,33 @@
 
 package de.willuhn.jameica.fibu.io;
 
-import java.io.BufferedWriter;
-import java.io.File;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.event.EventCartridge;
+import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.messaging.ExportMessage;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.system.Platform;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
@@ -45,6 +52,18 @@ import de.willuhn.util.ProgressMonitor;
 public class IdeaFormatExport extends AbstractExport
 {
   private final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+  private final static Map<Integer,String> recordDelimiter = new HashMap();
+  static
+  {
+    recordDelimiter.put(Platform.OS_LINUX,      "&#10;");
+    recordDelimiter.put(Platform.OS_LINUX_64,   "&#10;");
+    recordDelimiter.put(Platform.OS_MAC,        "&#13;");
+    recordDelimiter.put(Platform.OS_WINDOWS,    "&#13;&#10;");
+    recordDelimiter.put(Platform.OS_WINDOWS_64, "&#13;&#10;");
+    recordDelimiter.put(Platform.OS_UNKNOWN,    "&#13;&#10;");
+  }
+  
 
   /**
    * @see de.willuhn.jameica.fibu.io.Export#doExport(de.willuhn.jameica.fibu.io.ExportData, de.willuhn.util.ProgressMonitor)
@@ -80,13 +99,15 @@ public class IdeaFormatExport extends AbstractExport
     };
     //////////////////////////////////////////////////////////////////////////
 
-    Writer writer = null;
+    ZipOutputStream os = null;
     try
     {
       monitor.setStatusText(i18n.tr("Erstelle Datenabzug"));
 
       timer.schedule(fakeProgress,0,100);
 
+      os = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)));
+      
       //////////////////////////////////////////////////////////////////////////
       // Schritt 1: XML-Beschreibung des Exports erzeugen
       VelocityExportData vData = new VelocityExportData();
@@ -100,19 +121,42 @@ public class IdeaFormatExport extends AbstractExport
       context.put("decimalformat",  Fibu.DECIMALFORMAT);
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
+      context.put("lineseparator",  recordDelimiter.get(Application.getPlatform().getOS()));
 
+      // XML-Escaping
+      EventCartridge ec = new EventCartridge();
+      EscapeXmlReference ex = new EscapeXmlReference()
+      {
+        /**
+         * @see org.apache.velocity.app.event.implement.EscapeXmlReference#escape(java.lang.Object)
+         */
+        protected String escape(Object text)
+        {
+          if (text == null)
+            return null;
+          String s = text.toString();
+          if (s.startsWith("&#")) // ist schon escaped
+            return s;
+          return super.escape(s);
+        }
+        
+      };
+      ec.addEventHandler(ex);
+      ec.attachToContext(context);
 
-      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
+      StringWriter writer = new StringWriter();
       Template t = Velocity.getTemplate("idea.xml.vm","ISO-8859-15");
       t.merge(context,writer);
-      // TODO als "index.xml" in der ZIP-Datei speichern
-      // TODO gdpdu-01-08-2002.dtd auch noch mit reinpacken
-      // TODO RecordDelimiter (Zeilenumbruchszeichen) fehlt noch in idea.xml.vm
+      add(monitor,"index.xml",new ByteArrayInputStream(writer.toString().getBytes()),os);
+      
+      //////////////////////////////////////////////////////////////////////////
+      // Schritt 2: gdpdu-01-08-2002.dtd
+      add(monitor,"gdpdu-01-08-2002.dtd",Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getResourceAsStream("res/gdpdu-01-08-2002.dtd"),os);
       //
       //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
-      // Schritt 2: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
+      // Schritt 3: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
       
       // TODO
       
@@ -122,8 +166,6 @@ public class IdeaFormatExport extends AbstractExport
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Datenabzug erstellt"));
       monitor.setPercentComplete(100);
-
-      Application.getMessagingFactory().sendMessage(new ExportMessage(i18n.tr("IDEA-Datenabzug erstellt"),new File(target)));
     }
     catch (OperationCanceledException oce)
     {
@@ -140,8 +182,8 @@ public class IdeaFormatExport extends AbstractExport
     }
     finally
     {
-      if (writer != null) {
-        try { writer.close();}
+      if (os != null) {
+        try { os.close();}
         catch (Exception e){Logger.error("error while closing outputstream",e);}
       }
 
@@ -172,13 +214,46 @@ public class IdeaFormatExport extends AbstractExport
   {
     return i18n.tr("IDEA-Datenabzug (GDPdU)");
   }
-  
+
+  /**
+   * Fuegt eine neue Datei zur ZIP-Datei hinzu.
+   * @param monitor der Progress-Monitor.
+   * @param name Name der Datei.
+   * @param is Datenquelle.
+   * @param os Datenziel.
+   * @throws IOException
+   */
+  private void add(ProgressMonitor monitor, String name, InputStream is, ZipOutputStream os) throws IOException
+  {
+    try
+    {
+      monitor.log(name);
+      os.putNextEntry(new ZipEntry(name));
+
+      byte b[] = new byte[4096];
+      int read = 0;
+      while ((read = is.read(b)) >= 0)
+      {
+        if (read > 0) // Nur schreiben, wenn wirklich was gelesen wurde
+          os.write(b,0,read);
+      }
+      os.closeEntry();
+    }
+    finally
+    {
+      is.close();
+    }
+  }
+
   
 }
 
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.1.2.2  2009/06/25 15:21:18  willuhn
+ * @N weiterer Code fuer IDEA-Export
+ *
  * Revision 1.1.2.1  2009/06/24 17:28:37  willuhn
  * *** empty log message ***
  *

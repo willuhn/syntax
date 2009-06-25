@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2009/06/25 15:21:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.AuswertungControl;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -62,16 +61,12 @@ public class Auswertungen extends AbstractView
     group.addLabelPair(i18n.tr("von"), control.getStartKonto());
     group.addLabelPair(i18n.tr("bis"), control.getEndKonto());
     
+    group.addSeparator();
+    group.addCheckbox(control.getOpenAfterCreation(),i18n.tr("Auswertung nach der Erstellung öffnen"));
+    
     ButtonArea buttonArea = group.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
-    buttonArea.addButton(i18n.tr("Erstellen"), new Action()
-    {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleExecute();
-      }
-    },null,true);
-
+    buttonArea.addButton(control.getStartButton());
   }
 
   /**
@@ -86,6 +81,9 @@ public class Auswertungen extends AbstractView
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.4.2.1  2009/06/25 15:21:18  willuhn
+ * @N weiterer Code fuer IDEA-Export
+ *
  * Revision 1.4  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.1.2.3 $
- * $Date: 2009/06/24 10:35:55 $
+ * $Revision: 1.1.2.4 $
+ * $Date: 2009/06/25 15:21:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.io;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -29,9 +28,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.messaging.ExportMessage;
 import de.willuhn.jameica.fibu.server.Math;
-import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -121,8 +118,6 @@ public abstract class AbstractVelocityExport extends AbstractExport
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Auswertung erstellt"));
       monitor.setPercentComplete(100);
-
-      Application.getMessagingFactory().sendMessage(new ExportMessage(i18n.tr("Auswertung erstellt"),new File(target)));
     }
     catch (OperationCanceledException oce)
     {
@@ -156,6 +151,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.1.2.4  2009/06/25 15:21:18  willuhn
+ * @N weiterer Code fuer IDEA-Export
+ *
  * Revision 1.1.2.3  2009/06/24 10:35:55  willuhn
  * @N Jameica 1.7 Kompatibilitaet
  * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt

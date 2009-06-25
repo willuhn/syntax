@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.4.2.2 $
- * $Date: 2009/06/24 10:35:55 $
+ * $Revision: 1.4.2.3 $
+ * $Date: 2009/06/25 15:21:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,16 +29,20 @@ import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.io.Export;
 import de.willuhn.jameica.fibu.io.ExportData;
 import de.willuhn.jameica.fibu.io.ExportRegistry;
+import de.willuhn.jameica.fibu.messaging.ExportMessage;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -63,6 +67,10 @@ public class AuswertungControl extends AbstractControl
   
   private KontoInput startKonto    = null;
   private KontoInput endKonto      = null;
+  
+  private Button startButton       = null;
+  
+  private CheckboxInput open       = null;
   
   /**
    * @param view
@@ -217,6 +225,46 @@ public class AuswertungControl extends AbstractControl
     this.endKonto = new KontoInput((Konto) list.next());
     return this.endKonto;
   }
+  
+  /**
+   * Liefert den Start-Button.
+   * @return der Start-Button.
+   */
+  public Button getStartButton()
+  {
+    if (this.startButton == null)
+    {
+      this.startButton = new Button(i18n.tr("Erstellen..."),new Action()
+      {
+        public void handleAction(Object context) throws ApplicationException
+        {
+          handleExecute();
+        }
+      },null,true);
+    }
+    return this.startButton;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der der User festlegen kann, ob die
+   * Auswertung nach der Erstellung geoeffnet werden soll.
+   * @return Checkbox.
+   */
+  public CheckboxInput getOpenAfterCreation()
+  {
+    if (this.open == null)
+    {
+      this.open = new CheckboxInput(settings.getBoolean("open",true));
+      this.open.addListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          settings.setAttribute("open",((Boolean)open.getValue()).booleanValue());
+        }
+      });
+    }
+    return this.open;
+  }
 
   /**
    * Fuehrt die ausgewaehlte Auswertung aus.
@@ -226,6 +274,10 @@ public class AuswertungControl extends AbstractControl
     try
     {
       final Export e = (Export) getAuswertungen().getValue();
+      if (e == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Auswertung aus."));
+
+      getStartButton().setEnabled(false);
       final ExportData data = e.createPreset();
       data.setGeschaeftsjahr((Geschaeftsjahr)getJahr().getValue());
       data.setStartKonto((Konto)getStartKonto().getValue());
@@ -246,7 +298,7 @@ public class AuswertungControl extends AbstractControl
       if (s == null || s.length() == 0)
         throw new OperationCanceledException(i18n.tr("Auswertung abgebrochen"));
         
-      File file = new File(s);
+      final File file = new File(s);
 
       // Wir merken uns noch das Verzeichnis vom letzten mal
       settings.setAttribute("lastdir",file.getParent());
@@ -279,7 +331,22 @@ public class AuswertungControl extends AbstractControl
       {
         public void run(ProgressMonitor monitor) throws ApplicationException
         {
-          e.doExport(data,monitor);
+          try
+          {
+            e.doExport(data,monitor);
+          }
+          finally
+          {
+            GUI.getDisplay().asyncExec(new Runnable()
+            {
+              public void run()
+              {
+                getStartButton().setEnabled(true);
+                if (((Boolean)getOpenAfterCreation().getValue()).booleanValue())
+                  Application.getMessagingFactory().sendMessage(new ExportMessage(i18n.tr("Auswertung erstellt"),file));
+              }
+            });
+          }
         }
       
         /**
@@ -300,14 +367,17 @@ public class AuswertungControl extends AbstractControl
     }
     catch (ApplicationException ae)
     {
+      getStartButton().setEnabled(true);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
     catch (OperationCanceledException oce)
     {
+      getStartButton().setEnabled(true);
       Logger.debug(oce.getMessage());
     }
     catch (Exception e)
     {
+      getStartButton().setEnabled(true);
       Logger.error("unable to create report",e);
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Erstellen der Auswertung: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
@@ -318,6 +388,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.4.2.3  2009/06/25 15:21:18  willuhn
+ * @N weiterer Code fuer IDEA-Export
+ *
  * Revision 1.4.2.2  2009/06/24 10:35:55  willuhn
  * @N Jameica 1.7 Kompatibilitaet
  * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
