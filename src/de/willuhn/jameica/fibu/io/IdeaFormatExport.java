@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.1.2.2 $
- * $Date: 2009/06/25 15:21:18 $
+ * $Revision: 1.1.2.3 $
+ * $Date: 2009/06/25 16:33:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,6 +37,12 @@ import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.io.idea.KontoTable;
+import de.willuhn.jameica.fibu.io.idea.KontoartTable;
+import de.willuhn.jameica.fibu.io.idea.KontotypTable;
+import de.willuhn.jameica.fibu.io.idea.SteuerTable;
+import de.willuhn.jameica.fibu.io.idea.Table;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -64,12 +71,18 @@ public class IdeaFormatExport extends AbstractExport
     recordDelimiter.put(Platform.OS_UNKNOWN,    "&#13;&#10;");
   }
   
+  private ProgressMonitor monitor = null;
+  private ZipOutputStream os      = null;
+  private Geschaeftsjahr jahr     = null;
+  
 
   /**
    * @see de.willuhn.jameica.fibu.io.Export#doExport(de.willuhn.jameica.fibu.io.ExportData, de.willuhn.util.ProgressMonitor)
    */
-  public final void doExport(ExportData data, final ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
+  public final void doExport(ExportData data, ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
   {
+    this.monitor = monitor;
+    
     String target = data.getTarget();
     
     if (target == null)
@@ -82,7 +95,7 @@ public class IdeaFormatExport extends AbstractExport
     final TimerTask fakeProgress = new TimerTask() {
       public void run()
       {
-        if (monitor == null || monitor.getPercentComplete() == 100)
+        if (IdeaFormatExport.this.monitor == null || IdeaFormatExport.this.monitor.getPercentComplete() == 100)
         {
           try
           {
@@ -94,24 +107,24 @@ public class IdeaFormatExport extends AbstractExport
             // ignore
           }
         }
-        monitor.addPercentComplete(1);
+        IdeaFormatExport.this.monitor.addPercentComplete(1);
       }
     };
     //////////////////////////////////////////////////////////////////////////
 
-    ZipOutputStream os = null;
     try
     {
-      monitor.setStatusText(i18n.tr("Erstelle Datenabzug"));
+      this.monitor.setStatusText(i18n.tr("Erstelle Datenabzug"));
 
       timer.schedule(fakeProgress,0,100);
 
-      os = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)));
+      this.jahr = data.getGeschaeftsjahr();
+      this.os = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)));
       
       //////////////////////////////////////////////////////////////////////////
       // Schritt 1: XML-Beschreibung des Exports erzeugen
       VelocityExportData vData = new VelocityExportData();
-      vData.addObject("jahr", data.getGeschaeftsjahr());
+      vData.addObject("jahr", jahr);
 
       VelocityContext context = new VelocityContext();
       context.put("math",           new Math());
@@ -147,11 +160,11 @@ public class IdeaFormatExport extends AbstractExport
       StringWriter writer = new StringWriter();
       Template t = Velocity.getTemplate("idea.xml.vm","ISO-8859-15");
       t.merge(context,writer);
-      add(monitor,"index.xml",new ByteArrayInputStream(writer.toString().getBytes()),os);
+      add("index.xml",new ByteArrayInputStream(writer.toString().getBytes()));
       
       //////////////////////////////////////////////////////////////////////////
       // Schritt 2: gdpdu-01-08-2002.dtd
-      add(monitor,"gdpdu-01-08-2002.dtd",Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getResourceAsStream("res/gdpdu-01-08-2002.dtd"),os);
+      add("gdpdu-01-08-2002.dtd",Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getResourceAsStream("res/gdpdu-01-08-2002.dtd"));
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -159,13 +172,16 @@ public class IdeaFormatExport extends AbstractExport
       // Schritt 3: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
       
       // TODO
-      
+      add("steuer.csv",new SteuerTable());
+      add("kontoart.csv",new KontoartTable());
+      add("kontotyp.csv",new KontotypTable());
+      add("konto.csv",new KontoTable());
       //
       //////////////////////////////////////////////////////////////////////////
 
-      monitor.setStatus(ProgressMonitor.STATUS_DONE);
-      monitor.setStatusText(i18n.tr("Datenabzug erstellt"));
-      monitor.setPercentComplete(100);
+      this.monitor.setStatus(ProgressMonitor.STATUS_DONE);
+      this.monitor.setStatusText(i18n.tr("Datenabzug erstellt"));
+      this.monitor.setPercentComplete(100);
     }
     catch (OperationCanceledException oce)
     {
@@ -182,8 +198,8 @@ public class IdeaFormatExport extends AbstractExport
     }
     finally
     {
-      if (os != null) {
-        try { os.close();}
+      if (this.os != null) {
+        try { this.os.close();}
         catch (Exception e){Logger.error("error while closing outputstream",e);}
       }
 
@@ -217,32 +233,63 @@ public class IdeaFormatExport extends AbstractExport
 
   /**
    * Fuegt eine neue Datei zur ZIP-Datei hinzu.
-   * @param monitor der Progress-Monitor.
    * @param name Name der Datei.
    * @param is Datenquelle.
-   * @param os Datenziel.
    * @throws IOException
    */
-  private void add(ProgressMonitor monitor, String name, InputStream is, ZipOutputStream os) throws IOException
+  private void add(String name, InputStream is) throws IOException
   {
     try
     {
-      monitor.log(name);
-      os.putNextEntry(new ZipEntry(name));
+      this.monitor.log(name);
+      this.os.putNextEntry(new ZipEntry(name));
 
       byte b[] = new byte[4096];
       int read = 0;
       while ((read = is.read(b)) >= 0)
       {
         if (read > 0) // Nur schreiben, wenn wirklich was gelesen wurde
-          os.write(b,0,read);
+          this.os.write(b,0,read);
       }
-      os.closeEntry();
+      this.os.closeEntry();
     }
     finally
     {
       is.close();
     }
+  }
+  
+  /**
+   * Fuegt eine Tabelle zur CSV-Datei hinzu.
+   * @param name Name der Datei.
+   * @param table die Tabelle.
+   * @throws Exception
+   */
+  private void add(String name, Table table) throws Exception
+  {
+    this.monitor.log(name);
+    
+    List<List<String>> lines = table.getLines(this.jahr);
+
+    this.os.putNextEntry(new ZipEntry(name));
+    for (List<String> line:lines)
+    {
+      StringBuffer sb = new StringBuffer();
+      for (int i=0;i<line.size();++i)
+      {
+        // Quoting mittels >"< habe ich weggelassen, weil in der Spec.
+        // Beschreibungsstandard-GDPdU-01-08-2002.pdf nicht beschrieben
+        // ist, wie das Zeichen innerhalb eines Wertes escaped werden
+        // muss, falls es da auftritt. Ich wuerde Backslash >\< vermuten.
+        // Steht da aber nicht ausdruecklich.
+        sb.append(line.get(i));
+        if (i+1<line.size())
+          sb.append(";");
+      }
+      sb.append(System.getProperty("line.separator"));
+      this.os.write(sb.toString().getBytes());
+    }
+    this.os.closeEntry();
   }
 
   
@@ -251,6 +298,9 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.1.2.3  2009/06/25 16:33:17  willuhn
+ * @N Erste CSV-Daten fuer Steuer, Kontoart, Kontotyp und Konto
+ *
  * Revision 1.1.2.2  2009/06/25 15:21:18  willuhn
  * @N weiterer Code fuer IDEA-Export
  *
