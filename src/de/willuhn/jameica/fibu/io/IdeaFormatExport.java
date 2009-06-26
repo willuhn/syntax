@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.1.2.3 $
- * $Date: 2009/06/25 16:33:17 $
+ * $Revision: 1.1.2.4 $
+ * $Date: 2009/06/26 13:56:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,8 @@ import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.io.idea.AnfangsbestandTable;
+import de.willuhn.jameica.fibu.io.idea.BuchungTable;
 import de.willuhn.jameica.fibu.io.idea.KontoTable;
 import de.willuhn.jameica.fibu.io.idea.KontoartTable;
 import de.willuhn.jameica.fibu.io.idea.KontotypTable;
@@ -172,10 +174,12 @@ public class IdeaFormatExport extends AbstractExport
       // Schritt 3: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
       
       // TODO
-      add("steuer.csv",new SteuerTable());
-      add("kontoart.csv",new KontoartTable());
-      add("kontotyp.csv",new KontotypTable());
-      add("konto.csv",new KontoTable());
+      add("steuer.csv",   new SteuerTable());
+      add("kontoart.csv", new KontoartTable());
+      add("kontotyp.csv", new KontotypTable());
+      add("konto.csv",    new KontoTable());
+      add("konto_ab.csv", new AnfangsbestandTable());
+      add("buchung.csv",  new BuchungTable());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -298,6 +302,9 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.1.2.4  2009/06/26 13:56:56  willuhn
+ * @N IDEA-Export (Buchungen und Anfangsbestaende)
+ *
  * Revision 1.1.2.3  2009/06/25 16:33:17  willuhn
  * @N Erste CSV-Daten fuer Steuer, Kontoart, Kontotyp und Konto
  *

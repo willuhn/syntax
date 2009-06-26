@@ -266,14 +266,9 @@
         </VariableColumn>
 
         <VariableColumn>
-          <Name>steuer</Name>
+          <Name>steuersatz</Name>
           <Numeric/>
         </VariableColumn>
-
-        <ForeignKey>
-          <Name>buchung_id</Name>
-          <References>buchung</References>
-        </ForeignKey>
 
       </VariableLength>
     </Table>
