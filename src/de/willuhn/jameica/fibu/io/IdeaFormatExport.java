@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.1.2.4 $
- * $Date: 2009/06/26 13:56:56 $
+ * $Revision: 1.1.2.5 $
+ * $Date: 2009/06/30 16:00:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,9 @@ import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.io.idea.AbschreibungTable;
 import de.willuhn.jameica.fibu.io.idea.AnfangsbestandTable;
+import de.willuhn.jameica.fibu.io.idea.AnlagevermoegenTable;
 import de.willuhn.jameica.fibu.io.idea.BuchungTable;
 import de.willuhn.jameica.fibu.io.idea.KontoTable;
 import de.willuhn.jameica.fibu.io.idea.KontoartTable;
@@ -174,12 +176,14 @@ public class IdeaFormatExport extends AbstractExport
       // Schritt 3: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
       
       // TODO
-      add("steuer.csv",   new SteuerTable());
-      add("kontoart.csv", new KontoartTable());
-      add("kontotyp.csv", new KontotypTable());
-      add("konto.csv",    new KontoTable());
-      add("konto_ab.csv", new AnfangsbestandTable());
-      add("buchung.csv",  new BuchungTable());
+      add("steuer.csv",          new SteuerTable());
+      add("kontoart.csv",        new KontoartTable());
+      add("kontotyp.csv",        new KontotypTable());
+      add("konto.csv",           new KontoTable());
+      add("konto_ab.csv",        new AnfangsbestandTable());
+      add("buchung.csv",         new BuchungTable());
+      add("anlagevermoegen.csv", new AnlagevermoegenTable());
+      add("abschreibung.csv",    new AbschreibungTable());
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -302,6 +306,9 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.1.2.5  2009/06/30 16:00:59  willuhn
+ * @N Erste komplette Version des Exports
+ *
  * Revision 1.1.2.4  2009/06/26 13:56:56  willuhn
  * @N IDEA-Export (Buchungen und Anfangsbestaende)
  *
