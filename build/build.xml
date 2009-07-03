@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.15 $
- $Date: 2009/07/03 10:52:19 $
+ $Revision: 1.16 $
+ $Date: 2009/07/03 11:54:31 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -144,6 +144,7 @@
 		<antcall target="addwebapps"/>
 			
     <copy file="plugin.xml" todir="${project.zipdir}" />
+    <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
     <mkdir dir="${project.zipdir}/sql" />
     <copy todir="${project.zipdir}/sql">
       <fileset dir="${sql.dir}" />
