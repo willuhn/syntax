@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.16 $
- $Date: 2009/07/03 11:54:31 $
+ $Revision: 1.17 $
+ $Date: 2009/07/03 11:58:44 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -246,7 +246,7 @@
 		<delete dir="${project.zipdir}" />
 	</target>
 
-	<target depends="init,compile,cvstag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
+	<target depends="init,compile,cvstag,jar,javadoc,src,sign,signsrc,clean" description="build an official release" name="all" />
 
 	<target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
 
