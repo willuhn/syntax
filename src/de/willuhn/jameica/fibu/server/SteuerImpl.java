@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.16 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,17 +15,22 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
-public class SteuerImpl extends AbstractKontenrahmenObjectImpl implements Steuer
+public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 {
+  private I18N i18n = null;
+
   /**
    * Erzeugt einen neuen Steuersatz.
    * @throws RemoteException
@@ -33,6 +38,7 @@ public class SteuerImpl extends AbstractKontenrahmenObjectImpl implements Steuer
   public SteuerImpl() throws RemoteException
   {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -88,6 +94,16 @@ public class SteuerImpl extends AbstractKontenrahmenObjectImpl implements Steuer
   }
 
   /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    if ("steuerkonto_id".equals(field))
+      return Konto.class;
+    return super.getForeignObject(field);
+  }
+
+  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
@@ -130,26 +146,26 @@ public class SteuerImpl extends AbstractKontenrahmenObjectImpl implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#getKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getSteuerKonto()
    */
-  public Konto getKonto() throws RemoteException
+  public Konto getSteuerKonto() throws RemoteException
   {
-    return findKonto((String) getAttribute("konto"));
+    return (Konto) getAttribute("steuerkonto_id");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setSteuerKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
-  public void setKonto(Konto k) throws RemoteException
+  public void setSteuerKonto(Konto k) throws RemoteException
   {
-    setAttribute("konto",k == null ? null : k.getKontonummer());
+    setAttribute("steuerkonto_id",k);
   }
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
- * Revision 1.15  2008/02/22 10:41:41  willuhn
- * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ * Revision 1.16  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.14  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen

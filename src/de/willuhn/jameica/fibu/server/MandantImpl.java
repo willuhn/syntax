@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.27 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -348,6 +348,31 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   }
 
   /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
+   */
+  protected void deleteCheck() throws ApplicationException
+  {
+    // Das Loeschen des Mandanten mit dem aktiven Geschaeftsjahr wuerde
+    // anschliessend einen Fehler ausloesen.
+    try
+    {
+      Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+      if (current != null)
+      {
+        Mandant cm = current.getMandant();
+        if (cm.equals(this))
+          throw new ApplicationException(i18n.tr("Mandant mit dem aktiven Geschäftsjahr kann nicht gelöscht werden. Bitte aktivieren Sie zuerst ein anderes Jahr."));
+      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("error while performing delete check",re);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten: {0}",re.getMessage()));
+    }
+    super.deleteCheck();
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Mandant#getBuchungstemplates()
    */
   public DBIterator getBuchungstemplates() throws RemoteException
@@ -361,6 +386,12 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
+ * Revision 1.27  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.26.2.1  2008/09/08 09:03:52  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.26  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

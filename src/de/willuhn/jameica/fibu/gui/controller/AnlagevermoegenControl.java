@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/05/30 23:22:55 $
+ * $Revision: 1.20 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -292,7 +292,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (k == null)
     {
       Double d = (Double) getKosten().getValue();
-      k = Settings.getAbschreibunsgKonto(jahr,d != null && d.doubleValue() < Settings.getGwgWert(jahr));
+      k = Settings.getAbschreibungsKonto(jahr,d != null && d.doubleValue() < Settings.getGwgWert(jahr));
     }
     afaKonto = new KontoInput(list,k);
     if (!getAnlagevermoegen().canChange())
@@ -422,7 +422,7 @@ public class AnlagevermoegenControl extends AbstractControl
         String text = i18n.tr("Anlage kann als GWG sofort abgeschrieben werden.\n" +
                               "Nutzungsdauer zur Sofort-Abschreibung auf 1 Jahr verkürzen?");
         
-        Konto ka = Settings.getAbschreibunsgKonto(Settings.getActiveGeschaeftsjahr(),true);
+        Konto ka = Settings.getAbschreibungsKonto(Settings.getActiveGeschaeftsjahr(),true);
 
         if (ka != null && !ka.equals(abschreibung))
           text += "\n" + i18n.tr("Ausserdem können die Abschreibungen auf dem Konto\n" +
@@ -521,6 +521,14 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.20  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.19.2.1  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.19  2006/05/30 23:22:55  willuhn
  * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
  *

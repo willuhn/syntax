@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.5 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,11 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -35,6 +38,22 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   {
     super();
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSollKonto()
+   */
+  public Konto getSollKonto() throws RemoteException
+  {
+    return (Konto) getAttribute("sollkonto_id");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getHabenKonto()
+   */
+  public Konto getHabenKonto() throws RemoteException
+  {
+    return (Konto) getAttribute("habenkonto_id");
   }
 
   /**
@@ -70,6 +89,22 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setSollKonto(Konto k) throws RemoteException
+  {
+    setAttribute("sollkonto_id",k);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setHabenKonto(de.willuhn.jameica.fibu.rmi.Konto)
+   */
+  public void setHabenKonto(Konto k) throws RemoteException
+  {
+    setAttribute("habenkonto_id",k);
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Transfer#setText(java.lang.String)
    */
   public void setText(String text) throws RemoteException
@@ -92,12 +127,55 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   {
     setAttribute("steuer", new Double(steuer));
   }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   */
+  public Class getForeignObject(String field) throws RemoteException
+  {
+    if ("sollkonto_id".equals(field))
+      return Konto.class;
+
+    if ("habenkonto_id".equals(field))
+      return Konto.class;
+
+    return null;
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.Changeable#store()
+   */
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    // Fuer's Logging:
+    Logger.info(getSollKonto().getKontonummer() + " an " + getHabenKonto().getKontonummer() + ": " + Fibu.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#isGeprueft()
+   */
+  public boolean isGeprueft() throws RemoteException
+  {
+    Integer i = (Integer) getAttribute("geprueft");
+    return i != null && i.intValue() == 1;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setGeprueft(boolean)
+   */
+  public void setGeprueft(boolean b) throws RemoteException
+  {
+    setAttribute("geprueft",new Integer(b ? 1 : 0));
+  }
+
+
 }
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
- * Revision 1.4  2008/02/22 10:41:41  willuhn
- * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ * Revision 1.5  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.3  2006/05/29 23:05:07  willuhn
  * *** empty log message ***

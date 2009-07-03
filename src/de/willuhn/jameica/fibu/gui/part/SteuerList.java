@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/SteuerList.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.8 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,8 @@ package de.willuhn.jameica.fibu.gui.part;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import org.eclipse.swt.widgets.TableItem;
+
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -28,7 +30,9 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -67,6 +71,27 @@ public class SteuerList extends TablePart
         }
       }
     });
+    setFormatter(new TableFormatter()
+    {
+      /**
+       * @see de.willuhn.jameica.gui.formatter.TableFormatter#format(org.eclipse.swt.widgets.TableItem)
+       */
+      public void format(TableItem item)
+      {
+        try
+        {
+          if (item == null)
+            return;
+          Steuer s = (Steuer) item.getData();
+          if (s.isUserObject())
+            item.setForeground(Color.SUCCESS.getSWTColor());
+        }
+        catch (RemoteException e)
+        {
+          Logger.error("unable to check steuer",e);
+        }
+      }
+    });
     setContextMenu(new SteuerListMenu());
     setRememberColWidths(true);
     setRememberOrder(true);
@@ -97,7 +122,7 @@ public class SteuerList extends TablePart
     while (list.hasNext())
     {
       Steuer s = (Steuer) list.next();
-      Konto k = s.getKonto();
+      Konto k = s.getSteuerKonto();
       if (k == null)
         continue;
       Kontenrahmen ist = k.getKontenrahmen();
@@ -112,8 +137,8 @@ public class SteuerList extends TablePart
 
 /*********************************************************************
  * $Log: SteuerList.java,v $
- * Revision 1.7  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.8  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.6  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen

@@ -1,4 +1,8 @@
 <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
+    <title>$!{export.Title}</title>
+  </head>
   <style>
     body  {
       background-color        : #ffffff;
@@ -87,8 +91,6 @@
       </td>
       <td style="text-align:right;">
       	Druck: $!{longdateformat.format(${datum})}
-      	<br/>
-      	Version: $!{version}
       </td>
     </tr>
   </table>

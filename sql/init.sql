@@ -15,9 +15,10 @@ INSERT INTO kontenrahmen (id,name) VALUES (2,'SKR 04');
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1, 6, 2, '1570', 'Abziehbare Vorsteuer', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (2, 6, 2, '1571', 'Abziehbare Vorsteuer 7%', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (3, 6, 1, '1770', 'Umsatzsteuer', 1, NULL);
+INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (135, 6, 2, '1576', 'Abziehbare Vorsteuer 16%', 1, NULL);
 
 -- Steuern SKR03
-INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 135);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (2,'Vorsteuer 7%', '7', 2);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (3,'Umsatzsteuer 16%', '16', 3);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (4,'Umsatzsteuer 15%', '15', 3);
@@ -64,7 +65,6 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (132, 3, '1200', 'Bank', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (133, 3, '1360', 'Geldtransit', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (134, 3, '1370', 'Verrechnungskonto Gewinnermittlung § 4 Abs.3 EStG', 1, NULL);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (135, 6, '1576', 'Abziehbare Vorsteuer 16%', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (136, 3, '1590', 'Durchlaufende Posten', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (137, 3, '1700', 'Sonstige Verbindlichkeiten', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (138, 2, '1780', 'Umsatzsteuer-Vorauszahlungen', 1, NULL);

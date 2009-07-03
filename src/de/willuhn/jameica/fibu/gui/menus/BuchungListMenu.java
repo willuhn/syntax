@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/08 15:41:57 $
+ * $Revision: 1.5 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,6 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung"), new BNeu()));
     this.addItem(ContextMenuItem.SEPARATOR);
     
-    // TODO: Die farbliche Aenderung wird in der Tabelle nicht sofort uebernommen
     this.addItem(new GeprueftItem(i18n.tr("als geprüft markieren"), new BuchungGeprueft(),false));
     this.addItem(new GeprueftItem(i18n.tr("als ungeprüft markieren"), new BuchungUnGeprueft(),true));
   }
@@ -131,6 +130,12 @@ public class BuchungListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungListMenu.java,v $
+ * Revision 1.5  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.4.2.1  2009/06/23 10:45:53  willuhn
+ * @N Buchung nach Aenderung live aktualisieren
+ *
  * Revision 1.4  2006/05/08 15:41:57  willuhn
  * @N Buchungen als geprueft/ungeprueft markieren
  * @N Link Anlagevermoegen -> Buchung

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.9 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,6 +47,7 @@ public class GeschaeftsjahrNeu implements Action
         try
         {
           jahr = (Geschaeftsjahr) Settings.getDBService().createObject(Geschaeftsjahr.class,null);
+          jahr.setMandant((Mandant)context);
         }
         catch (RemoteException e)
         {
@@ -77,8 +78,8 @@ public class GeschaeftsjahrNeu implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
- * Revision 1.8  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.9  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.7  2005/09/26 15:15:39  willuhn
  * *** empty log message ***

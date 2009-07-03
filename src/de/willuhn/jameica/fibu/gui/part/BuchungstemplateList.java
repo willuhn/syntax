@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungstemplateList.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.6 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,7 +105,8 @@ public class BuchungstemplateList extends TablePart
   {
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
-    list.addFilter("kontenrahmen_id kontenrahmen_id = " + jahr.getKontenrahmen().getID());
+    list.addFilter("(mandant_id is null or mandant_id = " + jahr.getMandant().getID() + ")");
+    list.addFilter("(kontenrahmen_id is null or kontenrahmen_id = " + jahr.getKontenrahmen().getID() + ")");
     list.setOrder("order by name");
     return list;
   }
@@ -115,8 +116,8 @@ public class BuchungstemplateList extends TablePart
 
 /*********************************************************************
  * $Log: BuchungstemplateList.java,v $
- * Revision 1.5  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.6  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.4  2006/06/19 22:54:34  willuhn
  * *** empty log message ***

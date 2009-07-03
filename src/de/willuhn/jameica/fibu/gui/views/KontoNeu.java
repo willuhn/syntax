@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/02/26 19:13:24 $
+ * $Revision: 1.18 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,6 +61,9 @@ public class KontoNeu extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
+    if (!control.getKonto().isUserObject())
+      GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
+
     Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
 
     group.addLabelPair(i18n.tr("Name")            , control.getName());
@@ -73,14 +76,19 @@ public class KontoNeu extends AbstractView
     
     ButtonArea buttons = group.createButtonArea(3);
     buttons.addButton(i18n.tr("Zurück"), new Back());
-    buttons.addButton(new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject()));
-    buttons.addButton(new Button(i18n.tr("Speichern"), new Action()
+    Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
+    delete.setEnabled(control.getKonto().isUserObject());
+    buttons.addButton(delete);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
-    },null,true));
+    },null,true);
+    store.setEnabled(control.getKonto().isUserObject());
+    buttons.addButton(store);
 
     new Headline(getParent(),i18n.tr("Buchungen auf diesem Konto"));
     new BuchungList(control.getKonto(),new BuchungNeu()).paint(getParent());
@@ -97,8 +105,8 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
- * Revision 1.17  2008/02/26 19:13:24  willuhn
- * *** empty log message ***
+ * Revision 1.18  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.16  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen

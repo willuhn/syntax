@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.69 $
- * $Date: 2006/10/10 22:30:07 $
+ * $Revision: 1.70 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,7 +137,13 @@ public class BuchungControl extends AbstractControl
   {
     if (this.template != null)
       return this.template;
+    
     DBIterator list = Settings.getDBService().createList(Buchungstemplate.class);
+    
+    list.addFilter("(mandant_id is null or mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID() + ")");
+    list.addFilter("(kontenrahmen_id is null or kontenrahmen_id = " + Settings.getActiveGeschaeftsjahr().getKontenrahmen().getID() + ")");
+    list.setOrder("order by name");
+
     if (list.size() == 0)
     {
       this.template = new LabelInput(i18n.tr("Keine Buchungsvorlagen vorhanden"));
@@ -556,25 +562,27 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
-        if (!getSteuer().isEnabled())
-          return;
-        
-        Double d = (Double) getSteuer().getValue();
-        if (d == null)
-          return;
-        double satz = d.doubleValue();
-          
-//        if (satz == 0.0d)
-//          return;
-
-        Math math = new Math();
         Double betrag = (Double) getBetrag().getValue();
         double brutto = betrag == null ? getBuchung().getBruttoBetrag() : betrag.doubleValue();
-        double netto  = math.netto(brutto,satz);
-        double steuer = math.steuer(brutto,satz);
+        double steuer = 0d;
+        double netto  = brutto;
+
+        if (getSteuer().isEnabled())
+        {
+          Double d = (Double) getSteuer().getValue();
+          if (d != null)
+          {
+            double satz = d.doubleValue();
+            
+            Math math = new Math();
+            netto  = math.netto(brutto,satz);
+            steuer = math.steuer(brutto,satz);
+          }
+        }
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
         getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
+        
       }
       catch (RemoteException e)
       {
@@ -691,6 +699,16 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.70  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.69.2.2  2008/10/06 10:38:36  willuhn
+ * @C Bei Konten ohne Steuer Netto=Brutto anzeigen
+ *
+ * Revision 1.69.2.1  2008/07/03 10:37:08  willuhn
+ * @N Effektivere Erzeugung neuer Buchungsnummern
+ * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
+ *
  * Revision 1.69  2006/10/10 22:30:07  willuhn
  * @C DialogInput gegen DateInput ersetzt
  *

@@ -17,27 +17,26 @@ $math.reset("restwert")
   </tr>
 
   #foreach($av in $anlagevermoegen)
-    #if(${av.Anschaffungsdatum.before(${jahr.Ende})})
-      #set($anschaffungskosten = $av.Anschaffungskosten)
-      #set($anfangsbestand     = $av.getAnfangsbestand(${jahr}))
-      #set($jahresabschreibung = $av.getJahresAbschreibung(${jahr}))
-      #set($restwert           = $av.getRestwert(${jahr}))
-  
-      $math.add("anschaffungskosten",${anschaffungskosten})
-      $math.add("anfangsbestand",${anfangsbestand})
-      $math.add("jahresabschreibung",${jahresabschreibung})
-      $math.add("restwert",${restwert})
-  
-      <tr>
-        <td>$!{av.Name}</td>
-        <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
-        <td style="text-align:right">$!{decimalformat.format(${anschaffungskosten})} ${eur}</td>
-        <td style="text-align:right">$!{av.Nutzungsdauer}</td>
-        <td style="text-align:right">$!{decimalformat.format(${anfangsbestand})} ${eur}</td>
-        <td style="text-align:right">$!{decimalformat.format(${jahresabschreibung})} ${eur}</td>
-        <td style="text-align:right">$!{decimalformat.format(${restwert})} ${eur}</td>
-      </tr>
-    #end
+    #set($anschaffungskosten = $av.Anschaffungskosten)
+    #set($anfangsbestand     = $av.getAnfangsbestand(${jahr}))
+    #set($jahresabschreibung = $av.getJahresAbschreibung(${jahr}))
+    #set($restwert           = $av.getRestwert(${jahr}))
+
+    $math.add("anschaffungskosten",${anschaffungskosten})
+    $math.add("anfangsbestand",${anfangsbestand})
+    $math.add("jahresabschreibung",${jahresabschreibung})
+    $math.add("restwert",${restwert})
+
+    <tr>
+      <td>$!{av.Name}</td>
+      <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
+      <td style="text-align:right">$!{decimalformat.format(${anschaffungskosten})} ${eur}</td>
+      <td style="text-align:right">$!{av.Nutzungsdauer}</td>
+      <td style="text-align:right">$!{decimalformat.format(${anfangsbestand})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${jahresabschreibung})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${restwert})} ${eur}</td>
+    </tr>
+
   #end
 
 	<tr>

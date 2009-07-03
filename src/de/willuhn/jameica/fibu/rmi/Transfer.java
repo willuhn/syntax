@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Transfer.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,12 +93,26 @@ public interface Transfer extends DBObject
    */
   public void setSteuer(double steuer) throws RemoteException;
 
+  /**
+   * Liefert true, wenn die Buchung geprueft wurde.
+   * @return true, wenn sie geprueft wurde.
+   * @throws RemoteException
+   */
+  public boolean isGeprueft() throws RemoteException;
+
+  /**
+   * Legt fest, ob die Buchung als geprueft gelten soll.
+   * @param b true, wenn sie als geprueft gelten soll.
+   * @throws RemoteException
+   */
+  public void setGeprueft(boolean b) throws RemoteException;
+  
 }
 
 /*********************************************************************
  * $Log: Transfer.java,v $
- * Revision 1.3  2008/02/22 10:41:41  willuhn
- * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ * Revision 1.4  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.2  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging

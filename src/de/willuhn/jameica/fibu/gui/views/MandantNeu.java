@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/06/19 22:54:34 $
+ * $Revision: 1.24 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,8 @@ import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.gui.part.SteuerList;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -81,7 +83,18 @@ public class MandantNeu extends AbstractView
     group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
     ButtonArea buttonArea = group.createButtonArea(2);
-    buttonArea.addButton(i18n.tr("Löschen"), new MandantDelete(), getCurrentObject());
+    
+    boolean canDelete = true;
+    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    if (current != null)
+    {
+      Mandant cm = current.getMandant();
+      canDelete = !cm.equals(control.getMandant());
+    }
+    
+    Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject());
+    delete.setEnabled(canDelete);
+    buttonArea.addButton(delete);
     Button button1 = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -144,6 +157,12 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.24  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.23.2.1  2008/09/08 09:03:51  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.23  2006/06/19 22:54:34  willuhn
  * *** empty log message ***
  *

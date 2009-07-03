@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.24 $
- * $Date: 2007/07/30 21:05:50 $
+ * $Revision: 1.25 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,24 +15,33 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
+import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
+import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -40,7 +49,10 @@ import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.messaging.Message;
+import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -48,7 +60,7 @@ import de.willuhn.util.I18N;
 /**
  * Fertig vorkonfigurierte Tabelle mit Buchungen.
  */
-public class BuchungList extends TablePart
+public class BuchungList extends TablePart implements Extendable
 {
   
   private I18N i18n             = null;
@@ -58,6 +70,8 @@ public class BuchungList extends TablePart
 
   private GenericIterator list  = null;
   private ArrayList buchungen   = null;
+  
+  private MessageConsumer mc    = new MyMessageConsumer();
 
   /**
    * ct.
@@ -155,6 +169,15 @@ public class BuchungList extends TablePart
         }
       }
     });
+    ExtensionRegistry.extend(this);
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
   }
 
   /**
@@ -170,16 +193,24 @@ public class BuchungList extends TablePart
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
+      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr);
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
-        // TODO: Ein Steuerkonto enthaelt normalerweise nur automatisch
+        DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr);
+        if (hauptbuchungen.size() == 0)
+          return hilfsbuchungen;
+        
+        // Ein Steuerkonto enthaelt normalerweise nur automatisch
         // erzeugte Hilfsbuchungen. Da der User aber auch echte
         // Hauptbuchungen darauf erzeugen kann, muss die Liste
-        // hier noch um die Hauptbuchungen ergaenzt werden.
-        return konto.getHilfsBuchungen(jahr);
+        // ggf. um die Hauptbuchungen ergaenzt werden.
+        List l = new ArrayList();
+        while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
+        while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
+        return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
-      return konto.getHauptBuchungen(jahr);
+      return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
@@ -200,6 +231,59 @@ public class BuchungList extends TablePart
   }
   
   /**
+   * Aktualisiert die Tabelle
+   */
+  private synchronized void update()
+  {
+    GUI.getDisplay().syncExec(new Runnable()
+    {
+      public void run()
+      {
+        try
+        {
+          // Erstmal alle rausschmeissen
+          removeAll();
+
+          BaseBuchung a = null;
+
+          // Wir holen uns den aktuellen Text
+          String text = (String) search.getValue();
+
+          boolean empty = text == null || text.length() == 0;
+          if (!empty) text = text.toLowerCase();
+
+          for (int i=0;i<buchungen.size();++i)
+          {
+            a = (BaseBuchung) buchungen.get(i);
+
+            // Was zum Filtern da?
+            if (empty)
+            {
+              // ne
+              BuchungList.this.addItem(a);
+              continue;
+            }
+
+            String s = a.getText();
+            
+            s = s == null ? "" : s.toLowerCase();
+
+            if (s.indexOf(text) != -1)
+            {
+              BuchungList.this.addItem(a);
+            }
+          }
+          BuchungList.this.sort();
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while loading address",e);
+        }
+      }
+    });
+  }
+
+  /**
    * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
    */
   public synchronized void paint(Composite parent) throws RemoteException
@@ -211,11 +295,18 @@ public class BuchungList extends TablePart
       // Eingabe-Feld fuer die Suche mit Button hinten dran.
       this.search = new TextInput("");
       group.addLabelPair(i18n.tr("Buchungstext enthält"), this.search);
-
       this.search.getControl().addKeyListener(new KL());
     }
 
     super.paint(parent);
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    parent.addDisposeListener(new DisposeListener()
+    {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
 
     if (showFilter)
     {
@@ -233,98 +324,26 @@ public class BuchungList extends TablePart
 
   private class KL extends KeyAdapter
   {
-    private Thread timeout = null;
-   
+    private Listener forward = new DelayedListener(new Listener()
+    {
+      /**
+       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+       */
+      public void handleEvent(Event event)
+      {
+        update();
+      }
+
+    });
+
     /**
-     * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
+     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
     public void keyReleased(KeyEvent e)
     {
-      // Mal schauen, ob schon ein Thread laeuft. Wenn ja, muessen wir den
-      // erst killen
-      if (timeout != null)
-      {
-        timeout.interrupt();
-        timeout = null;
-      }
-      
-      // Ein neuer Timer
-      timeout = new Thread("BuchungList")
-      {
-        public void run()
-        {
-          try
-          {
-            // Wir warten 900ms. Vielleicht gibt der User inzwischen weitere
-            // Sachen ein.
-            sleep(700l);
-
-            // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-            process();
-
-          }
-          catch (InterruptedException e)
-          {
-            return;
-          }
-          finally
-          {
-            timeout = null;
-          }
-        }
-      };
-      timeout.start();
-    }
+      forward.handleEvent(null); // Das Event-Objekt interessiert uns eh nicht
+    }   
     
-    private synchronized void process()
-    {
-      GUI.getDisplay().syncExec(new Runnable()
-      {
-        public void run()
-        {
-          try
-          {
-            // Erstmal alle rausschmeissen
-            removeAll();
-
-            BaseBuchung a = null;
-
-            // Wir holen uns den aktuellen Text
-            String text = (String) search.getValue();
-
-            boolean empty = text == null || text.length() == 0;
-            if (!empty) text = text.toLowerCase();
-
-            for (int i=0;i<buchungen.size();++i)
-            {
-              a = (BaseBuchung) buchungen.get(i);
-
-              // Was zum Filtern da?
-              if (empty)
-              {
-                // ne
-                BuchungList.this.addItem(a);
-                continue;
-              }
-
-              String s = a.getText();
-              
-              s = s == null ? "" : s.toLowerCase();
-
-              if (s.indexOf(text) != -1)
-              {
-                BuchungList.this.addItem(a);
-              }
-            }
-            BuchungList.this.sort();
-          }
-          catch (Exception e)
-          {
-            Logger.error("error while loading address",e);
-          }
-        }
-      });
-    }
   }
   
   
@@ -356,13 +375,80 @@ public class BuchungList extends TablePart
         return null;
       }
     }
-    
+  }
+  
+  /**
+   * erhaelt Updates ueber geaenderte Buchungen und aktualisiert die Tabelle live.
+   */
+  private class MyMessageConsumer implements MessageConsumer
+  {
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectChangedMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      ObjectChangedMessage m = (ObjectChangedMessage) message;
+      final Object buchung = m.getData();
+      if (buchung == null || !(buchung instanceof BaseBuchung))
+        return;
+      
+      GUI.getDisplay().syncExec(new Runnable() {
+        public void run()
+        {
+          try
+          {
+            int index = removeItem(buchung);
+            if (index == -1)
+              return; // Objekt war nicht in der Tabelle
+
+            // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
+           addItem(buchung,index);
+
+           // Wir markieren es noch in der Tabelle
+           select(buchung);
+          }
+          catch (Exception e)
+          {
+            Logger.error("unable to add object to list",e);
+          }
+        }
+      });
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.25  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.24.2.3  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
+ * Revision 1.24.2.2  2009/06/23 11:04:10  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.24.2.1  2009/06/23 10:45:53  willuhn
+ * @N Buchung nach Aenderung live aktualisieren
+ *
  * Revision 1.24  2007/07/30 21:05:50  willuhn
  * @B typo
  *

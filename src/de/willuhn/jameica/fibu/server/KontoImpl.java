@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.52 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.53 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,23 +24,29 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
 
 /**
  * @author willuhn
  */
-public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
+public class KontoImpl extends AbstractUserObjectImpl implements Konto
 {
+  private I18N i18n = null;
+  
   /**
    * Erzeugt ein neues Konto.
    * @throws RemoteException
@@ -48,6 +54,7 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
   public KontoImpl() throws RemoteException
   {
     super();
+    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -64,6 +71,14 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
   public String getKontonummer() throws RemoteException
   {
     return (String) getAttribute("kontonummer");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getKontenrahmen()
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException
+  {
+    return (Kontenrahmen) getAttribute("kontenrahmen_id");
   }
 
   /**
@@ -250,7 +265,48 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
       return Kontoart.class;
     if ("kontotyp_id".equals(field))
       return Kontotyp.class;
+    if ("kontenrahmen_id".equals(field))
+      return Kontenrahmen.class;
     return super.getForeignObject(field);
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
+   */
+  protected void deleteCheck() throws ApplicationException
+  {
+    super.deleteCheck();
+    try
+    {
+      DBIterator list = getService().createList(Steuer.class);
+      list.addFilter("steuerkonto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto ist als Sammelkonto einem Steuersatz zugeordnet."));
+
+      list = getService().createList(Anfangsbestand.class);
+      list.addFilter("konto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto besitzt bereits einen Anfangsbestand. Löschen SIe zuerst diesen."));
+
+      list = getService().createList(Buchung.class);
+      list.addFilter("habenkonto_id = " + this.getID() + " OR sollkonto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Es existieren bereits Buchungen auf diesem Konto."));
+
+      list = getService().createList(Anlagevermoegen.class);
+      list.addFilter("konto_id = " + this.getID());
+      
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Das Konto ist einem Anlage-Gegenstand zugeordnet."));
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to check konto",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Kontos"));
+    }
   }
 
   /**
@@ -260,6 +316,10 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
   {
     super.insertCheck();
     try {
+      Kontenrahmen kr = getKontenrahmen();
+      if (kr == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus."));
+
       String name = (String) getAttribute("name");
       if (name == null || "".equals(name))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen für das Konto ein."));
@@ -274,7 +334,7 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
 
       // Jetzt muessen wir noch pruefen, ob die Kontonummer schon bei einem anderen
       // Konto vergeben ist
-      Konto other = findKonto(kontonummer);
+      Konto other = kr.findByKontonummer(kontonummer);
       if (other != null && !other.equals(this))
         throw new ApplicationException(i18n.tr("Ein Konto mit dieser Kontonummer existiert bereits in diesem Kontenrahmen."));
     }
@@ -290,6 +350,14 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
   public void setKontonummer(String kontonummer) throws RemoteException
   {
     setAttribute("kontonummer",kontonummer);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#setKontenrahmen(de.willuhn.jameica.fibu.rmi.Kontenrahmen)
+   */
+  public void setKontenrahmen(Kontenrahmen k) throws RemoteException
+  {
+    setAttribute("kontenrahmen_id",k);
   }
 
   /**
@@ -391,13 +459,13 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
     DBService db = ((DBService)getService());
 
     DBIterator list = getService().createList(type);
-    list.addFilter("(sollkonto = ? OR habenkonto = ?)", new Object[]{this.getKontonummer(),this.getKontonummer()});
+    list.addFilter("(sollkonto_id = " + this.getID() + " OR habenkonto_id = " + this.getID() + ")");
     list.addFilter("geschaeftsjahr_id = " + jahr.getID());
     if (start != null)
       list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime());
     if (end != null)
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
-    list.setOrder("order by datum");
+    list.setOrder("order by datum,belegnummer");
 
     return list;
   }
@@ -408,8 +476,7 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
   public Anfangsbestand getAnfangsbestand(Geschaeftsjahr jahr) throws RemoteException
   {
     DBIterator ab = jahr.getAnfangsbestaende();
-    ab.addFilter("konto = ?", new Object[]{this.getKontonummer()});
-    ab.addFilter("geschaeftsjahr_id = " + jahr.getID());
+    ab.addFilter("konto_id = " + this.getID());
     if (!ab.hasNext())
       return null;
     return (Anfangsbestand) ab.next();
@@ -441,7 +508,7 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
     
     // Die ID muss via tonumber umgewandelt werden, da wir sie als String
     // uebergeben
-    String sql = "select count(id) from buchung where sollkonto = ? or habenkonto = ?";
+    String sql = "select count(id) from buchung where sollkonto_id = ? or habenkonto_id = ?";
 
     DBService service = (DBService) this.getService();
 
@@ -455,15 +522,19 @@ public class KontoImpl extends AbstractKontenrahmenObjectImpl implements Konto
       }
     };
 
-    Integer i = (Integer) service.execute(sql, new Object[] {this.getKontonummer(),this.getKontonummer()},rs);
+    Integer id = new Integer(this.getID());
+    Integer i = (Integer) service.execute(sql, new Object[] {id,id},rs);
     return i == null ? 0 : i.intValue();
   }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.52  2008/02/22 10:41:41  willuhn
- * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ * Revision 1.53  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.51.2.1  2009/06/23 11:04:49  willuhn
+ * @N auch nach Belegnummer sortieren
  *
  * Revision 1.51  2007/11/05 01:05:43  willuhn
  * @C refactoring

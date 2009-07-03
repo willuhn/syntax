@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.16 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.17 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -611,6 +611,7 @@ public class FirstStartControl extends AbstractControl
         }
         else
         {
+          getGeschaeftsjahrControl().getGeschaeftsjahr().setMandant(ma);
           if (getGeschaeftsjahrControl().handleStore())
           {
             Settings.setActiveGeschaeftsjahr(getGeschaeftsjahrControl().getGeschaeftsjahr());
@@ -652,8 +653,8 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
- * Revision 1.16  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.17  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.15  2007/04/23 23:23:52  willuhn
  * @B sofortige Aktivierung/Deaktivierung nicht benoetigter Felder

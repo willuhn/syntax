@@ -1,0 +1,80 @@
+#set($erloese  = $!{export.getObjects("erloese")})
+#set($vst      = $!{export.getObjects("vst")})
+
+#set($start    = $!{export.getObjects("start")})
+#set($end      = $!{export.getObjects("end")})
+
+#if($start)
+  #if($end)
+    <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
+    <br/>
+  #end
+#end
+
+$math.reset("ust")
+
+<table class="data">
+
+  <tr>
+    <th>&nbsp;</th>
+    <th style="width:70px;text-align:center">Kz</th>
+    <th style="text-align:right">Bemessungsgrundlage</th>
+    <th style="width:70px;text-align:center">Kz</th>
+    <th style="text-align:right">Steuer</th>
+  </tr>
+
+  <tr><td colspan="5">&nbsp;</td></tr>
+
+
+  <tr>
+    <td colspan="5"><h2>1. Steuerpflichtige Umsätze</h2></td>
+  </tr>
+  #foreach($erloes in $erloese)
+    #set($ust = ${erloes.Steuer})
+    $math.add("ust",$ust)
+    <tr>
+      <td>${erloes.Name}</td>
+      <td style="text-align:center">${erloes.Kennzeichen}</td>
+      <td style="text-align:right">$!{decimalformat.format(${erloes.Bemessungsgrundlage})} ${eur}</td>
+      <td>&nbsp;</td>
+      <td style="text-align:right">$!{decimalformat.format($ust)} ${eur}</td>
+    </tr>
+  #end
+  <tr>
+    <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
+    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
+  </tr>
+
+
+  <tr><td colspan="5">&nbsp;</td></tr>
+
+
+  <tr>
+    <td colspan="5"><h2>2. Abziehbare Vorsteuer</h2></td>
+  </tr>
+  <tr>
+    <td>Vorsteuerbeträge aus Rechnungen von anderen Unternehmen</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td style="text-align:center">66</td>
+    <td style="text-align:right">$!{decimalformat.format($vst)} ${eur}</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
+    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($vst)} ${eur}</td>
+  </tr>
+
+
+  <tr><td colspan="5">&nbsp;</td></tr>
+
+
+  <tr>
+    <td colspan="5"><h2>3. Verbleibende Umsatzsteuer-Vorauszahlung</h2></td>
+  </tr>
+  <tr>
+    <td colspan="3" style="font-weight:bold;border-bottom:1px solid #000000;">Verbleibender Überschuss</td>
+    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:center">83</td>
+    $math.substract("ust",$vst)
+    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
+  </tr>
+</table>

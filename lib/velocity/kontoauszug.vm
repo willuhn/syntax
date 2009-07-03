@@ -37,7 +37,8 @@
       <th>Gegenkonto</th>
     </tr>
 
-    #parse("kontoauszug.$!{konto.KontoArt.Name}.vm")
+    #set($filenames = $!{export.getObjects("filenames")})
+    #parse("kontoauszug.${filenames.get(${konto.KontoArt.Name})}.vm")
 
     <tr>
       <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
@@ -51,7 +52,9 @@
   <table>
 
     #set($anfangsbestand = "")
-    #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
+    #if(${konto.getAnfangsbestand(${jahr})})
+      #set($anfangsbestand = $!{konto.getAnfangsbestand(${jahr}).getBetrag()})
+    #end
     #set($ab = $!{anfangsbestand.toString()})
 
     $math.reset("oldsaldo")
@@ -74,7 +77,7 @@
     </tr>
     <tr>
       <td>Summe der Umsätze:</td>
-      <td style="text-align:right">$!{decimalformat.format($math.get("umsatz"))} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format($math.abs($math.get("umsatz")))} ${eur}</td>
     </tr>
 
     <tr>

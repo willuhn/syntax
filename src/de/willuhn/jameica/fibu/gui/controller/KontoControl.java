@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.27 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,6 +85,7 @@ public class KontoControl extends AbstractControl
 
 		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
     konto.setKontenrahmen(Settings.getActiveGeschaeftsjahr().getKontenrahmen());
+    konto.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
     
     // Konto-Art definieren wir mit der haeufigsten Konto-Art vor
     konto.setKontoArt((Kontoart) Settings.getDBService().createObject(Kontoart.class,""+Kontoart.KONTOART_AUFWAND));
@@ -116,6 +117,8 @@ public class KontoControl extends AbstractControl
 		if (name != null)
 			return name;
 		name = new TextInput(getKonto().getName());
+    if (!getKonto().isUserObject())
+      name.disable();
 		return name;
 	}
 
@@ -129,6 +132,8 @@ public class KontoControl extends AbstractControl
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
+    if (!getKonto().isUserObject())
+      kontonummer.disable();
 		return kontonummer;
 	}
 
@@ -148,7 +153,7 @@ public class KontoControl extends AbstractControl
     while (list.hasNext())
     {
       Steuer s = (Steuer) list.next();
-      Konto k = s.getKonto();
+      Konto k = s.getSteuerKonto();
       if (k == null)
         continue;
       Kontenrahmen kr2 = k.getKontenrahmen();
@@ -162,7 +167,8 @@ public class KontoControl extends AbstractControl
 
     // Deaktivieren, wenn Konto nicht steuerpflichtig
     Kontoart ka = getKonto().getKontoArt();
-    steuer.setEnabled(ka != null && ka.isSteuerpflichtig());
+    if (!getKonto().isUserObject() || ka == null || !ka.isSteuerpflichtig())
+      steuer.disable();
 
 		return steuer;
 	}
@@ -188,9 +194,16 @@ public class KontoControl extends AbstractControl
         try
         {
           // Wenn die Konto-Art steuerpflichtig, muessen wir den Steuersatz freischalten
-          getSteuer().setEnabled(k.isSteuerpflichtig());
+          if (k.isSteuerpflichtig())
+            getSteuer().enable();
+          else
+            getSteuer().disable();
+          
           // Wenn es ein Steuerkonto ist, dann Kontotyp freischalten
-          getKontotyp().setEnabled(k.getKontoArt() == Kontoart.KONTOART_STEUER);
+          if (k.getKontoArt() == Kontoart.KONTOART_STEUER)
+            getKontotyp().enable();
+          else
+            getKontotyp().disable();
         }
         catch (RemoteException e)
         {
@@ -200,6 +213,8 @@ public class KontoControl extends AbstractControl
       }
     });
     
+    if (!getKonto().isUserObject())
+      kontoart.disable();
 		return kontoart;
 	}
 
@@ -216,7 +231,10 @@ public class KontoControl extends AbstractControl
     Kontotyp kt = getKonto().getKontoTyp();
     kontotyp = new SelectInput(Settings.getDBService().createList(Kontotyp.class),kt);
     Kontoart ka = getKonto().getKontoArt();
-    kontotyp.setEnabled(ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER);
+    if (getKonto().isUserObject() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
+      kontotyp.enable();
+    else
+      kontotyp.disable();
     return kontotyp;
   }
 
@@ -241,6 +259,9 @@ public class KontoControl extends AbstractControl
   public void handleStore()
   {
     try {
+      if (!getKonto().isUserObject())
+        throw new ApplicationException(i18n.tr("Konto ist ein System-Konto und darf nicht geändert werden"));
+
       getKonto().setName((String) getName().getValue());
       getKonto().setKontonummer((String) getKontonummer().getValue());
       Kontoart art = (Kontoart) getKontoart().getValue();
@@ -274,8 +295,8 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.26  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.27  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.25  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen

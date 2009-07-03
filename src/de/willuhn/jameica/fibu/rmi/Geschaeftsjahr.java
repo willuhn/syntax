@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.11 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.12 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,11 @@ import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 
 /**
  */
-public interface Geschaeftsjahr extends KontenrahmenObject
+public interface Geschaeftsjahr extends DBObject
 {
 
   /**
@@ -64,9 +65,29 @@ public interface Geschaeftsjahr extends KontenrahmenObject
    * Liefert den Mandanten.
    * @return Mandant.
    * @throws RemoteException
-   * @Deprecated
    */
   public Mandant getMandant() throws RemoteException;
+  
+  /**
+   * Speichert den Mandanten.
+   * @param m Mandant.
+   * @throws RemoteException
+   */
+  public void setMandant(Mandant m) throws RemoteException;
+  
+  /**
+   * Liefert den ausgewaehlten Kontenrahmen des Mandanten.
+   * @return Kontenrahmen des Mandanten.
+   * @throws RemoteException
+   */
+  public Kontenrahmen getKontenrahmen() throws RemoteException;
+
+  /**
+   * Speichert den ausgewaehlten Kontenrahmen des Mandanten.
+   * @param kontenrahmen Kontenrahmen des Mandanten.
+   * @throws RemoteException
+   */
+  public void setKontenrahmen(Kontenrahmen kontenrahmen) throws RemoteException;
   
   /**
    * Liefert die Haupt-Buchungen des Geschaeftsjahres.
@@ -135,8 +156,8 @@ public interface Geschaeftsjahr extends KontenrahmenObject
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $
- * Revision 1.11  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.12  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.10  2006/05/30 23:33:09  willuhn
  * *** empty log message ***

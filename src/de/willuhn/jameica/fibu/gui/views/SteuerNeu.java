@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.17 $
- * $Date: 2008/02/26 19:13:24 $
+ * $Revision: 1.18 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class SteuerNeu extends AbstractView
 
     Container steuerGroup = new LabelGroup(getParent(),i18n.tr("Steuersatz"));
 
-    steuerGroup.addLabelPair(i18n.tr("Kontenrahmen"),       control.getKontenrahmen());
+    steuerGroup.addLabelPair(i18n.tr("Mandant"),            control.getMandant());
     steuerGroup.addLabelPair(i18n.tr("Name")      , 				control.getName());
     steuerGroup.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
     steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
@@ -55,14 +55,22 @@ public class SteuerNeu extends AbstractView
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     
-    buttonArea.addButton(new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer()));
-    buttonArea.addButton(new Button(i18n.tr("Speichern"), new Action()
+    if (!control.getSteuer().isUserObject())
+      GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
+    
+    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer());
+    delete.setEnabled(control.getSteuer().isUserObject());
+    buttonArea.addButton(delete);
+    
+    Button store = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
-    },null,true));
+    },null,true);
+    store.setEnabled(control.getSteuer().isUserObject());
+    buttonArea.addButton(store);
   }
 
   /**
@@ -75,8 +83,8 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
- * Revision 1.17  2008/02/26 19:13:24  willuhn
- * *** empty log message ***
+ * Revision 1.18  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.16  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen

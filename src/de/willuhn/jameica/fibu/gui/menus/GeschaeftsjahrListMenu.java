@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.7 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.8 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -44,7 +45,7 @@ public class GeschaeftsjahrListMenu extends ContextMenu
     this.mandant = m;
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new GeschaeftsjahrNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new GeschaeftsjahrDelete()));
+    this.addItem(new NotActiveItem(i18n.tr("Löschen"), new GeschaeftsjahrDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new ContextMenuItem(i18n.tr("Neues Geschäftsjahr..."), new GNeu()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Als aktives Geschäftsjahr festlegen"), new Action() {
@@ -72,11 +73,59 @@ public class GeschaeftsjahrListMenu extends ContextMenu
       super.handleAction(mandant);
     }
   }
+
+  /**
+   * Hilfsklasse, um das Loeschen des aktiven Geschaeftsjahres zu unterbinden.
+   */
+  private static class NotActiveItem extends CheckedContextMenuItem
+  {
+    /**
+     * ct
+     * @param text
+     * @param a
+     */
+    public NotActiveItem(String text, Action a)
+    {
+      super(text, a);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.CheckedContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o != null && (o instanceof Geschaeftsjahr))
+      {
+        try
+        {
+          Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+          if (current != null)
+          {
+            if (current.equals((Geschaeftsjahr)o))
+              return false;
+          }
+        }
+        catch (Exception e)
+        {
+          Logger.error("error while checking if gj is deletable",e);
+          return false;
+        }
+      }
+      return super.isEnabledFor(o);
+    }
+    
+  }
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.8  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.7.2.1  2008/09/08 09:03:52  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.7  2006/12/27 15:23:33  willuhn
  * @C merged update 1.3 and 1.4 to 1.3
  *

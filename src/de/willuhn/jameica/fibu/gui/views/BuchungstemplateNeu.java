@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,7 @@ public class BuchungstemplateNeu extends AbstractView
     // Gruppe Konto erzeugen
     LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
 
+    kontoGroup.addLabelPair(i18n.tr("Mandant"),                     control.getMandant());
     kontoGroup.addLabelPair(i18n.tr("Kontenrahmen"),                control.getKontenrahmen());
     kontoGroup.addLabelPair(i18n.tr("Bezeichnung der Vorlage"),     control.getBezeichnung());
     kontoGroup.addSeparator();
@@ -86,8 +87,8 @@ public class BuchungstemplateNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
- * Revision 1.3  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.4  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.2  2006/01/03 17:55:53  willuhn
  * @N a lot more checks

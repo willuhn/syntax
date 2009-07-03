@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2006/12/27 15:58:08 $
+ * $Revision: 1.9 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,10 +61,11 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
     if (username == null || username.length() == 0)
       throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
 
-    PluginResources res = Application.getPluginLoader().getPlugin(Fibu.class).getResources();
+    String workdir = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath();
+    String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
 
-    File create = new File(res.getPath() + File.separator + "sql" + File.separator + "create.sql");
-    File init   = new File(res.getPath() + File.separator + "sql" + File.separator + "init.sql");
+    File create = new File(appdir + File.separator + "sql" + File.separator + "create.sql");
+    File init   = new File(appdir + File.separator + "sql" + File.separator + "init.sql");
     
     Connection conn = null;
     ResultSet rs    = null;
@@ -72,7 +73,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
     {
       
       // Verzeichnisse und leere DB ggf. erzeugen
-      File dbDir = new File(res.getWorkPath(),"db");
+      File dbDir = new File(workdir,"db");
       if (!dbDir.exists())
         dbDir.mkdirs();
       new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
@@ -215,6 +216,12 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.9  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.8.2.1  2009/06/23 10:08:29  willuhn
+ * @C kleinere Todos
+ *
  * Revision 1.8  2006/12/27 15:58:08  willuhn
  * @R removed unused method
  *

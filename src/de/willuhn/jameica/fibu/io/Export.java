@@ -1,125 +1,60 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/Export.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/28 01:08:03 $
+ * $Revision: 1.2 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by willuhn software & services
  * All rights reserved
  *
  **********************************************************************/
 
 package de.willuhn.jameica.fibu.io;
 
-import java.io.OutputStream;
-import java.util.HashMap;
+import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.ProgressMonitor;
 
 /**
- * Kapselt die Daten eines Exports.
+ * Interface fuer alle unterstuetzten Exporte.
+ * Wenn die Liste der vefuegbaren Auswertungen um ein
+ * Element erweitert werden soll, muss es dieses Interface
+ * hier implementieren.
  */
-public class Export
+public interface Export extends Comparable
 {
   /**
-   * Dateiname des Velocity-Templates.
+   * Liefert einen sprechenden Namen fuer den Export.
+   * @return Sprechender Name fuer den Export.
    */
-  private String template     = null;
+  public String getName();
   
   /**
-   * Titel der Auswertung.
+   * Fuehrt den Export aus.
+   * @param data die Meta-Daten.
+   * @param monitor Fortschritts-Monitor.
+   * @throws ApplicationException
+   * @throws OperationCanceledException
    */
-  private String title        = null;
+  public void doExport(ExportData data, ProgressMonitor monitor) throws ApplicationException, OperationCanceledException;
   
   /**
-   * Die zu druckenden Objekte.
+   * Kann vom Export implementiert werden, wenn bereits Vorauswahlen getroffen werden sollen.
+   * @return Preset-Objekt mit Vorauswahlen fuer den User.
    */
-  private HashMap objects    = new HashMap();
+  public ExportData createPreset();
   
-  /**
-   * Das Ausgabe-Ziel.
-   */
-  private OutputStream target = null;
-
-  /**
-   * Liefert die zu druckenden Objekte mit dem genannten Alias.
-   * @param name Alias-Name.
-   * @return die Objekte.
-   */
-  public Object getObjects(String name)
-  {
-    return this.objects.get(name);
-  }
-  
-  /**
-   * Liefert das Ausgabe-Target.
-   * @return Target.
-   */
-  public OutputStream getTarget()
-  {
-    return this.target;
-  }
-  
-  /**
-   * Liefert den Dateinamen des Velocity-Templates.
-   * @return Dateiname des Templates.
-   */
-  public String getTemplate()
-  {
-    return this.template;
-  }
-  
-  /**
-   * Liefert den Titel des Exports.
-   * @return Titel.
-   */
-  public String getTitle()
-  {
-    return this.title;
-  }
-  
-  /**
-   * Speichert die zu exportierenden Daten.
-   * @param name Alias-Name.
-   * @param object Nutzdaten.
-   */
-  public void addObject(String name, Object object)
-  {
-    this.objects.put(name, object);
-  }
-  
-  /**
-   * Speichert das Ausgabe-Target.
-   * @param target
-   */
-  public void setTarget(OutputStream target)
-  {
-    this.target = target;
-  }
-  
-  /**
-   * Speichert den Dateinamen des Velocity-Templates.
-   * @param template
-   */
-  public void setTemplate(String template)
-  {
-    this.template = template;
-  }
-  
-  /**
-   * Speichert den Titel des Reports.
-   * @param title
-   */
-  public void setTitle(String title)
-  {
-    this.title = title;
-  }
 }
 
 
-/*********************************************************************
+/**********************************************************************
  * $Log: Export.java,v $
- * Revision 1.1  2005/08/28 01:08:03  willuhn
- * @N buchungsjournal
+ * Revision 1.2  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
+ * @N Velocity-Export komplett ueberarbeitet
  *
  **********************************************************************/

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.5 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,14 +23,13 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
-import de.willuhn.jameica.fibu.util.KontenrahmenUtil;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -159,13 +158,11 @@ public class GeschaeftsjahrControl extends AbstractControl
   {
     try {
 
-      Kontenrahmen kr = (Kontenrahmen) getKontenrahmenAuswahl().getValue();
-      if (kr == null)
-        throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen aus"));
-      
-      // TODO Mandant auswaehlen
-      kr = KontenrahmenUtil.create(Settings.getDBService(),kr,null,null);
-      getGeschaeftsjahr().setKontenrahmen(kr);
+      //////////////////////////////////////////////////////////////////////////
+      // Kontenrahmen checken
+      getGeschaeftsjahr().setKontenrahmen((Kontenrahmen) getKontenrahmenAuswahl().getValue());
+      //
+      //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Geschaeftsjahr checken
@@ -177,17 +174,17 @@ public class GeschaeftsjahrControl extends AbstractControl
 
       // und jetzt speichern wir.
       getGeschaeftsjahr().store();
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Geschäftsjahr gespeichert."),StatusBarMessage.TYPE_SUCCESS));
+      GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr gespeichert."));
       return true;
     }
     catch (ApplicationException e1)
     {
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e1.getMessage(),StatusBarMessage.TYPE_ERROR));
+      GUI.getView().setErrorText(e1.getLocalizedMessage());
     }
-    catch (Exception e)
+    catch (RemoteException e)
     {
       Logger.error("unable to store gj",e);
-      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Geschäftsjahres."),StatusBarMessage.TYPE_ERROR));
+      GUI.getView().setErrorText("Fehler beim Speichern des Geschäftsjahres.");
     }
     return false;
   }
@@ -198,8 +195,8 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
- * Revision 1.4  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.5  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.3  2006/06/19 22:23:47  willuhn
  * @N Wizard

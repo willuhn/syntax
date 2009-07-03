@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/BaseBuchung.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/02/22 10:41:41 $
+ * $Revision: 1.9 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,26 +65,12 @@ public interface BaseBuchung extends Transfer
    */
   public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException;
 
-  /**
-   * Liefert true, wenn die Buchung geprueft wurde.
-   * @return true, wenn sie geprueft wurde.
-   * @throws RemoteException
-   */
-  public boolean isGeprueft() throws RemoteException;
-
-  /**
-   * Legt fest, ob die Buchung als geprueft gelten soll.
-   * @param b true, wenn sie als geprueft gelten soll.
-   * @throws RemoteException
-   */
-  public void setGeprueft(boolean b) throws RemoteException;
-  
 }
 
 /*********************************************************************
  * $Log: BaseBuchung.java,v $
- * Revision 1.8  2008/02/22 10:41:41  willuhn
- * @N Erweiterte Mandantenfaehigkeit (IN PROGRESS!)
+ * Revision 1.9  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.7  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen

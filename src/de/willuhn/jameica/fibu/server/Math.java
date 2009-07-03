@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/05/29 17:30:26 $
+ * $Revision: 1.13 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,6 +102,16 @@ public class Math
   {
     substract(name,name,value);
   }
+  
+  /**
+   * Erzeugt den Absolut-Wert.
+   * @param value Wert.
+   * @return Absolut-Wert.
+   */
+  public double abs(double value)
+  {
+    return java.lang.Math.abs(value);
+  }
 
   /**
    * Substrahiert den Betrag von Summe mit diesem Namen und pappt das Ergebnis in Target.
@@ -144,6 +154,14 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.13  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.12.2.1  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.12  2006/05/29 17:30:26  willuhn
  * @N a lot of debugging
  *

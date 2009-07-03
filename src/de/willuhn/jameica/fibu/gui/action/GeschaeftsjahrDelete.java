@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrDelete.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/20 23:27:17 $
+ * $Revision: 1.6 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,6 +62,10 @@ public class GeschaeftsjahrDelete implements Action
       // Seite aktualisieren
       GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
     }
+    catch (ApplicationException ae)
+    {
+      throw ae;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete gj",e);
@@ -74,6 +78,12 @@ public class GeschaeftsjahrDelete implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrDelete.java,v $
+ * Revision 1.6  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.5.2.1  2008/09/08 09:03:51  willuhn
+ * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
+ *
  * Revision 1.5  2006/06/20 23:27:17  willuhn
  * @C Anzeige des aktuellen Geschaeftsjahres
  * @C Oeffnen/Schliessen eines Geschaeftsjahres

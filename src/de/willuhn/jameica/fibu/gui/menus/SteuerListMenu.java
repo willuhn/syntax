@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/26 19:13:24 $
+ * $Revision: 1.8 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,13 +13,17 @@
 
 package de.willuhn.jameica.fibu.gui.menus;
 
+import java.rmi.RemoteException;
+
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -73,8 +77,15 @@ public class SteuerListMenu extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-      if (strict && o != null)
-        return false;
+      try
+      {
+        if (strict && o != null && !((Steuer)o).isUserObject())
+          return false;
+      }
+      catch (RemoteException e)
+      {
+        Logger.error("unable to check steuer",e);
+      }
       return super.isEnabledFor(o);
     }
   }
@@ -83,8 +94,8 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
- * Revision 1.7  2008/02/26 19:13:24  willuhn
- * *** empty log message ***
+ * Revision 1.8  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.6  2006/06/19 22:54:34  willuhn
  * *** empty log message ***

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/KontoAuswahlDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2007/04/23 23:41:26 $
+ * $Revision: 1.7 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.util.ApplicationException;
@@ -59,10 +58,6 @@ public class KontoAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-		LabelGroup group = new LabelGroup(parent,i18n.tr("Verfügbare Konten"));
-			
-		group.addText(i18n.tr("Bitte wählen Sie das gewünschte Konto aus."),true);
-
     Action a = new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -116,6 +111,13 @@ public class KontoAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: KontoAuswahlDialog.java,v $
+ * Revision 1.7  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.6.2.1  2009/06/24 10:35:55  willuhn
+ * @N Jameica 1.7 Kompatibilitaet
+ * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
+ *
  * Revision 1.6  2007/04/23 23:41:26  willuhn
  * @B reset des Konten-Iterators
  *

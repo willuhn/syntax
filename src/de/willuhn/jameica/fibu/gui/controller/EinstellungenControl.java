@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/EinstellungenControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/03 23:58:35 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,7 @@ public class EinstellungenControl extends AbstractControl
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
-    afaKonto = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr,false));
+    afaKonto = new KontoInput(konten,Settings.getAbschreibungsKonto(jahr,false));
     return afaKonto;
   }
   
@@ -88,7 +88,7 @@ public class EinstellungenControl extends AbstractControl
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
-    afaKontoGWG = new KontoInput(konten,Settings.getAbschreibunsgKonto(jahr,true));
+    afaKontoGWG = new KontoInput(konten,Settings.getAbschreibungsKonto(jahr,true));
     return afaKontoGWG;
   }
 
@@ -157,6 +157,14 @@ public class EinstellungenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: EinstellungenControl.java,v $
+ * Revision 1.4  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.3.2.1  2008/08/03 23:02:47  willuhn
+ * @N UST-Voranmeldung
+ * @B Typos
+ * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
+ *
  * Revision 1.3  2006/01/03 23:58:35  willuhn
  * @N Afa- und GWG-Handling
  *

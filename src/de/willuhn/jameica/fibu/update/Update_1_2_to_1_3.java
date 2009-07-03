@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/update/Attic/Update_1_2_to_1_3.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/26 19:13:24 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -68,7 +68,7 @@ public class Update_1_2_to_1_3 implements Update
         st = (Steuer) service.createObject(Steuer.class,null);
         st.setName("Vorsteuer 19%");
         st.setSatz(19);
-        st.setKonto(konto);
+        st.setSteuerKonto(konto);
         st.store();
         service.executeUpdate("update konto set steuer_id=" + st.getID() + " where steuer_id=1",new Object[0]);
         monitor.addPercentComplete(1);
@@ -86,7 +86,7 @@ public class Update_1_2_to_1_3 implements Update
         st = (Steuer) service.createObject(Steuer.class,null);
         st.setName("Umsatzsteuer 19%");
         st.setSatz(19);
-        st.setKonto(konto);
+        st.setSteuerKonto(konto);
         st.store();
         service.executeUpdate("update konto set steuer_id=" + st.getID() + " where steuer_id=3",new Object[0]);
         monitor.addPercentComplete(1);
@@ -124,7 +124,7 @@ public class Update_1_2_to_1_3 implements Update
         st = (Steuer) service.createObject(Steuer.class,null);
         st.setName("Vorsteuer 19%");
         st.setSatz(19);
-        st.setKonto(konto);
+        st.setSteuerKonto(konto);
         st.store();
         service.executeUpdate("update konto set steuer_id=" + st.getID() + " where steuer_id=1001",new Object[0]);
         monitor.addPercentComplete(1);
@@ -142,7 +142,7 @@ public class Update_1_2_to_1_3 implements Update
         st = (Steuer) service.createObject(Steuer.class,null);
         st.setName("Umsatzsteuer 19%");
         st.setSatz(19);
-        st.setKonto(konto);
+        st.setSteuerKonto(konto);
         st.store();
         service.executeUpdate("update konto set steuer_id=" + st.getID() + " where steuer_id=1003",new Object[0]);
         monitor.addPercentComplete(1);
@@ -232,8 +232,8 @@ public class Update_1_2_to_1_3 implements Update
 
 /*********************************************************************
  * $Log: Update_1_2_to_1_3.java,v $
- * Revision 1.3  2008/02/26 19:13:24  willuhn
- * *** empty log message ***
+ * Revision 1.4  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.2  2007/02/27 15:50:44  willuhn
  * *** empty log message ***

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/02/26 19:13:23 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/03 10:52:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -56,6 +57,7 @@ public class BuchungstemplateControl extends AbstractControl
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
   
+  private Input mandant          = null;
   private Input kontenrahmen     = null;
   
   private I18N i18n;
@@ -85,11 +87,30 @@ public class BuchungstemplateControl extends AbstractControl
 		
 		buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
     
+    // Die beiden Parameter geben wir automatisch vor.
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    buchung.setMandant(jahr.getMandant());
     buchung.setKontenrahmen(jahr.getKontenrahmen());
 		return buchung;
 		
 	}
+
+  /**
+   * Liefert ein Anzeigefeld fuer den Mandanten.
+   * @return Mandant.
+   * @throws RemoteException
+   */
+  public Input getMandant() throws RemoteException
+  {
+    if (this.mandant != null)
+      return this.mandant;
+    Mandant m = getBuchung().getMandant();
+    if (m == null)
+      m = Settings.getActiveGeschaeftsjahr().getMandant();
+    this.mandant = new LabelInput(m.getFirma());
+    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
+    return this.mandant;
+  }
 
   /**
    * Liefert ein Anzeigefeld fuer den Kontenrahmen.
@@ -372,8 +393,8 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
- * Revision 1.3  2008/02/26 19:13:23  willuhn
- * *** empty log message ***
+ * Revision 1.4  2009/07/03 10:52:18  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.2  2006/01/03 17:55:53  willuhn
  * @N a lot more checks

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrChoose.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/29 15:11:31 $
+ * $Revision: 1.2 $
+ * $Date: 2009/07/03 10:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class GeschaeftsjahrChoose implements Action
       if (jahr != null)
       {
         Settings.setActiveGeschaeftsjahr(jahr);
-        new GeschaeftsjahrNeu().handleAction(jahr);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Geschäftsjahr ausgewählt"),StatusBarMessage.TYPE_SUCCESS));
       }
       else
       {
@@ -75,6 +75,13 @@ public class GeschaeftsjahrChoose implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrChoose.java,v $
+ * Revision 1.2  2009/07/03 10:52:19  willuhn
+ * @N Merged SYNTAX_1_3_BRANCH into HEAD
+ *
+ * Revision 1.1.2.1  2008/07/03 10:37:08  willuhn
+ * @N Effektivere Erzeugung neuer Buchungsnummern
+ * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
+ *
  * Revision 1.1  2006/06/29 15:11:31  willuhn
  * @N Setup-Wizard fertig
  * @N Auswahl des Geschaeftsjahres
