@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2009/08/24 11:56:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,10 +25,12 @@ import java.util.TimerTask;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.services.VelocityService;
+import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -113,7 +115,12 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 
       writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
-      Template t = Velocity.getTemplate("template.vm","ISO-8859-15");
+
+      VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
+      VelocityEngine engine = service.getEngine(Fibu.class.getName());
+      if (engine == null)
+        throw new Exception("velocity engine not found");
+      Template t = engine.getTemplate("template.vm","ISO-8859-15");
       t.merge(context,writer);
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Auswertung erstellt"));
@@ -151,6 +158,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.3  2009/08/24 11:56:47  willuhn
+ * @N Umstellung auf neuen VelocityService - damit funktioniert SynTAX jetzt nur noch mit Jameica 1.9
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

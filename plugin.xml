@@ -10,7 +10,7 @@
   <homepage>http://www.willuhn.de/products/syntax</homepage>
   <license>proprietary</license>
 
-  <requires jameica="1.7+"/>
+  <requires jameica="1.9+"/>
 
   <classfinder>
     <include>syntax\.jar</include>
