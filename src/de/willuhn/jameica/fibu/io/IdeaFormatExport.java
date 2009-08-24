@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2009/08/24 11:57:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
@@ -48,6 +48,7 @@ import de.willuhn.jameica.fibu.io.idea.SteuerTable;
 import de.willuhn.jameica.fibu.io.idea.Table;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.jameica.system.Platform;
@@ -161,8 +162,13 @@ public class IdeaFormatExport extends AbstractExport
       ec.addEventHandler(ex);
       ec.attachToContext(context);
 
+      VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
+      VelocityEngine engine = service.getEngine(Fibu.class.getName());
+      if (engine == null)
+        throw new Exception("velocity engine not found");
+
       StringWriter writer = new StringWriter();
-      Template t = Velocity.getTemplate("idea.xml.vm","ISO-8859-15");
+      Template t = engine.getTemplate("idea.xml.vm","ISO-8859-15");
       t.merge(context,writer);
       add("index.xml",new ByteArrayInputStream(writer.toString().getBytes()));
       
@@ -306,6 +312,9 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.3  2009/08/24 11:57:41  willuhn
+ * @N Umstellung auf neuen VelocityService
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
