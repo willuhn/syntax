@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractUserObjectImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2009/09/03 14:31:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,6 +97,8 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
    */
   public boolean isUserObject() throws RemoteException
   {
+    // TODO: Koennte man ersetzen gegen einen System-Kontenrahmen, der per Default read-only ist,
+    //       der Schreibschutz vom User aber explizit entfernt werden koennte
     return getMandant() != null || Settings.inUpdate();
   }
 
@@ -121,6 +123,9 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AbstractUserObjectImpl.java,v $
+ * Revision 1.5  2009/09/03 14:31:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
