@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.17 $
- $Date: 2009/07/03 11:58:44 $
+ $Revision: 1.18 $
+ $Date: 2009/11/05 15:08:14 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -14,36 +14,25 @@
 	<target name="init" description="inits the build">
 
 		<property environment="env" />
-
 		<property name="build.dir" value="build" />
-
-		<loadproperties srcFile="${build.dir}/build.properties"/>
-		
-		<!-- read build number -->
 		<buildnumber file="${build.dir}/BUILD" />
+    <xmlproperty file="plugin.xml" collapseattributes="true"/>
 
-		<!-- read version number -->
-		<loadfile property="appversion" srcFile="${build.dir}/RELEASE">
-			<filterchain>
-				<striplinebreaks />
-			</filterchain>
-		</loadfile>
+    <!-- create cvs tag -->
+    <propertyfile file="${build.dir}/TAG">
+      <entry key="mytag" value="${plugin.version}" />
+    </propertyfile>
+    <replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
+    <loadproperties srcFile="${build.dir}/TAG"/>
+    <delete file="${build.dir}/TAG" />
+    <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
-		<!-- prepare cvs tag -->
-		<copy file="${build.dir}/RELEASE" tofile="${build.dir}/TAG" />
-		<replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
-		<loadfile property="mytag" srcFile="${build.dir}/TAG">
-			<filterchain>
-				<striplinebreaks />
-			</filterchain>
-		</loadfile>
-		<delete file="${build.dir}/TAG" />
-		<property name="tag" value="V_${mytag}_BUILD_${build.number}" />
-
-		<echo message="VERSION: ${appversion}" />
-		<echo message="CVS-Tag: ${tag}" />
-		<echo message="BUILD  : ${build.number}" />
-		<echo message="JAVA   : ${java.version}" />
+    <loadproperties srcFile="${build.dir}/build.properties"/>
+	  
+    <echo message="VERSION: ${plugin.version}" />
+    <echo message="CVS-Tag: ${tag}" />
+    <echo message="BUILD  : ${build.number}" />
+    <echo message="JAVA   : ${java.version}" />
 
 		<property name="define.jarfilename" 		value="${define.pluginname}.jar" />
 		<property name="define.zipfilename" 		value="${define.pluginname}.zip" />
@@ -51,7 +40,7 @@
 		<property name="define.javadocfilename" value="${define.pluginname}.javadoc.zip" />
 
 		<property name="project.nightly" 			  value="releases/nightly" />
-		<property name="project.release" 			  value="releases/${appversion}-${build.number}" />
+		<property name="project.release" 			  value="releases/${plugin.version}-${build.number}" />
 		<property name="project.tmp" 				    value="${project.release}/tmp" />
 		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
 		<property name="project.zipdir" 			  value="${project.release}/${define.pluginname}" />
@@ -133,7 +122,7 @@
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${DSTAMP}" />
 				<attribute name="Implementation-Title" value="${define.pluginname}" />
-				<attribute name="Implementation-Version" value="${appversion}" />
+				<attribute name="Implementation-Version" value="${plugin.version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
         <attribute name="Class-Path" value="lang help lib res" />
       </manifest>
@@ -253,9 +242,9 @@
 	<target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
 		<mkdir dir="${project.nightly}" />
 
-		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.zip" />
-		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.src.zip" />
-		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${appversion}-nightly.javadoc.zip" />
+		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.zip" />
+		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.src.zip" />
+		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.javadoc.zip" />
 
 		<delete dir="${project.release}" />
 	</target>
