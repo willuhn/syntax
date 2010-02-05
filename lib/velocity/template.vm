@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=$!{charset}" />
-    <title>$!{export.Title}</title>
+    <title>$!{name}</title>
   </head>
   <style>
     body  {
@@ -86,7 +86,7 @@
   <table>
     <tr>
       <td>
-        <h1>$!{export.Title}</h1>
+        <h1>$!{name}</h1>
         Geschäftsjahr: $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}
       </td>
       <td style="text-align:right;">

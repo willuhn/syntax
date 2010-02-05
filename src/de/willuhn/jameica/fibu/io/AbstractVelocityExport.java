@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/08/24 11:56:47 $
+ * $Revision: 1.4 $
+ * $Date: 2010/02/05 09:58:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,6 +105,7 @@ public abstract class AbstractVelocityExport extends AbstractExport
       vData.addObject("endkonto",   data.getEndKonto());
 
       VelocityContext context = new VelocityContext();
+      context.put("name",           this.getName());
       context.put("math",           new Math());
       context.put("datum",          new Date());
       context.put("dateformat",     Fibu.DATEFORMAT);
@@ -118,8 +119,6 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
       VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
       VelocityEngine engine = service.getEngine(Fibu.class.getName());
-      if (engine == null)
-        throw new Exception("velocity engine not found");
       Template t = engine.getTemplate("template.vm","ISO-8859-15");
       t.merge(context,writer);
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
@@ -158,6 +157,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.4  2010/02/05 09:58:25  willuhn
+ * @B Name der Auswertung wurde nicht angezeigt
+ *
  * Revision 1.3  2009/08/24 11:56:47  willuhn
  * @N Umstellung auf neuen VelocityService - damit funktioniert SynTAX jetzt nur noch mit Jameica 1.9
  *
