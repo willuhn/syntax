@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/02/08 16:30:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -116,10 +116,20 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
   {
     double sum = 0.0d;
     DBIterator buchungen = null;
+
+    // Wenn es ein Steuerkonto ist, holen wir uns die Hilfs- und Hauptbuchungen
+    // des Kontos. Andernfalls nur die Hauptbuchungen
     if (konto.getKontoArt().getKontoArt() == Kontoart.KONTOART_STEUER)
+    {
       buchungen = konto.getHilfsBuchungen(jahr,start,end);
-    else
-      buchungen = konto.getHauptBuchungen(jahr,start,end);
+      while (buchungen.hasNext())
+      {
+        BaseBuchung b = (BaseBuchung) buchungen.next();
+        sum += Math.abs(b.getBetrag());
+      }
+    }
+    
+    buchungen = konto.getHauptBuchungen(jahr,start,end);
     while (buchungen.hasNext())
     {
       BaseBuchung b = (BaseBuchung) buchungen.next();
@@ -247,6 +257,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.3  2010/02/08 16:30:45  willuhn
+ * @N Bei Steuerkonten auch die Hauptbuchungen beruecksichtigen. Andernfalls werden explizite Buchungen auf die Steuerkonten ignoriert (siehe Lars' Mail vom 08.02.2010)
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
