@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.9 $
+ * $Date: 2010/02/08 15:39:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrDelete;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -58,6 +59,8 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
     }));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new ContextMenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
   }
   
   /**
@@ -120,6 +123,11 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.9  2010/02/08 15:39:48  willuhn
+ * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
+ * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
+ * @N Anzeige von Pflichtfeldern
+ *
  * Revision 1.8  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

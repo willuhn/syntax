@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/MandantControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.25 $
+ * $Date: 2010/02/08 15:39:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,6 +151,7 @@ public class MandantControl extends AbstractControl
 			return firma;
 		
 		firma = new TextInput(getMandant().getFirma());
+		firma.setMandatory(true);
 		return firma;
 	}
 
@@ -211,6 +212,7 @@ public class MandantControl extends AbstractControl
 		if (list.hasNext())
 		{
 			finanzamtAuswahl = new SelectInput(list,getMandant().getFinanzamt());
+			finanzamtAuswahl.setMandatory(true);
 			storeAllowed = true;
 		}
 		else {
@@ -296,6 +298,11 @@ public class MandantControl extends AbstractControl
 
 /*********************************************************************
  * $Log: MandantControl.java,v $
+ * Revision 1.25  2010/02/08 15:39:48  willuhn
+ * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
+ * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
+ * @N Anzeige von Pflichtfeldern
+ *
  * Revision 1.24  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

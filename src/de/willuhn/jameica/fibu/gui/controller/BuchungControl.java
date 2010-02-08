@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.70 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.71 $
+ * $Date: 2010/02/08 15:39:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -259,6 +259,7 @@ public class BuchungControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
     sollKontoAuswahl.addListener(new KontoListener());
+    sollKontoAuswahl.setMandatory(true);
     if (getBuchung().getGeschaeftsjahr().isClosed())
       sollKontoAuswahl.disable();
     return sollKontoAuswahl;
@@ -278,6 +279,7 @@ public class BuchungControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
     habenKontoAuswahl.addListener(new KontoListener());
+    habenKontoAuswahl.setMandatory(true);
     if (getBuchung().getGeschaeftsjahr().isClosed())
       habenKontoAuswahl.disable();
     return habenKontoAuswahl;
@@ -401,6 +403,7 @@ public class BuchungControl extends AbstractControl
 			return belegnummer;
 		
 		belegnummer = new IntegerInput(getBuchung().getBelegnummer());
+		belegnummer.setMandatory(true);
     if (getBuchung().getGeschaeftsjahr().isClosed())
       belegnummer.disable();
 		return belegnummer;
@@ -418,6 +421,7 @@ public class BuchungControl extends AbstractControl
 		
 		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Fibu.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+		betrag.setMandatory(true);
     betrag.addListener(new SteuerListener());
     if (getBuchung().getGeschaeftsjahr().isClosed())
       betrag.disable();
@@ -459,7 +463,6 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
-        Logger.error("unable to set belegnummer",e);
         throw new ApplicationException(i18n.tr("Belegnummer ungültig."));
       }
       //
@@ -472,7 +475,6 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
-        Logger.error("unable to set steuer",e);
         throw new ApplicationException(i18n.tr("Steuersatz ungültig."));
       }
       //
@@ -487,7 +489,6 @@ public class BuchungControl extends AbstractControl
       }
       catch (Exception e)
       {
-        Logger.error("unable to set betrag",e);
         throw new ApplicationException(i18n.tr("Betrag ungültig."));
       }
       //
@@ -699,6 +700,11 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.71  2010/02/08 15:39:48  willuhn
+ * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
+ * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
+ * @N Anzeige von Pflichtfeldern
+ *
  * Revision 1.70  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

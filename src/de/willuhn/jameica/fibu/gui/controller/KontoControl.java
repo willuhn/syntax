@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.28 $
+ * $Date: 2010/02/08 15:39:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -117,6 +117,7 @@ public class KontoControl extends AbstractControl
 		if (name != null)
 			return name;
 		name = new TextInput(getKonto().getName());
+		name.setMandatory(true);
     if (!getKonto().isUserObject())
       name.disable();
 		return name;
@@ -132,6 +133,7 @@ public class KontoControl extends AbstractControl
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
+		kontonummer.setMandatory(true);
     if (!getKonto().isUserObject())
       kontonummer.disable();
 		return kontonummer;
@@ -185,6 +187,7 @@ public class KontoControl extends AbstractControl
 
 		Kontoart ka = getKonto().getKontoArt();
 		kontoart = new SelectInput(Settings.getDBService().createList(Kontoart.class),ka);
+		kontoart.setMandatory(true);
     kontoart.addListener(new Listener() {
       public void handleEvent(Event event)
       {
@@ -295,6 +298,11 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.28  2010/02/08 15:39:48  willuhn
+ * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
+ * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
+ * @N Anzeige von Pflichtfeldern
+ *
  * Revision 1.27  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
