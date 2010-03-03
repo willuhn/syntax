@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.18 $
- $Date: 2009/11/05 15:08:14 $
+ $Revision: 1.19 $
+ $Date: 2010/03/03 12:38:18 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -34,16 +34,16 @@
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
-		<property name="define.jarfilename" 		value="${define.pluginname}.jar" />
-		<property name="define.zipfilename" 		value="${define.pluginname}.zip" />
-		<property name="define.srcfilename" 		value="${define.pluginname}.src.zip" />
-		<property name="define.javadocfilename" value="${define.pluginname}.javadoc.zip" />
+		<property name="define.jarfilename" 		value="${plugin.name}.jar" />
+		<property name="define.zipfilename" 		value="${plugin.name}.zip" />
+		<property name="define.srcfilename" 		value="${plugin.name}.src.zip" />
+		<property name="define.javadocfilename" value="${plugin.name}.javadoc.zip" />
 
 		<property name="project.nightly" 			  value="releases/nightly" />
 		<property name="project.release" 			  value="releases/${plugin.version}-${build.number}" />
 		<property name="project.tmp" 				    value="${project.release}/tmp" />
 		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
-		<property name="project.zipdir" 			  value="${project.release}/${define.pluginname}" />
+		<property name="project.zipdir" 			  value="${project.release}/${plugin.name}" />
 
 		<property name="src.dir" 					      value="src" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
@@ -121,7 +121,7 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${DSTAMP}" />
-				<attribute name="Implementation-Title" value="${define.pluginname}" />
+				<attribute name="Implementation-Title" value="${plugin.name}" />
 				<attribute name="Implementation-Version" value="${plugin.version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
         <attribute name="Class-Path" value="lang help lib res" />
@@ -142,8 +142,8 @@
 		<!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
 		<zip destfile="${project.release}/${define.zipfilename}">
 			<fileset dir="${project.release}">
-				<include name="${define.pluginname}" />
-				<include name="${define.pluginname}/**" />
+				<include name="${plugin.name}" />
+				<include name="${plugin.name}/**" />
 			</fileset>
 		</zip>
 
@@ -153,8 +153,8 @@
 
 	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
 		<mkdir dir="${project.release}" />
-		<mkdir dir="${project.tmp}/${define.pluginname}" />
-		<copy todir="${project.tmp}/${define.pluginname}">
+		<mkdir dir="${project.tmp}/${plugin.name}" />
+		<copy todir="${project.tmp}/${plugin.name}">
 			<fileset dir=".">
 				<include name=".project" />
 				<include name=".classpath" />
@@ -168,7 +168,7 @@
 		</copy>
 		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
 			<fileset dir="${project.tmp}">
-				<include name="${define.pluginname}/**" />
+				<include name="${plugin.name}/**" />
 			</fileset>
 		</zip>
 	</target>
@@ -242,9 +242,9 @@
 	<target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
 		<mkdir dir="${project.nightly}" />
 
-		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.zip" />
-		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.src.zip" />
-		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${define.pluginname}-${plugin.version}-nightly.javadoc.zip" />
+		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}-nightly.zip" />
+		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}-nightly.src.zip" />
+		<copy file="${project.release}/${define.javadocfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}-nightly.javadoc.zip" />
 
 		<delete dir="${project.release}" />
 	</target>
