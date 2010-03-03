@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.25 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.26 $
+ * $Date: 2010/03/03 12:37:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,6 +147,7 @@ public class BuchungList extends TablePart implements Extendable
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
+    setRememberState(true);
     
     setFormatter(new TableFormatter() {
       public void format(TableItem item)
@@ -436,6 +437,9 @@ public class BuchungList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.26  2010/03/03 12:37:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.25  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.19 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.20 $
+ * $Date: 2010/03/03 12:37:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,6 +77,7 @@ public class KontoList extends TablePart implements Extendable
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
+    setRememberState(true);
 
     setFormatter(new TableFormatter()
     {
@@ -264,6 +265,9 @@ public class KontoList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.20  2010/03/03 12:37:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
