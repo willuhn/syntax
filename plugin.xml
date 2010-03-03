@@ -19,12 +19,12 @@
 
   <menu>
     <item id="syntax.menu" name="SynTAX">
-      <item enabled="false" name="Neue &amp;Buchung"        						shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
-	    <item enabled="false" name="Geschäftsjahr auswählen" 							shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrChoose" />
-      <item enabled="false" name="-" />
-	    <item enabled="false" name="Mandanten" 														action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
-	    <item enabled="false" name="Finanzämter"  												action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
-      <item enabled="false" name="&amp;Einstellungen"       						action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
+      <item id="syntax.menu.buchung"          enabled="false" name="Neue &amp;Buchung"        					shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+	    <item id="syntax.menu.geschaeftsjahre"  enabled="false" name="Geschäftsjahr auswählen" 						shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrChoose" />
+      <item name="-" />
+	    <item id="syntax.menu.mandanten"        enabled="false" name="Mandanten" 													action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
+	    <item id="syntax.menu.finanzaemter"     enabled="false" name="Finanzämter"  											action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
+      <item id="syntax.menu.einstellungen"    enabled="false" name="&amp;Einstellungen"       					action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
     </item>
   </menu>
 
@@ -47,11 +47,6 @@
     <!-- Hibiscus-Extensions -->
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart" extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList"/>
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu" extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList"/>
-    
-    <!-- Jameica Compatibility Extensions -->
-    <extension class="de.willuhn.jameica.fibu.ext.JameicaCompatibility"
-               extends="de.willuhn.jameica.fibu.gui.part.BuchungList,de.willuhn.jameica.fibu.gui.part.KontoList"
-    />
   </extensions>
 
 </plugin>
