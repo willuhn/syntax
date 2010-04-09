@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.19 $
- $Date: 2010/03/03 12:38:18 $
+ $Revision: 1.20 $
+ $Date: 2010/04/09 12:55:11 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -208,7 +208,7 @@
     <loadfile property="storepass" srcFile="${signjar.storepass}" />
     <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
       <classpath refid="compilepath" />
-      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
+      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias &quot;${signjar.alias}&quot; -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
     </java>
   </target>
 
@@ -220,13 +220,6 @@
     <exec executable="gpg" failonerror="true" timeout="60000">
       <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
     </exec>
-
-    <echo message="Creating SHA1 signatures" />
-    <loadfile property="storepass" srcFile="${signjar.storepass}" />
-    <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
-      <classpath refid="compilepath" />
-      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias ${signjar.alias} -keypass ${storepass} -file ${define.srcfilename} -sig ${define.srcfilename}.sha1"/>
-    </java>
   </target>
 
 	<target name="clean" description="cleanup">
