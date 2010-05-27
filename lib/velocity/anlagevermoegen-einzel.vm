@@ -1,65 +1,70 @@
 #set($anlagevermoegen = $!{export.getObjects("anlagevermoegen")})
 
 #foreach($av in $anlagevermoegen)
+  
+  #set($anfangsbestand = $av.getAnfangsbestand(${jahr}))
 
-  <br/><br/>
-  <table class="data" style="border-top:none;">
+  #if($anfangsbestand >= 0.01)
 
-    <tr>
-      <th colspan="2">Bezeichnung des Anlage-Gegenstandes</th>
-      <th colspan="2">$!{av.Name}</th>
-    </tr>
-
-    <tr>
-      <td>Anschaffungsdatum</td>
-      <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
-
-      <td>Anschaffungskosten</td>
-      <td style="text-align:right">$!{decimalformat.format(${av.Anschaffungskosten})} ${eur}</td>
-    </tr>
-    
-    <tr>
-      <td>Abschreibungsart</td>
-      <td>linear</td>
-
-      <td>Erinnerungswert</td>
-      <td style="text-align:right">0,00 ${eur}</td>
-    </tr>
-
-	<tr>
-      <td>Nutzungsdauer (in Jahren)</td>
-      <td>$!{av.Nutzungsdauer}</td>
-
-      <td>Restwert</td>
-      <td style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</td>
-    </tr>
-    
-	<tr>
-	    <td colspan="4">&nbsp;</td>
-	  </tr>
-
-    <tr>
-      <td colspan="2">Buchwert zum $!{dateformat.format(${jahr.Beginn})}</td>
-      <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getAnfangsbestand(${jahr})})} ${eur}</td>
-    </tr>
-    <tr>
-      <td colspan="2">- Abschreibung</td>
-      <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresAbschreibung(${jahr})})} ${eur}</td>
-    </tr>
-    <tr>
-      <td colspan="2">&nbsp;&nbsp;(darin enthaltene Sonderabschreibung)</td>
-      <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresSonderAbschreibung(${jahr})})} ${eur}</td>
-    </tr>
+    <br/><br/>
+    <table class="data" style="border-top:none;">
+  
+      <tr>
+        <th colspan="2">Bezeichnung des Anlage-Gegenstandes</th>
+        <th colspan="2">$!{av.Name}</th>
+      </tr>
+  
+      <tr>
+        <td>Anschaffungsdatum</td>
+        <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
+  
+        <td>Anschaffungskosten</td>
+        <td style="text-align:right">$!{decimalformat.format(${av.Anschaffungskosten})} ${eur}</td>
+      </tr>
+      
+      <tr>
+        <td>Abschreibungsart</td>
+        <td>linear</td>
+  
+        <td>Erinnerungswert</td>
+        <td style="text-align:right">0,00 ${eur}</td>
+      </tr>
+  
   	<tr>
-	    <td colspan="4" style="border-top:1px solid #000000;">&nbsp;</td>
-	  </tr>
-    <tr>
-      <th colspan="2">Restwert zum $!{dateformat.format(${jahr.Ende})}</th>
-      <th colspan="2" style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</th>
-    </tr>
+        <td>Nutzungsdauer (in Jahren)</td>
+        <td>$!{av.Nutzungsdauer}</td>
+  
+        <td>Restwert</td>
+        <td style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</td>
+      </tr>
+      
   	<tr>
-	    <td colspan="4" style="border-top:2px solid #000000;">&nbsp;</td>
-	  </tr>
-  </table>
+  	    <td colspan="4">&nbsp;</td>
+  	  </tr>
+  
+      <tr>
+        <td colspan="2">Buchwert zum $!{dateformat.format(${jahr.Beginn})}</td>
+        <td colspan="2" style="text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
+      </tr>
+      <tr>
+        <td colspan="2">- Abschreibung</td>
+        <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresAbschreibung(${jahr})})} ${eur}</td>
+      </tr>
+      <tr>
+        <td colspan="2">&nbsp;&nbsp;(darin enthaltene Sonderabschreibung)</td>
+        <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresSonderAbschreibung(${jahr})})} ${eur}</td>
+      </tr>
+    	<tr>
+  	    <td colspan="4" style="border-top:1px solid #000000;">&nbsp;</td>
+  	  </tr>
+      <tr>
+        <th colspan="2">Restwert zum $!{dateformat.format(${jahr.Ende})}</th>
+        <th colspan="2" style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</th>
+      </tr>
+    	<tr>
+  	    <td colspan="4" style="border-top:2px solid #000000;">&nbsp;</td>
+  	  </tr>
+    </table>
+  #end
 #end
 
