@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 11:58:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -94,9 +94,7 @@ public class UmsatzListPart implements Extension
           return null;
         try
         {
-          String s = Integer.toString(b.getBelegnummer());
-          System.out.println("+++" + s);
-          return s;
+          return Integer.toString(b.getBelegnummer());
         }
         catch (RemoteException re)
         {
@@ -114,6 +112,9 @@ public class UmsatzListPart implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListPart.java,v $
+ * Revision 1.4  2010/06/01 11:58:04  willuhn
+ * @R removed debug output
+ *
  * Revision 1.3  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
