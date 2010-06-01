@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.17 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.fibu.gui.part.MandantList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
@@ -43,13 +43,16 @@ public class MandantListe extends AbstractView
     p.paint(getParent());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(new Back());
     buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true);
   }
 }
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.17  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.16  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

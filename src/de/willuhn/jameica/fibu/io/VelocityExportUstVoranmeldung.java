@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/02/08 16:30:45 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,8 +39,8 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
   static
   {
     kennzeichen.put(new Double(0d), "48");
-    kennzeichen.put(new Double(19d),"81");
-    kennzeichen.put(new Double(7d), "86");
+    kennzeichen.put(new Double(19d),"81"); // TODO: Hier sind versteckt die Steuersaetze hart codiert! Das Kennzeichen sollte im Steuerkonto oder in einer Properties-Tabelle gespeichert sein
+    kennzeichen.put(new Double(7d), "86"); // TODO: Hier sind versteckt die Steuersaetze hart codiert!
     kennzeichen.put(null, "35");
   }
 
@@ -257,6 +257,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.4  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.3  2010/02/08 16:30:45  willuhn
  * @N Bei Steuerkonten auch die Hauptbuchungen beruecksichtigen. Andernfalls werden explizite Buchungen auf die Steuerkonten ignoriert (siehe Lars' Mail vom 08.02.2010)
  *

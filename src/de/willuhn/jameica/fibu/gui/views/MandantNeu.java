@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.26 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.27 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
@@ -138,7 +138,7 @@ public class MandantNeu extends AbstractView
       this.tabs.setSelection(activeTab);
 
     ButtonArea buttonArea2 = new ButtonArea(getParent(),2);
-    buttonArea2.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
+    buttonArea2.addButton(new Back(!control.storeAllowed()));
     Button button2 = new Button(i18n.tr("Geschäftsjahr anlegen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -161,6 +161,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.27  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.26  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

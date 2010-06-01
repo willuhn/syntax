@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,7 @@ import de.willuhn.jameica.fibu.gui.part.AnfangsbestandList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
@@ -45,7 +45,7 @@ public class AnfangsbestandListe extends AbstractView
     p.paint(getParent());
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(new Back());
     
     Button button = new Button(i18n.tr("Neuer Anfangsbestand"),new AnfangsbestandNeu(),null,true);
     button.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
@@ -56,6 +56,9 @@ public class AnfangsbestandListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
+ * Revision 1.6  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.5  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

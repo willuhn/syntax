@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.42 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.43 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -77,7 +77,7 @@ public class BuchungNeu extends AbstractView
 
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = kontoGroup.createButtonArea(4);
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(new Back());
 
     Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
     delete.setEnabled(!closed);
@@ -105,6 +105,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.43  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.42  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

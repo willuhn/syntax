@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.15 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.fibu.gui.controller.FinanzamtControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
@@ -56,7 +56,7 @@ public class FinanzamtNeu extends AbstractView
 
 
     ButtonArea buttonArea = contactGroup.createButtonArea(3);
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new FinanzamtDelete(), getCurrentObject());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
@@ -70,6 +70,9 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.15  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.14  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

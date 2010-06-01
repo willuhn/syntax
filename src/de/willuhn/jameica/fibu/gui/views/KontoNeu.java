@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.20 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -75,7 +75,7 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
     ButtonArea buttons = group.createButtonArea(3);
-    buttons.addButton(i18n.tr("Zurück"), new Back());
+    buttons.addButton(new Back());
     Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
     delete.setEnabled(control.getKonto().canChange());
     buttons.addButton(delete);
@@ -98,6 +98,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.20  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.19  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

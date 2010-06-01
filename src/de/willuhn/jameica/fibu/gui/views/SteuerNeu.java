@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.20 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,7 @@ import de.willuhn.jameica.fibu.gui.controller.SteuerControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -53,7 +53,7 @@ public class SteuerNeu extends AbstractView
     steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
 
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(new Back());
     
     if (!control.getSteuer().canChange())
       GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
@@ -76,6 +76,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.20  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.19  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

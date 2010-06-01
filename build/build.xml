@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.21 $
- $Date: 2010/06/01 17:42:03 $
+ $Revision: 1.22 $
+ $Date: 2010/06/01 23:51:56 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -50,6 +50,7 @@
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
     <property name="help.dir"               value="${src.dir}/help" />
     <property name="res.dir"                value="${src.dir}/res" />
+    <property name="img.dir"                value="${src.dir}/img" />
 		<property name="lib.dir" 					      value="lib" />
     <property name="sql.dir"                value="sql" />
 		<property name="webapps.dir" 			      value="webapps" />
@@ -86,6 +87,9 @@
     </copy>
     <copy todir="${class.dir}/res">
       <fileset dir="${res.dir}" />
+    </copy>
+    <copy todir="${class.dir}/img">
+      <fileset dir="${img.dir}" />
     </copy>
 	</target>
 
@@ -126,7 +130,7 @@
 				<attribute name="Implementation-Title" value="${plugin.name}" />
 				<attribute name="Implementation-Version" value="${plugin.version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
-        <attribute name="Class-Path" value="lang help lib res" />
+        <attribute name="Class-Path" value="lang help lib res img" />
       </manifest>
 			<fileset dir="${class.dir}" />
 		</jar>

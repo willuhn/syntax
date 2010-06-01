@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/01 23:51:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,7 @@ import de.willuhn.jameica.fibu.gui.controller.AnfangsbestandControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.action.Back;
+import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
@@ -57,7 +57,7 @@ public class AnfangsbestandNeu extends AbstractView
     if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
     ButtonArea buttonArea = group.createButtonArea(3);
-    buttonArea.addButton(i18n.tr("Zurück"), new Back());
+    buttonArea.addButton(new Back());
 
     Button delete = new Button(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
     delete.setEnabled(!closed);
@@ -78,6 +78,9 @@ public class AnfangsbestandNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.7  2010/06/01 23:51:56  willuhn
+ * @N Neue Icons - erster Teil
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
