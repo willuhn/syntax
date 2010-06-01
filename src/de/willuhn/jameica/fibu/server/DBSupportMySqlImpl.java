@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,18 +36,8 @@ import de.willuhn.util.ProgressMonitor;
 /**
  * Implementierung des MySQL-Supports.
  */
-public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
-    DBSupport
+public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSupport
 {
-
-  /**
-   * @throws RemoteException
-   */
-  public DBSupportMySqlImpl() throws RemoteException
-  {
-    super();
-  }
-
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
@@ -165,7 +155,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("MySQL 4.0 oder höher");
+    return i18n.tr("Externe Datenbank (MySQL 4.0 oder höher)");
   }
 
   /**
@@ -242,11 +232,27 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements
     // Insbesondere bei MySQL sinnvoll.
     return Connection.TRANSACTION_READ_COMMITTED;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#getOrder()
+   */
+  int getOrder()
+  {
+    return 10;
+  }
+  
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.11  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.10  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.26 $
- * $Date: 2010/03/03 12:37:34 $
+ * $Revision: 1.27 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,11 +115,11 @@ public class BuchungList extends TablePart implements Extendable
     this.list = buchungen;
 
     this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Fibu.DATEFORMAT));
+    addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
-    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
+    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
     addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollkonto_id", new Formatter()
@@ -437,6 +437,13 @@ public class BuchungList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.27  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.26  2010/03/03 12:37:34  willuhn
  * *** empty log message ***
  *

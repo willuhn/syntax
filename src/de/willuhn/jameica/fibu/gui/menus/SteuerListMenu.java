@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class SteuerListMenu extends ContextMenu
     {
       try
       {
-        if (strict && o != null && !((Steuer)o).isUserObject())
+        if (strict && o != null && !((Steuer)o).canChange())
           return false;
       }
       catch (RemoteException e)
@@ -94,6 +94,13 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
+ * Revision 1.9  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.8  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/01 14:51:22 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,7 @@ import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.io.idea.AbschreibungTable;
 import de.willuhn.jameica.fibu.io.idea.AnfangsbestandTable;
 import de.willuhn.jameica.fibu.io.idea.AnlagevermoegenTable;
@@ -134,9 +135,9 @@ public class IdeaFormatExport extends AbstractExport
       VelocityContext context = new VelocityContext();
       context.put("math",           new Math());
       context.put("datum",          new Date());
-      context.put("dateformat",     Fibu.DATEFORMAT);
-      context.put("longdateformat", Fibu.LONGDATEFORMAT);
-      context.put("decimalformat",  Fibu.DECIMALFORMAT);
+      context.put("dateformat",     Settings.DATEFORMAT);
+      context.put("longdateformat", Settings.LONGDATEFORMAT);
+      context.put("decimalformat",  Settings.DECIMALFORMAT);
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
       context.put("lineseparator",  recordDelimiter.get(Application.getPlatform().getOS()));
@@ -311,6 +312,13 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.4  2010/06/01 14:51:22  willuhn
  * *** empty log message ***
  *

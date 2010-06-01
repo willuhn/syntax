@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,18 +38,8 @@ import de.willuhn.util.ProgressMonitor;
 /**
  * Implementierung des McKoi-DB-Supports.
  */
-public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
-    DBSupport
+public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSupport
 {
-
-  /**
-   * @throws RemoteException
-   */
-  public DBSupportMcKoiImpl() throws RemoteException
-  {
-    super();
-  }
-
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
@@ -165,7 +155,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("Embedded Datenbank (McKoi)");
+    return i18n.tr("Integrierte Datenbank (McKoi)");
   }
 
   /**
@@ -173,7 +163,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
    */
   public boolean needsPassword() throws RemoteException
   {
-    return true;
+    return false;
   }
   
   /**
@@ -181,7 +171,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
    */
   public boolean needsUsername() throws RemoteException
   {
-    return true;
+    return false;
   }
 
   /**
@@ -211,11 +201,26 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements
   {
     return "tonumber({0})".replaceAll("\\{0\\}",content);
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#getOrder()
+   */
+  int getOrder()
+  {
+    return 1;
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.9  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

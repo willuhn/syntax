@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/11/05 01:02:26 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,6 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
@@ -26,26 +25,17 @@ import de.willuhn.util.I18N;
 /**
  * Abstrakte Basis-Implementierung von Datenbank-Support-Klassen.
  */
-public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implements DBSupport
+public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
 {
   
-  I18N i18n = null;
+  final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   private String username = Settings.SETTINGS.getString("database.support.username","syntax");
-  private String password = Settings.SETTINGS.getString("database.support.password",null);
+  private String password = Settings.SETTINGS.getString("database.support.password","syntax");
   private String hostname = Settings.SETTINGS.getString("database.support.hostname","127.0.0.1");
   private String dbName   = Settings.SETTINGS.getString("database.support.dbname","syntax");
   private int tcpPort     = Settings.SETTINGS.getInt("database.support.tcpport",3306);
 
-  /**
-   * @throws java.rmi.RemoteException
-   */
-  public AbstractDBSupportImpl() throws RemoteException
-  {
-    super();
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
- 
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#needsUsername()
    */
@@ -228,11 +218,36 @@ public abstract class AbstractDBSupportImpl extends UnicastRemoteObject implemen
   {
     return -1;
   }
+  
+  /**
+   * Liefert die Reihenfolge fuer die Sortierung in der Auswahlbox.
+   * @return Reihenfolge.
+   */
+  abstract int getOrder();
+
+  /**
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Object o)
+  {
+    if (o == null || !(o instanceof AbstractDBSupportImpl))
+      return -1;
+    return this.getOrder() - ((AbstractDBSupportImpl)o).getOrder();
+  }
+  
+  
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2007/11/05 01:02:26  willuhn
  * @C Transaction-Isolation-Level in SynTAX
  *

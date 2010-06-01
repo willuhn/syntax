@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -47,29 +46,16 @@ public class AnlagevermoegenListe extends AbstractView
     buttons.addButton(i18n.tr("Zurück"), new Back());
     buttons.addButton(i18n.tr("Anlagevermögen hinzufügen"), new AnlagevermoegenNeu(),null,true);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenListe.java,v $
- * Revision 1.4  2006/12/27 15:23:33  willuhn
- * @C merged update 1.3 and 1.4 to 1.3
- *
- * Revision 1.3  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.2  2005/08/29 22:44:05  willuhn
- * @N added templates
- *
- * Revision 1.1  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

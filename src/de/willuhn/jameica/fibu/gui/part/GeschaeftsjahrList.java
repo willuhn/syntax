@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/GeschaeftsjahrList.java,v $
- * $Revision: 1.9 $
- * $Date: 2006/06/20 23:27:17 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,8 +54,8 @@ public class GeschaeftsjahrList extends TablePart
     final I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Mandant"), "mandant_id");
     addColumn(i18n.tr("Kontenrahmen"), "kontenrahmen_id");
-    addColumn(i18n.tr("Beginn"), "beginn", new DateFormatter(Fibu.DATEFORMAT));
-    addColumn(i18n.tr("Ende"), "ende", new DateFormatter(Fibu.DATEFORMAT));
+    addColumn(i18n.tr("Beginn"), "beginn", new DateFormatter(Settings.DATEFORMAT));
+    addColumn(i18n.tr("Ende"), "ende", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Status"), "closed", new Formatter() {
       public String format(Object o)
       {
@@ -109,6 +109,13 @@ public class GeschaeftsjahrList extends TablePart
 
 /*********************************************************************
  * $Log: GeschaeftsjahrList.java,v $
+ * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.9  2006/06/20 23:27:17  willuhn
  * @C Anzeige des aktuellen Geschaeftsjahres
  * @C Oeffnen/Schliessen eines Geschaeftsjahres

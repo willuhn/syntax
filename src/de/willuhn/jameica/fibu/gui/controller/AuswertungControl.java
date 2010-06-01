@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -143,8 +143,8 @@ public class AuswertungControl extends AbstractControl
           Date end = j.getEnde();
           getStart().setValue(begin);
           getEnd().setValue(end);
-          ((DialogInput)getStart()).setText(Fibu.DATEFORMAT.format(begin));
-          ((DialogInput)getEnd()).setText(Fibu.DATEFORMAT.format(end));
+          ((DialogInput)getStart()).setText(Settings.DATEFORMAT.format(begin));
+          ((DialogInput)getEnd()).setText(Settings.DATEFORMAT.format(end));
         }
         catch (Exception e)
         {
@@ -166,7 +166,7 @@ public class AuswertungControl extends AbstractControl
     if (this.start != null)
       return this.start;
     
-    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Fibu.DATEFORMAT);
+    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Settings.DATEFORMAT);
     this.start.setText(i18n.tr("Wählen Sie bitte den Beginn des Geschäftsjahres aus"));
     this.start.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
     this.start.setComment("");
@@ -183,7 +183,7 @@ public class AuswertungControl extends AbstractControl
     if (this.end != null)
       return this.end;
     
-    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Fibu.DATEFORMAT);
+    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Settings.DATEFORMAT);
     this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Geschäftsjahres aus"));
     this.end.setTitle(i18n.tr("Ende des Geschäftsjahres"));
     this.end.setComment("");
@@ -388,6 +388,13 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

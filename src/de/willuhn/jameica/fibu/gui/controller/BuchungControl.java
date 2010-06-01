@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.71 $
- * $Date: 2010/02/08 15:39:48 $
+ * $Revision: 1.72 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
-import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
@@ -80,8 +79,6 @@ public class BuchungControl extends AbstractControl
   private CheckboxInput anlageVermoegen = null;
   private Input anlagevermoegenLink     = null;
   
-  private BuchungList buchungList       = null;
-
   private I18N i18n;
 
   /**
@@ -113,21 +110,6 @@ public class BuchungControl extends AbstractControl
 		
 	}
   
-  /**
-   * Liefert eine Liste der existierenden Buchungen.
-   * @return Liste der Buchungen.
-   * @throws RemoteException
-   */
-  public BuchungList getBuchungList() throws RemoteException
-  {
-    if (this.buchungList == null)
-    {
-      this.buchungList = new BuchungList();
-      this.buchungList.showFilter(false);
-    }
-    return this.buchungList;
-  }
-
   /**
    * Liefert eine Auswahlbox mit Buchungsvorlagen.
    * @return  Auswahlbox mit Buchungsvorlagen.
@@ -202,7 +184,7 @@ public class BuchungControl extends AbstractControl
       {
         try
         {
-          d = Fibu.DATEFORMAT.parse(s);
+          d = Settings.DATEFORMAT.parse(s);
         }
         catch (ParseException e)
         {
@@ -215,7 +197,7 @@ public class BuchungControl extends AbstractControl
       }
     }
 
-    datum = new DateInput(d,Fibu.CUSTOM_DATEFORMAT);
+    datum = new DateInput(d,Settings.CUSTOM_DATEFORMAT);
     datum.setTitle(i18n.tr("Datum"));
     datum.setText(i18n.tr("Bitte wählen Sie das Datum für diese Buchung"));
     datum.setComment("");
@@ -234,10 +216,10 @@ public class BuchungControl extends AbstractControl
         Calendar cal = Calendar.getInstance(Application.getConfig().getLocale());
         cal.setTime(d);
         int i = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        if (i < 0 || i >= Fibu.WEEKDAYS.length)
+        if (i < 0 || i >= Settings.WEEKDAYS.length)
           return;
 
-        datum.setComment(i18n.tr(Fibu.WEEKDAYS[i]));
+        datum.setComment(i18n.tr(Settings.WEEKDAYS[i]));
       }
     
     });
@@ -419,7 +401,7 @@ public class BuchungControl extends AbstractControl
 		if (betrag != null)
 			return betrag;
 		
-		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Fibu.DECIMALFORMAT);
+		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Settings.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
 		betrag.setMandatory(true);
     betrag.addListener(new SteuerListener());
@@ -438,7 +420,7 @@ public class BuchungControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-		steuer = new DecimalInput(getBuchung().getSteuer(),Fibu.DECIMALFORMAT);
+		steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
 		steuer.setComment("%");
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
@@ -504,7 +486,7 @@ public class BuchungControl extends AbstractControl
         d = new Date();
       }
       getBuchung().setDatum(d);
-      settings.setAttribute("buchung.date.last." + Settings.getActiveGeschaeftsjahr().getID(),Fibu.DATEFORMAT.format(d));
+      settings.setAttribute("buchung.date.last." + Settings.getActiveGeschaeftsjahr().getID(),Settings.DATEFORMAT.format(d));
       //
       //////////////////////////////////////////////////////////////////////////
       
@@ -581,8 +563,8 @@ public class BuchungControl extends AbstractControl
           }
         }
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
-        getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
-        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
+        getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Settings.DECIMALFORMAT.format(netto)}));
+        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Settings.DECIMALFORMAT.format(steuer),curr}));
         
       }
       catch (RemoteException e)
@@ -659,7 +641,7 @@ public class BuchungControl extends AbstractControl
               getSteuer().enable();
               getSteuer().setValue(new Double(satz));
               new SteuerListener().handleEvent(null);
-              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
+              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
             }
           }
         }
@@ -700,6 +682,13 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.72  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.71  2010/02/08 15:39:48  willuhn
  * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
  * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter

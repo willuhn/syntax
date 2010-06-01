@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.27 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,6 @@ import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -54,96 +53,15 @@ public class BuchungListe extends AbstractView
     create.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(create);
   }
-
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
 }
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
- * Revision 1.26  2006/12/27 15:23:33  willuhn
- * @C merged update 1.3 and 1.4 to 1.3
- *
- * Revision 1.25  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.24  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.23  2005/08/28 01:08:03  willuhn
- * @N buchungsjournal
- *
- * Revision 1.22  2005/08/16 23:14:36  willuhn
- * @N velocity export
- * @N context menus
- * @B bugfixes
- *
- * Revision 1.21  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.19  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.18  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.17  2004/02/24 22:48:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/02/20 20:44:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2004/01/29 00:06:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/01/27 21:38:05  willuhn
- * @C refactoring finished
- *
- * Revision 1.13  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2003/12/16 02:27:33  willuhn
- * @N BuchungsEngine
- *
- * Revision 1.11  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.9  2003/12/05 17:11:58  willuhn
- * @N added GeldKonto, Kontoart
- *
- * Revision 1.8  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.6  2003/11/25 00:22:16  willuhn
- * @N added Finanzamt
- *
- * Revision 1.5  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
- * Revision 1.4  2003/11/24 16:26:16  willuhn
- * @N AbstractDBObject is now able to resolve foreign keys
- *
- * Revision 1.3  2003/11/22 20:43:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/11/21 02:47:50  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/11/21 02:10:57  willuhn
- * @N buchung dialog works now
+ * Revision 1.27  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

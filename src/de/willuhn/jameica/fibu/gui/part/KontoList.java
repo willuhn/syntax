@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.20 $
- * $Date: 2010/03/03 12:37:34 $
+ * $Revision: 1.21 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class KontoList extends TablePart implements Extendable
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Kontoart"),"kontoart_id");
     addColumn(i18n.tr("Steuer"),"steuer_id");
-    addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
     setContextMenu(new KontoListMenu());
     setMulti(true);
     setRememberColWidths(true);
@@ -265,6 +265,13 @@ public class KontoList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: KontoList.java,v $
+ * Revision 1.21  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.20  2010/03/03 12:37:34  willuhn
  * *** empty log message ***
  *

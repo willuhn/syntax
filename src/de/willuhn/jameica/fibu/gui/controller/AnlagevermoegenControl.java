@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.20 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.21 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,8 +147,8 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.kosten != null)
       return this.kosten;
     Mandant m = getAnlagevermoegen().getMandant();
-    this.kosten = new DecimalInput(getAnlagevermoegen().getAnschaffungskosten(),Fibu.DECIMALFORMAT);
-    this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
+    this.kosten = new DecimalInput(getAnlagevermoegen().getAnschaffungskosten(),Settings.DECIMALFORMAT);
+    this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Settings.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
     if (!getAnlagevermoegen().canChange())
       this.kosten.disable();
     return this.kosten;
@@ -180,7 +180,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.restwert != null)
       return this.restwert;
     Mandant m = getAnlagevermoegen().getMandant();
-    this.restwert = new DecimalInput(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()),Fibu.DECIMALFORMAT);
+    this.restwert = new DecimalInput(getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()),Settings.DECIMALFORMAT);
     this.restwert.setComment(m.getWaehrung());
     if (getAnlagevermoegen().canChange())
       new RestwertListener().handleEvent(null);
@@ -213,11 +213,11 @@ public class AnlagevermoegenControl extends AbstractControl
         if (event == null || event.data == null)
           return;
         datum.setValue(event.data);
-        datum.setText(Fibu.DATEFORMAT.format((Date)event.data));
+        datum.setText(Settings.DATEFORMAT.format((Date)event.data));
         new RestwertListener().handleEvent(null);
       }
     });
-    datum = new DialogInput(Fibu.DATEFORMAT.format(date),d);
+    datum = new DialogInput(Settings.DATEFORMAT.format(date),d);
     datum.setValue(date);
     datum.disableClientControl();
     if (!getAnlagevermoegen().canChange())
@@ -521,6 +521,13 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.21  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.20  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

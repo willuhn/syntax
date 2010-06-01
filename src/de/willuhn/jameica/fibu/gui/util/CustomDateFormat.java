@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/util/CustomDateFormat.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.logging.Logger;
 
@@ -47,13 +46,13 @@ public class CustomDateFormat extends SimpleDateFormat
     switch (source.length())
     {
       case 10:
-        df = Fibu.DATEFORMAT;
+        df = Settings.DATEFORMAT;
         break;
       case 8:
-        df = Fibu.FASTDATEFORMAT;
+        df = Settings.FASTDATEFORMAT;
         break;
       case 6:
-        df = Fibu.BUCHUNGDATEFORMAT;
+        df = Settings.BUCHUNGDATEFORMAT;
         break;
       case 4:
         try
@@ -61,7 +60,7 @@ public class CustomDateFormat extends SimpleDateFormat
           Calendar cal = Calendar.getInstance();
           cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
           source += cal.get(Calendar.YEAR);
-          df = Fibu.FASTDATEFORMAT;
+          df = Settings.FASTDATEFORMAT;
           break;
         }
         catch (Exception e)
@@ -116,6 +115,13 @@ public class CustomDateFormat extends SimpleDateFormat
 
 /*********************************************************************
  * $Log: CustomDateFormat.java,v $
+ * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.3  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *

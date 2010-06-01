@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnfangsbestandList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class AnfangsbestandList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Anfangsbestand"),"betrag", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
     setContextMenu(new AnfangsbestandListMenu());
     setRememberColWidths(true);
     setRememberOrder(true);
@@ -80,6 +80,13 @@ public class AnfangsbestandList extends TablePart
 
 /*********************************************************************
  * $Log: AnfangsbestandList.java,v $
+ * Revision 1.7  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.6  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

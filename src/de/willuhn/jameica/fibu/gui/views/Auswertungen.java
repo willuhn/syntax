@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -68,35 +67,21 @@ public class Auswertungen extends AbstractView
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     buttonArea.addButton(control.getStartButton());
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.4.2.1  2009/06/25 15:21:18  willuhn
  * @N weiterer Code fuer IDEA-Export
- *
- * Revision 1.4  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.3  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.2  2005/10/17 22:59:38  willuhn
- * @B bug 135
- *
- * Revision 1.1  2005/10/06 22:50:32  willuhn
- * @N auswertungen
- *
  **********************************************************************/

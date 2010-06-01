@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,10 +97,10 @@ public class GeschaeftsjahrControl extends AbstractControl
         if (event == null || event.data == null)
           return;
         beginn.setValue(event.data);
-        beginn.setText(Fibu.DATEFORMAT.format((Date)event.data));
+        beginn.setText(Settings.DATEFORMAT.format((Date)event.data));
       }
     });
-    beginn = new DialogInput(Fibu.DATEFORMAT.format(start),d);
+    beginn = new DialogInput(Settings.DATEFORMAT.format(start),d);
     beginn.setValue(start);
     beginn.disableClientControl();
     return beginn;
@@ -127,10 +127,10 @@ public class GeschaeftsjahrControl extends AbstractControl
         if (event == null || event.data == null)
           return;
         ende.setValue(event.data);
-        ende.setText(Fibu.DATEFORMAT.format((Date)event.data));
+        ende.setText(Settings.DATEFORMAT.format((Date)event.data));
       }
     });
-    ende = new DialogInput(Fibu.DATEFORMAT.format(end),d);
+    ende = new DialogInput(Settings.DATEFORMAT.format(end),d);
     ende.setValue(end);
     ende.disableClientControl();
     return ende;
@@ -195,6 +195,13 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

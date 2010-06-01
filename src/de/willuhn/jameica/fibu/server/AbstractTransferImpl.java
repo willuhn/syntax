@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
@@ -149,7 +150,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   {
     super.store();
     // Fuer's Logging:
-    Logger.info(getSollKonto().getKontonummer() + " an " + getHabenKonto().getKontonummer() + ": " + Fibu.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
+    Logger.info(getSollKonto().getKontonummer() + " an " + getHabenKonto().getKontonummer() + ": " + Settings.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
   }
 
   /**
@@ -174,6 +175,13 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

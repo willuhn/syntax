@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.18 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.19 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,11 +55,11 @@ public class SteuerNeu extends AbstractView
     ButtonArea buttonArea = steuerGroup.createButtonArea(3);
     buttonArea.addButton(i18n.tr("Zurück"), new Back());
     
-    if (!control.getSteuer().isUserObject())
+    if (!control.getSteuer().canChange())
       GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
     
     Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer());
-    delete.setEnabled(control.getSteuer().isUserObject());
+    delete.setEnabled(control.getSteuer().canChange());
     buttonArea.addButton(delete);
     
     Button store = new Button(i18n.tr("Speichern"), new Action()
@@ -69,70 +69,20 @@ public class SteuerNeu extends AbstractView
         control.handleStore();
       }
     },null,true);
-    store.setEnabled(control.getSteuer().isUserObject());
+    store.setEnabled(control.getSteuer().canChange());
     buttonArea.addButton(store);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
   }
 }
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.19  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.18  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.16  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.15  2005/10/05 17:52:33  willuhn
- * @N steuer behaviour
- *
- * Revision 1.14  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.13  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.12  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.11  2004/02/24 22:48:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/02/20 20:44:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/01/29 00:06:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/01/27 00:09:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.5  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.3  2003/12/10 23:51:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/12/05 17:11:58  willuhn
- * @N added GeldKonto, Kontoart
- *
- * Revision 1.1  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
  **********************************************************************/

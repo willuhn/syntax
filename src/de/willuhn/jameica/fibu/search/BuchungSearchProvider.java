@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/search/BuchungSearchProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,10 +114,10 @@ public class BuchungSearchProvider implements SearchProvider
         double betrag = buchung.getBetrag();
         
         return i18n.tr("#{0} vom {1}: {2} an {3}  {4} ({5})", new String[]{Integer.toString(nummer),
-                                                                           Fibu.DATEFORMAT.format(datum),
+                                                                           Settings.DATEFORMAT.format(datum),
                                                                            soll.getKontonummer(),
                                                                            haben.getKontonummer(),
-                                                                           new CurrencyFormatter(jahr.getMandant().getWaehrung(),Fibu.DECIMALFORMAT).format(new Double(betrag)),
+                                                                           new CurrencyFormatter(jahr.getMandant().getWaehrung(),Settings.DECIMALFORMAT).format(new Double(betrag)),
                                                                            text});
       }
       catch (RemoteException re)
@@ -133,6 +133,13 @@ public class BuchungSearchProvider implements SearchProvider
 
 /*********************************************************************
  * $Log: BuchungSearchProvider.java,v $
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.2  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

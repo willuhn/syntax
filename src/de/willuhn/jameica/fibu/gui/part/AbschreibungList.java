@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AbschreibungList.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class AbschreibungList extends TablePart
           Date d = b.getDatum();
           if (d == null)
             return null;
-          return Fibu.DATEFORMAT.format(b.getDatum());
+          return Settings.DATEFORMAT.format(b.getDatum());
         }
         catch (RemoteException e)
         {
@@ -71,7 +71,7 @@ public class AbschreibungList extends TablePart
     
     Mandant m = a.getMandant();
     
-    addColumn(i18n.tr("Betrag"),"buchung_id", new CurrencyFormatter(m.getWaehrung(), Fibu.DECIMALFORMAT) {
+    addColumn(i18n.tr("Betrag"),"buchung_id", new CurrencyFormatter(m.getWaehrung(), Settings.DECIMALFORMAT) {
       public String format(Object o)
       {
         if (o == null || !(o instanceof AbschreibungsBuchung))
@@ -117,6 +117,13 @@ public class AbschreibungList extends TablePart
 
 /*********************************************************************
  * $Log: AbschreibungList.java,v $
+ * Revision 1.7  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.6  2006/05/29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.18 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -138,6 +139,7 @@ public class FirstStartControl extends AbstractControl
             Logger.error("unable to init dbsupport " + dbs[i].getName() + ", skipping",t);
           }
         }
+        Collections.sort(list);
         this.dbTypes = (DBSupport[]) list.toArray(new DBSupport[list.size()]);
       }
       if (this.dbType == null)
@@ -653,6 +655,13 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
+ * Revision 1.18  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.17  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

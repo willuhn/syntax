@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/EinstellungenControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,9 +25,10 @@ import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -41,9 +42,10 @@ public class EinstellungenControl extends AbstractControl
 {
   private I18N i18n = null;
 
-  private KontoInput afaKonto    = null;
-  private KontoInput afaKontoGWG = null;
-  private Input gwgWert          = null;
+  private KontoInput afaKonto              = null;
+  private KontoInput afaKontoGWG           = null;
+  private Input gwgWert                    = null;
+  private CheckboxInput systemDataWritable = null;
   
   /**
    * ct.
@@ -70,6 +72,7 @@ public class EinstellungenControl extends AbstractControl
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
     afaKonto = new KontoInput(konten,Settings.getAbschreibungsKonto(jahr,false));
+    afaKonto.setName(i18n.tr("Vorgabe Abschreibungskonto"));
     return afaKonto;
   }
   
@@ -89,6 +92,7 @@ public class EinstellungenControl extends AbstractControl
     konten.addFilter("kontoart_id = " + Kontoart.KONTOART_AUFWAND);
     konten.addFilter("steuer_id is null");
     afaKontoGWG = new KontoInput(konten,Settings.getAbschreibungsKonto(jahr,true));
+    afaKontoGWG.setName(i18n.tr("Vorgabe Abschreibungskonto für GWG"));
     return afaKontoGWG;
   }
 
@@ -105,9 +109,24 @@ public class EinstellungenControl extends AbstractControl
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     Mandant m = jahr.getMandant();
 
-    gwgWert = new DecimalInput(Settings.getGwgWert(jahr),Fibu.DECIMALFORMAT);
+    gwgWert = new DecimalInput(Settings.getGwgWert(jahr),Settings.DECIMALFORMAT);
+    gwgWert.setName(i18n.tr("Nettogrenze GWG"));
     gwgWert.setComment(m.getWaehrung() + " [" + i18n.tr("Geringwertige Wirtschaftsgüter") + "]");
     return gwgWert;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der das Aendern des Systemkontenrahmens aktiviert werden kann.
+   * @return Checkbox.
+   */
+  public CheckboxInput getSystemDataWritable()
+  {
+    if (this.systemDataWritable == null)
+    {
+      this.systemDataWritable = new CheckboxInput(Settings.getSystemDataWritable());
+      this.systemDataWritable.setName(i18n.tr("Änderungen des System-Kontenrahmen zulassen"));
+    }
+    return this.systemDataWritable;
   }
   
   /**
@@ -139,17 +158,38 @@ public class EinstellungenControl extends AbstractControl
       
       Double d = (Double) getGwgWert().getValue();
       Settings.setGwgWert(jahr,d == null ? 0 : d.doubleValue());
+      
+      boolean sysChange = ((Boolean)getSystemDataWritable().getValue()).booleanValue();
+      if (sysChange)
+      {
+        try
+        {
+          String msg = i18n.tr("Änderungen des Systemkontenrahmens wirken sich auf allen Mandanten aus.\n" +
+                               "Ein Zurücksetzen des Systemkontenrahmens auf die \"Werkseinstellungen\" ist nicht möglich.\n" +
+                               "Aktivieren Sie diese Funktion nur, wenn Sie genau wissen, was Sie tun.\n\n" +
+                               "Möchten Sie Änderungen des Systemkontenrahmen tatsächlich zulassen?");
+          sysChange = Application.getCallback().askUser(msg);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to ask user",e);
+        }
+      }
+      getSystemDataWritable().setValue(Boolean.valueOf(sysChange));
+      Settings.setSystemDataWritable(sysChange);
 
-      GUI.getStatusBar().setSuccessText(i18n.tr("Einstellungen gespeichert"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
-      Logger.error("unable to store settings",e);
-      GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Speichern der Einstellungen"));
-    }
-    catch (ApplicationException ae)
-    {
-      GUI.getStatusBar().setErrorText(ae.getMessage());
+      String text = e.getMessage();
+      if (!(e instanceof ApplicationException))
+      {
+        text = i18n.tr("Fehler beim Speichern der Einstellungen");
+        Logger.error("unable to store settings",e);
+      }
+
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_ERROR));
     }
   }
 }
@@ -157,6 +197,13 @@ public class EinstellungenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: EinstellungenControl.java,v $
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

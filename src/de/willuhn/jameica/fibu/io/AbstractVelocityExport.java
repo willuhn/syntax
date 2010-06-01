@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/02/05 09:58:25 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
@@ -108,9 +109,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
       context.put("name",           this.getName());
       context.put("math",           new Math());
       context.put("datum",          new Date());
-      context.put("dateformat",     Fibu.DATEFORMAT);
-      context.put("longdateformat", Fibu.LONGDATEFORMAT);
-      context.put("decimalformat",  Fibu.DECIMALFORMAT);
+      context.put("dateformat",     Settings.DATEFORMAT);
+      context.put("longdateformat", Settings.LONGDATEFORMAT);
+      context.put("decimalformat",  Settings.DECIMALFORMAT);
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
 
@@ -157,6 +158,13 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.4  2010/02/05 09:58:25  willuhn
  * @B Name der Auswertung wurde nicht angezeigt
  *

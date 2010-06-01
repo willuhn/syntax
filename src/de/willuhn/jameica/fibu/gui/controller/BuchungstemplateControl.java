@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -199,7 +199,7 @@ public class BuchungstemplateControl extends AbstractControl
 		if (betrag != null)
 			return betrag;
 		
-		betrag = new DecimalInput(getBuchung().getBetrag(), Fibu.DECIMALFORMAT);
+		betrag = new DecimalInput(getBuchung().getBetrag(), Settings.DECIMALFORMAT);
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     betrag.addListener(new SteuerListener());
 		return betrag;
@@ -215,7 +215,7 @@ public class BuchungstemplateControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-		steuer = new DecimalInput(getBuchung().getSteuer(),Fibu.DECIMALFORMAT);
+		steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
 		steuer.setComment("%");
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
@@ -295,8 +295,8 @@ public class BuchungstemplateControl extends AbstractControl
         double netto  = math.netto(brutto,satz);
         double steuer = math.steuer(brutto,satz);
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
-        getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Fibu.DECIMALFORMAT.format(netto)}));
-        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Fibu.DECIMALFORMAT.format(steuer),curr}));
+        getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Settings.DECIMALFORMAT.format(netto)}));
+        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Settings.DECIMALFORMAT.format(steuer),curr}));
       }
       catch (RemoteException e)
       {
@@ -372,7 +372,7 @@ public class BuchungstemplateControl extends AbstractControl
               getSteuer().enable();
               getSteuer().setValue(new Double(satz));
               getSteuer().setComment(i18n.tr("% [{0}]",s.getName()));
-              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Fibu.DECIMALFORMAT.format(satz)));
+              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
             }
           }
         }
@@ -393,6 +393,13 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.4  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

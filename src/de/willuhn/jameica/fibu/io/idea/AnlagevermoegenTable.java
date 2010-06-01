@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/AnlagevermoegenTable.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -46,9 +45,9 @@ public class AnlagevermoegenTable implements Table
       List<String> line = new ArrayList<String>();
       line.add(av.getID());
       line.add(av.getName());
-      line.add(Fibu.DECIMALFORMAT.format(av.getAnschaffungskosten()));
-      line.add(Fibu.DECIMALFORMAT.format(av.getRestwert(jahr)));
-      line.add(Fibu.DATEFORMAT.format(av.getAnschaffungsdatum()));
+      line.add(Settings.DECIMALFORMAT.format(av.getAnschaffungskosten()));
+      line.add(Settings.DECIMALFORMAT.format(av.getRestwert(jahr)));
+      line.add(Settings.DATEFORMAT.format(av.getAnschaffungsdatum()));
       line.add(k == null ? "" : k.getID());
       line.add(Integer.toString(av.getNutzungsdauer()));
       result.add(line);
@@ -61,6 +60,13 @@ public class AnlagevermoegenTable implements Table
 
 /**********************************************************************
  * $Log: AnlagevermoegenTable.java,v $
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

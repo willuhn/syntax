@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class KontoDelete implements Action
       if (context instanceof Konto)
       {
         k = new Konto[] {(Konto) context};
-        if (!k[0].isUserObject())
+        if (!k[0].canChange())
           throw new ApplicationException(i18n.tr("System-Konten dürfen nicht gelöscht werden"));
       }
       else
@@ -78,7 +78,7 @@ public class KontoDelete implements Action
         String s = null;
         for (int i=0;i<k.length;++i)
         {
-          if (k[i].isUserObject())
+          if (k[i].canChange())
           {
             s = k[i].getKontonummer();
             k[i].delete();
@@ -121,6 +121,13 @@ public class KontoDelete implements Action
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
+ * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.9  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,28 +76,15 @@ public class BuchungstemplateNeu extends AbstractView
     },null,true);
     buttonArea.addButton(store);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
 }
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
- * Revision 1.4  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.2  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.1  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

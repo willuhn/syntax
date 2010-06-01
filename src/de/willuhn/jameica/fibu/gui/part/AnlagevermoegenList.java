@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,10 +63,10 @@ public class AnlagevermoegenList extends TablePart
       }
     });
     addColumn(i18n.tr("Bezeichnung"),"name");
-    addColumn(i18n.tr("Anschaffungsdatum"),"anschaffungsdatum", new DateFormatter(Fibu.DATEFORMAT));
-    addColumn(i18n.tr("Anschaffungskosten"),"anschaffungskosten", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Anschaffungsdatum"),"anschaffungsdatum", new DateFormatter(Settings.DATEFORMAT));
+    addColumn(i18n.tr("Anschaffungskosten"),"anschaffungskosten", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
     addColumn(i18n.tr("Nutzungsdauer"),"nutzungsdauer");
-    addColumn(i18n.tr("Restwert"),"restwert",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Fibu.DECIMALFORMAT));
+    addColumn(i18n.tr("Restwert"),"restwert",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
     setContextMenu(new AnlagevermoegenListMenu());
     setRememberColWidths(true);
     setRememberOrder(true);
@@ -89,6 +89,13 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
+ * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.9  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

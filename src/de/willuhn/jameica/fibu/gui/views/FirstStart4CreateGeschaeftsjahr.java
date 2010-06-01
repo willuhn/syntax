@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart4CreateGeschaeftsjahr.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/06/20 18:09:46 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,10 +74,11 @@ public class FirstStart4CreateGeschaeftsjahr extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart4CreateGeschaeftsjahr.java,v $
- * Revision 1.2  2006/06/20 18:09:46  willuhn
- * @N Wizard seems to work now
- *
- * Revision 1.1  2006/06/19 22:23:47  willuhn
- * @N Wizard
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

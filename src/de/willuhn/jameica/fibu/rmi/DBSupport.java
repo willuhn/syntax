@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.util.ProgressMonitor;
  * Basis-Interface fuer alle unterstuetzten Datenbanken.
  * Klassen, die dieses Interface implementieren, werden automatisch erkannt.
  */
-public interface DBSupport extends GenericObject
+public interface DBSupport extends GenericObject, Comparable
 {
   /**
    * Liefert den Namen der Datenbank.
@@ -188,6 +188,13 @@ public interface DBSupport extends GenericObject
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
+ * Revision 1.9  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.8  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

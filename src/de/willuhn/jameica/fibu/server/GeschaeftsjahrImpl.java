@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.29 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -190,7 +190,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     if ("this".equals(arg0))
       return this;
     if ("name".equals(arg0))
-      return Fibu.DATEFORMAT.format(getBeginn()) + " - " + Fibu.DATEFORMAT.format(getEnde());
+      return Settings.DATEFORMAT.format(getBeginn()) + " - " + Settings.DATEFORMAT.format(getEnde());
 
     return super.getAttribute(arg0);
   }
@@ -556,6 +556,13 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
 /*********************************************************************
  * $Log: GeschaeftsjahrImpl.java,v $
+ * Revision 1.29  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.28  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

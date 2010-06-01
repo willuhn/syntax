@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,41 +79,21 @@ public class GeschaeftsjahrNeu extends AbstractView
     store.setEnabled(!control.getGeschaeftsjahr().isClosed());
     buttonArea.addButton(store);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.8  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.7  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.6.2.1  2008/09/08 09:03:51  willuhn
  * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
- *
- * Revision 1.6  2006/12/27 15:23:33  willuhn
- * @C merged update 1.3 and 1.4 to 1.3
- *
- * Revision 1.5  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.4  2005/08/29 22:59:17  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 22:44:05  willuhn
- * @N added templates
- *
- * Revision 1.2  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
  **********************************************************************/

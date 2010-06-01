@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/UserObject.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,15 @@ public interface UserObject extends DBObject
   public boolean isUserObject() throws RemoteException;
 
   /**
+   * Prueft, ob das Objekt vom User geaendert werden darf.
+   * Liefert genau dann true, wenn getMandant nicht null liefert oder das
+   * Schreiben im Systemkontenrahmen explizit erlaubt ist.
+   * @return true, wenn das Objekt geaendert werden darf.
+   * @throws RemoteException
+   */
+  public boolean canChange() throws RemoteException;
+
+  /**
    * Liefert den Mandanten, wenn es ein vom User angelegtes Objekt ist, sonst immer null.
    * @return Mandant.
    * @throws RemoteException
@@ -51,6 +60,13 @@ public interface UserObject extends DBObject
 
 /*********************************************************************
  * $Log: UserObject.java,v $
+ * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.3  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

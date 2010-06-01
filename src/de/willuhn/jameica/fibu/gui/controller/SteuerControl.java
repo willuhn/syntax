@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.26 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.27 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -110,10 +110,7 @@ public class SteuerControl extends AbstractControl
 			return name;
 
     name = new TextInput(getSteuer().getName());
-    if (!getSteuer().isUserObject())
-      name.disable();
-    else
-      name.enable();
+    name.setEnabled(getSteuer().canChange());
 		return name;
 	}
 
@@ -127,12 +124,9 @@ public class SteuerControl extends AbstractControl
 		if (satz != null)
 			return satz;
 
-    satz = new DecimalInput(getSteuer().getSatz(), Fibu.DECIMALFORMAT);
+    satz = new DecimalInput(getSteuer().getSatz(), Settings.DECIMALFORMAT);
 		satz.setComment(i18n.tr("Angabe in \"%\""));
-    if (!getSteuer().isUserObject())
-      satz.disable();
-    else
-      satz.enable();
+		satz.setEnabled(getSteuer().canChange());
 		return satz;
 	}
 
@@ -150,12 +144,7 @@ public class SteuerControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
     kontoauswahl = new KontoInput(list,getSteuer().getSteuerKonto());
-
-    if (!getSteuer().isUserObject())
-      kontoauswahl.disable();
-    else
-      kontoauswahl.enable();
-    
+    kontoauswahl.setEnabled(getSteuer().canChange());
     return kontoauswahl;
 	}
 
@@ -167,7 +156,7 @@ public class SteuerControl extends AbstractControl
   {
     try {
 
-      if (!getSteuer().isUserObject())
+      if (!getSteuer().canChange())
       {
         GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
         return;
@@ -196,6 +185,13 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.27  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.26  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractUserObjectImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/09/03 14:31:10 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,8 +58,8 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   {
     try
     {
-      if (!isUserObject())
-        throw new ApplicationException("Datensatz gehört zum initialen Datenbestand und darf daher nicht gelöscht werden.");
+      if (!canChange())
+        throw new ApplicationException("Datensatz gehört zum System-Kontenrahmen und darf daher nicht gelöscht werden.");
     }
     catch (RemoteException e)
     {
@@ -74,8 +74,8 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   protected void insertCheck() throws ApplicationException
   {
     try {
-      if (!isUserObject())
-        throw new ApplicationException("Datensatz gehört zum initialen Datenbestand und darf daher nicht geändert werden.");
+      if (!canChange())
+        throw new ApplicationException("Datensatz gehört zum System-Kontenrahmen und darf daher nicht geändert werden.");
     }
     catch (RemoteException e)
     {
@@ -97,9 +97,15 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
    */
   public boolean isUserObject() throws RemoteException
   {
-    // TODO: Koennte man ersetzen gegen einen System-Kontenrahmen, der per Default read-only ist,
-    //       der Schreibschutz vom User aber explizit entfernt werden koennte
-    return getMandant() != null || Settings.inUpdate();
+    return getMandant() != null;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.UserObject#canChange()
+   */
+  public boolean canChange() throws RemoteException
+  {
+    return Settings.getSystemDataWritable() || isUserObject() || Settings.inUpdate();
   }
 
   /**
@@ -123,6 +129,13 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AbstractUserObjectImpl.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2009/09/03 14:31:10  willuhn
  * *** empty log message ***
  *

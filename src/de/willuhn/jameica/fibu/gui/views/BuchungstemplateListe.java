@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateListe.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/01/02 23:35:33 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,6 @@ import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -50,25 +49,15 @@ public class BuchungstemplateListe extends AbstractView
     buttons.addButton(i18n.tr("Zurück"), new Back());
     buttons.addButton(new Button(i18n.tr("Neue Buchungsvorlage"), new BuchungstemplateNeu(),null,true));
   }
-
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
 }
 
 /*********************************************************************
  * $Log: BuchungstemplateListe.java,v $
- * Revision 1.3  2006/01/02 23:35:33  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/01/02 22:56:50  willuhn
- * @B typo
- *
- * Revision 1.1  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
+ * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

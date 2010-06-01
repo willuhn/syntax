@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/AbschreibungDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/02/27 15:46:17 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,8 +181,8 @@ public class AbschreibungDialog extends AbstractDialog
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     Mandant m = jahr.getMandant();
     double restwert = av.getRestwert(jahr);
-    this.betrag = new DecimalInput(restwert, Fibu.DECIMALFORMAT);
-    this.betrag.setComment(i18n.tr("in {0}, Restwert: {1} {0}", new String[]{m.getWaehrung(),Fibu.DECIMALFORMAT.format(restwert)}));
+    this.betrag = new DecimalInput(restwert, Settings.DECIMALFORMAT);
+    this.betrag.setComment(i18n.tr("in {0}, Restwert: {1} {0}", new String[]{m.getWaehrung(),Settings.DECIMALFORMAT.format(restwert)}));
     return this.betrag;
   }
   
@@ -243,6 +243,13 @@ public class AbschreibungDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AbschreibungDialog.java,v $
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.5  2007/02/27 15:46:17  willuhn
  * @N Anzeige des vorherigen Kontostandes im Kontoauszug
  *

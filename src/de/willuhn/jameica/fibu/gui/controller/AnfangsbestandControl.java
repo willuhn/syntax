@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2007/02/27 18:17:32 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,7 +106,7 @@ public class AnfangsbestandControl extends AbstractControl
   {
     if (betrag != null)
       return betrag;
-    betrag = new DecimalInput(getAnfangsbestand().getBetrag(), Fibu.DECIMALFORMAT);
+    betrag = new DecimalInput(getAnfangsbestand().getBetrag(), Settings.DECIMALFORMAT);
 
     Mandant m = null;
     Geschaeftsjahr jahr = getAnfangsbestand().getGeschaeftsjahr();
@@ -175,6 +175,13 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.11  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.10  2007/02/27 18:17:32  willuhn
  * @B Anfangsbestaende nur von Anlage- und Geldkonten erzeugen
  *

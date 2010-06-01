@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.25 $
- * $Date: 2010/02/08 15:39:48 $
+ * $Revision: 1.26 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,6 @@ import de.willuhn.jameica.fibu.gui.part.SteuerList;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -55,6 +54,8 @@ import de.willuhn.util.I18N;
  */
 public class MandantNeu extends AbstractView
 {
+  private static Integer activeTab = null;
+  private TabFolder tabs           = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
@@ -107,35 +108,34 @@ public class MandantNeu extends AbstractView
     button1.setEnabled(control.storeAllowed());
     buttonArea.addButton(button1);
 
-    TabFolder folder = new TabFolder(getParent(), SWT.NONE);
-    folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-    folder.setBackground(Color.BACKGROUND.getSWTColor());
+    this.tabs = new TabFolder(getParent(), SWT.NONE);
+    this.tabs.setLayoutData(new GridData(GridData.FILL_BOTH));
+    this.tabs.setBackground(Color.BACKGROUND.getSWTColor());
 
-    TabGroup jahre = new TabGroup(folder,i18n.tr("Vorhandene Geschäftsjahre"));
+    TabGroup jahre = new TabGroup(this.tabs,i18n.tr("Vorhandene Geschäftsjahre"));
     TablePart t1 = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
     t1.paint(jahre.getComposite());
 
-    TabGroup konten = new TabGroup(folder,i18n.tr("Benutzerdefinierte Konten"),false,1);
+    TabGroup konten = new TabGroup(this.tabs,i18n.tr("Benutzerdefinierte Konten"),false,1);
     DBIterator kontenList = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
     kontenList.addFilter("mandant_id = " + control.getMandant().getID());
     KontoList t2 = new KontoList(kontenList, new KontoNeu());
     t2.setFilterVisible(false);
     t2.paint(konten.getComposite());
 
-    TabGroup steuern = new TabGroup(folder,i18n.tr("Steuersätze"));
-    DBIterator steuerList = Settings.getDBService().createList(Steuer.class);
-    steuerList.addFilter("mandant_id = " + control.getMandant().getID());
-    steuerList.setOrder("order by name");
-    TablePart t3 = new SteuerList(steuerList, new SteuerNeu());
+    TabGroup steuern = new TabGroup(this.tabs,i18n.tr("Steuersätze"));
+    TablePart t3 = new SteuerList(control.getMandant(), new SteuerNeu());
     t3.paint(steuern.getComposite());
     
-    TabGroup vorlagen = new TabGroup(folder,i18n.tr("Buchungsvorlagen"));
+    TabGroup vorlagen = new TabGroup(this.tabs,i18n.tr("Buchungsvorlagen"));
     DBIterator vorlagenList = Settings.getDBService().createList(Buchungstemplate.class);
-    steuerList.addFilter("mandant_id = " + control.getMandant().getID());
+    vorlagenList.addFilter("mandant_id = " + control.getMandant().getID());
     vorlagenList.setOrder("order by name");
     TablePart t4 = new BuchungstemplateList(vorlagenList, new BuchungstemplateNeu());
     t4.paint(vorlagen.getComposite());
 
+    if (activeTab != null)
+      this.tabs.setSelection(activeTab);
 
     ButtonArea buttonArea2 = new ButtonArea(getParent(),2);
     buttonArea2.addButton(i18n.tr("Zurück"), new Back(), null, !control.storeAllowed());
@@ -154,11 +154,20 @@ public class MandantNeu extends AbstractView
    */
   public void unbind() throws ApplicationException
   {
+    if (this.tabs != null && !this.tabs.isDisposed())
+      activeTab = this.tabs.getSelectionIndex();
   }
 }
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.26  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.25  2010/02/08 15:39:48  willuhn
  * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
  * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
@@ -169,74 +178,4 @@ public class MandantNeu extends AbstractView
  *
  * Revision 1.23.2.1  2008/09/08 09:03:51  willuhn
  * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
- *
- * Revision 1.23  2006/06/19 22:54:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2006/06/19 16:25:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.20  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.19  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.18  2005/08/29 14:54:28  willuhn
- * @B bugfixing
- *
- * Revision 1.17  2005/08/29 14:26:57  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.16  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.15  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.13  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.12  2004/02/24 22:48:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/02/20 20:44:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/01/29 00:06:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2004/01/27 00:09:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.6  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.4  2003/12/05 17:11:58  willuhn
- * @N added GeldKonto, Kontoart
- *
- * Revision 1.3  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.2  2003/11/25 00:22:17  willuhn
- * @N added Finanzamt
- *
- * Revision 1.1  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
  **********************************************************************/

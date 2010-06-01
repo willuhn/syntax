@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/SteuerTable.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
@@ -56,7 +55,7 @@ public class SteuerTable implements Table
       List<String> line = new ArrayList<String>();
       line.add(s.getID());
       line.add(s.getName());
-      line.add(Fibu.DECIMALFORMAT.format(s.getSatz()));
+      line.add(Settings.DECIMALFORMAT.format(s.getSatz()));
       line.add(k.getID());
       
       result.add(line);
@@ -69,6 +68,13 @@ public class SteuerTable implements Table
 
 /**********************************************************************
  * $Log: SteuerTable.java,v $
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

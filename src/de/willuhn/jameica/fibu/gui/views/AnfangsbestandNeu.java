@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.5 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -74,30 +74,15 @@ public class AnfangsbestandNeu extends AbstractView
     buttonArea.addButton(store);
     
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
 }
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
- * Revision 1.5  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.4  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.3  2005/08/29 14:26:57  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.2  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.1  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

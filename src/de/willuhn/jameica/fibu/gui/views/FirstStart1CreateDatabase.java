@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FirstStart1CreateDatabase.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/06/19 23:00:47 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,25 +66,11 @@ public class FirstStart1CreateDatabase extends AbstractView
 
 /*********************************************************************
  * $Log: FirstStart1CreateDatabase.java,v $
- * Revision 1.5  2006/06/19 23:00:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2006/06/19 22:23:47  willuhn
- * @N Wizard
- *
- * Revision 1.3  2006/06/19 16:25:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/06/13 22:52:10  willuhn
- * @N Setup wizard redesign and code cleanup
- *
- * Revision 1.1  2006/06/12 23:05:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/06/12 15:41:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2006/06/12 14:08:29  willuhn
- * @N DB-Wizard
+ * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

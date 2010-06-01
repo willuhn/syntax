@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,6 @@ import de.willuhn.jameica.gui.internal.action.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
-import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -52,29 +51,16 @@ public class AnfangsbestandListe extends AbstractView
     button.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(button);
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
- * Revision 1.4  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.3  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.2  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.1  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
+ * Revision 1.5  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

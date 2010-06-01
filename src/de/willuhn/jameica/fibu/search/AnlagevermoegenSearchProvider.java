@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/search/AnlagevermoegenSearchProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -105,9 +105,9 @@ public class AnlagevermoegenSearchProvider implements SearchProvider
       {
         I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-        return i18n.tr("{0}: {1} - Restwert {2}", new String[]{Fibu.DATEFORMAT.format(av.getAnschaffungsdatum()),
+        return i18n.tr("{0}: {1} - Restwert {2}", new String[]{Settings.DATEFORMAT.format(av.getAnschaffungsdatum()),
                                                                av.getName(),
-                                                               new CurrencyFormatter(jahr.getMandant().getWaehrung(),Fibu.DECIMALFORMAT).format(new Double(av.getRestwert(jahr)))});
+                                                               new CurrencyFormatter(jahr.getMandant().getWaehrung(),Settings.DECIMALFORMAT).format(new Double(av.getRestwert(jahr)))});
       }
       catch (RemoteException re)
       {
@@ -122,6 +122,13 @@ public class AnlagevermoegenSearchProvider implements SearchProvider
 
 /*********************************************************************
  * $Log: AnlagevermoegenSearchProvider.java,v $
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.2  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

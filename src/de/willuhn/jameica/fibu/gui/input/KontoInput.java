@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/input/KontoInput.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/01/04 12:58:50 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,7 +162,7 @@ public class KontoInput extends ButtonInput
       {
         Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
         text.setText(this.konto == null ? "" : this.konto.getKontonummer());
-        setComment(this.konto == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Fibu.DECIMALFORMAT.format(konto.getSaldo(jahr)), jahr.getMandant().getWaehrung(), konto.getName()}));
+        setComment(this.konto == null ? "" : i18n.tr("Saldo: {0} {1} [{2}]",new String[]{Settings.DECIMALFORMAT.format(konto.getSaldo(jahr)), jahr.getMandant().getWaehrung(), konto.getName()}));
       }
       catch (RemoteException e)
       {
@@ -176,6 +176,13 @@ public class KontoInput extends ButtonInput
 
 /*********************************************************************
  * $Log: KontoInput.java,v $
+ * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.3  2007/01/04 12:58:50  willuhn
  * @B wrong type for kontonummer
  *

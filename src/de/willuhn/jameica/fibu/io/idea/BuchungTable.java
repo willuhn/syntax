@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/BuchungTable.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -65,13 +65,13 @@ public class BuchungTable implements Table
 
     List<String> line = new ArrayList<String>();
     line.add(b.getID());
-    line.add(Fibu.DATEFORMAT.format(b.getDatum()));
+    line.add(Settings.DATEFORMAT.format(b.getDatum()));
     line.add(ks.getID());
     line.add(kh.getID());
     line.add(b.getText());
     line.add(Integer.toString(b.getBelegnummer()));
-    line.add(Fibu.DECIMALFORMAT.format(b.getBetrag()));
-    line.add(steuer == 0d ? "" : Fibu.DECIMALFORMAT.format(b.getSteuer()));
+    line.add(Settings.DECIMALFORMAT.format(b.getBetrag()));
+    line.add(steuer == 0d ? "" : Settings.DECIMALFORMAT.format(b.getSteuer()));
     return line;
   }
 
@@ -80,6 +80,13 @@ public class BuchungTable implements Table
 
 /**********************************************************************
  * $Log: BuchungTable.java,v $
+ * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

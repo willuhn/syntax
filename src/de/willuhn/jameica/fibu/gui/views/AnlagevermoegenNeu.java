@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -96,48 +96,16 @@ public class AnlagevermoegenNeu extends AbstractView
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
     table.paint(getParent());
   }
-
-  /**
-   * @see de.willuhn.jameica.gui.AbstractView#unbind()
-   */
-  public void unbind() throws ApplicationException
-  {
-  }
-
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
- * Revision 1.10  2006/05/29 13:02:30  willuhn
- * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.9  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.8  2006/01/04 00:53:48  willuhn
- * @B bug 166 Ausserplanmaessige Abschreibungen
- *
- * Revision 1.7  2006/01/03 23:58:36  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.6  2006/01/03 00:05:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2006/01/02 23:50:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/08/29 22:52:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/08/29 14:54:28  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
+ * Revision 1.11  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
  *
  **********************************************************************/

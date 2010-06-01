@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/02/08 15:39:48 $
+ * $Revision: 1.29 $
+ * $Date: 2010/06/01 16:37:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,7 +102,7 @@ public class KontoControl extends AbstractControl
   {
     if (this.saldo != null)
       return this.saldo;
-    saldo = new LabelInput(Fibu.DECIMALFORMAT.format(getKonto().getSaldo(Settings.getActiveGeschaeftsjahr())));
+    saldo = new LabelInput(Settings.DECIMALFORMAT.format(getKonto().getSaldo(Settings.getActiveGeschaeftsjahr())));
     saldo.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     return saldo;
   }
@@ -118,8 +118,7 @@ public class KontoControl extends AbstractControl
 			return name;
 		name = new TextInput(getKonto().getName());
 		name.setMandatory(true);
-    if (!getKonto().isUserObject())
-      name.disable();
+		name.setEnabled(getKonto().canChange());
 		return name;
 	}
 
@@ -134,8 +133,7 @@ public class KontoControl extends AbstractControl
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer());
 		kontonummer.setMandatory(true);
-    if (!getKonto().isUserObject())
-      kontonummer.disable();
+		kontonummer.setEnabled(getKonto().canChange());
 		return kontonummer;
 	}
 
@@ -169,9 +167,8 @@ public class KontoControl extends AbstractControl
 
     // Deaktivieren, wenn Konto nicht steuerpflichtig
     Kontoart ka = getKonto().getKontoArt();
-    if (!getKonto().isUserObject() || ka == null || !ka.isSteuerpflichtig())
-      steuer.disable();
 
+    steuer.setEnabled(getKonto().canChange() && ka != null && ka.isSteuerpflichtig());
 		return steuer;
 	}
 
@@ -187,6 +184,7 @@ public class KontoControl extends AbstractControl
 
 		Kontoart ka = getKonto().getKontoArt();
 		kontoart = new SelectInput(Settings.getDBService().createList(Kontoart.class),ka);
+    kontoart.setEnabled(getKonto().canChange());
 		kontoart.setMandatory(true);
     kontoart.addListener(new Listener() {
       public void handleEvent(Event event)
@@ -197,16 +195,10 @@ public class KontoControl extends AbstractControl
         try
         {
           // Wenn die Konto-Art steuerpflichtig, muessen wir den Steuersatz freischalten
-          if (k.isSteuerpflichtig())
-            getSteuer().enable();
-          else
-            getSteuer().disable();
-          
+          getSteuer().setEnabled(k.isSteuerpflichtig() && getKonto().canChange());
+
           // Wenn es ein Steuerkonto ist, dann Kontotyp freischalten
-          if (k.getKontoArt() == Kontoart.KONTOART_STEUER)
-            getKontotyp().enable();
-          else
-            getKontotyp().disable();
+          getKontotyp().setEnabled(k.getKontoArt() == Kontoart.KONTOART_STEUER && getKonto().canChange());
         }
         catch (RemoteException e)
         {
@@ -216,8 +208,6 @@ public class KontoControl extends AbstractControl
       }
     });
     
-    if (!getKonto().isUserObject())
-      kontoart.disable();
 		return kontoart;
 	}
 
@@ -233,11 +223,9 @@ public class KontoControl extends AbstractControl
 
     Kontotyp kt = getKonto().getKontoTyp();
     kontotyp = new SelectInput(Settings.getDBService().createList(Kontotyp.class),kt);
+
     Kontoart ka = getKonto().getKontoArt();
-    if (getKonto().isUserObject() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
-      kontotyp.enable();
-    else
-      kontotyp.disable();
+    kontotyp.setEnabled(getKonto().canChange() && ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER);
     return kontotyp;
   }
 
@@ -262,7 +250,7 @@ public class KontoControl extends AbstractControl
   public void handleStore()
   {
     try {
-      if (!getKonto().isUserObject())
+      if (!getKonto().canChange())
         throw new ApplicationException(i18n.tr("Konto ist ein System-Konto und darf nicht geändert werden"));
 
       getKonto().setName((String) getName().getValue());
@@ -298,6 +286,13 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.29  2010/06/01 16:37:22  willuhn
+ * @C Konstanten von Fibu zu Settings verschoben
+ * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
+ * @C Unterscheidung zwischen canChange und isUserObject in UserObject
+ * @C Code-Cleanup
+ * @R alte CVS-Logs entfernt
+ *
  * Revision 1.28  2010/02/08 15:39:48  willuhn
  * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
  * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
