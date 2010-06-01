@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/08/24 11:57:41 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/01 14:51:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -181,7 +181,6 @@ public class IdeaFormatExport extends AbstractExport
       //////////////////////////////////////////////////////////////////////////
       // Schritt 3: Zugehoerige CSV-Dateien mit den Nutzdaten erzeugen
       
-      // TODO
       add("steuer.csv",          new SteuerTable());
       add("kontoart.csv",        new KontoartTable());
       add("kontotyp.csv",        new KontotypTable());
@@ -312,6 +311,9 @@ public class IdeaFormatExport extends AbstractExport
 
 /**********************************************************************
  * $Log: IdeaFormatExport.java,v $
+ * Revision 1.4  2010/06/01 14:51:22  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2009/08/24 11:57:41  willuhn
  * @N Umstellung auf neuen VelocityService
  *
