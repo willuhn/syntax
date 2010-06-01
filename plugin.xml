@@ -3,7 +3,7 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.0.xsd"
-        name="syntax" version="1.5" class="de.willuhn.jameica.fibu.Fibu">
+        name="syntax" version="1.5.0" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
   <url>https://www.willuhn.de/products/syntax/releases/1.4/syntax.zip</url>
@@ -19,7 +19,7 @@
 
   <menu>
     <item id="syntax.menu" name="SynTAX">
-      <item id="syntax.menu.buchung"          enabled="false" name="Neue &amp;Buchung"        					shortcut="CTRL+B" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+      <item id="syntax.menu.buchung"          enabled="false" name="Neue B&amp;uchung"        					shortcut="CTRL+U" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
 	    <item id="syntax.menu.geschaeftsjahre"  enabled="false" name="Geschäftsjahr auswählen" 						shortcut="CTRL+G" action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrChoose" />
       <item name="-" />
 	    <item id="syntax.menu.mandanten"        enabled="false" name="Mandanten" 													action="de.willuhn.jameica.fibu.gui.action.MandantListe" />

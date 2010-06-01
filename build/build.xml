@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.20 $
- $Date: 2010/04/09 12:55:11 $
+ $Revision: 1.21 $
+ $Date: 2010/06/01 17:42:03 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -46,6 +46,7 @@
 		<property name="project.zipdir" 			  value="${project.release}/${plugin.name}" />
 
 		<property name="src.dir" 					      value="src" />
+    <property name="update.dir"             value="updates" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
     <property name="help.dir"               value="${src.dir}/help" />
     <property name="res.dir"                value="${src.dir}/res" />
@@ -59,6 +60,7 @@
 
 		<path id="compilepath">
 			<pathelement path="${define.compilepath}" />
+			<pathelement path="${class.dir}"/> <!-- wird zum Compilieren der Updates gebraucht -->
       <fileset dir="." >
         <include name="${lib.dir}/**/*.jar" if="havelib"/>
       </fileset>
@@ -76,7 +78,7 @@
 
 		<mkdir dir="${class.dir}" />
 
-		<javac debug="true" debuglevel="lines,vars,source" source="1.5" target="1.5" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+		<javac debug="true" debuglevel="lines,vars,source" source="${define.java.version}" target="${define.java.version}" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
 			<classpath refid="compilepath" />
 		</javac>
     <copy todir="${class.dir}/help">
@@ -133,10 +135,29 @@
 		<antcall target="addwebapps"/>
 			
     <copy file="plugin.xml" todir="${project.zipdir}" />
-    <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
-    <mkdir dir="${project.zipdir}/sql" />
+    <copy file="${build.dir}/COPYING"   todir="${project.zipdir}" />
+    <copy file="${build.dir}/ChangeLog" todir="${project.zipdir}" />
+
+		<mkdir dir="${project.zipdir}/sql" />
     <copy todir="${project.zipdir}/sql">
       <fileset dir="${sql.dir}" />
+    </copy>
+
+    <mkdir dir="${project.zipdir}/updates" />
+    <javac debug="true"
+           debuglevel="lines,vars,source"
+           source="${define.java.version}"
+           target="${define.java.version}"
+           encoding="${define.encoding}"
+           deprecation="true"
+           destdir="${project.zipdir}/updates"
+           srcdir="${update.dir}">
+      <classpath refid="compilepath" />
+    </javac>
+    <copy todir="${project.zipdir}/updates">
+      <fileset dir="${update.dir}">
+        <exclude name="*.java" />
+      </fileset>
     </copy>
 
 		<!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
@@ -161,6 +182,7 @@
         <include name="plugin.xml" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />
+        <include name="${update.dir}/**" />
         <include name="${sql.dir}/**" />
 				<include name="${build.dir}/**" />
 				<exclude name="${build.dir}/BUILD" />

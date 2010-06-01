@@ -1,3 +1,11 @@
+CREATE TABLE version (
+  id int(10) AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  version int(5) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+) TYPE = InnoDB;
+
 CREATE TABLE IF NOT EXISTS kontenrahmen (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,

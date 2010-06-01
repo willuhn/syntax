@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/01 17:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,12 +45,6 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public void create(ProgressMonitor monitor) throws RemoteException, ApplicationException
   {
-    String username = getUsername();
-
-    // Wir checken nur den Usernamen. Das Passwort darf leer sein.
-    if (username == null || username.length() == 0)
-      throw new ApplicationException(i18n.tr("Bitte geben Sie einen Benutzernamen an"));
-
     String workdir = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath();
     String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
 
@@ -66,6 +60,15 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
       File dbDir = new File(workdir,"db");
       if (!dbDir.exists())
         dbDir.mkdirs();
+
+      String username = getUsername();
+      if (username == null || username.length() == 0)
+      {
+        setUsername("syntax");
+        store();
+        username = getUsername();
+      }
+
       new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
 
       try
@@ -214,6 +217,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.11  2010/06/01 17:42:03  willuhn
+ * @N Neues Update-Verfahren via UpdateProvider
+ *
  * Revision 1.10  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

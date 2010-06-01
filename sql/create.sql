@@ -1,3 +1,11 @@
+CREATE TABLE version (
+  id NUMERIC default UNIQUEKEY('version'),
+  name varchar(255) NOT NULL,
+  version int(5) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE kontenrahmen (
   id NUMERIC default UNIQUEKEY('kontenrahmen'),
   name varchar(100) NOT NULL,
