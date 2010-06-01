@@ -15,17 +15,17 @@ INSERT INTO kontenrahmen (id,name) VALUES (2,'SKR 04');
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1, 6, 2, '1570', 'Abziehbare Vorsteuer', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (2, 6, 2, '1571', 'Abziehbare Vorsteuer 7%', 1, NULL);
 INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (3, 6, 1, '1770', 'Umsatzsteuer', 1, NULL);
-INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (135, 6, 2, '1576', 'Abziehbare Vorsteuer 16%', 1, NULL);
+INSERT INTO konto (id, kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (135, 6, 2, '1576', 'Abziehbare Vorsteuer 19%', 1, NULL);
 
 -- Steuern SKR03
-INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 135);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (1,'Vorsteuer 16%', '16', 1);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (2,'Vorsteuer 7%', '7', 2);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (3,'Umsatzsteuer 16%', '16', 3);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (4,'Umsatzsteuer 15%', '15', 3);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (5,'Umsatzsteuer 7%', '7', 3);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (6,'Vorsteuer 0%', '0', 1);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (7,'Umsatzsteuer 0%', '0', 3);
-INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (8,'Vorsteuer 19%', '19', 1);
+INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (8,'Vorsteuer 19%', '19', 135);
 INSERT INTO steuer (id,name, satz, steuerkonto_id) VALUES (9,'Umsatzsteuer 19%', '19', 3);
 
 
