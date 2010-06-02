@@ -1,3 +1,12 @@
+CREATE TABLE property (
+  id NUMERIC default UNIQUEKEY('property'),
+  name varchar(1000) NOT NULL,
+  content varchar(1000) NULL,
+  UNIQUE (id),
+  UNIQUE (name),
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE version (
   id NUMERIC default UNIQUEKEY('version'),
   name varchar(255) NOT NULL,

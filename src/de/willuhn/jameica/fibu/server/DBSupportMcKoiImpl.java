@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/06/01 17:42:03 $
+ * $Revision: 1.12 $
+ * $Date: 2010/06/02 15:47:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,15 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSupport
 {
+  
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
+  public String getID() throws RemoteException
+  {
+    return "mckoi";
+  }
+
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
@@ -48,7 +57,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
     String workdir = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath();
     String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
 
-    File create = new File(appdir + File.separator + "sql" + File.separator + "create.sql");
+    File create = new File(appdir + File.separator + "sql" + File.separator + "create_" + this.getID() + ".sql");
     File init   = new File(appdir + File.separator + "sql" + File.separator + "init.sql");
     
     Connection conn = null;
@@ -217,6 +226,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.12  2010/06/02 15:47:42  willuhn
+ * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
+ *
  * Revision 1.11  2010/06/01 17:42:03  willuhn
  * @N Neues Update-Verfahren via UpdateProvider
  *

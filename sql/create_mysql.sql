@@ -1,3 +1,12 @@
+CREATE TABLE property (
+  id int(10) AUTO_INCREMENT,
+  name text NOT NULL,
+  content text NULL,
+  UNIQUE (id),
+  UNIQUE KEY name (name(255)),
+  PRIMARY KEY (id)
+) TYPE = InnoDB;
+
 CREATE TABLE version (
   id int(10) AUTO_INCREMENT,
   name varchar(255) NOT NULL,

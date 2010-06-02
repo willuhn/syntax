@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/02 15:47:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,14 +173,6 @@ public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
   }
 
   /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
-  public String getID() throws RemoteException
-  {
-    return getClass().getName();
-  }
-
-  /**
    * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException
@@ -241,6 +233,9 @@ public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.7  2010/06/02 15:47:42  willuhn
+ * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

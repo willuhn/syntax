@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2010/06/01 17:42:03 $
+ * $Revision: 1.23 $
+ * $Date: 2010/06/02 15:47:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -101,7 +101,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
       Logger.info("init update provider");
       UpdateProvider provider = new UpdateProvider(conn);
       Updater updater = new Updater(provider);
-      updater.execute();
+      updater.execute("^" + Settings.getDBSupport().getID() + "-.*");
       Logger.info("updates finished");
     }
     catch (RemoteException re)
@@ -232,6 +232,9 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.23  2010/06/02 15:47:42  willuhn
+ * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
+ *
  * Revision 1.22  2010/06/01 17:42:03  willuhn
  * @N Neues Update-Verfahren via UpdateProvider
  *

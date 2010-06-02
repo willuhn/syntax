@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.12 $
+ * $Date: 2010/06/02 15:47:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,15 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSupport
 {
+  
+  /**
+   * @see de.willuhn.datasource.GenericObject#getID()
+   */
+  public String getID() throws RemoteException
+  {
+    return "mysql";
+  }
+
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
@@ -61,7 +70,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
       throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen TCP-Port ein"));
 
     String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
-    File create = new File(appdir + File.separator + "sql" + File.separator + "create_mysql.sql");
+    File create = new File(appdir + File.separator + "sql" + File.separator + "create_" + this.getID() + ".sql");
     File init   = new File(appdir + File.separator + "sql" + File.separator + "init.sql");
 
     Connection conn = null;
@@ -246,6 +255,9 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
 
 /*********************************************************************
  * $Log: DBSupportMySqlImpl.java,v $
+ * Revision 1.12  2010/06/02 15:47:42  willuhn
+ * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
+ *
  * Revision 1.11  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
