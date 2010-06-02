@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public class AnfangsbestandListe extends AbstractView
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
     
-    Button button = new Button(i18n.tr("Neuer Anfangsbestand"),new AnfangsbestandNeu(),null,true);
+    Button button = new Button(i18n.tr("Neuer Anfangsbestand"),new AnfangsbestandNeu(),null,true,"list-add.png");
     button.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(button);
   }
@@ -56,6 +56,9 @@ public class AnfangsbestandListe extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
+ * Revision 1.7  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.6  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

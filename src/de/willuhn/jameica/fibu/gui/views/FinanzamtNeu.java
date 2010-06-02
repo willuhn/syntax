@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.16 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,19 +57,22 @@ public class FinanzamtNeu extends AbstractView
 
     ButtonArea buttonArea = contactGroup.createButtonArea(3);
     buttonArea.addButton(new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new FinanzamtDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Löschen"), new FinanzamtDelete(), getCurrentObject(),false,"user-trash-full.png");
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
   }
 }
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.16  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.15  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

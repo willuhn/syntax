@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantListe.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.18 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,12 +44,15 @@ public class MandantListe extends AbstractView
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
-    buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true);
+    buttons.addButton(i18n.tr("Neuer Mandant"), new MandantNeu(),null,true,"list-add.png");
   }
 }
 
 /*********************************************************************
  * $Log: MandantListe.java,v $
+ * Revision 1.18  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.17  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

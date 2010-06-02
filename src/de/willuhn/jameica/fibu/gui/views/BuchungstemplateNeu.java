@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,20 +66,23 @@ public class BuchungstemplateNeu extends AbstractView
     ButtonArea buttonArea = kontoGroup.createButtonArea(3);
     buttonArea.addButton(new Back());
 
-    buttonArea.addButton(new Button(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject()));
+    buttonArea.addButton(new Button(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject(),false,"user-trash-full.png"));
 
     Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore(false);
       }
-    },null,true);
+    },null,true,"document-save.png");
     buttonArea.addButton(store);
   }
 }
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
+ * Revision 1.7  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.6  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

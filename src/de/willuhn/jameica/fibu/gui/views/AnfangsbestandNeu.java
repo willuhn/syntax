@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class AnfangsbestandNeu extends AbstractView
     ButtonArea buttonArea = group.createButtonArea(3);
     buttonArea.addButton(new Back());
 
-    Button delete = new Button(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject());
+    Button delete = new Button(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(!closed);
     buttonArea.addButton(delete);
     
@@ -69,7 +69,7 @@ public class AnfangsbestandNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
     store.setEnabled(!closed);
     buttonArea.addButton(store);
     
@@ -78,6 +78,9 @@ public class AnfangsbestandNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.8  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.7  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

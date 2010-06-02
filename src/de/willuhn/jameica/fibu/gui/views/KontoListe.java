@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.22 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,13 +58,16 @@ public class KontoListe extends AbstractView
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
-    buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true);
+    buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true,"list-add.png");
 
   }
 }
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
+ * Revision 1.22  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.21  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

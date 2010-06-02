@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungListe.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.29 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ public class BuchungListe extends AbstractView
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
     
-    Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true);
+    Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true,"list-add.png");
     create.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(create);
   }
@@ -57,6 +57,9 @@ public class BuchungListe extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungListe.java,v $
+ * Revision 1.29  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.28  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

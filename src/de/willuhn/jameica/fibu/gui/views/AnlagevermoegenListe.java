@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenListe.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,13 +44,16 @@ public class AnlagevermoegenListe extends AbstractView
 
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
-    buttons.addButton(i18n.tr("Anlagevermögen hinzufügen"), new AnlagevermoegenNeu(),null,true);
+    buttons.addButton(i18n.tr("Anlagevermögen hinzufügen"), new AnlagevermoegenNeu(),null,true,"list-add.png");
   }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenListe.java,v $
+ * Revision 1.7  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.6  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.43 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.44 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,7 @@ public class BuchungNeu extends AbstractView
     ButtonArea buttonArea = kontoGroup.createButtonArea(4);
     buttonArea.addButton(new Back());
 
-    Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject());
+    Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(!closed);
     buttonArea.addButton(delete);
 
@@ -88,7 +88,7 @@ public class BuchungNeu extends AbstractView
       {
         control.handleStore(false);
       }
-    });
+    },null,false,"document-save.png");
     store.setEnabled(!closed);
     buttonArea.addButton(store);
 
@@ -105,6 +105,9 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.44  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.43  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

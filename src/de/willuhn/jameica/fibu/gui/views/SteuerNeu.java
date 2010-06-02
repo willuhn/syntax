@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.21 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class SteuerNeu extends AbstractView
     if (!control.getSteuer().canChange())
       GUI.getView().setErrorText(i18n.tr("System-Steuerkonto darf nicht geändert werden."));
     
-    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer());
+    Button delete = new Button(i18n.tr("Löschen"), new SteuerDelete(),control.getSteuer(),false,"user-trash-full.png");
     delete.setEnabled(control.getSteuer().canChange());
     buttonArea.addButton(delete);
     
@@ -68,7 +68,7 @@ public class SteuerNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
     store.setEnabled(control.getSteuer().canChange());
     buttonArea.addButton(store);
   }
@@ -76,6 +76,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.21  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.20  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

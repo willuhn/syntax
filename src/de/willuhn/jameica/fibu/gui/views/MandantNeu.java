@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.27 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.28 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,7 +95,7 @@ public class MandantNeu extends AbstractView
       canDelete = !cm.equals(control.getMandant());
     }
     
-    Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject());
+    Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
     Button button1 = new Button(i18n.tr("Speichern"), new Action()
@@ -104,7 +104,7 @@ public class MandantNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,control.storeAllowed());
+    },null,control.storeAllowed(),"document-save.png");
     button1.setEnabled(control.storeAllowed());
     buttonArea.addButton(button1);
 
@@ -161,6 +161,9 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.28  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.27  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

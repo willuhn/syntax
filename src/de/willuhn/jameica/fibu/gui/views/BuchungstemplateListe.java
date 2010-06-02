@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateListe.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,12 +47,15 @@ public class BuchungstemplateListe extends AbstractView
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
     buttons.addButton(new Back());
-    buttons.addButton(new Button(i18n.tr("Neue Buchungsvorlage"), new BuchungstemplateNeu(),null,true));
+    buttons.addButton(new Button(i18n.tr("Neue Buchungsvorlage"), new BuchungstemplateNeu(),null,true,"list-add.png"));
   }
 }
 
 /*********************************************************************
  * $Log: BuchungstemplateListe.java,v $
+ * Revision 1.6  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.5  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

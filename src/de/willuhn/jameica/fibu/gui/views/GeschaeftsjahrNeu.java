@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class GeschaeftsjahrNeu extends AbstractView
     boolean canDelete = true;
     Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
     if (current != null) canDelete = !current.equals(control.getGeschaeftsjahr());
-    Button delete = new Button(i18n.tr("Löschen"),new GeschaeftsjahrDelete(),getCurrentObject());
+    Button delete = new Button(i18n.tr("Löschen"),new GeschaeftsjahrDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
     
@@ -75,7 +75,7 @@ public class GeschaeftsjahrNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
     store.setEnabled(!control.getGeschaeftsjahr().isClosed());
     buttonArea.addButton(store);
   }
@@ -84,6 +84,9 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.10  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.9  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

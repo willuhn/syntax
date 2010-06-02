@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.13 $
+ * $Date: 2010/06/02 00:02:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public class AnlagevermoegenNeu extends AbstractView
 
     ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject());
+    buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject(),false,"user-trash-full.png");
 
     Button b = new Button(i18n.tr("Ausserplanmäßige Abschreibung..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -90,7 +90,7 @@ public class AnlagevermoegenNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
 
     new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
@@ -101,6 +101,9 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.13  2010/06/02 00:02:59  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.12  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

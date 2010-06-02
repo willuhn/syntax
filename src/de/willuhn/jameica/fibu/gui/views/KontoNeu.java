@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.20 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.21 $
+ * $Date: 2010/06/02 00:02:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,7 +76,7 @@ public class KontoNeu extends AbstractView
     
     ButtonArea buttons = group.createButtonArea(3);
     buttons.addButton(new Back());
-    Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject());
+    Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(control.getKonto().canChange());
     buttons.addButton(delete);
     
@@ -86,7 +86,7 @@ public class KontoNeu extends AbstractView
       {
         control.handleStore();
       }
-    },null,true);
+    },null,true,"document-save.png");
     store.setEnabled(control.getKonto().canChange());
     buttons.addButton(store);
 
@@ -98,6 +98,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.21  2010/06/02 00:02:58  willuhn
+ * @N Mehr Icons
+ *
  * Revision 1.20  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *
