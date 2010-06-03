@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBPropertyImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/06/03 10:25:09 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/03 10:25:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#getName()
+   * @see de.willuhn.jameica.fibu.rmi.DBProperty#getName()
    */
   public String getName() throws RemoteException
   {
@@ -58,7 +58,7 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#getValue()
+   * @see de.willuhn.jameica.fibu.rmi.DBProperty#getValue()
    */
   public String getValue() throws RemoteException
   {
@@ -66,7 +66,7 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#setName(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.DBProperty#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException
   {
@@ -74,7 +74,7 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
   }
 
   /**
-   * @see de.willuhn.jameica.hbci.rmi.DBProperty#setValue(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.DBProperty#setValue(java.lang.String)
    */
   public void setValue(String value) throws RemoteException
   {
@@ -86,6 +86,9 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
 
 /*********************************************************************
  * $Log: DBPropertyImpl.java,v $
+ * Revision 1.3  2010/06/03 10:25:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2010/06/03 10:25:09  willuhn
  * @B wrong import
  *
