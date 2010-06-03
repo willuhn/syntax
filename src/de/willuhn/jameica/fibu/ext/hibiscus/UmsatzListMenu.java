@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/03 17:18:14 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/03 17:43:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -102,13 +103,21 @@ public class UmsatzListMenu implements Extension
    * Erzeugt eine einzelne Buchung.
    * Sie wird jedoch noch nicht gespeichert.
    * @param u die zu erzeugende Buchung.
+   * @param true, wenn wir mehr als eine Buchung haben und im Automatik-Modus laufen.
+   * In dem Fall wird die Erstellung der Buchung mit einer ApplicationException
+   * abgebrochen, wenn keine Umsatz-Kategorie vorhanden ist oder dieser keine
+   * Buchungsvorlage zugeordnet ist.
+   * "Keine Buchungsvorlage zugeordnet" geworfen.
    * @return die erzeugte Buchung.
    * @throws Exception
    */
-  private Buchung createBuchung(Umsatz u) throws Exception
+  private Buchung createBuchung(Umsatz u, boolean auto) throws Exception
   {
     // Checken, ob der Umsatz eine Kategorie hat
     UmsatzTyp typ = u.getUmsatzTyp();
+    
+    if (typ == null && auto)
+      throw new ApplicationException(i18n.tr("Keine Kategorie zugeordnet"));
     
     de.willuhn.jameica.fibu.rmi.Buchungstemplate template = null;
     if (typ != null)
@@ -120,6 +129,9 @@ public class UmsatzListMenu implements Extension
         template = (de.willuhn.jameica.fibu.rmi.Buchungstemplate) i.next();
     }
     
+    if (template == null && auto)
+      throw new ApplicationException(i18n.tr("Kategorie \"{0}\" ist keiner Buchungsvorlage zugeordnet",typ.getName()));
+    
     final Buchung buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
     buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
     buchung.setHibiscusUmsatzID(u.getID());
@@ -128,10 +140,17 @@ public class UmsatzListMenu implements Extension
     // Wir nehmen erstmal die Daten der Vorlage.
     if (template != null)
     {
+      Konto soll = template.getSollKonto();
+      if (auto && soll == null)
+        throw new ApplicationException(i18n.tr("Buchungsvorlage \"{0}\" enthält kein Soll-Konto",template.getName()));
+      Konto haben = template.getHabenKonto();
+      if (auto && haben == null)
+        throw new ApplicationException(i18n.tr("Buchungsvorlage \"{0}\" enthält kein Haben-Konto",template.getName()));
+
       buchung.setBetrag(template.getBetrag());
       buchung.setDatum(new Date());
-      buchung.setSollKonto(template.getSollKonto());
-      buchung.setHabenKonto(template.getHabenKonto());
+      buchung.setSollKonto(soll);
+      buchung.setHabenKonto(haben);
       buchung.setSteuer(template.getSteuer());
       buchung.setText(template.getText());
     }
@@ -282,7 +301,10 @@ public class UmsatzListMenu implements Extension
         for (int i=0;i<list.length;++i)
         {
           if (monitor != null)
+          {
             monitor.setPercentComplete((int)((i+1) * factor));
+            monitor.log("  " + i18n.tr("Erstelle Buchung {0}",Integer.toString(i+1)));
+          }
 
           Buchung buchung = null;
           try
@@ -294,7 +316,7 @@ public class UmsatzListMenu implements Extension
               continue;
             }
             
-            buchung = createBuchung(list[i]);
+            buchung = createBuchung(list[i],list.length > 1);
             buchung.store();
             created++;
             
@@ -329,14 +351,14 @@ public class UmsatzListMenu implements Extension
             }
             
             if (monitor != null)
-              monitor.log("  " + ae.getMessage());
+              monitor.log("    " + ae.getMessage());
             error++;
           }
           catch (Exception e)
           {
             Logger.error("unable to import umsatz",e);
             if (monitor != null)
-              monitor.log("  " + i18n.tr("Fehler beim Import der Buchung: {0}",e.getMessage()));
+              monitor.log("    " + i18n.tr("Fehler: {0}",e.getMessage()));
             error++;
           }
         }
@@ -366,6 +388,9 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
+ * Revision 1.7  2010/06/03 17:43:41  willuhn
+ * @N Aussagekraeftigere Meldungen, wenn Kategorie oder Vorlage fehlt oder Vorlage unvollstaendig ist
+ *
  * Revision 1.6  2010/06/03 17:18:14  willuhn
  * @N Bei mehr als einer Buchung im Hintergrund ausfuehren. Wenn man das erst ab 20 macht, hat man anschliessend keinen schoenen Ueberblick, bei welchen es geklemmt hat
  *
