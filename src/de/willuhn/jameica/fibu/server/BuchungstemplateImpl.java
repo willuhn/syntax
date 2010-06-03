@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungstemplateImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -136,11 +136,33 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
     
     return super.getForeignObject(field);
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#getHibiscusUmsatzTypID()
+   */
+  public String getHibiscusUmsatzTypID() throws RemoteException
+  {
+    String s = (String) getAttribute("hb_umsatztyp_id");
+    return s == null ? null : s.trim();
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchungstemplate#setHibiscusUmsatzTypID(java.lang.String)
+   */
+  public void setHibiscusUmsatzTypID(String id) throws RemoteException
+  {
+    setAttribute("hb_umsatztyp_id",id);
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: BuchungstemplateImpl.java,v $
+ * Revision 1.5  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -84,6 +84,7 @@ CREATE TABLE buchungstemplate (
   kontenrahmen_id int(10) NULL,
   betrag double NULL,
   steuer double NULL,
+  hb_umsatztyp_id varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
 );

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/FinanzamtNeu.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.17 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -46,16 +46,15 @@ public class FinanzamtNeu extends AbstractView
     final FinanzamtControl control = new FinanzamtControl(this);
     
     // Gruppe Kontaktdaten erzeugen
-    Container contactGroup = new LabelGroup(getParent(),i18n.tr("Anschriftsdaten"));
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
+    group.addLabelPair(i18n.tr("Name")    , control.getName());
+    group.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
+    group.addLabelPair(i18n.tr("Postfach"), control.getPostfach());
+    group.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
+    group.addLabelPair(i18n.tr("Ort")     , control.getOrt());
 
-    contactGroup.addLabelPair(i18n.tr("Name")    , control.getName());
-    contactGroup.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
-    contactGroup.addLabelPair(i18n.tr("Postfach"), control.getPostfach());
-    contactGroup.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
-    contactGroup.addLabelPair(i18n.tr("Ort")     , control.getOrt());
-
-
-    ButtonArea buttonArea = contactGroup.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new FinanzamtDelete(), getCurrentObject(),false,"user-trash-full.png");
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
@@ -70,6 +69,10 @@ public class FinanzamtNeu extends AbstractView
 
 /*********************************************************************
  * $Log: FinanzamtNeu.java,v $
+ * Revision 1.17  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.16  2010/06/02 00:02:58  willuhn
  * @N Mehr Icons
  *

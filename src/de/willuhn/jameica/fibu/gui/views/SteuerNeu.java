@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.22 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -45,14 +45,15 @@ public class SteuerNeu extends AbstractView
 
     final SteuerControl control = new SteuerControl(this);
 
-    Container steuerGroup = new LabelGroup(getParent(),i18n.tr("Steuersatz"));
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
 
-    steuerGroup.addLabelPair(i18n.tr("Mandant"),            control.getMandant());
-    steuerGroup.addLabelPair(i18n.tr("Name")      , 				control.getName());
-    steuerGroup.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
-    steuerGroup.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
+    group.addLabelPair(i18n.tr("Mandant"),            control.getMandant());
+    group.addLabelPair(i18n.tr("Name")      , 				control.getName());
+    group.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
+    group.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
 
-    ButtonArea buttonArea = steuerGroup.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
     
     if (!control.getSteuer().canChange())
@@ -76,6 +77,10 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.22  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.21  2010/06/02 00:02:58  willuhn
  * @N Mehr Icons
  *

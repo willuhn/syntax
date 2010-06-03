@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.44 $
- * $Date: 2010/06/02 00:02:59 $
+ * $Revision: 1.45 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,7 +24,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -50,24 +50,24 @@ public class BuchungNeu extends AbstractView
     final BuchungControl control = new BuchungControl(this);
     
     // Gruppe Konto erzeugen
-    LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
-    kontoGroup.addLabelPair(i18n.tr("Vorlage"),         control.getBuchungstemplate());
-    kontoGroup.addSeparator();
-    kontoGroup.addLabelPair(i18n.tr("Datum"),           control.getDatum());
-    kontoGroup.addLabelPair(i18n.tr("Soll-Konto"),      control.getSollKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Haben-Konto"),     control.getHabenKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Text"),            control.getText());
-    kontoGroup.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
-    kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
-    kontoGroup.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
+    SimpleContainer group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
+    group.addLabelPair(i18n.tr("Vorlage"),         control.getBuchungstemplate());
+    group.addSeparator();
+    group.addLabelPair(i18n.tr("Datum"),           control.getDatum());
+    group.addLabelPair(i18n.tr("Soll-Konto"),      control.getSollKontoAuswahl());
+    group.addLabelPair(i18n.tr("Haben-Konto"),     control.getHabenKontoAuswahl());
+    group.addLabelPair(i18n.tr("Text"),            control.getText());
+    group.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
+    group.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
+    group.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
     
     Buchung b = control.getBuchung();
     Anlagevermoegen av = b.getAnlagevermoegen();
     if (av != null)
-      kontoGroup.addLabelPair(i18n.tr("Zugehöriges Anlagegut"), control.getAnlageVermoegenLink());
+      group.addLabelPair(i18n.tr("Zugehöriges Anlagegut"), control.getAnlageVermoegenLink());
     else if (b.isNewObject())
-      kontoGroup.addCheckbox(control.getAnlageVermoegen(),i18n.tr("In Anlagevermögen übernehmen"));
+      group.addCheckbox(control.getAnlageVermoegen(),i18n.tr("In Anlagevermögen übernehmen"));
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
@@ -76,7 +76,7 @@ public class BuchungNeu extends AbstractView
     if (closed) GUI.getView().setErrorText(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"));
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = kontoGroup.createButtonArea(4);
+    ButtonArea buttonArea = new ButtonArea(getParent(),4);
     buttonArea.addButton(new Back());
 
     Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), getCurrentObject(),false,"user-trash-full.png");
@@ -105,6 +105,10 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.45  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.44  2010/06/02 00:02:59  willuhn
  * @N Mehr Icons
  *

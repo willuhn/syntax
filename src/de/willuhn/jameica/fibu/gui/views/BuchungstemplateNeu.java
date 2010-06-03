@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/02 00:02:59 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,10 +18,12 @@ import de.willuhn.jameica.fibu.gui.controller.BuchungstemplateControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
+import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -30,56 +32,87 @@ import de.willuhn.util.I18N;
  * Erzeugt eine neue Buchung oder bearbeitet eine existierende.
  * @author willuhn
  */
-public class BuchungstemplateNeu extends AbstractView
+public class BuchungstemplateNeu extends AbstractView implements Extendable
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
+  private Container container             = null;
+  private BuchungstemplateControl control = null;
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
-    // Headline malen
 		GUI.getView().setTitle(i18n.tr("Buchungsvorlage bearbeiten"));
 
-    final BuchungstemplateControl control = new BuchungstemplateControl(this);
+    this.control   = new BuchungstemplateControl(this);
+    
+    this.container = new SimpleContainer(getParent());
+    this.container.addHeadline(i18n.tr("Eigenschaften"));
+    this.container.addInput(control.getBezeichnung());
+    this.container.addInput(control.getSollKontoAuswahl());
+    this.container.addInput(control.getHabenKontoAuswahl());
+    this.container.addInput(control.getText());
+    this.container.addInput(control.getBetrag());
+    this.container.addInput(control.getSteuer());
 
-    // Gruppe Konto erzeugen
-    LabelGroup kontoGroup = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
-    kontoGroup.addLabelPair(i18n.tr("Mandant"),                     control.getMandant());
-    kontoGroup.addLabelPair(i18n.tr("Kontenrahmen"),                control.getKontenrahmen());
-    kontoGroup.addLabelPair(i18n.tr("Bezeichnung der Vorlage"),     control.getBezeichnung());
-    kontoGroup.addSeparator();
-    kontoGroup.addLabelPair(i18n.tr("Soll-Konto"),                  control.getSollKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Haben-Konto"),                 control.getHabenKontoAuswahl());
-    kontoGroup.addLabelPair(i18n.tr("Text"),                        control.getText());
-    kontoGroup.addLabelPair(i18n.tr("Brutto-Betrag"),               control.getBetrag());
-    kontoGroup.addLabelPair(i18n.tr("Steuersatz"),                  control.getSteuer());
-
-    // wir machen das Datums-Feld zu dem mit dem Focus.
-    control.getSollKontoAuswahl().focus();
-
-    // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = kontoGroup.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(this.getParent(),3);
     buttonArea.addButton(new Back());
-
     buttonArea.addButton(new Button(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject(),false,"user-trash-full.png"));
-
-    Button store = new Button(i18n.tr("Speichern"),new Action() {
+    buttonArea.addButton(new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore(false);
       }
-    },null,true,"document-save.png");
-    buttonArea.addButton(store);
+    },null,true,"document-save.png"));
   }
+
+  
+  /**
+   * @see de.willuhn.jameica.gui.AbstractView#unbind()
+   */
+  public void unbind() throws ApplicationException
+  {
+    this.container = null;
+    this.control   = null;
+  }
+
+
+  /**
+   * @see de.willuhn.jameica.gui.extension.Extendable#getExtendableID()
+   */
+  public String getExtendableID()
+  {
+    return this.getClass().getName();
+  }
+  
+  /**
+   * Liefert den Container, in dem sich die Controls befinden.
+   * @return der Container mit den Controls.
+   */
+  public Container getContainer()
+  {
+    return this.container;
+  }
+  
+  /**
+   * Liefert den Controller.
+   * @return der Controller.
+   */
+  public BuchungstemplateControl getControl()
+  {
+    return this.control;
+  }
+  
 }
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
+ * Revision 1.8  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.7  2010/06/02 00:02:59  willuhn
  * @N Mehr Icons
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/06/02 00:02:59 $
+ * $Revision: 1.29 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,7 +42,7 @@ import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.TabGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -71,8 +71,8 @@ public class MandantNeu extends AbstractView
 
     ColumnLayout cols = new ColumnLayout(getParent(),2);
     
-    Container group = new LabelGroup(cols.getComposite(),i18n.tr("Eigenschaften"));
-
+    Container group = new SimpleContainer(cols.getComposite());
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Name 1")  , control.getName1());
     group.addLabelPair(i18n.tr("Name 2")  , control.getName2());
     group.addLabelPair(i18n.tr("Firma")   , control.getFirma());
@@ -80,7 +80,8 @@ public class MandantNeu extends AbstractView
     group.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
     group.addLabelPair(i18n.tr("Ort")     , control.getOrt());
 
-    Container group2 = new LabelGroup(cols.getComposite(),i18n.tr("Buchhalterische Daten"));
+    Container group2 = new SimpleContainer(cols.getComposite());
+    group2.addHeadline(i18n.tr("Buchhalterische Daten"));
     group2.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
     group2.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
@@ -161,6 +162,10 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.29  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.28  2010/06/02 00:02:59  willuhn
  * @N Mehr Icons
  *

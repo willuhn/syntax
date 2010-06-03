@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,10 +22,8 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -33,8 +31,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -45,30 +43,23 @@ import de.willuhn.util.I18N;
  */
 public class BuchungstemplateControl extends AbstractControl
 {
-	
-  // Fachobjekte
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
 	private Buchungstemplate buchung 		= null;
 
-	// Eingabe-Felder
-  private Input bezeichnung      = null;
-	private Input	text					   = null;
-	private Input betrag				   = null;
+  private Input bezeichnung             = null;
+	private Input	text					          = null;
+	private Input betrag				          = null;
   private DecimalInput steuer				    = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
   
-  private Input mandant          = null;
-  private Input kontenrahmen     = null;
-  
-  private I18N i18n;
-
   /**
    * @param view
    */
   public BuchungstemplateControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
 	/**
@@ -78,55 +69,22 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public Buchungstemplate getBuchung() throws RemoteException
 	{
-		if (buchung != null)
-			return buchung;
+		if (this.buchung != null)
+			return this.buchung;
 		
-		buchung = (Buchungstemplate) getCurrentObject();
-		if (buchung != null)
-			return buchung;
+		this.buchung = (Buchungstemplate) getCurrentObject();
+		if (this.buchung != null)
+			return this.buchung;
 		
-		buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
+		this.buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
     
     // Die beiden Parameter geben wir automatisch vor.
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    buchung.setMandant(jahr.getMandant());
-    buchung.setKontenrahmen(jahr.getKontenrahmen());
-		return buchung;
+    this.buchung.setMandant(jahr.getMandant());
+    this.buchung.setKontenrahmen(jahr.getKontenrahmen());
+		return this.buchung;
 		
 	}
-
-  /**
-   * Liefert ein Anzeigefeld fuer den Mandanten.
-   * @return Mandant.
-   * @throws RemoteException
-   */
-  public Input getMandant() throws RemoteException
-  {
-    if (this.mandant != null)
-      return this.mandant;
-    Mandant m = getBuchung().getMandant();
-    if (m == null)
-      m = Settings.getActiveGeschaeftsjahr().getMandant();
-    this.mandant = new LabelInput(m.getFirma());
-    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
-    return this.mandant;
-  }
-
-  /**
-   * Liefert ein Anzeigefeld fuer den Kontenrahmen.
-   * @return Mandant.
-   * @throws RemoteException
-   */
-  public Input getKontenrahmen() throws RemoteException
-  {
-    if (this.kontenrahmen != null)
-      return this.kontenrahmen;
-    Kontenrahmen m = getBuchung().getKontenrahmen();
-    if (m == null)
-      m = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
-    this.kontenrahmen = new LabelInput(m.getName());
-    return this.kontenrahmen;
-  }
 
   /**
 	 * Liefert das Eingabe-Feld zur Auswahl des SollKontos.
@@ -135,13 +93,14 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public KontoInput getSollKontoAuswahl() throws RemoteException
 	{
-		if (sollKontoAuswahl != null)
-			return sollKontoAuswahl;
+		if (this.sollKontoAuswahl != null)
+			return this.sollKontoAuswahl;
 
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
-    sollKontoAuswahl.addListener(new KontoListener());
-    return sollKontoAuswahl;
+    this.sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
+    this.sollKontoAuswahl.addListener(new KontoListener());
+    this.sollKontoAuswahl.setName(i18n.tr("Soll-Konto"));
+    return this.sollKontoAuswahl;
   }
 
 
@@ -152,13 +111,14 @@ public class BuchungstemplateControl extends AbstractControl
 	 */
 	public KontoInput getHabenKontoAuswahl() throws RemoteException
 	{
-    if (habenKontoAuswahl != null)
-      return habenKontoAuswahl;
+    if (this.habenKontoAuswahl != null)
+      return this.habenKontoAuswahl;
 
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
-    habenKontoAuswahl.addListener(new KontoListener());
-    return habenKontoAuswahl;
+    this.habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
+    this.habenKontoAuswahl.addListener(new KontoListener());
+    this.habenKontoAuswahl.setName(i18n.tr("Haben-Konto"));
+    return this.habenKontoAuswahl;
 	}
 
   /**
@@ -168,11 +128,13 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public Input getBezeichnung() throws RemoteException
   {
-    if (bezeichnung != null)
-      return bezeichnung;
+    if (this.bezeichnung != null)
+      return this.bezeichnung;
     
-    bezeichnung = new TextInput(getBuchung().getName());
-    return bezeichnung;
+    this.bezeichnung = new TextInput(getBuchung().getName());
+    this.bezeichnung.setName(i18n.tr("Bezeichnung der Vorlage"));
+    this.bezeichnung.setMandatory(true);
+    return this.bezeichnung;
   }
 
   /**
@@ -182,11 +144,12 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public Input getText() throws RemoteException
 	{
-		if (text != null)
-			return text;
+		if (this.text != null)
+			return this.text;
 		
-		text = new TextInput(getBuchung().getText());
-		return text;
+		this.text = new TextInput(getBuchung().getText());
+		this.text.setName(i18n.tr("Text"));
+		return this.text;
 	}
 
 	/**
@@ -196,13 +159,14 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public Input getBetrag() throws RemoteException
 	{
-		if (betrag != null)
-			return betrag;
+		if (this.betrag != null)
+			return this.betrag;
 		
-		betrag = new DecimalInput(getBuchung().getBetrag(), Settings.DECIMALFORMAT);
-		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
-    betrag.addListener(new SteuerListener());
-		return betrag;
+		this.betrag = new DecimalInput(getBuchung().getBetrag(), Settings.DECIMALFORMAT);
+		this.betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+    this.betrag.addListener(new SteuerListener());
+    this.betrag.setName(i18n.tr("Brutto-Betrag"));
+		return this.betrag;
 	}
 
 	/**
@@ -212,13 +176,14 @@ public class BuchungstemplateControl extends AbstractControl
    */
   public DecimalInput getSteuer() throws RemoteException
 	{
-		if (steuer != null)
-			return steuer;
+		if (this.steuer != null)
+			return this.steuer;
 
-		steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
-		steuer.setComment("%");
+		this.steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
+		this.steuer.setComment("%");
+		this.steuer.setName(i18n.tr("Steuersatz"));
     SteuerListener sl = new SteuerListener();
-    steuer.addListener(sl);
+    this.steuer.addListener(sl);
     sl.handleEvent(null);
 		return steuer;
 	}
@@ -251,16 +216,13 @@ public class BuchungstemplateControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getBuchung().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Buchungsvorlage gespeichert"));
+			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchungsvorlage gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }
-    catch (ApplicationException e1)
+    catch (Exception e)
     {
-      GUI.getView().setErrorText(e1.getLocalizedMessage());
-    }
-    catch (Throwable t)
-    {
-			Logger.error("unable to store buchungstemplate",t);
-      GUI.getView().setErrorText("Fehler beim Speichern der Buchungsvorlage.");
+      if (!(e instanceof ApplicationException))
+			  Logger.error("unable to store buchungstemplate",e);
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Buchungsvorlage."),StatusBarMessage.TYPE_ERROR));
     }
     
   }
@@ -393,6 +355,10 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
+ * Revision 1.6  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.5  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Einstellungen.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/02 00:02:59 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,8 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -43,13 +44,16 @@ public class Einstellungen extends AbstractView
 
     final EinstellungenControl control = new EinstellungenControl(this);
 
-    LabelGroup group = new LabelGroup(getParent(),i18n.tr("Buchungsrelevante Einstellungen"));
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Buchungsrelevante Einstellungen"));
     group.addInput(control.getAbschreibungsKonto());
     group.addInput(control.getAbschreibungsKontoGWG());
     group.addInput(control.getGwgWert());
+    
+    group.addHeadline(i18n.tr("System-Einstellungen"));
     group.addInput(control.getSystemDataWritable());
 
-    ButtonArea buttonArea = group.createButtonArea(2);
+    ButtonArea buttonArea = new ButtonArea(getParent(),2);
     buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
@@ -65,6 +69,10 @@ public class Einstellungen extends AbstractView
 
 /*********************************************************************
  * $Log: Einstellungen.java,v $
+ * Revision 1.8  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.7  2010/06/02 00:02:59  willuhn
  * @N Mehr Icons
  *

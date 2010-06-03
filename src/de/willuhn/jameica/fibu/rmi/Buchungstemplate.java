@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchungstemplate.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,11 +63,29 @@ public interface Buchungstemplate extends Transfer
    */
   public void setKontenrahmen(Kontenrahmen kr) throws RemoteException;
   
+  /**
+   * Liefert die optionale ID der zugeordneten Umsatzkategorie aus Hibiscus.
+   * @return ID der zugeordneten Umsatzkategorie aus Hibiscus.
+   * @throws RemoteException
+   */
+  public String getHibiscusUmsatzTypID() throws RemoteException;
+  
+  /**
+   * Speichert die optionale ID der zugeordneten Umsatzkategorie aus Hibiscus.
+   * @param id die ID der zugeordneten Umsatzkategorie aus Hibiscus.
+   * @throws RemoteException
+   */
+  public void setHibiscusUmsatzTypID(String id) throws RemoteException;
+  
 }
 
 
 /*********************************************************************
  * $Log: Buchungstemplate.java,v $
+ * Revision 1.5  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

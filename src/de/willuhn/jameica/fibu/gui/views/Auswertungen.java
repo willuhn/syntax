@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,7 +22,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -48,9 +48,10 @@ public class Auswertungen extends AbstractView
       GUI.getView().setErrorText(i18n.tr("Das aktuelle Geschäftsjahr ist noch nicht abgeschlossen. Abschreibungen wurden noch nicht gebucht."));
 
     
-    Container group = new LabelGroup(getParent(),i18n.tr("Auswertungen"));
+    Container group = new SimpleContainer(getParent());
+
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Art der Auswertung"), control.getAuswertungen());
-    
     group.addHeadline(i18n.tr("Zeitraum"));
     group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getJahr());
     group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
@@ -63,7 +64,7 @@ public class Auswertungen extends AbstractView
     group.addSeparator();
     group.addCheckbox(control.getOpenAfterCreation(),i18n.tr("Auswertung nach der Erstellung öffnen"));
     
-    ButtonArea buttonArea = group.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
     buttonArea.addButton(control.getStartButton());
   }
@@ -72,6 +73,10 @@ public class Auswertungen extends AbstractView
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.8  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.7  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

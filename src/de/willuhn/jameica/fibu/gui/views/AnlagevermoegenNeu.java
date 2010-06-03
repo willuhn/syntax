@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/06/02 00:02:59 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -51,8 +51,8 @@ public class AnlagevermoegenNeu extends AbstractView
 
     final AnlagevermoegenControl control = new AnlagevermoegenControl(this);
     
-    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Mandant"),                      control.getMandant());
     group.addLabelPair(i18n.tr("Bezeichnung"),                  control.getName());
     group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
@@ -63,7 +63,8 @@ public class AnlagevermoegenNeu extends AbstractView
     if (buchung != null)
       group.addLabelPair(i18n.tr("Zugehörige Buchung"), control.getBuchungLink());
 
-    Container afa = new LabelGroup(getParent(),i18n.tr("Abschreibung"));
+    Container afa = new SimpleContainer(getParent());
+    afa.addHeadline(i18n.tr("Abschreibung"));
     afa.addLabelPair(i18n.tr("Abschreibungskonto"),           control.getAbschreibungsKonto());
     afa.addLabelPair(i18n.tr("Nutzungsdauer in Jahren"),      control.getLaufzeit());
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
@@ -101,6 +102,10 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.14  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.13  2010/06/02 00:02:59  willuhn
  * @N Mehr Icons
  *

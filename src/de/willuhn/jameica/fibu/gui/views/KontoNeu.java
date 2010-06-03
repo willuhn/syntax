@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.22 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -64,8 +64,8 @@ public class KontoNeu extends AbstractView
     if (!control.getKonto().canChange())
       GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
 
-    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften des Kontos"));
-
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Name")            , control.getName());
     group.addLabelPair(i18n.tr("Kontonummer")     , control.getKontonummer());
     group.addLabelPair(i18n.tr("Kontoart")        , control.getKontoart());
@@ -74,7 +74,7 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Kontenrahmen")    , control.getKontenrahmen());
     group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
-    ButtonArea buttons = group.createButtonArea(3);
+    ButtonArea buttons = new ButtonArea(getParent(),3);
     buttons.addButton(new Back());
     Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(control.getKonto().canChange());
@@ -98,6 +98,10 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.22  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.21  2010/06/02 00:02:58  willuhn
  * @N Mehr Icons
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -47,8 +47,8 @@ public class AnfangsbestandNeu extends AbstractView
 
     final AnfangsbestandControl control = new AnfangsbestandControl(this);
     
-    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getGeschaeftsjahr());
     group.addLabelPair(i18n.tr("Konto"),         control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Anfangsbestand"),control.getBetrag());
@@ -56,7 +56,7 @@ public class AnfangsbestandNeu extends AbstractView
     boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
     if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
-    ButtonArea buttonArea = group.createButtonArea(3);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
 
     Button delete = new Button(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject(),false,"user-trash-full.png");
@@ -78,6 +78,10 @@ public class AnfangsbestandNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.9  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.8  2010/06/02 00:02:58  willuhn
  * @N Mehr Icons
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,7 +26,7 @@ import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -49,8 +49,8 @@ public class GeschaeftsjahrNeu extends AbstractView
 
     final GeschaeftsjahrControl control = new GeschaeftsjahrControl(this);
 
-    Container group = new LabelGroup(getParent(),i18n.tr("Eigenschaften"));
-
+    Container group = new SimpleContainer(getParent());
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Kontenrahmen"), control.getKontenrahmenAuswahl());
     group.addLabelPair(i18n.tr("Beginn des Geschäftsjahres"),control.getBeginn());
     group.addLabelPair(i18n.tr("Ende des Geschäftsjahres"),control.getEnde());
@@ -84,6 +84,10 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.11  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.10  2010/06/02 00:02:58  willuhn
  * @N Mehr Icons
  *

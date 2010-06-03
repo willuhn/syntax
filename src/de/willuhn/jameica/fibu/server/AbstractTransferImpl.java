@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,8 +149,12 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
-    // Fuer's Logging:
-    Logger.info(getSollKonto().getKontonummer() + " an " + getHabenKonto().getKontonummer() + ": " + Settings.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
+    
+    // Die NULL-Checks sind primaer nur fuer Buchungsvorlagen - dort duerfen sie NULL sein.
+    Konto soll = getSollKonto();
+    Konto haben = getHabenKonto();
+    if (soll != null && haben != null)
+      Logger.info(soll.getKontonummer() + " an " + haben.getKontonummer() + ": " + Settings.DECIMALFORMAT.format(getBetrag()) + " (" + getText() + ")");
   }
 
   /**
@@ -175,6 +179,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.7  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

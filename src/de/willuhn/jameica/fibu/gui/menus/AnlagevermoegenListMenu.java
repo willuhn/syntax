@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnlagevermoegenListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/03 14:26:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,7 +33,7 @@ public class AnlagevermoegenListMenu extends ContextMenu
   public AnlagevermoegenListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new GJContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new AnlagevermoegenDelete()));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GJContextMenuItem(i18n.tr("Anlagevermögen hinzufügen"), new ANeu()));
@@ -58,6 +58,10 @@ public class AnlagevermoegenListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnlagevermoegenListMenu.java,v $
+ * Revision 1.3  2010/06/03 14:26:16  willuhn
+ * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
+ * @C Code-Cleanup
+ *
  * Revision 1.2  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *
