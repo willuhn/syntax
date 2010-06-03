@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBPropertyImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/02 15:52:34 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/03 10:25:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.jameica.hbci.rmi.DBProperty;
+import de.willuhn.jameica.fibu.rmi.DBProperty;
 
 /**
  * Speichert ein einzelnes Property in der Datenbank.
@@ -86,6 +86,9 @@ public class DBPropertyImpl extends AbstractDBObject implements DBProperty
 
 /*********************************************************************
  * $Log: DBPropertyImpl.java,v $
+ * Revision 1.2  2010/06/03 10:25:09  willuhn
+ * @B wrong import
+ *
  * Revision 1.1  2010/06/02 15:52:34  willuhn
  * @N DBProperties jetzt auch in SynTAX
  *
