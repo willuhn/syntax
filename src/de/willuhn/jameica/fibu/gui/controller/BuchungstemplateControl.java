@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/03 17:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,6 +218,10 @@ public class BuchungstemplateControl extends AbstractControl
 			getBuchung().store();
 			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchungsvorlage gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }
+    catch (ApplicationException ae)
+    {
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
+    }
     catch (Exception e)
     {
       if (!(e instanceof ApplicationException))
@@ -355,6 +359,9 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
+ * Revision 1.7  2010/06/03 17:07:14  willuhn
+ * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
+ *
  * Revision 1.6  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

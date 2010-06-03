@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungstemplateImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/03 17:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -68,6 +69,23 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
     {
       if (getName() == null || getName().length() == 0)
         throw new ApplicationException(i18n.tr("Bitten geben Sie eine Bezeichnung an."));
+      
+      // Falls eine Umsatz-Kategorie zugeordnet ist, checken wir, ob
+      // nicht schon eine andere Vorlage dieser zugeordnet ist. Andernfalls
+      // koennten wir spaeter bei der Uebernahme von Buchungen nicht mehr
+      // eindeutig anhand der Kategorie erkennen, welche Vorlage zu verwenden ist.
+      if (this.getHibiscusUmsatzTypID() != null)
+      {
+        DBIterator list = this.getService().createList(Buchungstemplate.class);
+        list.addFilter("hb_umsatztyp_id = ?",new Object[]{this.getHibiscusUmsatzTypID()});
+        if (!this.isNewObject())
+          list.addFilter("id != " + this.getID()); // Natuerlich duerfen wir uns selbst nicht finden ;)
+        if (list.hasNext())
+        {
+          Buchungstemplate t = (Buchungstemplate) list.next();
+          throw new ApplicationException(i18n.tr("Der Umsatz-Kategorie ist bereits die Vorlage \"{0}\" zugeordnet",t.getName()));
+        }
+      }
     }
     catch (RemoteException e)
     {
@@ -159,6 +177,9 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
 
 /*********************************************************************
  * $Log: BuchungstemplateImpl.java,v $
+ * Revision 1.6  2010/06/03 17:07:14  willuhn
+ * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
+ *
  * Revision 1.5  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

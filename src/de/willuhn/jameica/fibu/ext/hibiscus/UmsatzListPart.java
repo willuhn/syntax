@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/01 11:58:04 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/03 17:07:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,8 @@
 package de.willuhn.jameica.fibu.ext.hibiscus;
 
 import java.rmi.RemoteException;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
@@ -35,16 +36,9 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzListPart implements Extension
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private Map<String,Buchung> cache = null;
   
-  /**
-   * ct.
-   */
-  public UmsatzListPart()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
   /**
    * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
    */
@@ -55,41 +49,17 @@ public class UmsatzListPart implements Extension
       Logger.warn("invalid extendable (" + extendable.getClass().getName() + ", skipping extension");
       return;
     }
-    TablePart table = (TablePart) extendable;
-
-    final Hashtable matches = new Hashtable();
-
-    try
-    {
-      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-      if (jahr == null)
-      {
-        // noch kein Mandant/Geschaeftsjahr eingerichtet
-        return;
-      }
-      DBIterator list = jahr.getHauptBuchungen();
-      list.addFilter("hb_umsatz_id is not null");
-      while (list.hasNext())
-      {
-        Buchung b = (Buchung) list.next();
-        if (b.getHibiscusUmsatzID() == null)
-          continue;
-        matches.put(b.getHibiscusUmsatzID(),b);
-      }
-    }
-    catch (Exception e)
-    {
-      Logger.error("unable to load assignments",e);
-    }
     
-
-    table.addColumn(i18n.tr("SynTAX-Belegnummer"),"id-int", new Formatter() {
+    this.cache = null; // Cache loeschen, damit die Daten neu gelesen werden
+    
+    TablePart table = (TablePart) extendable;
+    table.addColumn(i18n.tr("SynTAX-Beleg"),"id-int", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof Integer))
           return null;
 
-        Buchung b = (Buchung) matches.get(o.toString());
+        Buchung b = (Buchung) getCache().get(o.toString());
         if (b == null)
           return null;
         try
@@ -104,14 +74,64 @@ public class UmsatzListPart implements Extension
       }
     
     });
+  }
+  
+  /**
+   * Liefert den Cache zum Lookup von Hibiscus Umsatz-ID zu Buchung.
+   * @return der Cache.
+   */
+  private Map<String,Buchung> getCache()
+  {
+    if (this.cache != null)
+      return this.cache;
     
+    this.cache = new HashMap<String,Buchung>();
+    try
+    {
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      if (jahr != null)
+      {
+        DBIterator list = jahr.getHauptBuchungen();
+        list.addFilter("hb_umsatz_id is not null");
+        while (list.hasNext())
+        {
+          Buchung b = (Buchung) list.next();
+          if (b.getHibiscusUmsatzID() == null)
+            continue;
+          cache.put(b.getHibiscusUmsatzID(),b);
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to fill lookup cache",e);
+    }
+    return this.cache;
   }
 
+  /**
+   * Fuegt eine Buchung manuell zum Cache hinzu.
+   * @param b die neue Buchung.
+   * @throws RemoteException
+   */
+  void add(Buchung b) throws RemoteException
+  {
+    if (b == null)
+      return;
+    
+    String umsatzId = b.getHibiscusUmsatzID();
+    if (umsatzId == null || umsatzId.length() == 0)
+      return; // Buchung ist gar nicht zugeordnet
+    getCache().put(umsatzId,b);
+  }
 }
 
 
 /*********************************************************************
  * $Log: UmsatzListPart.java,v $
+ * Revision 1.5  2010/06/03 17:07:14  willuhn
+ * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
+ *
  * Revision 1.4  2010/06/01 11:58:04  willuhn
  * @R removed debug output
  *
