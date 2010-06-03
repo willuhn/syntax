@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/03 17:07:14 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/03 17:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -87,10 +87,10 @@ public class UmsatzListMenu implements Extension
         if (umsaetze == null || umsaetze.length == 0)
           return;
 
-        // Wenn wir mehr als 20 Buchungen haben, fuehren wir das
+        // Wenn wir mehr als 1 Buchung haben, fuehren wir das
         // im Hintergrund aus. 
         Worker worker = new Worker(umsaetze);
-        if (umsaetze.length > 20)
+        if (umsaetze.length > 1)
           Application.getController().start(worker);
         else
           worker.run(null);
@@ -366,6 +366,9 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
+ * Revision 1.6  2010/06/03 17:18:14  willuhn
+ * @N Bei mehr als einer Buchung im Hintergrund ausfuehren. Wenn man das erst ab 20 macht, hat man anschliessend keinen schoenen Ueberblick, bei welchen es geklemmt hat
+ *
  * Revision 1.5  2010/06/03 17:07:14  willuhn
  * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
  *
