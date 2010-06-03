@@ -10,7 +10,9 @@
   <homepage>http://www.willuhn.de/products/syntax</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
-  <requires jameica="1.9+"/>
+  <requires jameica="1.9+">
+    <import plugin="hibiscus" version="1.11+" required="false" />
+  </requires>
 
   <classfinder>
     <include>syntax\.jar</include>
@@ -45,8 +47,9 @@
   
   <extensions>
     <!-- Hibiscus-Extensions -->
-    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart" extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList"/>
-    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu" extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList"/>
+    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart"   extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList"/>
+    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu"   extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList"/>
+    <extension class="de.willuhn.jameica.fibu.ext.hibiscus.Buchungstemplate" extends="de.willuhn.jameica.fibu.gui.views.BuchungstemplateNeu"/>
   </extensions>
 
 </plugin>
