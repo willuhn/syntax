@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS steuer (
   name varchar(255) NOT NULL,
   satz double NOT NULL,
   steuerkonto_id int(10) NOT NULL,
+  ust_kennzeichen varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
 ) TYPE = INNODB;

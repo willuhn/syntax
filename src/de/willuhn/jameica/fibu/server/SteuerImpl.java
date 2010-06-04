@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.18 $
+ * $Date: 2010/06/04 13:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
  */
 public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * Erzeugt einen neuen Steuersatz.
@@ -38,7 +38,6 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   public SteuerImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -163,10 +162,31 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   {
     setAttribute("steuerkonto_id",k);
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getUstKennzeichen()
+   */
+  public String getUstKennzeichen() throws RemoteException
+  {
+    return (String) getAttribute("ust_kennzeichen");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setUstKennzeichen(java.lang.String)
+   */
+  public void setUstKennzeichen(String s) throws RemoteException
+  {
+    setAttribute("ust_kennzeichen",2);
+  }
+  
+  
 }
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.18  2010/06/04 13:34:45  willuhn
+ * @B Da fehlten ein paar Commits
+ *
  * Revision 1.17  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons

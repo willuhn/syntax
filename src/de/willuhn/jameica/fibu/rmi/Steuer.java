@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.11 $
+ * $Date: 2010/06/04 13:34:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,10 +69,27 @@ public interface Steuer extends UserObject
    * @throws RemoteException
    */
   public void setSteuerKonto(Konto k) throws RemoteException;
+  
+  /**
+   * Liefert das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * @return das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * @throws RemoteException
+   */
+  public String getUstKennzeichen() throws RemoteException;
+  
+  /**
+   * Speichert das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * @param s das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * @throws RemoteException
+   */
+  public void setUstKennzeichen(String s) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.11  2010/06/04 13:34:45  willuhn
+ * @B Da fehlten ein paar Commits
+ *
  * Revision 1.10  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
