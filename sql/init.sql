@@ -272,4 +272,4 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1209, 1, '4695', 'Umsatzsteuervergütungen', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1210, 1, '7100', 'Zinserträge', 2, 1007);
 
-INSERT INTO version (name,version) values ('db',3);
+INSERT INTO version (name,version) values ('db',4);
