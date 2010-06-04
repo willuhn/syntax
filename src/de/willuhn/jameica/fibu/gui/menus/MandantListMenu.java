@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/MandantListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,10 +39,9 @@ public class MandantListMenu extends ContextMenu
   public MandantListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new MandantNeu()));
-    this.addItem(new NotActiveItem(i18n.tr("Löschen"), new MandantDelete()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neuer Mandant"), new MNeu()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new MandantNeu(),"document-open.png"));
+    this.addItem(new ContextMenuItem(i18n.tr("Neuer Mandant..."), new MNeu(),"list-add.png"));
+    this.addItem(new NotActiveItem(i18n.tr("Löschen..."), new MandantDelete(),"user-trash-full.png"));
   }
   
   /**
@@ -69,10 +68,11 @@ public class MandantListMenu extends ContextMenu
      * ct
      * @param text
      * @param a
+     * @param icon
      */
-    public NotActiveItem(String text, Action a)
+    public NotActiveItem(String text, Action a, String icon)
     {
-      super(text, a);
+      super(text, a,icon);
     }
 
     /**
@@ -108,6 +108,11 @@ public class MandantListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: MandantListMenu.java,v $
+ * Revision 1.5  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

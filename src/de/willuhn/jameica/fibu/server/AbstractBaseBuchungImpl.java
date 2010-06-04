@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.26 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -159,6 +159,10 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
       if (getBetrag() == 0.0d)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ungleich 0 ein."));
 
+      String text = getText();
+      if (text == null || text.length() == 0)
+        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Text ein"));
+
       Konto soll = getSollKonto();
       Konto haben = getHabenKonto();
       
@@ -227,6 +231,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.26  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.25  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

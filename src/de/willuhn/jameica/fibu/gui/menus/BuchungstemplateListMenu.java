@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungstemplateListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/04 16:04:33 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.BuchungstemplateDelete;
 import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
 import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -33,10 +32,9 @@ public class BuchungstemplateListMenu extends ContextMenu
   public BuchungstemplateListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Bearbeiten"), new BuchungstemplateNeu()));
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new BuchungstemplateDelete()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchungsvorlage"), new BNeu()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Öffnen"), new BuchungstemplateNeu(),"document-open.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchungsvorlage..."), new BNeu(),"list-add.png"));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungstemplateDelete(),"user-trash-full.png"));
   }
   
   /**
@@ -57,6 +55,11 @@ public class BuchungstemplateListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungstemplateListMenu.java,v $
+ * Revision 1.3  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.2  2006/01/04 16:04:33  willuhn
  * @B gj/mandant handling (insb. Loeschen)
  *

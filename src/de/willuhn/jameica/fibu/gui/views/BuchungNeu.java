@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.45 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.46 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -97,7 +97,7 @@ public class BuchungNeu extends AbstractView
       {
         control.handleStore(true);
       }
-    },null,true);
+    },null,true,"go-next.png");
     storeNew.setEnabled(!closed);
     buttonArea.addButton(storeNew);
   }
@@ -105,6 +105,11 @@ public class BuchungNeu extends AbstractView
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
+ * Revision 1.46  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.45  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

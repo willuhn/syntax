@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.17 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -137,6 +137,9 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
       
       if (getSatz() < 0)
         throw new ApplicationException(i18n.tr("Steuersatz darf nicht kleiner als 0 sein."));
+      
+      if (getSteuerKonto() == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Steuer-Sammelkonto aus"));
     }
     catch (RemoteException e)
     {
@@ -164,6 +167,11 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.17  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.16  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

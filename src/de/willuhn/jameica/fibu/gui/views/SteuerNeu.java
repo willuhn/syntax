@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.22 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.23 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,6 @@ public class SteuerNeu extends AbstractView
     Container group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Eigenschaften"));
 
-    group.addLabelPair(i18n.tr("Mandant"),            control.getMandant());
     group.addLabelPair(i18n.tr("Name")      , 				control.getName());
     group.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
     group.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
@@ -77,6 +76,11 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.23  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.22  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

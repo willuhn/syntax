@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/KontoListMenu.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/12/27 15:23:33 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -35,10 +34,9 @@ public class KontoListMenu extends ContextMenu
   public KontoListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new SingleItem(i18n.tr("Bearbeiten"), new KontoNeu()));
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new KontoDelete()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJContextMenuItem(i18n.tr("Neues Konto"), new KNeu()));
+    this.addItem(new SingleItem(i18n.tr("Öffnen"), new KontoNeu(),"document-open.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neues Konto..."), new KNeu(),"list-add.png"));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new KontoDelete(),"user-trash-full.png"));
   }
   
   /**
@@ -49,10 +47,11 @@ public class KontoListMenu extends ContextMenu
     /**
      * @param text
      * @param action
+     * @param icon
      */
-    private SingleItem(String text, Action action)
+    private SingleItem(String text, Action action, String icon)
     {
-      super(text,action);
+      super(text,action,icon);
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -84,6 +83,11 @@ public class KontoListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: KontoListMenu.java,v $
+ * Revision 1.5  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.4  2006/12/27 15:23:33  willuhn
  * @C merged update 1.3 and 1.4 to 1.3
  *

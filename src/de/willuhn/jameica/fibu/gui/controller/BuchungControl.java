@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.72 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.73 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -200,6 +200,7 @@ public class BuchungControl extends AbstractControl
     datum = new DateInput(d,Settings.CUSTOM_DATEFORMAT);
     datum.setTitle(i18n.tr("Datum"));
     datum.setText(i18n.tr("Bitte wählen Sie das Datum für diese Buchung"));
+    datum.setMandatory(true);
     datum.setComment("");
 
     
@@ -280,6 +281,7 @@ public class BuchungControl extends AbstractControl
 		text = new TextInput(getBuchung().getText());
     if (getBuchung().getGeschaeftsjahr().isClosed())
       text.disable();
+    text.setMandatory(true);
 		return text;
 	}
 
@@ -427,6 +429,7 @@ public class BuchungControl extends AbstractControl
     sl.handleEvent(null);
     if (getBuchung().getGeschaeftsjahr().isClosed())
       steuer.disable();
+    steuer.setMandatory(true);
 		return steuer;
 	}
 
@@ -495,14 +498,10 @@ public class BuchungControl extends AbstractControl
       getBuchung().setText((String)getText().getValue());
       
       // und jetzt speichern wir.
-//      boolean isNew = getBuchung().isNewObject();
 			getBuchung().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
 
       // BUGZILLA 245
-      // Deaktiviert. Damit koennte das vielleicht zu langsam werden
-//      if (isNew)
-//        getBuchungList().addItem(getBuchung(),0);
       
       //////////////////////////////////////////////////////////////////////////
       // Anlagevermoegen
@@ -682,6 +681,11 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
+ * Revision 1.73  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.72  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

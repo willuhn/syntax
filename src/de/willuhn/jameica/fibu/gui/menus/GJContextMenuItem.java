@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GJContextMenuItem.java,v $
- * $Revision: 1.1 $
- * $Date: 2005/08/30 22:33:45 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,10 +31,11 @@ public class GJContextMenuItem extends ContextMenuItem
   /**
    * @param text
    * @param a
+   * @param icon
    */
-  public GJContextMenuItem(String text, Action a)
+  public GJContextMenuItem(String text, Action a, String icon)
   {
-    super(text, a);
+    super(text, a, icon);
   }
 
   /**
@@ -58,6 +59,11 @@ public class GJContextMenuItem extends ContextMenuItem
 
 /*********************************************************************
  * $Log: GJContextMenuItem.java,v $
+ * Revision 1.2  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.1  2005/08/30 22:33:45  willuhn
  * @B bugfixing
  *

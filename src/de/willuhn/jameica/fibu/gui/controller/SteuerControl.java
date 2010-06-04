@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.27 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.28 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,14 +21,12 @@ import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -45,7 +43,6 @@ public class SteuerControl extends AbstractControl
 	private Steuer steuer = null;
 
 	// Eingabe-Felder
-  private Input mandant       = null;
 	private Input name					= null;
 	private Input satz    			= null;
 
@@ -60,23 +57,6 @@ public class SteuerControl extends AbstractControl
   {
     super(view);
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
-  /**
-   * Liefert ein Anzeigefeld fuer den Mandanten.
-   * @return Mandant.
-   * @throws RemoteException
-   */
-  public Input getMandant() throws RemoteException
-  {
-    if (this.mandant != null)
-      return this.mandant;
-    Mandant m = getSteuer().getMandant();
-    if (m == null)
-      m = Settings.getActiveGeschaeftsjahr().getMandant();
-    this.mandant = new LabelInput(m.getFirma());
-    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
-    return this.mandant;
   }
 
 	/**
@@ -96,7 +76,6 @@ public class SteuerControl extends AbstractControl
 		steuer = (Steuer) Settings.getDBService().createObject(Steuer.class,null);
     steuer.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
 		return steuer;
-
 	}
 
 	/**
@@ -185,6 +164,11 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.28  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.27  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

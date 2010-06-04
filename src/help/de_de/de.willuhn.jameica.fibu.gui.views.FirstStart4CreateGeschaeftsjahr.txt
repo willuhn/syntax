@@ -11,7 +11,7 @@
     Sollte bereits ein Geschäftsjahr in der Datenbank existieren, dann wählen Sie
     bitte das zu aktivierende aus. Sie können später weitere Mandanten und
     Geschäftsjahre im Menü über <b>Plugins-&gt;SynTAX-&gt;Mandanten</b> anlegen
-    oder das aktive Geschäftsjahr abschliessen.
+    oder das aktive Geschäftsjahr abschließen.
   </p>
 
 </form>

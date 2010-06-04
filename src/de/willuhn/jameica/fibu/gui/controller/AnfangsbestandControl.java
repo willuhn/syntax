@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnfangsbestandControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.12 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,6 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
-import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -39,6 +38,7 @@ import de.willuhn.util.I18N;
  */
 public class AnfangsbestandControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
 	// Fach-Objekte
 	private Anfangsbestand ab = null;
@@ -46,17 +46,13 @@ public class AnfangsbestandControl extends AbstractControl
 	// Eingabe-Felder
 	private KontoInput konto	    = null;
   private Input betrag          = null;
-  private Input geschaeftsjahr  = null;
 
-  private I18N i18n;
-  
   /**
    * @param view
    */
   public AnfangsbestandControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -94,6 +90,7 @@ public class AnfangsbestandControl extends AbstractControl
                      " kontoart_id = " + Kontoart.KONTOART_GELD + ")");
     
     konto = new KontoInput(konten,getAnfangsbestand().getKonto());
+    konto.setMandatory(true);
     return konto;
   }
 
@@ -116,25 +113,8 @@ public class AnfangsbestandControl extends AbstractControl
     if (m == null)
       m = Settings.getActiveGeschaeftsjahr().getMandant();
     betrag.setComment(m.getWaehrung());
+    betrag.setMandatory(true);
     return betrag;
-  }
-  
-  /**
-   * Liefert ein Auswahl-Feld fuer das Geschaeftsjahr.
-   * @return Auswahl-Feld.
-   * @throws RemoteException
-   */
-  public Input getGeschaeftsjahr() throws RemoteException
-  {
-    if (geschaeftsjahr != null)
-      return geschaeftsjahr;
-    
-    Geschaeftsjahr jahr = getAnfangsbestand().getGeschaeftsjahr();
-    if (jahr == null)
-      jahr = Settings.getActiveGeschaeftsjahr();
-    Mandant m = jahr.getMandant();
-    geschaeftsjahr = new LabelInput(m.getFirma() + " [" + jahr.getAttribute("name") + "]");
-    return geschaeftsjahr;
   }
   
   /**
@@ -175,6 +155,11 @@ public class AnfangsbestandControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnfangsbestandControl.java,v $
+ * Revision 1.12  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.11  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

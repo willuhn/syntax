@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/GeschaeftsjahrListMenu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/02/08 15:39:48 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,10 +45,10 @@ public class GeschaeftsjahrListMenu extends ContextMenu
   {
     this.mandant = m;
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new GeschaeftsjahrNeu()));
-    this.addItem(new NotActiveItem(i18n.tr("Löschen"), new GeschaeftsjahrDelete()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new GeschaeftsjahrNeu(),"document-open.png"));
+    this.addItem(new HaveMandantItem(i18n.tr("Neues Geschäftsjahr..."), new GNeu(),"list-add.png"));
+    this.addItem(new NotActiveItem(i18n.tr("Löschen..."), new GeschaeftsjahrDelete(),"user-trash-full.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neues Geschäftsjahr..."), new GNeu()));
     this.addItem(new CheckedContextMenuItem(i18n.tr("Als aktives Geschäftsjahr festlegen"), new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -58,11 +58,80 @@ public class GeschaeftsjahrListMenu extends ContextMenu
         // Seite aktualisieren
         GUI.startView(GUI.getCurrentView().getClass(),GUI.getCurrentView().getCurrentObject());
       }
-    }));
+    },"emblem-default.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Geschäftsjahr abschliessen"), new GeschaeftsjahrClose()));
+    this.addItem(new CheckedHaveMandantItem(i18n.tr("Geschäftsjahr abschließen..."), new GeschaeftsjahrClose(),"go-next.png"));
   }
   
+  /**
+   * Wird nur aktiviert, wenn der Mandant bereits gespeichert ist.
+   */
+  private class HaveMandantItem extends ContextMenuItem
+  {
+    /**
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     */
+    public HaveMandantItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      try
+      {
+        return mandant != null && !mandant.isNewObject() && super.isEnabledFor(o);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while checking mandant",e);
+      }
+      return false;
+    }
+  }
+  
+  /**
+   * Wird nur aktiviert, wenn der Mandant bereits gespeichert und ein Geschaeftsjahr ausgewaehlt ist und diese noch nicht geschlossen ist.
+   */
+  private class CheckedHaveMandantItem extends ContextMenuItem
+  {
+    /**
+     * ct.
+     * @param text
+     * @param a
+     * @param icon
+     */
+    public CheckedHaveMandantItem(String text, Action a, String icon)
+    {
+      super(text, a, icon);
+    }
+
+    /**
+     * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
+     */
+    public boolean isEnabledFor(Object o)
+    {
+      if (o == null || !(o instanceof Geschaeftsjahr))
+        return false;
+      try
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) o;
+        return !jahr.isClosed() && mandant != null && !mandant.isNewObject() && super.isEnabledFor(o);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while checking mandant",e);
+      }
+      return false;
+    }
+  }
+
   /**
    * Erzeugt immer ein neues Geschaeftsjahr - unabhaengig vom Kontext.
    */
@@ -80,16 +149,17 @@ public class GeschaeftsjahrListMenu extends ContextMenu
   /**
    * Hilfsklasse, um das Loeschen des aktiven Geschaeftsjahres zu unterbinden.
    */
-  private static class NotActiveItem extends CheckedContextMenuItem
+  private class NotActiveItem extends CheckedContextMenuItem
   {
     /**
      * ct
      * @param text
      * @param a
+     * @param icon
      */
-    public NotActiveItem(String text, Action a)
+    public NotActiveItem(String text, Action a,String icon)
     {
-      super(text, a);
+      super(text, a, icon);
     }
 
     /**
@@ -123,6 +193,11 @@ public class GeschaeftsjahrListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: GeschaeftsjahrListMenu.java,v $
+ * Revision 1.10  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.9  2010/02/08 15:39:48  willuhn
  * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
  * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter

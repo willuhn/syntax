@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,13 +234,13 @@ public class AuswertungControl extends AbstractControl
   {
     if (this.startButton == null)
     {
-      this.startButton = new Button(i18n.tr("Erstellen..."),new Action()
+      this.startButton = new Button(i18n.tr("Auswertung erstellen..."),new Action()
       {
         public void handleAction(Object context) throws ApplicationException
         {
           handleExecute();
         }
-      },null,true);
+      },null,true,"gnome-finance.png");
     }
     return this.startButton;
   }
@@ -388,6 +388,11 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

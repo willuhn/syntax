@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,14 +38,12 @@ public class BuchungListMenu extends ContextMenu
   public BuchungListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new SingleItem(i18n.tr("Bearbeiten"), new BuchungNeu()));
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new BuchungDelete()));
+    this.addItem(new SingleItem(i18n.tr("Öffnen"), new BuchungNeu(),"document-open.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung..."), new BNeu(),"list-add.png"));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungDelete(),"user-trash-full.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung"), new BNeu()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    
-    this.addItem(new GeprueftItem(i18n.tr("als geprüft markieren"), new BuchungGeprueft(),false));
-    this.addItem(new GeprueftItem(i18n.tr("als ungeprüft markieren"), new BuchungUnGeprueft(),true));
+    this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungGeprueft(),false,"emblem-default.png"));
+    this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungUnGeprueft(),true,"edit-undo.png"));
   }
   
   /**
@@ -56,10 +54,11 @@ public class BuchungListMenu extends ContextMenu
     /**
      * @param text
      * @param action
+     * @param icon
      */
-    private SingleItem(String text, Action action)
+    private SingleItem(String text, Action action, String icon)
     {
-      super(text,action);
+      super(text,action, icon);
     }
     /**
      * @see de.willuhn.jameica.gui.parts.ContextMenuItem#isEnabledFor(java.lang.Object)
@@ -83,10 +82,11 @@ public class BuchungListMenu extends ContextMenu
      * @param text
      * @param action
      * @param geprueft
+     * @param icon
      */
-    private GeprueftItem(String text, Action action, boolean geprueft)
+    private GeprueftItem(String text, Action action, boolean geprueft, String icon)
     {
-      super(text,action);
+      super(text,action,icon);
       this.geprueft = geprueft;
     }
 
@@ -130,6 +130,11 @@ public class BuchungListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungListMenu.java,v $
+ * Revision 1.6  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.5  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

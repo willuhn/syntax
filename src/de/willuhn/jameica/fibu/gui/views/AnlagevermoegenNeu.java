@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.15 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -53,7 +53,6 @@ public class AnlagevermoegenNeu extends AbstractView
     
     Container group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("Mandant"),                      control.getMandant());
     group.addLabelPair(i18n.tr("Bezeichnung"),                  control.getName());
     group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
@@ -74,7 +73,7 @@ public class AnlagevermoegenNeu extends AbstractView
     buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject(),false,"user-trash-full.png");
 
-    Button b = new Button(i18n.tr("Ausserplanmäßige Abschreibung..."),new Action() {
+    Button b = new Button(i18n.tr("Außerplanmäßige Abschreibung..."),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         new AnlagevermoegenAbschreiben().handleAction(context);
@@ -82,7 +81,7 @@ public class AnlagevermoegenNeu extends AbstractView
         // Seite neu laden, damit die Abschreibung angezeigt wird
         GUI.startView(GUI.getCurrentView().getClass(),getCurrentObject());
       }
-    }, getCurrentObject());
+    }, getCurrentObject(),false,"list-remove.png");
     b.setEnabled(!control.getAnlagevermoegen().isNewObject() && !Settings.getActiveGeschaeftsjahr().isClosed() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) > 0.0d);
     buttonArea.addButton(b);
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
@@ -102,6 +101,11 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
+ * Revision 1.15  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.14  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

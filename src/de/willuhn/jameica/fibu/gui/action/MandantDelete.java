@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/MandantDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.util.I18N;
  */
 public class MandantDelete implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N(); 
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -37,10 +38,11 @@ public class MandantDelete implements Action
     if (context == null || !(context instanceof Mandant))
       return;
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     try
     {
+      if (((Mandant)context).isNewObject())
+        return;
+
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       d.setTitle(i18n.tr("Mandant wirklich löschen?"));
       d.setText(i18n.tr("Wollen Sie diesen Mandanten wirklich löschen?\n" +
@@ -71,6 +73,11 @@ public class MandantDelete implements Action
 
 /*********************************************************************
  * $Log: MandantDelete.java,v $
+ * Revision 1.5  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.4  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

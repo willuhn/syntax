@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/SteuerListMenu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -38,10 +37,9 @@ public class SteuerListMenu extends ContextMenu
   public SteuerListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new EditItem(i18n.tr("Bearbeiten"), new SteuerNeu(),false));
-    this.addItem(new EditItem(i18n.tr("Löschen"), new SteuerDelete(),true));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Steuersatz"), new SNeu()));
+    this.addItem(new EditItem(i18n.tr("Öffnen"), new SteuerNeu(),false,"document-open.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Steuersatz..."), new SNeu(),"list-add.png"));
+    this.addItem(new EditItem(i18n.tr("Löschen..."), new SteuerDelete(),true,"user-trash-full.png"));
   }
   
   /**
@@ -66,10 +64,11 @@ public class SteuerListMenu extends ContextMenu
      * @param text
      * @param action
      * @param strict
+     * @param icon
      */
-    private EditItem(String text, Action action, boolean strict)
+    private EditItem(String text, Action action, boolean strict, String icon)
     {
-      super(text,action);
+      super(text,action,icon);
       this.strict = strict;
     }
     /**
@@ -94,6 +93,11 @@ public class SteuerListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: SteuerListMenu.java,v $
+ * Revision 1.10  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.9  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

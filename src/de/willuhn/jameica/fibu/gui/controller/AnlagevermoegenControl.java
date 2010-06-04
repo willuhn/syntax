@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.22 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,6 @@ public class AnlagevermoegenControl extends AbstractControl
   
   private I18N i18n = null;
   
-  private Input mandant     = null;
   private Input name        = null;
   private Input kosten      = null;
   private Input laufzeit    = null;
@@ -108,21 +107,6 @@ public class AnlagevermoegenControl extends AbstractControl
   }
 
   /**
-   * Liefert eine Auswahl des Mandanten.
-   * @return Mandant.
-   * @throws RemoteException
-   */
-  public Input getMandant() throws RemoteException
-  {
-    if (this.mandant != null)
-      return this.mandant;
-    Mandant m = getAnlagevermoegen().getMandant();
-    this.mandant = new LabelInput(m.getFirma());
-    this.mandant.setComment(i18n.tr("Steuernummer: {0}",m.getSteuernummer()));
-    return this.mandant;
-  }
-  
-  /**
    * Liefert ein Eingabe-Feld fuer die Bezeichnung.
    * @return Bezeichnung.
    * @throws RemoteException
@@ -134,6 +118,7 @@ public class AnlagevermoegenControl extends AbstractControl
     this.name = new TextInput(getAnlagevermoegen().getName(),255);
     if (!getAnlagevermoegen().canChange())
       this.name.disable();
+    this.name.setMandatory(true);
     return this.name;
   }
   
@@ -151,6 +136,7 @@ public class AnlagevermoegenControl extends AbstractControl
     this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Settings.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
     if (!getAnlagevermoegen().canChange())
       this.kosten.disable();
+    this.kosten.setMandatory(true);
     return this.kosten;
   }
   
@@ -238,6 +224,7 @@ public class AnlagevermoegenControl extends AbstractControl
     this.laufzeit = new IntegerInput(n == 0 ? 1 : n);
     if (!getAnlagevermoegen().canChange())
       this.laufzeit.disable();
+    this.laufzeit.setMandatory(true);
     return this.laufzeit;
   }
   
@@ -270,6 +257,7 @@ public class AnlagevermoegenControl extends AbstractControl
     konto = new KontoInput(list,k);
     if (!getAnlagevermoegen().canChange())
       this.konto.disable();
+    this.konto.setMandatory(true);
     return konto;
   }
 
@@ -297,6 +285,7 @@ public class AnlagevermoegenControl extends AbstractControl
     afaKonto = new KontoInput(list,k);
     if (!getAnlagevermoegen().canChange())
       this.afaKonto.disable();
+    this.afaKonto.setMandatory(true);
     return afaKonto;
   }
 
@@ -521,6 +510,11 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
+ * Revision 1.22  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.21  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

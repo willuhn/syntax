@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/GeschaeftsjahrNeu.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.12 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,8 +65,8 @@ public class GeschaeftsjahrNeu extends AbstractView
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
     
-    Button close = new Button(i18n.tr("Gesch‰ftsjahr abschliessen"), new GeschaeftsjahrClose(), control.getCurrentObject());
-    close.setEnabled(!control.getGeschaeftsjahr().isClosed());
+    Button close = new Button(i18n.tr("Gesch‰ftsjahr abschlieﬂen"), new GeschaeftsjahrClose(), control.getCurrentObject(),false,"go-next.png");
+    close.setEnabled(!control.getGeschaeftsjahr().isNewObject() && !control.getGeschaeftsjahr().isClosed());
     buttonArea.addButton(close);
     
     Button store = new Button(i18n.tr("Speichern"), new Action()
@@ -84,6 +84,11 @@ public class GeschaeftsjahrNeu extends AbstractView
 
 /*********************************************************************
  * $Log: GeschaeftsjahrNeu.java,v $
+ * Revision 1.12  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.11  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

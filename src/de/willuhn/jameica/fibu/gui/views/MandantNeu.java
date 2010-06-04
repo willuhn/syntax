@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.29 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.30 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -86,7 +86,7 @@ public class MandantNeu extends AbstractView
     group2.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),2);
+    ButtonArea buttonArea = new ButtonArea(getParent(),3);
     
     boolean canDelete = true;
     Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
@@ -96,6 +96,7 @@ public class MandantNeu extends AbstractView
       canDelete = !cm.equals(control.getMandant());
     }
     
+    buttonArea.addButton(new Back(!control.storeAllowed()));
     Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
@@ -137,17 +138,6 @@ public class MandantNeu extends AbstractView
 
     if (activeTab != null)
       this.tabs.setSelection(activeTab);
-
-    ButtonArea buttonArea2 = new ButtonArea(getParent(),2);
-    buttonArea2.addButton(new Back(!control.storeAllowed()));
-    Button button2 = new Button(i18n.tr("Geschäftsjahr anlegen"), new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleNewGJ();
-      }
-    });
-    button2.setEnabled(control.storeAllowed());
-    buttonArea2.addButton(button2);
   }
 
   /**
@@ -162,6 +152,11 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
+ * Revision 1.30  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.29  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

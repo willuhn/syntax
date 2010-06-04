@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,6 +103,7 @@ public class GeschaeftsjahrControl extends AbstractControl
     beginn = new DialogInput(Settings.DATEFORMAT.format(start),d);
     beginn.setValue(start);
     beginn.disableClientControl();
+    beginn.setMandatory(true);
     return beginn;
   }
 
@@ -133,6 +134,7 @@ public class GeschaeftsjahrControl extends AbstractControl
     ende = new DialogInput(Settings.DATEFORMAT.format(end),d);
     ende.setValue(end);
     ende.disableClientControl();
+    ende.setMandatory(true);
     return ende;
   }
 
@@ -147,6 +149,7 @@ public class GeschaeftsjahrControl extends AbstractControl
       return kontenrahmenAuswahl;
 
     kontenrahmenAuswahl = new SelectInput(Settings.getDBService().createList(Kontenrahmen.class),getGeschaeftsjahr().getKontenrahmen());
+    kontenrahmenAuswahl.setMandatory(true);
     return kontenrahmenAuswahl;
   }
 
@@ -195,6 +198,11 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
+ * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

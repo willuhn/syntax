@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/AnlagevermoegenListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.4 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,7 +17,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenDelete;
 import de.willuhn.jameica.fibu.gui.action.AnlagevermoegenNeu;
 import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -33,10 +32,9 @@ public class AnlagevermoegenListMenu extends ContextMenu
   public AnlagevermoegenListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Bearbeiten"), new AnlagevermoegenNeu()));
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen"), new AnlagevermoegenDelete()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GJContextMenuItem(i18n.tr("Anlagevermögen hinzufügen"), new ANeu()));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Öffnen"), new AnlagevermoegenNeu(),"document-open.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neues Anlagevermögen..."), new ANeu(),"list-add.png"));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new AnlagevermoegenDelete(),"user-trash-full.png"));
   }
   
   /**
@@ -58,6 +56,11 @@ public class AnlagevermoegenListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: AnlagevermoegenListMenu.java,v $
+ * Revision 1.4  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.3  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

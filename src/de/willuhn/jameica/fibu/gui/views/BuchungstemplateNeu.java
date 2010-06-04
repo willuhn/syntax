@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
 
     ButtonArea buttonArea = new ButtonArea(this.getParent(),3);
     buttonArea.addButton(new Back());
-    buttonArea.addButton(new Button(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject(),false,"user-trash-full.png"));
+    buttonArea.addButton(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject(),false,"user-trash-full.png");
     buttonArea.addButton(new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -109,6 +109,11 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
+ * Revision 1.9  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.8  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

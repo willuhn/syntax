@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,8 @@ import de.willuhn.util.I18N;
  */
 public class GeschaeftsjahrDelete implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -38,10 +40,11 @@ public class GeschaeftsjahrDelete implements Action
     if (context == null || !(context instanceof Geschaeftsjahr))
       return;
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     try
     {
+      if (((Geschaeftsjahr)context).isNewObject())
+        return;
+      
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       d.setTitle(i18n.tr("Geschäftsjahr wirklich löschen?"));
       d.setText(i18n.tr("Wollen Sie dieses Geschäftsjahr wirklich löschen?\n" +
@@ -78,6 +81,11 @@ public class GeschaeftsjahrDelete implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrDelete.java,v $
+ * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.6  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

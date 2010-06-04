@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/AbschreibungDialog.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,7 +67,7 @@ public class AbschreibungDialog extends AbstractDialog
     super(position);
 
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-		this.setTitle(i18n.tr("Ausserplanm‰ﬂige Abschreibung"));
+		this.setTitle(i18n.tr("Auﬂerplanm‰ﬂige Abschreibung"));
     this.av = av;
   }
 
@@ -195,7 +195,7 @@ public class AbschreibungDialog extends AbstractDialog
   {
     if (this.bezeichnung != null)
       return this.bezeichnung;
-    this.bezeichnung = new TextInput(i18n.tr("Ausserplanm‰ﬂige Abschreibung f¸r {0}", av.getName()));
+    this.bezeichnung = new TextInput(i18n.tr("Auﬂerplanm‰ﬂige Abschreibung f¸r {0}", av.getName()));
     return this.bezeichnung;
   }
   
@@ -243,6 +243,11 @@ public class AbschreibungDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: AbschreibungDialog.java,v $
+ * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.6  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

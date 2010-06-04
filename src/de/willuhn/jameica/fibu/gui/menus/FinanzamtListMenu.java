@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/FinanzamtListMenu.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/08/25 21:58:57 $
+ * $Revision: 1.3 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,10 +34,9 @@ public class FinanzamtListMenu extends ContextMenu
   public FinanzamtListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Bearbeiten"), new FinanzamtNeu()));
-    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen"), new FinanzamtDelete()));
-    this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new ContextMenuItem(i18n.tr("Neue Finanzamt anlegen"), new FNeu()));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Öffnen"), new FinanzamtNeu(),"document-open.png"));
+    this.addItem(new ContextMenuItem(i18n.tr("Neues Finanzamt..."), new FNeu(),"list-add.png"));
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Löschen..."), new FinanzamtDelete(),"user-trash-full.png"));
   }
   
   /**
@@ -59,6 +58,11 @@ public class FinanzamtListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: FinanzamtListMenu.java,v $
+ * Revision 1.3  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.2  2005/08/25 21:58:57  willuhn
  * @N SKR04
  *

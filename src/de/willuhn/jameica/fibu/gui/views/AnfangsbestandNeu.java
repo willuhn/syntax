@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.10 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,6 @@ public class AnfangsbestandNeu extends AbstractView
     
     Container group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getGeschaeftsjahr());
     group.addLabelPair(i18n.tr("Konto"),         control.getKontoAuswahl());
     group.addLabelPair(i18n.tr("Anfangsbestand"),control.getBetrag());
 
@@ -78,6 +77,11 @@ public class AnfangsbestandNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
+ * Revision 1.10  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.9  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

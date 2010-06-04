@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FinanzamtControl.java,v $
- * $Revision: 1.17 $
- * $Date: 2006/06/19 22:23:47 $
+ * $Revision: 1.18 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,6 +82,7 @@ public class FinanzamtControl extends AbstractControl
 		if (name != null)
 			return name;
 		name = new TextInput(getFinanzamt().getName());
+		name.setMandatory(true);
 		return name;
 	}
 
@@ -173,6 +174,11 @@ public class FinanzamtControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FinanzamtControl.java,v $
+ * Revision 1.18  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.17  2006/06/19 22:23:47  willuhn
  * @N Wizard
  *

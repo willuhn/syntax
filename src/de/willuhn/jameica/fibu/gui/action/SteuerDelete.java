@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/SteuerDelete.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/02 15:18:29 $
+ * $Revision: 1.7 $
+ * $Date: 2010/06/04 00:33:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,7 @@ import de.willuhn.util.I18N;
  */
 public class SteuerDelete implements Action
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N(); 
 
   /**
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
@@ -37,10 +38,11 @@ public class SteuerDelete implements Action
     if (context == null || !(context instanceof Steuer))
       return;
     
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     try
     {
+      if (((Steuer)context).isNewObject())
+        return;
+
       YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
       d.setTitle(i18n.tr("Steuersatz wirklich löschen?"));
       d.setText(i18n.tr("Wollen Sie den Steuersatz wirklich löschen?"));
@@ -70,6 +72,11 @@ public class SteuerDelete implements Action
 
 /*********************************************************************
  * $Log: SteuerDelete.java,v $
+ * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * @B Debugging
+ * @N Mehr Icons
+ * @C GUI-Cleanup
+ *
  * Revision 1.6  2006/01/02 15:18:29  willuhn
  * @N Buchungs-Vorlagen
  *
