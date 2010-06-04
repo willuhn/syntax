@@ -1,4 +1,8 @@
 1.5.0
 
   * NEW: Systemkontenrahmen nun aenderbar (nach Freischaltung unter Plugins->SynTAX->Einstellungen)
+  * NEW: Neue Icons in Navigation
+  * NEW: Icons auf Buttons und in Contextmenus
+  * NEW: Übernahme von Hibiscus-Umsätzen via Zuordnung Kategorie->Buchungsvorlage
+  * BUG: Bugfixes bei Prüfung von Pflichtfeldern
   
