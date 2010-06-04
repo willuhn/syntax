@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Steuer.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/06/04 13:34:45 $
+ * $Revision: 1.12 $
+ * $Date: 2010/06/04 13:49:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,22 +71,40 @@ public interface Steuer extends UserObject
   public void setSteuerKonto(Konto k) throws RemoteException;
   
   /**
-   * Liefert das Kennzeichen fuer das UST-Voranmelde-Formular.
-   * @return das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * Liefert das Kennzeichen fuer die Steuer im UST-Voranmelde-Formular.
+   * @return das Kennzeichen fuer die Steuer im UST-Voranmelde-Formular.
    * @throws RemoteException
    */
-  public String getUstKennzeichen() throws RemoteException;
+  public String getUstNrSteuer() throws RemoteException;
   
   /**
-   * Speichert das Kennzeichen fuer das UST-Voranmelde-Formular.
-   * @param s das Kennzeichen fuer das UST-Voranmelde-Formular.
+   * Speichert das Kennzeichen fuer die Steuer im UST-Voranmelde-Formular.
+   * @param s das Kennzeichen fuer die Steuer im UST-Voranmelde-Formular.
    * @throws RemoteException
    */
-  public void setUstKennzeichen(String s) throws RemoteException;
+  public void setUstNrSteuer(String s) throws RemoteException;
+  
+  /**
+   * Liefert das Kennzeichen fuer die Bemessungsgrundlage im UST-Voranmelde-Formular.
+   * @return das Kennzeichen fuer die Bemessungsgrundlage im UST-Voranmelde-Formular.
+   * @throws RemoteException
+   */
+  public String getUstNrBemessung() throws RemoteException;
+  
+  /**
+   * Speichert das Kennzeichen fuer die Bemessungsgrundlage im UST-Voranmelde-Formular.
+   * @param s das Kennzeichen fuer die Bemessungsgrundlage im UST-Voranmelde-Formular.
+   * @throws RemoteException
+   */
+  public void setUstNrBemessung(String s) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: Steuer.java,v $
+ * Revision 1.12  2010/06/04 13:49:48  willuhn
+ * @N Kennzeichen fuer Steuer und Bemessungsgrundlage fuer UST-Voranmeldung
+ *
  * Revision 1.11  2010/06/04 13:34:45  willuhn
  * @B Da fehlten ein paar Commits
  *

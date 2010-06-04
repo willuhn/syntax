@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2010/06/04 13:34:45 $
+ * $Revision: 1.19 $
+ * $Date: 2010/06/04 13:49:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -164,19 +164,35 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#getUstKennzeichen()
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getUstNrSteuer()
    */
-  public String getUstKennzeichen() throws RemoteException
+  public String getUstNrSteuer() throws RemoteException
   {
-    return (String) getAttribute("ust_kennzeichen");
+    return (String) getAttribute("ust_nr_steuer");
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Steuer#setUstKennzeichen(java.lang.String)
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setUstNrSteuer(java.lang.String)
    */
-  public void setUstKennzeichen(String s) throws RemoteException
+  public void setUstNrSteuer(String s) throws RemoteException
   {
-    setAttribute("ust_kennzeichen",2);
+    setAttribute("ust_nr_steuer",s);
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#getUstNrBemessung()
+   */
+  public String getUstNrBemessung() throws RemoteException
+  {
+    return (String) getAttribute("ust_nr_bemessung");
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Steuer#setUstNrBemessung(java.lang.String)
+   */
+  public void setUstNrBemessung(String s) throws RemoteException
+  {
+    setAttribute("ust_nr_bemessung",s);
   }
   
   
@@ -184,6 +200,9 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
+ * Revision 1.19  2010/06/04 13:49:48  willuhn
+ * @N Kennzeichen fuer Steuer und Bemessungsgrundlage fuer UST-Voranmeldung
+ *
  * Revision 1.18  2010/06/04 13:34:45  willuhn
  * @B Da fehlten ein paar Commits
  *
