@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/Buchungstemplate.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/07 12:57:33 $
  * $Author: willuhn $
  *
  * Copyright (c) by willuhn - software & services
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.ext.hibiscus;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.gui.controller.BuchungstemplateControl;
 import de.willuhn.jameica.fibu.gui.views.BuchungstemplateNeu;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -55,7 +56,16 @@ public class Buchungstemplate implements Extension
       UmsatzTyp typ = null;
       String id = template.getHibiscusUmsatzTypID();
       if (id != null)
-        typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,id);
+      {
+        try
+        {
+          typ = (UmsatzTyp) Settings.getDBService().createObject(UmsatzTyp.class,id);
+        }
+        catch (ObjectNotFoundException e)
+        {
+          // Die Kategorie wurde in Hibiscus zwischenzeitlich geloescht, ignorieren wir
+        }
+      }
 
       // Auswahlfeld hinzufuegen
       final UmsatzTypInput input = new UmsatzTypInput(typ,UmsatzTyp.TYP_EGAL);
@@ -92,6 +102,9 @@ public class Buchungstemplate implements Extension
 
 /**********************************************************************
  * $Log: Buchungstemplate.java,v $
+ * Revision 1.2  2010/06/07 12:57:33  willuhn
+ * @N Tolerieren, wenn eine Kategorie in Hibiscus geloescht wurde
+ *
  * Revision 1.1  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup
