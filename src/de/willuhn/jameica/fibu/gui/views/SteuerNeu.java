@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/SteuerNeu.java,v $
- * $Revision: 1.23 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.24 $
+ * $Date: 2010/06/07 16:34:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,10 +47,13 @@ public class SteuerNeu extends AbstractView
 
     Container group = new SimpleContainer(getParent());
     group.addHeadline(i18n.tr("Eigenschaften"));
+    group.addInput(control.getName());
+    group.addInput(control.getSatz());
+    group.addInput(control.getKontoAuswahl());
 
-    group.addLabelPair(i18n.tr("Name")      , 				control.getName());
-    group.addLabelPair(i18n.tr("Steuersatz"), 				control.getSatz());
-    group.addLabelPair(i18n.tr("Steuer-Sammelkonto"), control.getKontoAuswahl());
+    group.addHeadline(i18n.tr("Formular zur UST-Voranmeldung"));
+    group.addInput(control.getUstBemessung());
+    group.addInput(control.getUstSteuer());
 
     ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
@@ -76,6 +79,9 @@ public class SteuerNeu extends AbstractView
 
 /*********************************************************************
  * $Log: SteuerNeu.java,v $
+ * Revision 1.24  2010/06/07 16:34:22  willuhn
+ * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
+ *
  * Revision 1.23  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons

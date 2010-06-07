@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.29 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.30 $
+ * $Date: 2010/06/07 16:34:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,7 +55,6 @@ public class KontoControl extends AbstractControl
 	private Input steuer			 = null;
 	private Input kontoart		 = null;
   private Input kontotyp     = null;
-	private Input kontenrahmen = null;
   private Input saldo        = null;
   
   private I18N i18n = null;
@@ -230,21 +229,6 @@ public class KontoControl extends AbstractControl
   }
 
   /**
-	 * Liefert das Eingabe-Feld fuer den Kontenrahmen.
-   * @return Eingabe-Feld.
-   * @throws RemoteException
-   */
-  public Input getKontenrahmen() throws RemoteException
-	{
-		if (kontenrahmen != null)
-			return kontenrahmen;
-
-		Kontenrahmen k = getKonto().getKontenrahmen();
-		kontenrahmen = new LabelInput(k.getName());
-		return kontenrahmen;
-	}
-
-  /**
    * Speichert das Konto.
    */
   public void handleStore()
@@ -286,6 +270,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.30  2010/06/07 16:34:22  willuhn
+ * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
+ *
  * Revision 1.29  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

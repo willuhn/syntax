@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.22 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.23 $
+ * $Date: 2010/06/07 16:34:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -71,7 +71,7 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Kontoart")        , control.getKontoart());
     group.addLabelPair(i18n.tr("Steuerkonto-Typ") , control.getKontotyp());
     group.addLabelPair(i18n.tr("Steuersatz")      , control.getSteuer());
-    group.addLabelPair(i18n.tr("Kontenrahmen")    , control.getKontenrahmen());
+    group.addSeparator();
     group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
     ButtonArea buttons = new ButtonArea(getParent(),3);
@@ -98,6 +98,9 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
+ * Revision 1.23  2010/06/07 16:34:22  willuhn
+ * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
+ *
  * Revision 1.22  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

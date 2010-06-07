@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/SteuerControl.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.29 $
+ * $Date: 2010/06/07 16:34:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,10 +43,12 @@ public class SteuerControl extends AbstractControl
 	private Steuer steuer = null;
 
 	// Eingabe-Felder
-	private Input name					= null;
-	private Input satz    			= null;
-
+	private Input name					    = null;
+	private Input satz    			    = null;
   private KontoInput kontoauswahl	= null;
+  private TextInput ustBemessung  = null;
+  private TextInput ustSteuer     = null;
+
   
   private I18N i18n;
   
@@ -90,6 +92,7 @@ public class SteuerControl extends AbstractControl
 
     name = new TextInput(getSteuer().getName());
     name.setEnabled(getSteuer().canChange());
+    name.setName(i18n.tr("Name"));
 		return name;
 	}
 
@@ -104,6 +107,7 @@ public class SteuerControl extends AbstractControl
 			return satz;
 
     satz = new DecimalInput(getSteuer().getSatz(), Settings.DECIMALFORMAT);
+    satz.setName(i18n.tr("Steuersatz"));
 		satz.setComment(i18n.tr("Angabe in \"%\""));
 		satz.setEnabled(getSteuer().canChange());
 		return satz;
@@ -123,9 +127,45 @@ public class SteuerControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.addFilter("kontoart_id = " + Kontoart.KONTOART_STEUER);
     kontoauswahl = new KontoInput(list,getSteuer().getSteuerKonto());
+    kontoauswahl.setName(i18n.tr("Steuer-Sammelkonto"));
     kontoauswahl.setEnabled(getSteuer().canChange());
     return kontoauswahl;
 	}
+	
+	/**
+	 * Liefert ein Eingabefeld fuer das Kennzeichen der Bemessungsgrundlage in der UST-Voranmeldung.
+	 * @return Eingabefeld.
+	 * @throws RemoteException
+	 */
+	public TextInput getUstBemessung() throws RemoteException
+	{
+	  if (this.ustBemessung != null)
+	    return this.ustBemessung;
+	  this.ustBemessung = new TextInput(this.getSteuer().getUstNrBemessung());
+	  this.ustBemessung.setName(i18n.tr("Kennzeichen für Bemessungsgrundlage"));
+	  this.ustBemessung.setValidChars("0123456789");
+    this.ustBemessung.setEnabled(getSteuer().canChange());
+	  this.ustBemessung.setMaxLength(3);
+	  return this.ustBemessung;
+	}
+	
+	 /**
+   * Liefert ein Eingabefeld fuer das Kennzeichen der Steuer in der UST-Voranmeldung.
+   * @return Eingabefeld.
+   * @throws RemoteException
+   */
+  public TextInput getUstSteuer() throws RemoteException
+  {
+    if (this.ustSteuer != null)
+      return this.ustSteuer;
+    this.ustSteuer = new TextInput(this.getSteuer().getUstNrSteuer());
+    this.ustSteuer.setName(i18n.tr("Kennzeichen für Steuerbetrag"));
+    this.ustSteuer.setValidChars("0123456789");
+    this.ustSteuer.setEnabled(getSteuer().canChange());
+    this.ustSteuer.setMaxLength(3);
+    return this.ustSteuer;
+  }
+
 
 
   /**
@@ -144,6 +184,8 @@ public class SteuerControl extends AbstractControl
       getSteuer().setName((String)  getName().getValue());
       getSteuer().setSatz(((Double) getSatz().getValue()).doubleValue());
       getSteuer().setSteuerKonto((Konto)getKontoAuswahl().getValue());
+      getSteuer().setUstNrBemessung((String)getUstBemessung().getValue());
+      getSteuer().setUstNrSteuer((String)getUstSteuer().getValue());
 
       // und jetzt speichern wir.
       getSteuer().store();
@@ -164,6 +206,9 @@ public class SteuerControl extends AbstractControl
 
 /*********************************************************************
  * $Log: SteuerControl.java,v $
+ * Revision 1.29  2010/06/07 16:34:22  willuhn
+ * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
+ *
  * Revision 1.28  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
