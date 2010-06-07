@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/02 15:47:42 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/07 15:45:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
   final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   private String username = Settings.SETTINGS.getString("database.support.username","syntax");
-  private String password = Settings.SETTINGS.getString("database.support.password","syntax");
+  private String password = Settings.SETTINGS.getString("database.support.password",null);
   private String hostname = Settings.SETTINGS.getString("database.support.hostname","127.0.0.1");
   private String dbName   = Settings.SETTINGS.getString("database.support.dbname","syntax");
   private int tcpPort     = Settings.SETTINGS.getInt("database.support.tcpport",3306);
@@ -233,6 +233,9 @@ public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
+ * Revision 1.8  2010/06/07 15:45:15  willuhn
+ * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
+ *
  * Revision 1.7  2010/06/02 15:47:42  willuhn
  * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
  *

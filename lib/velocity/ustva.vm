@@ -1,8 +1,6 @@
-#set($erloese  = $!{export.getObjects("erloese")})
-#set($vst      = $!{export.getObjects("vst")})
-
-#set($start    = $!{export.getObjects("start")})
-#set($end      = $!{export.getObjects("end")})
+#set($positions  = $!{export.getObjects("positions")})
+#set($start      = $!{export.getObjects("start")})
+#set($end        = $!{export.getObjects("end")})
 
 #if($start)
   #if($end)
@@ -12,6 +10,7 @@
 #end
 
 $math.reset("ust")
+$math.reset("vst")
 
 <table class="data">
 
@@ -27,19 +26,77 @@ $math.reset("ust")
 
 
   <tr>
-    <td colspan="5"><h2>1. Steuerpflichtige Umsätze</h2></td>
+    <td colspan="5"><h2>1. Umsätze</h2></td>
   </tr>
-  #foreach($erloes in $erloese)
-    #set($ust = ${erloes.Steuer})
-    $math.add("ust",$ust)
+  #if(${positions.get("41")})
+    #set($pos = ${positions.get("41")})
     <tr>
-      <td>${erloes.Name}</td>
-      <td style="text-align:center">${erloes.Kennzeichen}</td>
-      <td style="text-align:right">$!{decimalformat.format(${erloes.Bemessungsgrundlage})} ${eur}</td>
+      <td>Steuerfreie Umsätze mit Vorsteuerabzug</td>
+      <td style="text-align:center">41</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
       <td>&nbsp;</td>
-      <td style="text-align:right">$!{decimalformat.format($ust)} ${eur}</td>
+      <td>&nbsp;</td>
     </tr>
   #end
+
+  #if(${positions.get("43")})
+    #set($pos = ${positions.get("43")})
+    <tr>
+      <td>Weitere steuerfreie Umsätze</td>
+      <td style="text-align:center">43</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  #end
+
+  #if(${positions.get("48")})
+    #set($pos = ${positions.get("48")})
+    <tr>
+      <td>Steuerfreie Umsätze ohne Vorsteuerabzug</td>
+      <td style="text-align:center">48</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  #end
+
+  #if(${positions.get("81")})
+    #set($pos = ${positions.get("81")})
+    $math.add("ust",$pos.steuer)
+    <tr>
+      <td>Steuerpflichtige Umsätze zum Steuersatz von 19%</td>
+      <td style="text-align:center">81</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+      <td>&nbsp;</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+    
+  #if(${positions.get("86")})
+    #set($pos = ${positions.get("86")})
+    $math.add("ust",$pos.steuer)
+    <tr>
+      <td>Steuerpflichtige Umsätze zum Steuersatz von 7%</td>
+      <td style="text-align:center">86</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+      <td>&nbsp;</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+
+  #if(${positions.get("35")})
+    #set($pos = ${positions.get("35")})
+    $math.add("ust",$pos.steuer)
+    <tr>
+      <td>Steuerpflichtige Umsätze zu anderen Steuersätzen</td>
+      <td style="text-align:center">35</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+      <td style="text-align:center">36</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+
   <tr>
     <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
     <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
@@ -52,16 +109,61 @@ $math.reset("ust")
   <tr>
     <td colspan="5"><h2>2. Abziehbare Vorsteuer</h2></td>
   </tr>
-  <tr>
-    <td>Vorsteuerbeträge aus Rechnungen von anderen Unternehmen</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td style="text-align:center">66</td>
-    <td style="text-align:right">$!{decimalformat.format($vst)} ${eur}</td>
-  </tr>
+  #if(${positions.get("66")})
+    #set($pos = ${positions.get("66")})
+    $math.substract("ust",$pos.steuer)
+    $math.add("vst",$pos.steuer)
+    <tr>
+      <td>Vorsteuerbeträge aus Rechnungen von anderen Unternehmen</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td style="text-align:center">66</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+
+  #if(${positions.get("61")})
+    #set($pos = ${positions.get("61")})
+    $math.substract("ust",$pos.steuer)
+    $math.add("vst",$pos.steuer)
+    <tr>
+      <td>Vorsteuerbeträge aus dem innergemeinschaftlichen Erwerb von Gegenständen</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td style="text-align:center">61</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+
+  #if(${positions.get("62")})
+    #set($pos = ${positions.get("62")})
+    $math.substract("ust",$pos.steuer)
+    $math.add("vst",$pos.steuer)
+    <tr>
+      <td>Entrichtete Einfuhrumsatzsteuer</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td style="text-align:center">62</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+  
+  #if(${positions.get("67")})
+    #set($pos = ${positions.get("67")})
+    $math.substract("ust",$pos.steuer)
+    $math.add("vst",$pos.steuer)
+    <tr>
+      <td>Vorsteuerbeträge aus Leistungen im Sinne des §13b UStG</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td style="text-align:center">67</td>
+      <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+    </tr>
+  #end
+
   <tr>
     <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
-    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($vst)} ${eur}</td>
+    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("vst"))} ${eur}</td>
   </tr>
 
 
@@ -74,7 +176,6 @@ $math.reset("ust")
   <tr>
     <td colspan="3" style="font-weight:bold;border-bottom:1px solid #000000;">Verbleibender Überschuss</td>
     <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:center">83</td>
-    $math.substract("ust",$vst)
     <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
   </tr>
 </table>

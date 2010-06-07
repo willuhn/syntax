@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/util/CustomDecimalFormat.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/06 15:22:36 $
+ * $Revision: 1.2 $
+ * $Date: 2010/06/07 15:45:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,8 +38,7 @@ public class CustomDecimalFormat extends DecimalFormat
    * @see java.text.DecimalFormat#format(double, java.lang.StringBuffer,
    *      java.text.FieldPosition)
    */
-  public StringBuffer format(double number, StringBuffer result,
-      FieldPosition fieldPosition)
+  public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition)
   {
     StringBuffer sb = super.format(number, result, fieldPosition);
     if (sb == null || sb.length() == 0)
@@ -56,6 +55,9 @@ public class CustomDecimalFormat extends DecimalFormat
 
 /*******************************************************************************
  * $Log: CustomDecimalFormat.java,v $
+ * Revision 1.2  2010/06/07 15:45:15  willuhn
+ * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
+ *
  * Revision 1.1  2007/03/06 15:22:36  willuhn
  * @C Anlagevermoegen in Auswertungen ignorieren, wenn Anfangsbestand bereits 0
  * @B Formatierungsfehler bei Betraegen ("-0,00")

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/01 23:51:56 $
+ * $Revision: 1.5 $
+ * $Date: 2010/06/07 15:45:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,20 +14,15 @@
 package de.willuhn.jameica.fibu.io;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 
 /**
@@ -35,107 +30,52 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
  */
 public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 {
-  private static Map kennzeichen = new HashMap();
-  static
-  {
-    kennzeichen.put(new Double(0d), "48");
-    kennzeichen.put(new Double(19d),"81"); // TODO: Hier sind versteckt die Steuersaetze hart codiert! Das Kennzeichen sollte im Steuerkonto oder in einer Properties-Tabelle gespeichert sein
-    kennzeichen.put(new Double(7d), "86"); // TODO: Hier sind versteckt die Steuersaetze hart codiert!
-    kennzeichen.put(null, "35");
-  }
-
   /**
    * @see de.willuhn.jameica.fibu.io.AbstractVelocityExport#getData(de.willuhn.jameica.fibu.io.ExportData)
    */
   protected VelocityExportData getData(ExportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
-    Date start          = data.getStartDatum();
-    Date end            = data.getEndDatum();
     
-    double vst = 0.0d;
-
-    Hashtable erloese = new Hashtable();
-
+    Map<String,Position> positions = new HashMap<String,Position>();
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     while (konten.hasNext())
     {
       Konto kt = (Konto) konten.next();
-      int type = kt.getKontoArt().getKontoArt();
-      switch (type)
-      {
-        case Kontoart.KONTOART_ERLOES:
-          Steuer st = kt.getSteuer();
-          Double satz = new Double(st != null ? st.getSatz() : 0.0d);
+      
+      Steuer st = kt.getSteuer();
+      if (st == null)
+        continue;
 
-          Erloes e = (Erloes) erloese.get(satz);
-          if (e == null)
-          {
-            e = new Erloes(satz.doubleValue());
-            erloese.put(satz,e);
-          }
-          e.add(getUmsatz(jahr,kt,start,end));
-          break;
-        case Kontoart.KONTOART_STEUER:
-          Kontotyp ktyp = kt.getKontoTyp();
-          if (ktyp != null && ktyp.getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE)
-            vst += getUmsatz(jahr,kt,start,end);
-          break;
+      String[] kz = new String[]{st.getUstNrBemessung(),st.getUstNrSteuer()};
+      for (String s:kz)
+      {
+        if (s == null || s.length() == 0)
+          continue;
+        
+        Position pos = positions.get(s);
+        if (pos == null)
+        {
+          pos = new Position();
+          positions.put(s,pos);
+        }
+        pos.add(data,kt);
       }
     }
     
-    // Wir fischen jetzt noch die UST-Gruppen raus, in denen keine Umsaetze vorliegen
-    ArrayList list = new ArrayList();
-    Iterator i = erloese.values().iterator();
-    while (i.hasNext())
+    // Wir werfen jetzt noch die Zeilen raus, wo keine Betraege vorhanden sind
+    String[] keys = positions.keySet().toArray(new String[positions.size()]);
+    for (String key:keys)
     {
-      Erloes e = (Erloes) i.next();
-      if (e.getBemessungsgrundlage() > 0.0d)
-        list.add(e);
+      Position p = positions.get(key);
+      if (p.getBemessung() == 0.0d && p.getSteuer() == 0.0d)
+        positions.remove(key);
     }
-      
-    Collections.sort(list);
+    
     VelocityExportData export = new VelocityExportData();
-    export.addObject("erloese",list.toArray(new Erloes[list.size()]));
-    export.addObject("vst",new Double(vst));
+    export.addObject("positions",positions);
     export.setTemplate("ustva.vm");
     return export;
-  }
-
-
-  /**
-   * Liefert den Umsatz des Kontos im genannten Zeitraum.
-   * @param jahr Geschaeftsjahr.
-   * @param konto Konto.
-   * @param start Start-Datum.
-   * @param end End-Datum.
-   * @return Umsatz
-   * @throws RemoteException
-   */
-  private double getUmsatz(Geschaeftsjahr jahr, Konto konto, Date start, Date end) throws RemoteException
-  {
-    double sum = 0.0d;
-    DBIterator buchungen = null;
-
-    // Wenn es ein Steuerkonto ist, holen wir uns die Hilfs- und Hauptbuchungen
-    // des Kontos. Andernfalls nur die Hauptbuchungen
-    if (konto.getKontoArt().getKontoArt() == Kontoart.KONTOART_STEUER)
-    {
-      buchungen = konto.getHilfsBuchungen(jahr,start,end);
-      while (buchungen.hasNext())
-      {
-        BaseBuchung b = (BaseBuchung) buchungen.next();
-        sum += Math.abs(b.getBetrag());
-      }
-    }
-    
-    buchungen = konto.getHauptBuchungen(jahr,start,end);
-    while (buchungen.hasNext())
-    {
-      BaseBuchung b = (BaseBuchung) buchungen.next();
-      sum += Math.abs(b.getBetrag());
-    }
-    return sum;
   }
 
   /**
@@ -156,107 +96,68 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
     data.setTarget(i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date())));
     return data;
   }
-
-  /**
-   * Hilfsklasse zum Gruppieren der Erloese nach Steuerklasse.
-   */
-  public class Erloes implements Comparable
+  
+  public class Position
   {
-    private double satz = 0.0d;
-    private double summe = 0.0d;
+    private double bemessung = 0.0d;
+    private double steuer = 0.0d;
     
     /**
-     * ct.
-     * @param satz Steuersatz.
+     * Fuegt die Zahlen eines Kontos hinzu.
+     * @param data die Basis-Daten des Exports. 
+     * @param konto das Konto.
+     * @throws RemoteException
      */
-    private Erloes(double satz)
+    private void add(ExportData data, Konto konto) throws RemoteException
     {
-      this.satz = satz;
+      Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+      Date start          = data.getStartDatum();
+      Date end            = data.getEndDatum();
+
+      DBIterator buchungen = konto.getHauptBuchungen(jahr,start,end);
+      while (buchungen.hasNext())
+      {
+        Buchung b = (Buchung) buchungen.next();
+        this.bemessung += b.getBetrag();
+        
+        DBIterator hilfsbuchungen = b.getHilfsBuchungen();
+        while (hilfsbuchungen.hasNext())
+        {
+          BaseBuchung hb = (BaseBuchung) hilfsbuchungen.next();
+          this.steuer += hb.getBetrag();
+        }
+      }
     }
     
     /**
-     * Fuegt einen weiteren Betrag hinzu.
-     * @param value der Betrag.
+     * Liefert den Bemessungsbetrag.
+     * @return der Bemessungsbetrag.
      */
-    private void add(double value)
+    public double getBemessung()
     {
-      this.summe += value;
+      return Math.abs((int)this.bemessung); // auf ganze Euro
     }
-    
+
     /**
-     * Liefert die Summe der Erloese abgerundet auf volle Euro.
-     * @return Summe.
-     */
-    public double getBemessungsgrundlage()
-    {
-      return Math.floor(this.summe);
-    }
-    
-    /**
-     * Liefert den Steuerbetrag basierend auf Steuersatz und Bemessungsgrundlage.
-     * @return Steuerbetrag.
+     * Liefert den Steuerbetrag.
+     * @return der Steuerbetrag.
      */
     public double getSteuer()
     {
-      return this.getBemessungsgrundlage() / 100d * this.satz;
-    }
-    
-    /**
-     * Liefert das Kennzeichen der Steuerklasse.
-     * @return Kennzeichen.
-     */
-    public String getKennzeichen()
-    {
-      String kz = (String) kennzeichen.get(new Double(this.satz));
-      return kz != null ? kz : (String) kennzeichen.get(null);
-    }
-    
-    /**
-     * Liefert die Bezeichnung der Erloes-Kategorie.
-     * @return Bezeichnung der Erloes-Kategorie.
-     */
-    public String getName()
-    {
-      return i18n.tr("zum Steuersatz von {0}%",Integer.toString((int)satz));
-    }
-    
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object other)
-    {
-      if (this == other)
-        return true;
-      
-      if (other == null || !(other instanceof Erloes))
-        return false;
-      
-      return this.satz == ((Erloes)other).satz;
-    }
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode()
-    {
-      return new Double(this.satz).hashCode();
+      // Wir runden gleich auf 2 Stellen hinterm Komma
+      int i = (int) (this.steuer * 100);
+      return Math.abs(i / 100d);
     }
 
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o)
-    {
-      if (o == null || !(o instanceof Erloes))
-        return -1;
-      return Double.compare(this.satz,((Erloes)o).satz);
-    }
   }
 }
 
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.5  2010/06/07 15:45:15  willuhn
+ * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
+ *
  * Revision 1.4  2010/06/01 23:51:56  willuhn
  * @N Neue Icons - erster Teil
  *

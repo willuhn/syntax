@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/06/02 15:47:42 $
+ * $Revision: 1.13 $
+ * $Date: 2010/06/07 15:45:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -77,7 +77,6 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
         store();
         username = getUsername();
       }
-
       new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
 
       try
@@ -226,6 +225,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.13  2010/06/07 15:45:15  willuhn
+ * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
+ *
  * Revision 1.12  2010/06/02 15:47:42  willuhn
  * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
  *
