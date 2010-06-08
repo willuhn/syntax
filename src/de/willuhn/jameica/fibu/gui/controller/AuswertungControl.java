@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.8 $
+ * $Date: 2010/06/08 11:28:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -277,16 +277,31 @@ public class AuswertungControl extends AbstractControl
       if (e == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Auswertung aus."));
 
+      Geschaeftsjahr jahr = (Geschaeftsjahr) getJahr().getValue();
+      if (jahr == null)
+        throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Geschäftsjahr aus."));
+      
+      Date start = (Date) getStart().getValue();
+      Date end   = (Date) getEnd().getValue();
+      
+      if (start != null && !jahr.check(start))
+        throw new ApplicationException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(start)));
+
+      if (end != null && !jahr.check(end))
+        throw new ApplicationException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(end)));
+      
       getStartButton().setEnabled(false);
+      
       final ExportData data = e.createPreset();
-      data.setGeschaeftsjahr((Geschaeftsjahr)getJahr().getValue());
+      data.setGeschaeftsjahr(jahr);
+      data.setStartDatum(start);
+      data.setEndDatum(end);
       data.setStartKonto((Konto)getStartKonto().getValue());
       data.setEndKonto((Konto)getEndKonto().getValue());
-      data.setStartDatum((Date)getStart().getValue());
-      data.setEndDatum((Date)getEnd().getValue());
 
       String dir = settings.getString("lastdir",System.getProperty("user.home"));
       FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
+      fd.setOverwrite(true);
       fd.setText(i18n.tr("Bitte wählen Sie eine Datei aus, in der die Auswertung gespeichert werden sollen."));
       fd.setFileName(data.getTarget());
       
@@ -302,29 +317,6 @@ public class AuswertungControl extends AbstractControl
 
       // Wir merken uns noch das Verzeichnis vom letzten mal
       settings.setAttribute("lastdir",file.getParent());
-
-      if (file.exists())
-      {
-        try
-        {
-          String q = i18n.tr("Die Datei {0} existiert bereits. Überschreiben?",file.getAbsolutePath());
-          if (!Application.getCallback().askUser(q))
-            throw new OperationCanceledException("Abgebrochen, User möchte Datei nicht überschreiben");
-        }
-        catch (OperationCanceledException oce)
-        {
-          throw oce;
-        }
-        catch (ApplicationException ae)
-        {
-          throw ae;
-        }
-        catch (Exception ex)
-        {
-          Logger.error("error while saving export file",ex);
-          throw new ApplicationException(i18n.tr("Fehler beim Erstellen der Auswertung: {0}",ex.getMessage()));
-        }
-      }
       data.setTarget(file.getAbsolutePath());
       
       Application.getController().start(new BackgroundTask()
@@ -388,6 +380,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.8  2010/06/08 11:28:11  willuhn
+ * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
+ *
  * Revision 1.7  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
