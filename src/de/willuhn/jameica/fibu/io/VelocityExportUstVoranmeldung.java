@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/07 15:45:15 $
+ * $Revision: 1.6 $
+ * $Date: 2010/06/08 16:08:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,20 +47,30 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
       if (st == null)
         continue;
 
-      String[] kz = new String[]{st.getUstNrBemessung(),st.getUstNrSteuer()};
-      for (String s:kz)
+      String bemessung = st.getUstNrBemessung();
+      if (bemessung != null && bemessung.length() > 0)
       {
-        if (s == null || s.length() == 0)
-          continue;
-        
-        Position pos = positions.get(s);
+        Position pos = positions.get(bemessung);
         if (pos == null)
         {
           pos = new Position();
-          positions.put(s,pos);
+          positions.put(bemessung,pos);
         }
-        pos.add(data,kt);
+        pos.add(data,kt,false);
       }
+      
+      String steuer = st.getUstNrSteuer();
+      if (steuer != null && steuer.length() > 0)
+      {
+        Position pos = positions.get(steuer);
+        if (pos == null)
+        {
+          pos = new Position();
+          positions.put(steuer,pos);
+        }
+        pos.add(data,kt,true);
+      }
+
     }
     
     // Wir werfen jetzt noch die Zeilen raus, wo keine Betraege vorhanden sind
@@ -68,7 +78,7 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
     for (String key:keys)
     {
       Position p = positions.get(key);
-      if (p.getBemessung() == 0.0d && p.getSteuer() == 0.0d)
+      if (p.getBemessung() < 0.01d && p.getSteuer() < 0.01d)
         positions.remove(key);
     }
     
@@ -99,17 +109,30 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
   
   public class Position
   {
+    private de.willuhn.jameica.fibu.server.Math math = new de.willuhn.jameica.fibu.server.Math();
     private double bemessung = 0.0d;
-    private double steuer = 0.0d;
+    private double steuer    = 0.0d;
+    private double satz      = -1d;
     
     /**
      * Fuegt die Zahlen eines Kontos hinzu.
      * @param data die Basis-Daten des Exports. 
      * @param konto das Konto.
+     * @param true, wenn es sich um das Steuerkennzeichen handelt.
      * @throws RemoteException
      */
-    private void add(ExportData data, Konto konto) throws RemoteException
+    private void add(ExportData data, Konto konto, boolean steuer) throws RemoteException
     {
+      Steuer st = konto.getSteuer();
+      if (st != null && !steuer)
+      {
+        double s = st.getSatz();
+        if (this.satz == -1d)
+          this.satz = st.getSatz();
+        else if (this.satz != s) // wir haben offensichtlich unterschiedliche Steuersaetze
+          this.satz = -1;
+      }
+
       Geschaeftsjahr jahr = data.getGeschaeftsjahr();
       Date start          = data.getStartDatum();
       Date end            = data.getEndDatum();
@@ -118,13 +141,16 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
       while (buchungen.hasNext())
       {
         Buchung b = (Buchung) buchungen.next();
-        this.bemessung += b.getBetrag();
+        
+        // Wir runden auf 2 Stellen hinterm Komma. Sonst stimmt ggf. die Summe der Einzelwerte nicht
+        // mit der Summe ueberein.
+        this.bemessung += math.round(b.getBetrag());
         
         DBIterator hilfsbuchungen = b.getHilfsBuchungen();
         while (hilfsbuchungen.hasNext())
         {
           BaseBuchung hb = (BaseBuchung) hilfsbuchungen.next();
-          this.steuer += hb.getBetrag();
+          this.steuer += math.round(hb.getBetrag());
         }
       }
     }
@@ -135,7 +161,7 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
      */
     public double getBemessung()
     {
-      return Math.abs((int)this.bemessung); // auf ganze Euro
+      return java.lang.Math.abs((int)this.bemessung); // auf ganze Euro
     }
 
     /**
@@ -144,9 +170,27 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
      */
     public double getSteuer()
     {
-      // Wir runden gleich auf 2 Stellen hinterm Komma
-      int i = (int) (this.steuer * 100);
-      return Math.abs(i / 100d);
+      // Wenn in this.satz ein sinnvoller Wert (> 0) drin steht,
+      // haben wir einen einheitlichen Steuersatz und sollten
+      // den Steuerbetrag nicht aus den Hilfsbuchungen holen sondern
+      // manuell nochmal ausrechnen. Und das nur, weil in der
+      // UST-Voranmeldung die Umsaetze auf ganze EUR abgerundet
+      // werden koennen und sich der Steuerbetrag dann da drauf
+      // bezieht. Wuerden wir einfach this.steuer zurueckliefern,
+      // waere das zwar eigentlich der richtigere Betrag. Aber
+      // weil wie gesagt die Voranmeldung die Umsaetze auf ganze
+      // Euros gerundet will, wuerden die Steuern nicht dazu passen.
+      
+      // Haben wir jedoch unterschiedliche Steuersaetze in der
+      // Position (z.Bsp. in  "zu anderen Steuersaetzen"), koennen wir
+      // das natuerlich nicht machen.
+      // Und bei Positionen, die Steuerkennzeichen darstellen, auch
+      // nicht. Daemlicher Fiskus.
+      if (this.satz > 0)
+        return math.steuer(math.brutto(getBemessung(),this.satz),this.satz);
+      
+      // Wir runden auf 2 Stellen hinterm Komma
+      return math.round(this.steuer);
     }
 
   }
@@ -155,6 +199,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.6  2010/06/08 16:08:12  willuhn
+ * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
+ *
  * Revision 1.5  2010/06/07 15:45:15  willuhn
  * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
  *

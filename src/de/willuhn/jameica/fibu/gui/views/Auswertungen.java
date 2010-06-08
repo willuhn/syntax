@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/08 16:08:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.controller.AuswertungControl;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
@@ -43,26 +41,23 @@ public class Auswertungen extends AbstractView
 
     final AuswertungControl control = new AuswertungControl(this);
     
-    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
-    if (!current.isClosed())
-      GUI.getView().setErrorText(i18n.tr("Das aktuelle Geschäftsjahr ist noch nicht abgeschlossen. Abschreibungen wurden noch nicht gebucht."));
-
-    
     Container group = new SimpleContainer(getParent());
 
     group.addHeadline(i18n.tr("Eigenschaften"));
-    group.addLabelPair(i18n.tr("Art der Auswertung"), control.getAuswertungen());
+    group.addInput(control.getAuswertungen());
+    
     group.addHeadline(i18n.tr("Zeitraum"));
-    group.addLabelPair(i18n.tr("Geschäftsjahr"), control.getJahr());
-    group.addLabelPair(i18n.tr("Start-Datum"), control.getStart());
-    group.addLabelPair(i18n.tr("End-Datum"), control.getEnd());
+    group.addInput(control.getJahr());
+    group.addInput(control.getStart());
+    group.addInput(control.getEnd());
+    group.addInput(control.getNotiz());
     
     group.addHeadline(i18n.tr("Konten"));
-    group.addLabelPair(i18n.tr("von"), control.getStartKonto());
-    group.addLabelPair(i18n.tr("bis"), control.getEndKonto());
+    group.addInput(control.getStartKonto());
+    group.addInput(control.getEndKonto());
     
     group.addSeparator();
-    group.addCheckbox(control.getOpenAfterCreation(),i18n.tr("Auswertung nach der Erstellung öffnen"));
+    group.addInput(control.getOpenAfterCreation());
     
     ButtonArea buttonArea = new ButtonArea(getParent(),3);
     buttonArea.addButton(new Back());
@@ -73,6 +68,9 @@ public class Auswertungen extends AbstractView
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
+ * Revision 1.9  2010/06/08 16:08:12  willuhn
+ * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
+ *
  * Revision 1.8  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/08 11:28:11 $
+ * $Revision: 1.9 $
+ * $Date: 2010/06/08 16:08:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,10 +39,10 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
-import de.willuhn.jameica.gui.input.DialogInput;
-import de.willuhn.jameica.gui.input.Input;
+import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -61,9 +61,10 @@ public class AuswertungControl extends AbstractControl
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Export.class);
   
   private SelectInput auswertungen = null;
-  private Input jahr               = null;
+  private SelectInput jahr         = null;
   private DateInput start          = null;
   private DateInput end            = null;
+  private LabelInput notiz         = null;
   
   private KontoInput startKonto    = null;
   private KontoInput endKonto      = null;
@@ -91,6 +92,7 @@ public class AuswertungControl extends AbstractControl
       return auswertungen;
     
     auswertungen = new SelectInput(ExportRegistry.getExporters(),null);
+    auswertungen.setName(i18n.tr("Art der Auswertung"));
     auswertungen.setPleaseChoose(i18n.tr("Bitte wählen..."));
     auswertungen.setAttribute("name");
     auswertungen.setComment("");
@@ -102,11 +104,13 @@ public class AuswertungControl extends AbstractControl
         {
           Export e = (Export) auswertungen.getValue();
           ExportData data = e == null ? null : e.createPreset();
-          getJahr().setEnabled(data == null || data.isNeedGeschaeftsjahr());
-          getStartKonto().setEnabled(data == null || data.isNeedKonto());
-          getEndKonto().setEnabled(data == null || data.isNeedKonto());
-          getStart().setEnabled(data == null || data.isNeedDatum());
-          getEnd().setEnabled(data == null || data.isNeedDatum());
+          getJahr().setEnabled(data != null && data.isNeedGeschaeftsjahr());
+          getStartKonto().setEnabled(data != null && data.isNeedKonto());
+          getEndKonto().setEnabled(data != null && data.isNeedKonto());
+          getStart().setEnabled(data != null && data.isNeedDatum());
+          getEnd().setEnabled(data != null && data.isNeedDatum());
+          getStartButton().setEnabled(data != null);
+          getOpenAfterCreation().setEnabled(data != null);
         }
         catch (Exception e)
         {
@@ -118,11 +122,31 @@ public class AuswertungControl extends AbstractControl
   }
   
   /**
+   * Liefert ein Notiz-Label.
+   * @return Notiz-Label.
+   * @throws RemoteException
+   */
+  public LabelInput getNotiz() throws RemoteException
+  {
+    if (this.notiz != null)
+      return this.notiz;
+
+    String comment = "";
+    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    if (!current.isClosed())
+      comment = i18n.tr("Das aktuelle Geschäftsjahr ist noch nicht abgeschlossen. Abschreibungen wurden noch nicht gebucht.");
+    this.notiz = new LabelInput(comment);
+    this.notiz.setColor(Color.COMMENT);
+    this.notiz.setName("");
+    return this.notiz;
+  }
+  
+  /**
    * Liefert das Jahr fuer die Auswertung.
    * @return Jahr.
    * @throws RemoteException
    */
-  public Input getJahr() throws RemoteException
+  public SelectInput getJahr() throws RemoteException
   {
     if (this.jahr != null)
       return this.jahr;
@@ -130,26 +154,25 @@ public class AuswertungControl extends AbstractControl
     Mandant m = current.getMandant();
     
     this.jahr = new SelectInput(m.getGeschaeftsjahre(),current);
+    this.jahr.setName(i18n.tr("Geschäftsjahr"));
     this.jahr.setComment("");
+    this.jahr.setEnabled(false);
     this.jahr.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
-          return;
         try
         {
-          Geschaeftsjahr j = (Geschaeftsjahr) event.data;
-          Date begin = j.getBeginn();
-          Date end = j.getEnde();
-          getStart().setValue(begin);
-          getEnd().setValue(end);
-          ((DialogInput)getStart()).setText(Settings.DATEFORMAT.format(begin));
-          ((DialogInput)getEnd()).setText(Settings.DATEFORMAT.format(end));
+          Geschaeftsjahr j = (Geschaeftsjahr) getJahr().getValue();
+          if (j == null)
+            return;
+          
+          getStart().setValue(j.getBeginn());
+          getEnd().setValue(j.getEnde());
         }
         catch (Exception e)
         {
-          Logger.error("error while choosing jahr",e);
-          GUI.getStatusBar().setErrorText(i18n.tr("Fehler bei der Auswahl des Geschäftsjahres"));
+          Logger.error("error while updating dates",e);
+          // Muessen wir dem User nicht anzeigen, die Werte kann er auch allein eintragen
         }
       }
     });
@@ -161,14 +184,16 @@ public class AuswertungControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getStart() throws RemoteException
+  public DateInput getStart() throws RemoteException
   {
     if (this.start != null)
       return this.start;
-    
-    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Settings.DATEFORMAT);
-    this.start.setText(i18n.tr("Wählen Sie bitte den Beginn des Geschäftsjahres aus"));
-    this.start.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
+
+    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Settings.CUSTOM_DATEFORMAT);
+    this.start.setName(i18n.tr("Start-Datum"));
+    this.start.setText(i18n.tr("Wählen Sie bitte den Beginn des Auswertungszeitraumes aus"));
+    this.start.setTitle(i18n.tr("Beginn des Auswertungszeitraumes"));
+    this.start.setEnabled(false);
     this.start.setComment("");
     return this.start;
   }
@@ -178,14 +203,16 @@ public class AuswertungControl extends AbstractControl
    * @return Auswahl-Feld.
    * @throws RemoteException
    */
-  public Input getEnd() throws RemoteException
+  public DateInput getEnd() throws RemoteException
   {
     if (this.end != null)
       return this.end;
     
-    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Settings.DATEFORMAT);
-    this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Geschäftsjahres aus"));
-    this.end.setTitle(i18n.tr("Ende des Geschäftsjahres"));
+    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Settings.CUSTOM_DATEFORMAT);
+    this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Auswertungszeitraumes aus"));
+    this.end.setName(i18n.tr("End-Datum"));
+    this.end.setTitle(i18n.tr("Ende des Auswertungszeitraumes"));
+    this.end.setEnabled(false);
     this.end.setComment("");
     return this.end;
   }
@@ -195,7 +222,7 @@ public class AuswertungControl extends AbstractControl
    * @return Start-Konto.
    * @throws RemoteException
    */
-  public Input getStartKonto() throws RemoteException
+  public KontoInput getStartKonto() throws RemoteException
   {
     if (this.startKonto != null)
       return this.startKonto;
@@ -205,6 +232,8 @@ public class AuswertungControl extends AbstractControl
     list.setOrder("order by kontonummer");
     
     this.startKonto = new KontoInput((Konto) list.next());
+    this.startKonto.setName(i18n.tr("von"));
+    this.startKonto.setEnabled(false);
     return this.startKonto;
   }
   
@@ -213,7 +242,7 @@ public class AuswertungControl extends AbstractControl
    * @return End-Konto.
    * @throws RemoteException
    */
-  public Input getEndKonto() throws RemoteException
+  public KontoInput getEndKonto() throws RemoteException
   {
     if (this.endKonto != null)
       return this.endKonto;
@@ -223,6 +252,8 @@ public class AuswertungControl extends AbstractControl
     list.setOrder("order by kontonummer desc");
     
     this.endKonto = new KontoInput((Konto) list.next());
+    this.endKonto.setName(i18n.tr("bis"));
+    this.endKonto.setEnabled(false);
     return this.endKonto;
   }
   
@@ -242,6 +273,7 @@ public class AuswertungControl extends AbstractControl
         }
       },null,true,"gnome-finance.png");
     }
+    this.startButton.setEnabled(false);
     return this.startButton;
   }
   
@@ -255,6 +287,8 @@ public class AuswertungControl extends AbstractControl
     if (this.open == null)
     {
       this.open = new CheckboxInput(settings.getBoolean("open",true));
+      this.open.setName(i18n.tr("Auswertung nach der Erstellung öffnen"));
+      this.open.setEnabled(false);
       this.open.addListener(new Listener()
       {
         public void handleEvent(Event event)
@@ -380,6 +414,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.9  2010/06/08 16:08:12  willuhn
+ * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
+ *
  * Revision 1.8  2010/06/08 11:28:11  willuhn
  * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.14 $
+ * $Date: 2010/06/08 16:08:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,6 +65,17 @@ public class Math
   {
     double netto = netto(bruttoBetrag,steuerSatz);
     return bruttoBetrag - netto;
+  }
+  
+  /**
+   * Rundet den Betrag auf 2 Stellen hinter dem Komma.
+   * @param betrag der zu rundende Betrag.
+   * @return der gerundete Betrag.
+   */
+  public double round(double betrag)
+  {
+    int i = (int) (betrag * 100 + 0.5d);
+    return i / 100d;
   }
 
   /**
@@ -154,6 +165,9 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
+ * Revision 1.14  2010/06/08 16:08:12  willuhn
+ * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
+ *
  * Revision 1.13  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
