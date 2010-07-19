@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.6 $
+ * $Date: 2010/07/19 09:08:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import org.apache.velocity.app.VelocityEngine;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.services.VelocityService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -114,6 +115,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
       context.put("decimalformat",  Settings.DECIMALFORMAT);
       context.put("export",         vData);
       context.put("charset",        System.getProperty("file.encoding"));
+      
+      Manifest mf = Application.getPluginLoader().getPlugin(Fibu.class).getManifest();
+      context.put("version",        "SynTAX " + mf.getVersion() + ", Jameica " + Application.getManifest().getVersion());
 
 
       writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
@@ -158,6 +162,9 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 /**********************************************************************
  * $Log: AbstractVelocityExport.java,v $
+ * Revision 1.6  2010/07/19 09:08:08  willuhn
+ * @N Versionsnummern mit in Auswertung schreiben
+ *
  * Revision 1.5  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
