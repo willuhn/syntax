@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/08 16:08:12 $
+ * $Revision: 1.7 $
+ * $Date: 2010/07/20 10:24:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 
 /**
@@ -140,17 +141,27 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
       DBIterator buchungen = konto.getHauptBuchungen(jahr,start,end);
       while (buchungen.hasNext())
       {
-        Buchung b = (Buchung) buchungen.next();
-        
+        Buchung b        = (Buchung) buchungen.next();
+        boolean soll     = b.getSollKonto().equals(konto);
+        boolean aufwand  = konto.getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND;
+
         // Wir runden auf 2 Stellen hinterm Komma. Sonst stimmt ggf. die Summe der Einzelwerte nicht
         // mit der Summe ueberein.
-        this.bemessung += math.round(b.getBetrag());
+        double betrag = math.round(b.getBetrag());
+        if (aufwand) betrag = -betrag;
+
+        if (soll) this.bemessung += betrag;
+        else      this.bemessung -= betrag;
         
         DBIterator hilfsbuchungen = b.getHilfsBuchungen();
         while (hilfsbuchungen.hasNext())
         {
           BaseBuchung hb = (BaseBuchung) hilfsbuchungen.next();
-          this.steuer += math.round(hb.getBetrag());
+          double steuerBetrag = math.round(hb.getBetrag());
+          if (soll)
+            this.steuer += steuerBetrag;
+          else
+            this.steuer -= steuerBetrag;
         }
       }
     }
@@ -199,6 +210,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.7  2010/07/20 10:24:46  willuhn
+ * @B Soll- und Haben-Seite beruecksichtigen. Fuer den Fall, dass auf einem Erloes- oder Aufwands-Konto auch Storno-Buchungen vorgenommen werden
+ *
  * Revision 1.6  2010/06/08 16:08:12  willuhn
  * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
  *
