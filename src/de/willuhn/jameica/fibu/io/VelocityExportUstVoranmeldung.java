@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/07/20 10:24:46 $
+ * $Revision: 1.8 $
+ * $Date: 2010/07/20 10:31:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
     
     Map<String,Position> positions = new HashMap<String,Position>();
+    
+    // TODO: Es waere wohl sauberer, wenn wir hier nicht alle Konten nehmen
+    // sondern getrennt getEinnahmen und getAusgaben aus dem Betriebsergebnis
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     while (konten.hasNext())
     {
@@ -210,6 +213,9 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 /*********************************************************************
  * $Log: VelocityExportUstVoranmeldung.java,v $
+ * Revision 1.8  2010/07/20 10:31:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2010/07/20 10:24:46  willuhn
  * @B Soll- und Haben-Seite beruecksichtigen. Fuer den Fall, dass auf einem Erloes- oder Aufwands-Konto auch Storno-Buchungen vorgenommen werden
  *
