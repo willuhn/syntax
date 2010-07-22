@@ -5,4 +5,6 @@
   * NEW: Icons auf Buttons und in Contextmenus
   * NEW: Übernahme von Hibiscus-Umsätzen via Zuordnung Kategorie->Buchungsvorlage
   * BUG: Bugfixes bei Prüfung von Pflichtfeldern
+  * BUG: In der UST-Voranmeldung wurden Storno-Buchungen auf Erlös-Konten nicht
+         korrekt verrechnet
   
