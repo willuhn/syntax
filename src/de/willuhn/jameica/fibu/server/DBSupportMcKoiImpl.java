@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/06/07 15:45:15 $
+ * $Revision: 1.14 $
+ * $Date: 2010/07/26 14:08:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,6 +76,13 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
         setUsername("syntax");
         store();
         username = getUsername();
+      }
+      String password = getPassword();
+      if (password == null || password.length() == 0)
+      {
+        setPassword("syntax");
+        store();
+        password = getPassword();
       }
       new EmbeddedDatabase(dbDir.getAbsolutePath(),username,getPassword());
 
@@ -225,6 +232,9 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
+ * Revision 1.14  2010/07/26 14:08:37  willuhn
+ * @B Passwort wurde nicht gesetzt
+ *
  * Revision 1.13  2010/06/07 15:45:15  willuhn
  * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
  *
