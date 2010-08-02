@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.12 $
+ * $Date: 2010/08/02 22:47:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -342,7 +342,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
       
       monitor.log(i18n.tr("    Berechne anteilige Abschreibung für " + months + " Monate"));monitor.addPercentComplete(1);
       name = i18n.tr("Anteilige Abschreibung für {0} Monate",""+months);
-      betrag = (betrag / 12) * months; // Klammern nur der Optik wegen ;)
+      betrag = new Math().round((betrag / 12d) * months); // Klammern nur der Optik wegen ;)
     }
     
     // Abzuschreibender Betrag >= Restwert -> Restwertbuchung
@@ -495,6 +495,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.12  2010/08/02 22:47:55  willuhn
+ * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
+ *
  * Revision 1.11  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
