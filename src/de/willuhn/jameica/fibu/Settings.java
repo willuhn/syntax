@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.48 $
- * $Date: 2010/06/01 16:35:48 $
+ * $Revision: 1.49 $
+ * $Date: 2010/08/02 22:42:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -83,8 +83,7 @@ public class Settings
    * Encoding, welches zum Einlesen der SQL-Scripts verwendet wird.
    */
   public final static String ENCODING = SETTINGS.getString("encoding","ISO-8859-15");
-
-
+  
   /**
    * Wochentage
    */
@@ -448,6 +447,9 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
+ * Revision 1.49  2010/08/02 22:42:03  willuhn
+ * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
+ *
  * Revision 1.48  2010/06/01 16:35:48  willuhn
  * @C Konstanten verschoben
  *
