@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.10 $
+ * $Date: 2010/08/27 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,7 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.BuchungstemplateDelete;
+import de.willuhn.jameica.fibu.gui.action.DBObjectDelete;
 import de.willuhn.jameica.fibu.gui.controller.BuchungstemplateControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -59,7 +59,7 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
 
     ButtonArea buttonArea = new ButtonArea(this.getParent(),3);
     buttonArea.addButton(new Back());
-    buttonArea.addButton(i18n.tr("Löschen"), new BuchungstemplateDelete(), getCurrentObject(),false,"user-trash-full.png");
+    buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(), getCurrentObject(),false,"user-trash-full.png");
     buttonArea.addButton(new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
@@ -109,6 +109,9 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
+ * Revision 1.10  2010/08/27 11:19:40  willuhn
+ * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
+ *
  * Revision 1.9  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons

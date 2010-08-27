@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungstemplateListMenu.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.4 $
+ * $Date: 2010/08/27 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,9 +14,13 @@
 package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.BuchungstemplateDelete;
+import de.willuhn.jameica.fibu.gui.action.BuchungstemplateExport;
+import de.willuhn.jameica.fibu.gui.action.BuchungstemplateImport;
 import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
+import de.willuhn.jameica.fibu.gui.action.DBObjectDelete;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
+import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -32,9 +36,12 @@ public class BuchungstemplateListMenu extends ContextMenu
   public BuchungstemplateListMenu()
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Öffnen"), new BuchungstemplateNeu(),"document-open.png"));
+    this.addItem(new GJCheckedSingleContextMenuItem(i18n.tr("Öffnen"), new BuchungstemplateNeu(),"document-open.png"));
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchungsvorlage..."), new BNeu(),"list-add.png"));
-    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungstemplateDelete(),"user-trash-full.png"));
+    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new BuchungstemplateExport(),"document-save.png"));
+    this.addItem(new ContextMenuItem(i18n.tr("Importieren..."),new BuchungstemplateImport(),"document-open.png"));
   }
   
   /**
@@ -55,6 +62,9 @@ public class BuchungstemplateListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungstemplateListMenu.java,v $
+ * Revision 1.4  2010/08/27 11:19:40  willuhn
+ * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
+ *
  * Revision 1.3  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons

@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/Attic/ExportMessage.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/ReportMessage.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,18 +18,18 @@ import java.io.File;
 import de.willuhn.jameica.messaging.QueryMessage;
 
 /**
- * Wird versendet, wenn ein Export erstellt wurde.
+ * Wird versendet, wenn ein Report erstellt wurde.
  * Als Context-Data enthaelt die Message ein File-Objekt mit
- * dem erzeugten Export.
+ * dem erzeugten Report.
  */
-public class ExportMessage extends QueryMessage
+public class ReportMessage extends QueryMessage
 {
   /**
    * ct.
    * @param text Hinweis-Text.
-   * @param file die exportierte Datei. 
+   * @param file die Report-Datei. 
    */
-  public ExportMessage(String text, File file)
+  public ReportMessage(String text, File file)
   {
     super(text,file);
   }
@@ -37,7 +37,10 @@ public class ExportMessage extends QueryMessage
 
 
 /**********************************************************************
- * $Log: ExportMessage.java,v $
+ * $Log: ReportMessage.java,v $
+ * Revision 1.1  2010/08/27 11:19:40  willuhn
+ * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
+ *
  * Revision 1.2  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

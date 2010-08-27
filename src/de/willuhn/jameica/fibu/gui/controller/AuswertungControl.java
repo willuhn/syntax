@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/08/27 10:18:15 $
+ * $Revision: 1.11 $
+ * $Date: 2010/08/27 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.io.report.Report;
 import de.willuhn.jameica.fibu.io.report.ReportData;
 import de.willuhn.jameica.fibu.io.report.ReportRegistry;
-import de.willuhn.jameica.fibu.messaging.ExportMessage;
+import de.willuhn.jameica.fibu.messaging.ReportMessage;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -369,7 +369,7 @@ public class AuswertungControl extends AbstractControl
               {
                 getStartButton().setEnabled(true);
                 if (((Boolean)getOpenAfterCreation().getValue()).booleanValue())
-                  Application.getMessagingFactory().sendMessage(new ExportMessage(i18n.tr("Auswertung erstellt"),file));
+                  Application.getMessagingFactory().sendMessage(new ReportMessage(i18n.tr("Auswertung erstellt"),file));
               }
             });
           }
@@ -414,6 +414,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.11  2010/08/27 11:19:40  willuhn
+ * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
+ *
  * Revision 1.10  2010/08/27 10:18:15  willuhn
  * @C Export umbenannt in Report
  *

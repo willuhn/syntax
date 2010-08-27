@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/Attic/ExportMessageConsumer.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/messaging/ReportMessageConsumer.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 11:19:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,9 +22,9 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 
 /**
- * Empfaengt Messages ueber erstellte Exports und zeigt sie dem User an.
+ * Empfaengt Messages ueber erstellte Reports und zeigt sie dem User an.
  */
-public class ExportMessageConsumer implements MessageConsumer
+public class ReportMessageConsumer implements MessageConsumer
 {
   
   /**
@@ -40,7 +40,7 @@ public class ExportMessageConsumer implements MessageConsumer
    */
   public Class[] getExpectedMessageTypes()
   {
-    return new Class[]{ExportMessage.class};
+    return new Class[]{ReportMessage.class};
   }
 
   /**
@@ -48,7 +48,7 @@ public class ExportMessageConsumer implements MessageConsumer
    */
   public void handleMessage(Message message) throws Exception
   {
-    final ExportMessage m = (ExportMessage) message;
+    final ReportMessage m = (ReportMessage) message;
 
     Application.getMessagingFactory().sendMessage(new StatusBarMessage(m.getName(),StatusBarMessage.TYPE_SUCCESS));
 
@@ -75,7 +75,10 @@ public class ExportMessageConsumer implements MessageConsumer
 
 
 /**********************************************************************
- * $Log: ExportMessageConsumer.java,v $
+ * $Log: ReportMessageConsumer.java,v $
+ * Revision 1.1  2010/08/27 11:19:40  willuhn
+ * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
+ *
  * Revision 1.2  2009/07/03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
