@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLImporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/27 11:21:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -168,7 +168,7 @@ public class XMLImporter implements Importer
       }
 
       /**
-       * @see de.willuhn.jameica.hbci.io.IOFormat#getFileExtensions()
+       * @see de.willuhn.jameica.fibu.io.IOFormat#getFileExtensions()
        */
       public String[] getFileExtensions()
       {
@@ -181,6 +181,9 @@ public class XMLImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLImporter.java,v $
+ * Revision 1.2  2010/08/27 11:21:31  willuhn
+ * @C Java-Version auf 1.6 geaendert - wegen Hibiscus
+ *
  * Revision 1.1  2010/08/27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
