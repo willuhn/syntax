@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractVelocityExport.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/07/19 09:08:08 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/AbstractVelocityReport.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -39,9 +39,9 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Implementierung eines Exporters, welcher das Velocity-Framework nutzt.
+ * Implementierung eines Reports, welcher das Velocity-Framework nutzt.
  */
-public abstract class AbstractVelocityExport extends AbstractExport
+public abstract class AbstractVelocityReport extends AbstractReport
 {
   final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -51,12 +51,12 @@ public abstract class AbstractVelocityExport extends AbstractExport
    * @return Nutzdaten fuer den Export.
    * @throws Exception
    */
-  protected abstract VelocityExportData getData(ExportData data) throws Exception;
+  protected abstract VelocityReportData getData(ReportData data) throws Exception;
   
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#doExport(de.willuhn.jameica.fibu.io.ExportData, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.fibu.io.report.Report#doReport(de.willuhn.jameica.fibu.io.report.ReportData, de.willuhn.util.ProgressMonitor)
    */
-  public final void doExport(ExportData data, final ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
+  public final void doReport(ReportData data, final ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
   {
     String target = data.getTarget();
     
@@ -94,7 +94,7 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
       timer.schedule(fakeProgress,0,100);
 
-      VelocityExportData vData = getData(data);
+      VelocityReportData vData = getData(data);
       String template = vData.getTemplate();
       if (template == null || template.length() == 0)
         throw new ApplicationException(i18n.tr("Kein Template angegeben"));
@@ -161,7 +161,10 @@ public abstract class AbstractVelocityExport extends AbstractExport
 
 
 /**********************************************************************
- * $Log: AbstractVelocityExport.java,v $
+ * $Log: AbstractVelocityReport.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.6  2010/07/19 09:08:08  willuhn
  * @N Versionsnummern mit in Auswertung schreiben
  *

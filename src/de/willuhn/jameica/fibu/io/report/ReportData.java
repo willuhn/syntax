@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/ExportData.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/ReportData.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.util.Date;
 
@@ -19,11 +19,11 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 
 /**
- * Haelt die Meta-Daten fuer den Export.
- * Anhand dieser Daten soll die Export-Implementierung in der Lage
- * sein, die Export-Datei zu erstellen.
+ * Haelt die Meta-Daten fuer den Report.
+ * Anhand dieser Daten soll die Report-Implementierung in der Lage
+ * sein, die Report-Datei zu erstellen.
  */
-public class ExportData
+public class ReportData
 {
   private Geschaeftsjahr geschaeftsjahr = null;
   private Date startDatum               = null;
@@ -146,7 +146,7 @@ public class ExportData
   }
 
   /**
-   * Liefert true, wenn der User fuer den Export einen Zeitraum angeben soll.
+   * Liefert true, wenn der User fuer den Report einen Zeitraum angeben soll.
    * @return true, wenn der User einen Zeitraum angeben soll.
    */
   public boolean isNeedDatum()
@@ -155,7 +155,7 @@ public class ExportData
   }
 
   /**
-   * Legt fest, ob der User fuer den Export einen Zeitraum angeben soll.
+   * Legt fest, ob der User fuer den Report einen Zeitraum angeben soll.
    * @param needDatum true, wenn er einen Zeitraum angeben soll.
    */
   public void setNeedDatum(boolean needDatum)
@@ -204,7 +204,10 @@ public class ExportData
 
 
 /**********************************************************************
- * $Log: ExportData.java,v $
+ * $Log: ReportData.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

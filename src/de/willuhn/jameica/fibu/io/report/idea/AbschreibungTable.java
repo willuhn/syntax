@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/AbschreibungTable.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/idea/AbschreibungTable.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io.idea;
+package de.willuhn.jameica.fibu.io.report.idea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 public class AbschreibungTable implements Table
 {
   /**
-   * @see de.willuhn.jameica.fibu.io.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.io.report.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
   public List<List<String>> getLines(Geschaeftsjahr jahr) throws Exception
   {
@@ -76,6 +76,9 @@ public class AbschreibungTable implements Table
 
 /**********************************************************************
  * $Log: AbschreibungTable.java,v $
+ * Revision 1.1  2010/08/27 10:18:15  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

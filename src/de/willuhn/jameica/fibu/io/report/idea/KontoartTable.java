@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/KontotypTable.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/idea/KontoartTable.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io.idea;
+package de.willuhn.jameica.fibu.io.report.idea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,25 +19,25 @@ import java.util.List;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 
 /**
- * Implementierung fuer die Kontotyp-Tabelle.
+ * Implementierung fuer die Kontoart-Tabelle.
  */
-public class KontotypTable implements Table
+public class KontoartTable implements Table
 {
   /**
-   * @see de.willuhn.jameica.fibu.io.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.io.report.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
   public List<List<String>> getLines(Geschaeftsjahr jahr) throws Exception
   {
-    DBIterator list = Settings.getDBService().createList(Kontotyp.class);
+    DBIterator list = Settings.getDBService().createList(Kontoart.class);
     list.setOrder("order by name");
 
     List<List<String>> result = new ArrayList<List<String>>();
     while (list.hasNext())
     {
-      Kontotyp k = (Kontotyp) list.next();
+      Kontoart k = (Kontoart) list.next();
 
       List<String> line = new ArrayList<String>();
       line.add(k.getID());
@@ -52,7 +52,10 @@ public class KontotypTable implements Table
 
 
 /**********************************************************************
- * $Log: KontotypTable.java,v $
+ * $Log: KontoartTable.java,v $
+ * Revision 1.1  2010/08/27 10:18:15  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

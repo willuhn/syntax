@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/AbstractExport.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/AbstractReport.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.system.Application;
@@ -19,18 +19,18 @@ import de.willuhn.util.I18N;
 
 
 /**
- * Abstrakte Basis-Implementierung eines Exports.
+ * Abstrakte Basis-Implementierung eines Reports.
  */
-public abstract class AbstractExport implements Export
+public abstract class AbstractReport implements Report
 {
   final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#createPreset()
+   * @see de.willuhn.jameica.fibu.io.report.Report#createPreset()
    */
-  public ExportData createPreset()
+  public ReportData createPreset()
   {
-    ExportData d = new ExportData();
+    ReportData d = new ReportData();
     d.setNeedGeschaeftsjahr(true);
     d.setNeedKonto(true);
     d.setNeedDatum(true);
@@ -42,18 +42,21 @@ public abstract class AbstractExport implements Export
    */
   public int compareTo(Object o)
   {
-    if (!(o instanceof Export))
+    if (!(o instanceof Report))
       return -1;
     
     // Alphabetisch nach Name sortieren
-    String name = ((Export)o).getName();
+    String name = ((Report)o).getName();
     return this.getName().compareTo(name);
   }
 }
 
 
 /**********************************************************************
- * $Log: AbstractExport.java,v $
+ * $Log: AbstractReport.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

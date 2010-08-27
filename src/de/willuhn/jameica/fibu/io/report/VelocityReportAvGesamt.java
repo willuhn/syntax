@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportAvGesamt.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvGesamt.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,15 +22,15 @@ import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 
 /**
- * Exporter fuer Uebersicht des Anlagevermoegens.
+ * Report fuer Uebersicht des Anlagevermoegens.
  */
-public class VelocityExportAvGesamt extends AbstractVelocityExport
+public class VelocityReportAvGesamt extends AbstractVelocityReport
 {
   
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractVelocityExport#getData(de.willuhn.jameica.fibu.io.ExportData)
+   * @see de.willuhn.jameica.fibu.io.report.AbstractVelocityReport#getData(de.willuhn.jameica.fibu.io.report.ReportData)
    */
-  protected VelocityExportData getData(ExportData data) throws Exception
+  protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
     
@@ -51,18 +51,18 @@ public class VelocityExportAvGesamt extends AbstractVelocityExport
     }
     Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
     
-    VelocityExportData export = new VelocityExportData();
+    VelocityReportData export = new VelocityReportData();
     export.addObject("anlagevermoegen",av);
     export.setTemplate("anlagevermoegen.vm");
     return export;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractExport#createPreset()
+   * @see de.willuhn.jameica.fibu.io.report.AbstractReport#createPreset()
    */
-  public ExportData createPreset()
+  public ReportData createPreset()
   {
-    ExportData data = super.createPreset();
+    ReportData data = super.createPreset();
     data.setNeedDatum(false);
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-av-gesamt.html",DATEFORMAT.format(new Date())));
@@ -70,7 +70,7 @@ public class VelocityExportAvGesamt extends AbstractVelocityExport
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#getName()
+   * @see de.willuhn.jameica.fibu.io.report.Report#getName()
    */
   public String getName()
   {
@@ -80,7 +80,10 @@ public class VelocityExportAvGesamt extends AbstractVelocityExport
 
 
 /*********************************************************************
- * $Log: VelocityExportAvGesamt.java,v $
+ * $Log: VelocityReportAvGesamt.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

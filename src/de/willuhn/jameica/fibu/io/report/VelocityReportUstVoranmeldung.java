@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportUstVoranmeldung.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/07/20 10:31:13 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportUstVoranmeldung.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -27,14 +27,14 @@ import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 
 /**
- * Exporter fuer die Auswertung zur UST-Voranmeldung.
+ * Report fuer die Auswertung zur UST-Voranmeldung.
  */
-public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
+public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
 {
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractVelocityExport#getData(de.willuhn.jameica.fibu.io.ExportData)
+   * @see de.willuhn.jameica.fibu.io.report.AbstractVelocityReport#getData(de.willuhn.jameica.fibu.io.report.ReportData)
    */
-  protected VelocityExportData getData(ExportData data) throws Exception
+  protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
     
@@ -86,14 +86,14 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
         positions.remove(key);
     }
     
-    VelocityExportData export = new VelocityExportData();
+    VelocityReportData export = new VelocityReportData();
     export.addObject("positions",positions);
     export.setTemplate("ustva.vm");
     return export;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#getName()
+   * @see de.willuhn.jameica.fibu.io.report.Report#getName()
    */
   public String getName()
   {
@@ -101,11 +101,11 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractExport#createPreset()
+   * @see de.willuhn.jameica.fibu.io.report.AbstractReport#createPreset()
    */
-  public ExportData createPreset()
+  public ReportData createPreset()
   {
-    ExportData data = super.createPreset();
+    ReportData data = super.createPreset();
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date())));
     return data;
@@ -125,7 +125,7 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
      * @param true, wenn es sich um das Steuerkennzeichen handelt.
      * @throws RemoteException
      */
-    private void add(ExportData data, Konto konto, boolean steuer) throws RemoteException
+    private void add(ReportData data, Konto konto, boolean steuer) throws RemoteException
     {
       Steuer st = konto.getSteuer();
       if (st != null && !steuer)
@@ -212,7 +212,10 @@ public class VelocityExportUstVoranmeldung extends AbstractVelocityExport
 
 
 /*********************************************************************
- * $Log: VelocityExportUstVoranmeldung.java,v $
+ * $Log: VelocityReportUstVoranmeldung.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.8  2010/07/20 10:31:13  willuhn
  * *** empty log message ***
  *

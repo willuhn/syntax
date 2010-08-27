@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/IdeaFormatExport.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/IdeaFormatReport.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -38,15 +38,15 @@ import org.apache.velocity.app.event.implement.EscapeXmlReference;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.io.idea.AbschreibungTable;
-import de.willuhn.jameica.fibu.io.idea.AnfangsbestandTable;
-import de.willuhn.jameica.fibu.io.idea.AnlagevermoegenTable;
-import de.willuhn.jameica.fibu.io.idea.BuchungTable;
-import de.willuhn.jameica.fibu.io.idea.KontoTable;
-import de.willuhn.jameica.fibu.io.idea.KontoartTable;
-import de.willuhn.jameica.fibu.io.idea.KontotypTable;
-import de.willuhn.jameica.fibu.io.idea.SteuerTable;
-import de.willuhn.jameica.fibu.io.idea.Table;
+import de.willuhn.jameica.fibu.io.report.idea.AbschreibungTable;
+import de.willuhn.jameica.fibu.io.report.idea.AnfangsbestandTable;
+import de.willuhn.jameica.fibu.io.report.idea.AnlagevermoegenTable;
+import de.willuhn.jameica.fibu.io.report.idea.BuchungTable;
+import de.willuhn.jameica.fibu.io.report.idea.KontoTable;
+import de.willuhn.jameica.fibu.io.report.idea.KontoartTable;
+import de.willuhn.jameica.fibu.io.report.idea.KontotypTable;
+import de.willuhn.jameica.fibu.io.report.idea.SteuerTable;
+import de.willuhn.jameica.fibu.io.report.idea.Table;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.services.VelocityService;
@@ -58,11 +58,11 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Implementierung eines Exporters, welcher einen Datenabzug gemaess GDPdU erzeugt.
+ * Implementierung eines Reports, welcher einen Datenabzug gemaess GDPdU erzeugt.
  * Siehe http://de.wikipedia.org/wiki/GDPdU und
  * http://www.audicon.net/downloads/dokumentationen/index.php
  */
-public class IdeaFormatExport extends AbstractExport
+public class IdeaFormatReport extends AbstractReport
 {
   private final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -83,9 +83,9 @@ public class IdeaFormatExport extends AbstractExport
   
 
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#doExport(de.willuhn.jameica.fibu.io.ExportData, de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.fibu.io.report.Report#doReport(de.willuhn.jameica.fibu.io.report.ReportData, de.willuhn.util.ProgressMonitor)
    */
-  public final void doExport(ExportData data, ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
+  public final void doReport(ReportData data, ProgressMonitor monitor) throws ApplicationException, OperationCanceledException
   {
     this.monitor = monitor;
     
@@ -101,7 +101,7 @@ public class IdeaFormatExport extends AbstractExport
     final TimerTask fakeProgress = new TimerTask() {
       public void run()
       {
-        if (IdeaFormatExport.this.monitor == null || IdeaFormatExport.this.monitor.getPercentComplete() == 100)
+        if (IdeaFormatReport.this.monitor == null || IdeaFormatReport.this.monitor.getPercentComplete() == 100)
         {
           try
           {
@@ -113,7 +113,7 @@ public class IdeaFormatExport extends AbstractExport
             // ignore
           }
         }
-        IdeaFormatExport.this.monitor.addPercentComplete(1);
+        IdeaFormatReport.this.monitor.addPercentComplete(1);
       }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ public class IdeaFormatExport extends AbstractExport
       
       //////////////////////////////////////////////////////////////////////////
       // Schritt 1: XML-Beschreibung des Exports erzeugen
-      VelocityExportData vData = new VelocityExportData();
+      VelocityReportData vData = new VelocityReportData();
       vData.addObject("jahr", jahr);
 
       VelocityContext context = new VelocityContext();
@@ -226,11 +226,11 @@ public class IdeaFormatExport extends AbstractExport
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractExport#createPreset()
+   * @see de.willuhn.jameica.fibu.io.report.AbstractReport#createPreset()
    */
-  public ExportData createPreset()
+  public ReportData createPreset()
   {
-    ExportData data = super.createPreset();
+    ReportData data = super.createPreset();
     data.setNeedDatum(false);
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-idea.zip",DATEFORMAT.format(new Date())));
@@ -238,7 +238,7 @@ public class IdeaFormatExport extends AbstractExport
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#getName()
+   * @see de.willuhn.jameica.fibu.io.report.Report#getName()
    */
   public String getName()
   {
@@ -311,7 +311,10 @@ public class IdeaFormatExport extends AbstractExport
 
 
 /**********************************************************************
- * $Log: IdeaFormatExport.java,v $
+ * $Log: IdeaFormatReport.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.5  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

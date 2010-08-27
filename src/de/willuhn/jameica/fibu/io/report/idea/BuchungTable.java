@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/BuchungTable.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/idea/BuchungTable.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io.idea;
+package de.willuhn.jameica.fibu.io.report.idea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 public class BuchungTable implements Table
 {
   /**
-   * @see de.willuhn.jameica.fibu.io.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.io.report.idea.Table#getLines(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
   public List<List<String>> getLines(Geschaeftsjahr jahr) throws Exception
   {
@@ -80,6 +80,9 @@ public class BuchungTable implements Table
 
 /**********************************************************************
  * $Log: BuchungTable.java,v $
+ * Revision 1.1  2010/08/27 10:18:15  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.3  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

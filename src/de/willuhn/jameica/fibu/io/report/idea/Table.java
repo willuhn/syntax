@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/idea/Attic/Table.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/idea/Table.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io.idea;
+package de.willuhn.jameica.fibu.io.report.idea;
 
 import java.util.List;
 
@@ -36,6 +36,9 @@ public interface Table
 
 /**********************************************************************
  * $Log: Table.java,v $
+ * Revision 1.1  2010/08/27 10:18:15  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

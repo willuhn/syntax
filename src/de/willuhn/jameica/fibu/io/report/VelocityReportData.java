@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportData.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportData.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,15 +11,15 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.io.OutputStream;
 import java.util.HashMap;
 
 /**
- * Kapselt die Daten eines Exports.
+ * Kapselt die Daten eines Reports.
  */
-public class VelocityExportData
+public class VelocityReportData
 {
   /**
    * Dateiname des Velocity-Templates.
@@ -118,7 +118,10 @@ public class VelocityExportData
 
 
 /*********************************************************************
- * $Log: VelocityExportData.java,v $
+ * $Log: VelocityReportData.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/08 16:08:12 $
+ * $Revision: 1.10 $
+ * $Date: 2010/08/27 10:18:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,9 +26,9 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
-import de.willuhn.jameica.fibu.io.Export;
-import de.willuhn.jameica.fibu.io.ExportData;
-import de.willuhn.jameica.fibu.io.ExportRegistry;
+import de.willuhn.jameica.fibu.io.report.Report;
+import de.willuhn.jameica.fibu.io.report.ReportData;
+import de.willuhn.jameica.fibu.io.report.ReportRegistry;
 import de.willuhn.jameica.fibu.messaging.ExportMessage;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -58,7 +58,7 @@ import de.willuhn.util.ProgressMonitor;
 public class AuswertungControl extends AbstractControl
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Export.class);
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Report.class);
   
   private SelectInput auswertungen = null;
   private SelectInput jahr         = null;
@@ -91,7 +91,7 @@ public class AuswertungControl extends AbstractControl
     if (auswertungen != null)
       return auswertungen;
     
-    auswertungen = new SelectInput(ExportRegistry.getExporters(),null);
+    auswertungen = new SelectInput(ReportRegistry.getReports(),null);
     auswertungen.setName(i18n.tr("Art der Auswertung"));
     auswertungen.setPleaseChoose(i18n.tr("Bitte wählen..."));
     auswertungen.setAttribute("name");
@@ -102,8 +102,8 @@ public class AuswertungControl extends AbstractControl
       {
         try
         {
-          Export e = (Export) auswertungen.getValue();
-          ExportData data = e == null ? null : e.createPreset();
+          Report e = (Report) auswertungen.getValue();
+          ReportData data = e == null ? null : e.createPreset();
           getJahr().setEnabled(data != null && data.isNeedGeschaeftsjahr());
           getStartKonto().setEnabled(data != null && data.isNeedKonto());
           getEndKonto().setEnabled(data != null && data.isNeedKonto());
@@ -307,7 +307,7 @@ public class AuswertungControl extends AbstractControl
   {
     try
     {
-      final Export e = (Export) getAuswertungen().getValue();
+      final Report e = (Report) getAuswertungen().getValue();
       if (e == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Auswertung aus."));
 
@@ -326,7 +326,7 @@ public class AuswertungControl extends AbstractControl
       
       getStartButton().setEnabled(false);
       
-      final ExportData data = e.createPreset();
+      final ReportData data = e.createPreset();
       data.setGeschaeftsjahr(jahr);
       data.setStartDatum(start);
       data.setEndDatum(end);
@@ -359,7 +359,7 @@ public class AuswertungControl extends AbstractControl
         {
           try
           {
-            e.doExport(data,monitor);
+            e.doReport(data,monitor);
           }
           finally
           {
@@ -414,6 +414,9 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
+ * Revision 1.10  2010/08/27 10:18:15  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.9  2010/06/08 16:08:12  willuhn
  * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
  *

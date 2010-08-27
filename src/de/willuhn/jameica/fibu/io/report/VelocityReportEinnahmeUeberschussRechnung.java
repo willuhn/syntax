@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/VelocityExportEinnahmeUeberschussRechnung.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportEinnahmeUeberschussRechnung.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,27 +11,27 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.util.Date;
 
 /**
- * Exporter fuer Uebersicht die Uberschuss-Rechnung.
+ * Report fuer Uebersicht die Uberschuss-Rechnung.
  */
-public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityExport
+public class VelocityReportEinnahmeUeberschussRechnung extends AbstractVelocityReport
 {
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractVelocityExport#getData(de.willuhn.jameica.fibu.io.ExportData)
+   * @see de.willuhn.jameica.fibu.io.report.AbstractVelocityReport#getData(de.willuhn.jameica.fibu.io.report.ReportData)
    */
-  protected VelocityExportData getData(ExportData data) throws Exception
+  protected VelocityReportData getData(ReportData data) throws Exception
   {
-    VelocityExportData export = new VelocityExportData();
+    VelocityReportData export = new VelocityReportData();
     export.setTemplate("ueberschussrechnung.vm");
     return export;
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.io.Export#getName()
+   * @see de.willuhn.jameica.fibu.io.report.Report#getName()
    */
   public String getName()
   {
@@ -40,11 +40,11 @@ public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityE
 
   
   /**
-   * @see de.willuhn.jameica.fibu.io.AbstractExport#createPreset()
+   * @see de.willuhn.jameica.fibu.io.report.AbstractReport#createPreset()
    */
-  public ExportData createPreset()
+  public ReportData createPreset()
   {
-    ExportData data = super.createPreset();
+    ReportData data = super.createPreset();
     data.setNeedDatum(false);
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-einnahme-ueberschuss.html",DATEFORMAT.format(new Date())));
@@ -54,7 +54,10 @@ public class VelocityExportEinnahmeUeberschussRechnung extends AbstractVelocityE
 
 
 /*********************************************************************
- * $Log: VelocityExportEinnahmeUeberschussRechnung.java,v $
+ * $Log: VelocityReportEinnahmeUeberschussRechnung.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *

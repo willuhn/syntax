@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/Attic/ExportRegistry.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:18 $
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/ReportRegistry.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/08/27 10:18:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-package de.willuhn.jameica.fibu.io;
+package de.willuhn.jameica.fibu.io.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,41 +23,41 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
 
 /**
- * Registry, welche die verfuegbaren Export-Formate liefert. 
+ * Registry, welche die verfuegbaren Report-Formate liefert. 
  */
-public class ExportRegistry
+public class ReportRegistry
 {
-  private static List<Export> list = null;
+  private static List<Report> list = null;
 
   /**
-   * Liefert die Liste der Exporter.
-   * @return Liste der Exporter.
+   * Liefert die Liste der Reports.
+   * @return Liste der Reports.
    */
-  public static synchronized List<Export> getExporters()
+  public static synchronized List<Report> getReports()
   {
     if (list == null)
     {
-      list = new ArrayList<Export>();
+      list = new ArrayList<Report>();
       ClassFinder finder = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getClassFinder();
       try
       {
-        Class[] classes = finder.findImplementors(Export.class);
+        Class[] classes = finder.findImplementors(Report.class);
         for (int i=0;i<classes.length;++i)
         {
           try
           {
-            list.add((Export)classes[i].newInstance());
+            list.add((Report)classes[i].newInstance());
           }
           catch (Exception e)
           {
-            Logger.error("unable to load exporter " + classes[i].getName() + ", skipping",e);
+            Logger.error("unable to load report " + classes[i].getName() + ", skipping",e);
           }
         }
         Collections.sort(list);
       }
       catch (ClassNotFoundException e)
       {
-        Logger.warn("no file exporters foundd");
+        Logger.warn("no reports foundd");
       }
     }
     return list;
@@ -67,7 +67,10 @@ public class ExportRegistry
 
 
 /**********************************************************************
- * $Log: ExportRegistry.java,v $
+ * $Log: ReportRegistry.java,v $
+ * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * @C Export umbenannt in Report
+ *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
