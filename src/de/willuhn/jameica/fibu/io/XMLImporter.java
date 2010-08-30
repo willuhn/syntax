@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLImporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/27 11:21:31 $
+ * $Revision: 1.3 $
+ * $Date: 2010/08/30 16:41:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.Map;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.rmi.DBObject;
@@ -86,7 +87,9 @@ public class XMLImporter implements Importer
       {
         if (monitor != null)
         {
-          monitor.log(i18n.tr("Datensatz {0}", "" + (created+1)));
+          Object name = BeanUtil.toString(object);
+          if (name != null && monitor != null)
+            monitor.log(i18n.tr("Importiere {0}",name.toString()));
           if (created > 0 && created % 10 == 0) // nur geschaetzt
             monitor.addPercentComplete(1);
         }
@@ -181,6 +184,9 @@ public class XMLImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLImporter.java,v $
+ * Revision 1.3  2010/08/30 16:41:01  willuhn
+ * @N Klartextbezeichnung bei Import/Export
+ *
  * Revision 1.2  2010/08/27 11:21:31  willuhn
  * @C Java-Version auf 1.6 geaendert - wegen Hibiscus
  *

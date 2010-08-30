@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.8 $
+ * $Date: 2010/08/30 16:41:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,7 +29,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractTransferImpl extends AbstractDBObject implements Transfer
 {
-  transient I18N i18n = null;
+  final static transient I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
    * Erzeugt einen neuen Transfer.
@@ -38,7 +38,6 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   public AbstractTransferImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -179,6 +178,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
+ * Revision 1.8  2010/08/30 16:41:01  willuhn
+ * @N Klartextbezeichnung bei Import/Export
+ *
  * Revision 1.7  2010/06/03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/30 16:41:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,7 +58,7 @@ public class XMLExporter implements Exporter
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
         Object name = BeanUtil.toString(objects[i]);
         if (name != null && monitor != null)
-          monitor.log(i18n.tr("Speichere Datensatz {0}",name.toString()));
+          monitor.log(i18n.tr("Exportiere {0}",name.toString()));
         writer.write((GenericObject)objects[i]);
       }
     }
@@ -122,6 +122,9 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
+ * Revision 1.2  2010/08/30 16:41:01  willuhn
+ * @N Klartextbezeichnung bei Import/Export
+ *
  * Revision 1.1  2010/08/27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *

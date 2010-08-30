@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungsBuchungImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2006/05/08 22:44:18 $
+ * $Revision: 1.4 $
+ * $Date: 2010/08/30 16:41:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * @author willuhn
  */
-public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
-    AbschreibungsBuchung
+public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements AbschreibungsBuchung
 {
 
   /**
@@ -69,6 +68,9 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
 
 /*********************************************************************
  * $Log: AbschreibungsBuchungImpl.java,v $
+ * Revision 1.4  2010/08/30 16:41:01  willuhn
+ * @N Klartextbezeichnung bei Import/Export
+ *
  * Revision 1.3  2006/05/08 22:44:18  willuhn
  * @N Debugging
  *

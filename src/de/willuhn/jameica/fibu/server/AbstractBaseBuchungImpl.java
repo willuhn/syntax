@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.27 $
+ * $Date: 2010/08/30 16:41:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,9 +51,18 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public String getPrimaryAttribute() throws RemoteException
   {
-    return "datum";
+    return "toString";
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("toString".equals(arg0))
+      return i18n.tr("Buchung Nr. {0}",Integer.toString(getBelegnummer()));
+    return super.getAttribute(arg0);
+  }
 
   /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getDatum()
@@ -231,6 +240,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
+ * Revision 1.27  2010/08/30 16:41:01  willuhn
+ * @N Klartextbezeichnung bei Import/Export
+ *
  * Revision 1.26  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
