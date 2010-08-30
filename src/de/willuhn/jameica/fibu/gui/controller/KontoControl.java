@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.30 $
- * $Date: 2010/06/07 16:34:22 $
+ * $Revision: 1.31 $
+ * $Date: 2010/08/30 14:36:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,7 +115,7 @@ public class KontoControl extends AbstractControl
 	{
 		if (name != null)
 			return name;
-		name = new TextInput(getKonto().getName());
+		name = new TextInput(getKonto().getName(),255);
 		name.setMandatory(true);
 		name.setEnabled(getKonto().canChange());
 		return name;
@@ -130,7 +130,7 @@ public class KontoControl extends AbstractControl
 	{
 		if (kontonummer != null)
 			return kontonummer;
-		kontonummer = new TextInput(getKonto().getKontonummer());
+		kontonummer = new TextInput(getKonto().getKontonummer(),4);
 		kontonummer.setMandatory(true);
 		kontonummer.setEnabled(getKonto().canChange());
 		return kontonummer;
@@ -270,6 +270,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.31  2010/08/30 14:36:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.30  2010/06/07 16:34:22  willuhn
  * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
  *
