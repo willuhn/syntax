@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.7 $
+ * $Date: 2010/08/30 16:31:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,11 +15,14 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
+import de.willuhn.jameica.fibu.gui.action.BuchungExport;
 import de.willuhn.jameica.fibu.gui.action.BuchungGeprueft;
+import de.willuhn.jameica.fibu.gui.action.BuchungImport;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.BuchungUnGeprueft;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
@@ -44,6 +47,9 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungGeprueft(),false,"emblem-default.png"));
     this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungUnGeprueft(),true,"edit-undo.png"));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new BuchungExport(),"document-save.png"));
+    this.addItem(new ContextMenuItem(i18n.tr("Importieren..."),new BuchungImport(),"document-open.png"));
   }
   
   /**
@@ -130,6 +136,9 @@ public class BuchungListMenu extends ContextMenu
 
 /*********************************************************************
  * $Log: BuchungListMenu.java,v $
+ * Revision 1.7  2010/08/30 16:31:43  willuhn
+ * @N Import und Export von Buchungen im XML-Format
+ *
  * Revision 1.6  2010/06/04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons

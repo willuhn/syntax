@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.27 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.28 $
+ * $Date: 2010/08/30 16:31:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,9 +31,9 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
+import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -62,25 +62,15 @@ import de.willuhn.util.I18N;
  */
 public class BuchungList extends TablePart implements Extendable
 {
-  
-  private I18N i18n             = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-  private TextInput search      = null;
-  private boolean showFilter    = true;
+  private Konto konto               = null;
+  private GenericIterator buchungen = null;
+  private TextInput search          = null;
+  private boolean showFilter        = true;
 
-  private GenericIterator list  = null;
-  private ArrayList buchungen   = null;
-  
-  private MessageConsumer mc    = new MyMessageConsumer();
-
-  /**
-   * ct.
-   * @throws RemoteException
-   */
-  public BuchungList() throws RemoteException
-  {
-    this(new BuchungNeu());
-  }
+  private MessageConsumer mcChanged    = new ChangedMessageConsumer();
+  private MessageConsumer mcImported   = new ImportedMessageConsumer();
 
   /**
    * ct.
@@ -101,6 +91,7 @@ public class BuchungList extends TablePart implements Extendable
   public BuchungList(Konto konto, Action action) throws RemoteException
   {
     this(init(konto), action);
+    this.konto = konto;
   }
   
   /**
@@ -109,12 +100,11 @@ public class BuchungList extends TablePart implements Extendable
    * @param action
    * @throws RemoteException
    */
-  public BuchungList(GenericIterator buchungen, Action action) throws RemoteException
+  private BuchungList(GenericIterator buchungen, Action action) throws RemoteException
   {
     super(buchungen,action);
-    this.list = buchungen;
+    this.buchungen = buchungen;
 
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
@@ -233,8 +223,9 @@ public class BuchungList extends TablePart implements Extendable
   
   /**
    * Aktualisiert die Tabelle
+   * @param reload true, wenn die Buchungen aus der Datenbank neu geladen werden sollen.
    */
-  private synchronized void update()
+  private synchronized void update(final boolean reload)
   {
     GUI.getDisplay().syncExec(new Runnable()
     {
@@ -253,28 +244,31 @@ public class BuchungList extends TablePart implements Extendable
           boolean empty = text == null || text.length() == 0;
           if (!empty) text = text.toLowerCase();
 
-          for (int i=0;i<buchungen.size();++i)
+          // Daten neu laden?
+          if (reload)
+            buchungen = init(konto);
+          
+          buchungen.begin();
+          while (buchungen.hasNext())
           {
-            a = (BaseBuchung) buchungen.get(i);
+            a = (BaseBuchung) buchungen.next();
 
             // Was zum Filtern da?
             if (empty)
             {
               // ne
-              BuchungList.this.addItem(a);
+              addItem(a);
               continue;
             }
 
             String s = a.getText();
-            
             s = s == null ? "" : s.toLowerCase();
-
             if (s.indexOf(text) != -1)
-            {
-              BuchungList.this.addItem(a);
-            }
+              addItem(a);
           }
-          BuchungList.this.sort();
+          
+          // Neu sortieren
+          sort();
         }
         catch (Exception e)
         {
@@ -300,27 +294,16 @@ public class BuchungList extends TablePart implements Extendable
     }
 
     super.paint(parent);
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+    Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
+    Application.getMessagingFactory().registerMessageConsumer(this.mcImported);
     parent.addDisposeListener(new DisposeListener()
     {
       public void widgetDisposed(DisposeEvent e)
       {
-        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcChanged);
+        Application.getMessagingFactory().unRegisterMessageConsumer(mcImported);
       }
     });
-
-    if (showFilter)
-    {
-      // Wir kopieren den ganzen Kram in eine ArrayList, damit die
-      // Objekte beim Filter geladen bleiben
-      buchungen = new ArrayList();
-      list.begin();
-      while (list.hasNext())
-      {
-        BaseBuchung a = (BaseBuchung) list.next();
-        buchungen.add(a);
-      }
-    }
   }
 
   private class KL extends KeyAdapter
@@ -332,7 +315,7 @@ public class BuchungList extends TablePart implements Extendable
        */
       public void handleEvent(Event event)
       {
-        update();
+        update(false);
       }
 
     });
@@ -381,7 +364,7 @@ public class BuchungList extends TablePart implements Extendable
   /**
    * erhaelt Updates ueber geaenderte Buchungen und aktualisiert die Tabelle live.
    */
-  private class MyMessageConsumer implements MessageConsumer
+  private class ChangedMessageConsumer implements MessageConsumer
   {
     /**
      * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
@@ -432,11 +415,62 @@ public class BuchungList extends TablePart implements Extendable
       });
     }
   }
+
+
+  /**
+   * Listener, der das Neuladen der Buchungen uebernimmt.
+   */
+  private class ImportedListener implements Listener
+  {
+    /**
+     * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+     */
+    public void handleEvent(Event event)
+    {
+      update(true);
+    }
+  }
+  
+  /**
+   * Mit dem Consumer werden wir ueber importierte Datensaetze informiert.
+   */
+  private class ImportedMessageConsumer implements MessageConsumer
+  {
+    private DelayedListener delay = new DelayedListener(new ImportedListener());
+    
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#autoRegister()
+     */
+    public boolean autoRegister()
+    {
+      return false;
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#getExpectedMessageTypes()
+     */
+    public Class[] getExpectedMessageTypes()
+    {
+      return new Class[]{ObjectImportedMessage.class};
+    }
+
+    /**
+     * @see de.willuhn.jameica.messaging.MessageConsumer#handleMessage(de.willuhn.jameica.messaging.Message)
+     */
+    public void handleMessage(Message message) throws Exception
+    {
+      delay.handleEvent(null);
+    }
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
+ * Revision 1.28  2010/08/30 16:31:43  willuhn
+ * @N Import und Export von Buchungen im XML-Format
+ *
  * Revision 1.27  2010/06/01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar

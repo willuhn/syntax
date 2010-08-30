@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungstemplateExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/30 16:31:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,7 +31,7 @@ public class BuchungstemplateExport implements Action
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
-   * Erwartet ein Objekt vom Typ <code>Address</code> oder <code>Address[]</code>.
+   * Erwartet ein Objekt vom Typ <code>Buchungstemplate</code> oder <code>Buchungstemplate[]</code>.
    * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
    */
   public void handleAction(Object context) throws ApplicationException
@@ -76,6 +76,9 @@ public class BuchungstemplateExport implements Action
 
 /**********************************************************************
  * $Log: BuchungstemplateExport.java,v $
+ * Revision 1.2  2010/08/30 16:31:43  willuhn
+ * @N Import und Export von Buchungen im XML-Format
+ *
  * Revision 1.1  2010/08/27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
