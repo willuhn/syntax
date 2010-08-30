@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportUstVoranmeldung.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/08/30 15:49:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,8 +40,6 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
     
     Map<String,Position> positions = new HashMap<String,Position>();
     
-    // TODO: Es waere wohl sauberer, wenn wir hier nicht alle Konten nehmen
-    // sondern getrennt getEinnahmen und getAusgaben aus dem Betriebsergebnis
     DBIterator konten = jahr.getKontenrahmen().getKonten();
     while (konten.hasNext())
     {
@@ -213,6 +211,9 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportUstVoranmeldung.java,v $
+ * Revision 1.2  2010/08/30 15:49:45  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2010/08/27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
