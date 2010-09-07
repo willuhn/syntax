@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/05/07 12:11:42 $
+ * $Revision: 1.11 $
+ * $Date: 2010/09/07 10:07:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -218,34 +218,7 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
 
 /*********************************************************************
  * $Log: AbschreibungImpl.java,v $
- * Revision 1.10  2006/05/07 12:11:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2006/05/07 12:11:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2006/01/08 15:28:41  willuhn
- * @N Loeschen von Sonderabschreibungen
- *
- * Revision 1.7  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.6  2005/10/06 15:15:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/09/27 17:41:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/09/05 13:14:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.2  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.1  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
+ * Revision 1.11  2010/09/07 10:07:57  willuhn
+ * @N Test-Commit
  *
  **********************************************************************/
