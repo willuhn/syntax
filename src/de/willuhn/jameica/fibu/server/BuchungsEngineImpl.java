@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/08/02 22:47:55 $
+ * $Revision: 1.13 $
+ * $Date: 2010/09/19 21:57:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -281,7 +281,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     double restwert    = av.getRestwert(jahr);
     boolean gwg        = false;
 
-    if (restwert == 0.0d)
+    if (restwert < 0.01d)
       return null; // bereits abgeschrieben
 
     String name    = i18n.tr("Abschreibung");
@@ -495,7 +495,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.12  2010/08/02 22:47:55  willuhn
+ * Revision 1.13  2010/09/19 21:57:27  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.12  2010-08-02 22:47:55  willuhn
  * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
  *
  * Revision 1.11  2009/07/03 10:52:19  willuhn
