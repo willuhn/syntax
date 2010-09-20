@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.22 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.23 $
+ * $Date: 2010/09/20 09:19:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,7 +73,7 @@ public class AnlagevermoegenControl extends AbstractControl
   private KontoInput afaKonto    = null;
   private DialogInput datum      = null;
   
-  private Input buchungLink      = null;
+  private ButtonInput buchungLink      = null;
   
   private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(AnfangsbestandControl.class);
 
@@ -116,8 +116,7 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.name != null)
       return this.name;
     this.name = new TextInput(getAnlagevermoegen().getName(),255);
-    if (!getAnlagevermoegen().canChange())
-      this.name.disable();
+    this.name.setEnabled(getAnlagevermoegen().canChange());
     this.name.setMandatory(true);
     return this.name;
   }
@@ -134,8 +133,7 @@ public class AnlagevermoegenControl extends AbstractControl
     Mandant m = getAnlagevermoegen().getMandant();
     this.kosten = new DecimalInput(getAnlagevermoegen().getAnschaffungskosten(),Settings.DECIMALFORMAT);
     this.kosten.setComment(i18n.tr("{0}, GWG-Grenze: {1} {0}",new String[]{m.getWaehrung(),Settings.DECIMALFORMAT.format(Settings.getGwgWert(null))}));
-    if (!getAnlagevermoegen().canChange())
-      this.kosten.disable();
+    this.kosten.setEnabled(getAnlagevermoegen().canChange());
     this.kosten.setMandatory(true);
     return this.kosten;
   }
@@ -206,8 +204,7 @@ public class AnlagevermoegenControl extends AbstractControl
     datum = new DialogInput(Settings.DATEFORMAT.format(date),d);
     datum.setValue(date);
     datum.disableClientControl();
-    if (!getAnlagevermoegen().canChange())
-      this.datum.disable();
+    this.datum.setEnabled(getAnlagevermoegen().canChange());
     return datum;
   }
   
@@ -222,8 +219,7 @@ public class AnlagevermoegenControl extends AbstractControl
       return this.laufzeit;
     int n = getAnlagevermoegen().getNutzungsdauer();
     this.laufzeit = new IntegerInput(n == 0 ? 1 : n);
-    if (!getAnlagevermoegen().canChange())
-      this.laufzeit.disable();
+    this.laufzeit.setEnabled(getAnlagevermoegen().canChange());
     this.laufzeit.setMandatory(true);
     return this.laufzeit;
   }
@@ -255,8 +251,7 @@ public class AnlagevermoegenControl extends AbstractControl
     }
 
     konto = new KontoInput(list,k);
-    if (!getAnlagevermoegen().canChange())
-      this.konto.disable();
+    this.konto.setEnabled(getAnlagevermoegen().canChange());
     this.konto.setMandatory(true);
     return konto;
   }
@@ -283,8 +278,7 @@ public class AnlagevermoegenControl extends AbstractControl
       k = Settings.getAbschreibungsKonto(jahr,d != null && d.doubleValue() < Settings.getGwgWert(jahr));
     }
     afaKonto = new KontoInput(list,k);
-    if (!getAnlagevermoegen().canChange())
-      this.afaKonto.disable();
+    this.afaKonto.setEnabled(getAnlagevermoegen().canChange());
     this.afaKonto.setMandatory(true);
     return afaKonto;
   }
@@ -293,12 +287,13 @@ public class AnlagevermoegenControl extends AbstractControl
    * Liefert ein Label mit der Bezeichnung der ggf zugehoerigen Buchung samt Link zum Oeffnen.
    * @return Label mit Buchung.
    */
-  public Input getBuchungLink()
+  public ButtonInput getBuchungLink() throws RemoteException
   {
     if (this.buchungLink != null)
       return this.buchungLink;
     
     this.buchungLink = new BuchungLink();
+    this.buchungLink.setEnabled(getAnlagevermoegen().canChange());
     return this.buchungLink;
   }
   
@@ -510,7 +505,10 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
- * Revision 1.22  2010/06/04 00:33:56  willuhn
+ * Revision 1.23  2010/09/20 09:19:06  willuhn
+ * @B minor gui fixes
+ *
+ * Revision 1.22  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup

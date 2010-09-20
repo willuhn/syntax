@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnlagevermoegenAbschreiben.java,v $
- * $Revision: 1.2 $
- * $Date: 2006/01/08 15:28:41 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/20 09:19:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,7 +59,7 @@ public class AnlagevermoegenAbschreiben implements Action
       Anlagevermoegen av = (Anlagevermoegen) context;
       
       double restwert = av.getRestwert(Settings.getActiveGeschaeftsjahr());
-      if (restwert == 0.0d)
+      if (restwert < 0.01d)
       {
         GUI.getStatusBar().setErrorText(i18n.tr("Anlage-Gegenstand ist bereits abgeschrieben"));
         return;
@@ -130,7 +130,10 @@ public class AnlagevermoegenAbschreiben implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenAbschreiben.java,v $
- * Revision 1.2  2006/01/08 15:28:41  willuhn
+ * Revision 1.3  2010/09/20 09:19:06  willuhn
+ * @B minor gui fixes
+ *
+ * Revision 1.2  2006-01-08 15:28:41  willuhn
  * @N Loeschen von Sonderabschreibungen
  *
  * Revision 1.1  2006/01/04 00:53:48  willuhn

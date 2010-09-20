@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.16 $
+ * $Date: 2010/09/20 09:19:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,15 +82,18 @@ public class AnlagevermoegenNeu extends AbstractView
         GUI.startView(GUI.getCurrentView().getClass(),getCurrentObject());
       }
     }, getCurrentObject(),false,"list-remove.png");
-    b.setEnabled(!control.getAnlagevermoegen().isNewObject() && !Settings.getActiveGeschaeftsjahr().isClosed() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) > 0.0d);
+    b.setEnabled(!control.getAnlagevermoegen().isNewObject() && !Settings.getActiveGeschaeftsjahr().isClosed() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) >= 0.01d);
     buttonArea.addButton(b);
-    buttonArea.addButton(i18n.tr("Speichern"), new Action()
+    
+    Button save = new Button(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,true,"document-save.png");
+    save.setEnabled(control.getAnlagevermoegen().canChange());
+    buttonArea.addButton(save);
 
     new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
@@ -101,7 +104,10 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
- * Revision 1.15  2010/06/04 00:33:56  willuhn
+ * Revision 1.16  2010/09/20 09:19:06  willuhn
+ * @B minor gui fixes
+ *
+ * Revision 1.15  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup

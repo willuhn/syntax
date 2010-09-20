@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvGesamt.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/09/20 09:19:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,7 +41,7 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
     while (i.hasNext())
     {
       Anlagevermoegen av = (Anlagevermoegen) i.next();
-      if (av.getAnfangsbestand(jahr) <= 0.0)
+      if (av.getAnfangsbestand(jahr) < 0.01d)
         continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
       
       // Wurde nach dem aktuellen Jahr angeschafft -> ignorieren wir
@@ -81,7 +81,10 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportAvGesamt.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2010/09/20 09:19:06  willuhn
+ * @B minor gui fixes
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
