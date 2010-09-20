@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/AnlagevermoegenList.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.11 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.widgets.TableItem;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -25,7 +27,9 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
+import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.TablePart;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
@@ -70,6 +74,23 @@ public class AnlagevermoegenList extends TablePart
     setContextMenu(new AnlagevermoegenListMenu());
     setRememberColWidths(true);
     setRememberOrder(true);
+    
+    setFormatter(new TableFormatter() {
+      public void format(TableItem item)
+      {
+        try
+        {
+          Anlagevermoegen a = (Anlagevermoegen) item.getData();
+          if (a == null)
+            return;
+          item.setForeground(a.getStatus() == Anlagevermoegen.STATUS_BESTAND ? Color.WIDGET_FG.getSWTColor() : Color.COMMENT.getSWTColor());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to format item",e);
+        }
+      }
+    });
   }
   
   /**
@@ -89,7 +110,10 @@ public class AnlagevermoegenList extends TablePart
 
 /*********************************************************************
  * $Log: AnlagevermoegenList.java,v $
- * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * Revision 1.11  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.10  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

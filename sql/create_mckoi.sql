@@ -157,6 +157,7 @@ CREATE TABLE anlagevermoegen (
   konto_id int(10) NULL,
   nutzungsdauer int(2) NOT NULL,
   buchung_id int(10) NULL,
+  status int(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

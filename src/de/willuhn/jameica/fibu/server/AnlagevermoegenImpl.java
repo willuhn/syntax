@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.19 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -349,6 +349,10 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   protected void updateCheck() throws ApplicationException
   {
+    // Beim Status-Update ist das zulaessig
+    if (statusUpdate)
+      return;
+    
     // Zuerst pruefen wir, ob ueberhaupt was geaendert werden darf
     try
     {
@@ -363,7 +367,27 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
     // und wenn wir hier angekommen sind, machen wir noch die regulaeren Checks
     insertCheck();
-    
+  }
+  
+  private boolean statusUpdate = false;
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#updateStatus(int)
+   */
+  public void updateStatus(int status) throws RemoteException, ApplicationException
+  {
+    if (this.hasChanged()) // Wenn der Status geaendert wird, darf hier nichts anderes mehr geaendert werden
+      throw new ApplicationException(i18n.tr("Status-Änderung nicht mehr möglich"));
+    try
+    {
+      this.statusUpdate = true;
+      this.setStatus(status);
+      this.store();
+    }
+    finally
+    {
+      this.statusUpdate = false;
+    }
   }
 
   /**
@@ -483,12 +507,32 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     return sum;
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getStatus()
+   */
+  public int getStatus() throws RemoteException
+  {
+    Integer status = (Integer) this.getAttribute("status");
+    return status == null ? STATUS_BESTAND : status.intValue(); // wenn nichts angegeben ist, stehts noch im Bestand
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#setStatus(int)
+   */
+  public void setStatus(int status) throws RemoteException
+  {
+    this.setAttribute("status",new Integer(status));
+  }
+
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
- * Revision 1.18  2006/05/29 13:02:30  willuhn
+ * Revision 1.19  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.18  2006-05-29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *
  * Revision 1.17  2006/05/08 15:41:57  willuhn

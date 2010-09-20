@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.23 $
- * $Date: 2010/09/20 09:19:06 $
+ * $Revision: 1.24 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,9 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -45,8 +47,10 @@ import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -58,10 +62,10 @@ import de.willuhn.util.I18N;
  */
 public class AnlagevermoegenControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(AnfangsbestandControl.class);
 
   private Anlagevermoegen vermoegen = null;
-  
-  private I18N i18n = null;
   
   private Input name        = null;
   private Input kosten      = null;
@@ -69,13 +73,14 @@ public class AnlagevermoegenControl extends AbstractControl
   private Input restwert    = null;
   private Input hinweis     = null;
   
-  private KontoInput konto       = null;
-  private KontoInput afaKonto    = null;
-  private DialogInput datum      = null;
+  private KontoInput konto        = null;
+  private KontoInput afaKonto     = null;
+  private DialogInput datum       = null;
   
-  private ButtonInput buchungLink      = null;
+  private ButtonInput buchungLink = null;
   
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(AnfangsbestandControl.class);
+  private SelectInput status     = null;
+  
 
   
   /**
@@ -84,7 +89,7 @@ public class AnlagevermoegenControl extends AbstractControl
   public AnlagevermoegenControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    
   }
 
   /**
@@ -119,6 +124,24 @@ public class AnlagevermoegenControl extends AbstractControl
     this.name.setEnabled(getAnlagevermoegen().canChange());
     this.name.setMandatory(true);
     return this.name;
+  }
+  
+  /**
+   * Liefert eine Auswahl fuer den Status des Anlagegutes.
+   * @return Auswahl fuer den Status des Anlagegutes.
+   * @throws RemoteException
+   */
+  public SelectInput getStatus() throws RemoteException
+  {
+    if (this.status != null)
+      return this.status;
+    
+    List<Status> list = new ArrayList<Status>();
+    list.add(new Status(Anlagevermoegen.STATUS_BESTAND));
+    list.add(new Status(Anlagevermoegen.STATUS_VERKAUFT));
+    list.add(new Status(Anlagevermoegen.STATUS_ENTSORGT));
+    this.status = new SelectInput(list,new Status(this.getAnlagevermoegen().getStatus()));
+    return this.status;
   }
   
   /**
@@ -368,6 +391,19 @@ public class AnlagevermoegenControl extends AbstractControl
   {
     try
     {
+      // Wir erlauben hier nur noch das Aendern des Status
+      if (!getAnlagevermoegen().canChange())
+      {
+        Status s = (Status) this.getStatus().getValue();
+        int current = getAnlagevermoegen().getStatus();
+        if (current == s.code)
+          return; // Nichts geaendert
+        
+        getAnlagevermoegen().updateStatus(s.code);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Status gespeichert"),StatusBarMessage.TYPE_SUCCESS));
+        return;
+      }
+      
       Konto k = (Konto)getKonto().getValue();
 
       Konto abschreibung = (Konto)getAbschreibungsKonto().getValue();
@@ -375,6 +411,7 @@ public class AnlagevermoegenControl extends AbstractControl
       getAnlagevermoegen().setName((String) getName().getValue());
       getAnlagevermoegen().setKonto(k);
       getAnlagevermoegen().setAnschaffungsDatum((Date) getDatum().getValue());
+      getAnlagevermoegen().setStatus(((Status)getStatus().getValue()).code);
       
       double ak = 0.0d;
       try
@@ -498,14 +535,61 @@ public class AnlagevermoegenControl extends AbstractControl
         GUI.getStatusBar().setErrorText(i18n.tr("Fehler beim Prüfen des Restwertes"));
       }
     }
+  }
+  
+  /**
+   * Hilfsklasse fuer den Status des Anlagegutes.
+   */
+  private class Status
+  {
+    private int code = Anlagevermoegen.STATUS_BESTAND;
     
+    /**
+     * ct.
+     * @param status Status-Code.
+     * @param text Status-Text.
+     */
+    private Status(int status)
+    {
+      this.code = status;
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+      switch (this.code)
+      {
+        case Anlagevermoegen.STATUS_BESTAND:
+          return i18n.tr("Im Bestand");
+        case Anlagevermoegen.STATUS_VERKAUFT:
+          return i18n.tr("Veräußert");
+        case Anlagevermoegen.STATUS_ENTSORGT:
+          return i18n.tr("Entsorgt");
+      }
+      return i18n.tr("Unbekannter Status");
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o)
+    {
+      if (!(o instanceof Status))
+        return false;
+      return this.code == ((Status)o).code;
+    }
   }
 }
 
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
- * Revision 1.23  2010/09/20 09:19:06  willuhn
+ * Revision 1.24  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.23  2010-09-20 09:19:06  willuhn
  * @B minor gui fixes
  *
  * Revision 1.22  2010-06-04 00:33:56  willuhn

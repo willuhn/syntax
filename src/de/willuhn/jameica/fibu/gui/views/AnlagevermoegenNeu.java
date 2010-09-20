@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/09/20 09:19:06 $
+ * $Revision: 1.17 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ public class AnlagevermoegenNeu extends AbstractView
     group.addLabelPair(i18n.tr("Bestandskonto"),                control.getKonto());
     group.addLabelPair(i18n.tr("Anschaffungsdatum"),            control.getDatum());
     group.addLabelPair(i18n.tr("Anschaffungskosten (netto)"),   control.getKosten());
+    group.addLabelPair(i18n.tr("Status"),                       control.getStatus());
 
     Buchung buchung = control.getAnlagevermoegen().getBuchung();
     if (buchung != null)
@@ -85,15 +86,13 @@ public class AnlagevermoegenNeu extends AbstractView
     b.setEnabled(!control.getAnlagevermoegen().isNewObject() && !Settings.getActiveGeschaeftsjahr().isClosed() && control.getAnlagevermoegen().getRestwert(Settings.getActiveGeschaeftsjahr()) >= 0.01d);
     buttonArea.addButton(b);
     
-    Button save = new Button(i18n.tr("Speichern"), new Action()
+    buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore();
       }
     },null,true,"document-save.png");
-    save.setEnabled(control.getAnlagevermoegen().canChange());
-    buttonArea.addButton(save);
 
     new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
@@ -104,7 +103,10 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
- * Revision 1.16  2010/09/20 09:19:06  willuhn
+ * Revision 1.17  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.16  2010-09-20 09:19:06  willuhn
  * @B minor gui fixes
  *
  * Revision 1.15  2010-06-04 00:33:56  willuhn

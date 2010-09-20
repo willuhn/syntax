@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.12 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.13 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,12 +18,28 @@ import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.util.ApplicationException;
 
 /**
  * Bildet einen einzelnen Posten des Anlagevermoegens ab.
  */
 public interface Anlagevermoegen extends DBObject
 {
+  /**
+   * Status: "Noch im Bestand".
+   */
+  public final static int STATUS_BESTAND = 0;
+  
+  /**
+   * Status "Verkauft".
+   */
+  public final static int STATUS_VERKAUFT = 1;
+  
+  /**
+   * Status "Entsorgt".
+   */
+  public final static int STATUS_ENTSORGT = 2;
+  
   /**
    * Liefert die Bezeichnung des Anlagevermoegens.
    * @return Bezeichnung.
@@ -207,12 +223,37 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setRestwert(double restwert) throws RemoteException;
+  
+  /**
+   * Liefert den Status des Anlagegutes.
+   * @return Status des Anlagegutes.
+   * @throws RemoteException
+   */
+  public int getStatus() throws RemoteException;
+  
+  /**
+   * Speichert den Status des Anlagegutes.
+   * @param status Status des Anlagegutes.
+   * @throws RemoteException
+   */
+  public void setStatus(int status) throws RemoteException;
+  
+  /**
+   * Aendert den Status des Anlagegutes unabhaengig von den anderen Attributen.
+   * @param status der neue Status.
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void updateStatus(int status) throws RemoteException, ApplicationException;
 }
 
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
- * Revision 1.12  2006/05/29 13:02:30  willuhn
+ * Revision 1.13  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.12  2006-05-29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *
  * Revision 1.11  2006/05/08 15:41:57  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvGesamt.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/09/20 09:19:06 $
+ * $Revision: 1.3 $
+ * $Date: 2010/09/20 10:27:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -41,8 +41,8 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
     while (i.hasNext())
     {
       Anlagevermoegen av = (Anlagevermoegen) i.next();
-      if (av.getAnfangsbestand(jahr) < 0.01d)
-        continue; // AV, welches schon komplett abgeschrieben ist, ignorieren wir
+      if (av.getStatus() != Anlagevermoegen.STATUS_BESTAND)
+        continue; // Nicht mehr im Bestand
       
       // Wurde nach dem aktuellen Jahr angeschafft -> ignorieren wir
       if (av.getAnschaffungsdatum().after(end))
@@ -81,7 +81,10 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportAvGesamt.java,v $
- * Revision 1.2  2010/09/20 09:19:06  willuhn
+ * Revision 1.3  2010/09/20 10:27:36  willuhn
+ * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
+ *
+ * Revision 1.2  2010-09-20 09:19:06  willuhn
  * @B minor gui fixes
  *
  * Revision 1.1  2010-08-27 10:18:14  willuhn
