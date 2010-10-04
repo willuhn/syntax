@@ -1,0 +1,218 @@
+/**********************************************************************
+ * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/DatevExporter.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2010/10/04 09:00:07 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn.webdesign
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.jameica.fibu.io;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import de.willuhn.datasource.BeanUtil;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.Settings;
+import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
+import de.willuhn.util.I18N;
+import de.willuhn.util.ProgressMonitor;
+
+/**
+ * Exportiert Daten im Datev-Format.
+ */
+public class DatevExporter implements Exporter
+{
+  private final static I18N i18n                   = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static Settings settings           = new Settings(DatevExporter.class);
+  private final static DateFormat DATEFORMAT       = new SimpleDateFormat("ddMM");
+  
+  /**
+   * @see de.willuhn.jameica.fibu.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.fibu.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
+   */
+  public void doExport(Object[] objects, IOFormat format,OutputStream os, final ProgressMonitor monitor) throws RemoteException, ApplicationException
+  {
+    Writer writer = null;
+
+    try
+    {
+      double factor = 1;
+      if (monitor != null)
+      {
+        factor = ((double)(100 - monitor.getPercentComplete())) / objects.length;
+        monitor.setStatusText(i18n.tr("Exportiere Daten"));
+      }
+
+      writer = new BufferedWriter(new OutputStreamWriter(os,settings.getString("charset","ISO-8859-15")));
+      
+      String header = "Währungskennzeichen;" +
+      		            "Soll/Haben-Kennzeichen;" +
+      		            "Umsatz (ohne Soll/Haben-Kz);" +
+      		            "BU-Schlüssel;" +
+      		            "Gegenkonto (ohne BU-Schlüssel);" +
+      		            "Belegfeld1;" +
+      		            "Belegfeld2;" +
+      		            "Datum;" +
+      		            "Konto;" +
+      		            "Kostfeld1;" +
+      		            "Kostfeld2;" +
+      		            "Kostmenge;" +
+      		            "Skonto;" +
+      		            "Buchungstext;" +
+      		            "EU-Land und UStID;" +
+      		            "EU-Steuersatz;" +
+      		            "Basiswährungskennung;" +
+      		            "Basiswährungsbetrag;" +
+      		            "Kurs";
+      writer.write(header);
+      writer.write("\r\n");
+        
+      for (int i=0;i<objects.length;++i)
+      {
+        if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
+        Object name = BeanUtil.toString(objects[i]);
+        if (name != null && monitor != null)
+          monitor.log(i18n.tr("Exportiere {0}",name.toString()));
+        
+        Buchung b = (Buchung)objects[i];
+        writer.write(serialize(b));
+        
+        // Jetzt noch die zugehoerigen Hilfs-Buchungen
+        DBIterator list = b.getHilfsBuchungen();
+        while (list.hasNext())
+        {
+          BaseBuchung bb = (BaseBuchung) list.next();
+          writer.write(serialize(bb));
+        }
+        
+      }
+    }
+    catch (IOException e)
+    {
+      Logger.error("unable to write csv file",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Export der Daten. " + e.getMessage()));
+    }
+    finally
+    {
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("Schliesse Export-Datei"));
+      }
+      try
+      {
+        if (writer != null)
+          writer.close();
+      }
+      catch (Exception e) {/*useless*/}
+    }
+  }
+  
+  /**
+   * Serialisiert eine Buchung.
+   * @param b die zu serialisierende Buchung.
+   * @return die serialisierte Zeile.
+   * @throws RemoteException
+   */
+  private String serialize(BaseBuchung b) throws RemoteException
+  {
+    String curr = b.getGeschaeftsjahr().getMandant().getWaehrung();
+    String sep  = settings.getString("separator",";");
+
+    // Format-Definition gemaess dvrewe_standart_importormate2.pdf, Seite 3
+    StringBuffer sb = new StringBuffer();
+    sb.append(format(curr)); sb.append(sep);                                    // Waehrungskennung
+    sb.append(format("S")); sb.append(sep);                                     // Soll/Haben-Kennzeichen
+    sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getBetrag()));sb.append(sep); // Umsatz (ohne Soll/Haben-Kz)
+    sb.append(""); sb.append(sep);                                              // BU-Schluessel
+    sb.append(b.getHabenKonto().getKontonummer()); sb.append(sep);              // Gegenkonto (ohne BU-Schlüssel)
+    sb.append(format("")); sb.append(sep);                                      // Belegfeld 1
+    sb.append(format("")); sb.append(sep);                                      // Belegfeld 2
+    sb.append(DATEFORMAT.format(b.getDatum())); sb.append(sep);                 // Datum
+    sb.append(b.getSollKonto().getKontonummer()); sb.append(sep);               // Konto
+    sb.append(format("")); sb.append(sep);                                      // Kostfeld 1
+    sb.append(format("")); sb.append(sep);                                      // Kostfeld 2
+    sb.append(""); sb.append(sep);                                              // Kostmenge
+    sb.append(""); sb.append(sep);                                              // Skonto
+    sb.append(format(b.getText())); sb.append(sep);                             // Buchungstext
+    sb.append(format("")); sb.append(sep);                                      // EU-Land und UStID
+    sb.append(""); sb.append(sep);                                              // EU-Steuersatz
+    sb.append(format("")); sb.append(sep);                                      // Basiswährungskennung
+    sb.append(""); sb.append(sep);                                              // Basiswährungsbetrag
+    sb.append(""); sb.append(sep);                                              // Kurs
+    
+    sb.append("\r\n"); // Ich gehe mal davon aus, dass DATEV Windows-Zeilenumbrueche verwendet
+    return sb.toString();
+  }
+  
+  /**
+   * Formatiert die Spalte.
+   * @param value der Wert der Spalte.
+   * @return die formatierte Spalte.
+   */
+  private String format(Object value)
+  {
+    String quote = settings.getString("quote","\"");
+    String s = value == null ? "" : value.toString();
+    return quote + s + quote;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.io.IO#getIOFormats(java.lang.Class)
+   */
+  public IOFormat[] getIOFormats(Class objectType)
+  {
+    if (objectType == null)
+      return null;
+    
+    if (!Buchung.class.equals(objectType))
+      return null;
+
+    return new IOFormat[]{new IOFormat() {
+      public String getName()
+      {
+        return DatevExporter.this.getName();
+      }
+    
+      /**
+       * @see de.willuhn.jameica.fibu.io.IOFormat#getFileExtensions()
+       */
+      public String[] getFileExtensions()
+      {
+        return new String[]{"csv"};
+      }
+    }};
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.io.IO#getName()
+   */
+  public String getName()
+  {
+    return i18n.tr("CSV-Format (DATEV-Format: \"Ex/Import (Buchungssätze)\")");
+  }
+
+}
+
+
+/*********************************************************************
+ * $Log: DatevExporter.java,v $
+ * Revision 1.1  2010/10/04 09:00:07  willuhn
+ * @N CSV-Export von Buchungen
+ *
+ **********************************************************************/
