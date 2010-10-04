@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/30 16:41:01 $
+ * $Revision: 1.3 $
+ * $Date: 2010/10/04 08:37:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,7 +34,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class XMLExporter implements Exporter
 {
-  protected final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
    * @see de.willuhn.jameica.fibu.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.fibu.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
@@ -122,7 +122,10 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
- * Revision 1.2  2010/08/30 16:41:01  willuhn
+ * Revision 1.3  2010/10/04 08:37:03  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.2  2010-08-30 16:41:01  willuhn
  * @N Klartextbezeichnung bei Import/Export
  *
  * Revision 1.1  2010/08/27 11:19:40  willuhn
