@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.73 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.74 $
+ * $Date: 2010/10/13 21:55:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,8 +145,16 @@ public class BuchungControl extends AbstractControl
             Buchungstemplate t = (Buchungstemplate) o;
             getSollKontoAuswahl().setValue(t.getSollKonto());
             getHabenKontoAuswahl().setValue(t.getHabenKonto());
-            getText().setValue(t.getText());
-            getBetrag().setValue(new Double(t.getBetrag()));
+            
+            // Wir ueberschreiben den Text und Betrag nur, wenn nicht schon was andres drin steht
+            String text = (String) getText().getValue();
+            if (text == null || text.length() == 0)
+              getText().setValue(t.getText());
+            
+            Double betrag = (Double) getBetrag().getValue();
+            if (betrag == null || betrag.doubleValue() == 0.0d)
+              getBetrag().setValue(new Double(t.getBetrag()));
+            
             getSteuer().setValue(new Double(t.getSteuer()));
             
             // Das Setzen des Focus geht zwar. Aber danach laesst sich die
@@ -681,7 +689,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
- * Revision 1.73  2010/06/04 00:33:56  willuhn
+ * Revision 1.74  2010/10/13 21:55:31  willuhn
+ * @N Text und Betrag nur dann mit den Werten aus der Vorlage ueberschreiben, wenn nicht schon was drin steht
+ *
+ * Revision 1.73  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup
