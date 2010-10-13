@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/DatevExporter.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/10/04 09:00:07 $
+ * $Revision: 1.2 $
+ * $Date: 2010/10/13 21:51:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -151,7 +151,7 @@ public class DatevExporter implements Exporter
     sb.append(""); sb.append(sep);                                              // Skonto
     sb.append(format(b.getText())); sb.append(sep);                             // Buchungstext
     sb.append(format("")); sb.append(sep);                                      // EU-Land und UStID
-    sb.append(""); sb.append(sep);                                              // EU-Steuersatz
+    sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getSteuer())); sb.append(sep); // EU-Steuersatz
     sb.append(format("")); sb.append(sep);                                      // Basiswährungskennung
     sb.append(""); sb.append(sep);                                              // Basiswährungsbetrag
     sb.append(""); sb.append(sep);                                              // Kurs
@@ -212,7 +212,10 @@ public class DatevExporter implements Exporter
 
 /*********************************************************************
  * $Log: DatevExporter.java,v $
- * Revision 1.1  2010/10/04 09:00:07  willuhn
+ * Revision 1.2  2010/10/13 21:51:05  willuhn
+ * @N Testweise den Steuersatz der Buchung in Spalte "EU-Steuersatz" eingetragen.
+ *
+ * Revision 1.1  2010-10-04 09:00:07  willuhn
  * @N CSV-Export von Buchungen
  *
  **********************************************************************/
