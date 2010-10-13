@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/08/02 22:42:03 $
+ * $Revision: 1.16 $
+ * $Date: 2010/10/13 21:46:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,7 +12,6 @@
  **********************************************************************/
 package de.willuhn.jameica.fibu.server;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,9 +32,7 @@ public class Math
    */
   public double netto(double bruttoBetrag, double steuerSatz)
   {
-    BigDecimal bd = new BigDecimal(bruttoBetrag);
-    return bd.multiply(new BigDecimal(100)).divide(new BigDecimal(100d + steuerSatz),2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
-//    return (100d * bruttoBetrag) / (100d + steuerSatz);
+    return round(100d * bruttoBetrag) / (100d + steuerSatz);
   }
   
   /**
@@ -46,15 +43,13 @@ public class Math
    */
   public double brutto(double nettoBetrag, double steuerSatz)
   {
-    BigDecimal bd = new BigDecimal(nettoBetrag);
-    return bd.multiply(new BigDecimal(100d + steuerSatz)).divide(new BigDecimal(100d),2,BigDecimal.ROUND_HALF_EVEN).doubleValue();
-//    double brutto = (nettoBetrag * (100d + steuerSatz)) / 100d;
-//    
-//    // Vergleich
-//    double steuer = steuer(brutto,steuerSatz);
-//    double diff = (nettoBetrag + steuer) - brutto;
-//    
-//    return brutto + diff; 
+    double brutto = (nettoBetrag * (100d + steuerSatz)) / 100d;
+    
+    // Vergleich
+    double steuer = steuer(brutto,steuerSatz);
+    double diff = (nettoBetrag + steuer) - brutto;
+    
+    return round(brutto + diff); 
   }
 
   /**
@@ -76,11 +71,8 @@ public class Math
    */
   public double round(double betrag)
   {
-    BigDecimal bd = new BigDecimal(betrag);
-    bd.setScale(2,BigDecimal.ROUND_HALF_EVEN);
-    return bd.doubleValue();
-//    int i = (int) (betrag * 100 + 0.5d);
-//    return i / 100d;
+    int i = (int) (betrag * 100 + 0.5d);
+    return i / 100d;
   }
 
   /**
@@ -170,7 +162,10 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
- * Revision 1.15  2010/08/02 22:42:03  willuhn
+ * Revision 1.16  2010/10/13 21:46:14  willuhn
+ * @B Scheiss BigDecimal. Wahrscheinlich bin ich zu doof, das korrekt zu verwenden. Mit meiner haendischen Berechnung via doubles habe ich jetzt alle Betraege in Centschritten von 1,00 - 10.000,00 durchgerechnet (brutto, netto, steuer). Keine Differenzen mehr gefunden
+ *
+ * Revision 1.15  2010-08-02 22:42:03  willuhn
  * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
  *
  * Revision 1.14  2010/06/08 16:08:12  willuhn
