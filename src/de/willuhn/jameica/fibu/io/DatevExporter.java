@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/DatevExporter.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/10/13 21:51:05 $
+ * $Revision: 1.3 $
+ * $Date: 2010/10/14 10:48:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,8 @@ import java.io.Writer;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -39,9 +41,19 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DatevExporter implements Exporter
 {
+  private final static Map<Double,String> buMap    = new HashMap<Double,String>();
   private final static I18N i18n                   = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private final static Settings settings           = new Settings(DatevExporter.class);
   private final static DateFormat DATEFORMAT       = new SimpleDateFormat("ddMM");
+  
+  static
+  {
+    buMap.put(null,"01");
+    buMap.put( 0d,"01");
+    buMap.put(16d,"07");
+    buMap.put( 7d,"08");
+    buMap.put(19d,"09");
+  }
   
   /**
    * @see de.willuhn.jameica.fibu.io.Exporter#doExport(java.lang.Object[], de.willuhn.jameica.fibu.io.IOFormat, java.io.OutputStream, de.willuhn.util.ProgressMonitor)
@@ -139,7 +151,7 @@ public class DatevExporter implements Exporter
     sb.append(format(curr)); sb.append(sep);                                    // Waehrungskennung
     sb.append(format("S")); sb.append(sep);                                     // Soll/Haben-Kennzeichen
     sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getBetrag()));sb.append(sep); // Umsatz (ohne Soll/Haben-Kz)
-    sb.append(""); sb.append(sep);                                              // BU-Schluessel
+    sb.append(buMap.get(b.getSteuer())); sb.append(sep);                        // BU-Schluessel
     sb.append(b.getHabenKonto().getKontonummer()); sb.append(sep);              // Gegenkonto (ohne BU-Schlüssel)
     sb.append(format("")); sb.append(sep);                                      // Belegfeld 1
     sb.append(format("")); sb.append(sep);                                      // Belegfeld 2
@@ -151,7 +163,7 @@ public class DatevExporter implements Exporter
     sb.append(""); sb.append(sep);                                              // Skonto
     sb.append(format(b.getText())); sb.append(sep);                             // Buchungstext
     sb.append(format("")); sb.append(sep);                                      // EU-Land und UStID
-    sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getSteuer())); sb.append(sep); // EU-Steuersatz
+    sb.append(""); sb.append(sep);                                              // EU-Steuersatz
     sb.append(format("")); sb.append(sep);                                      // Basiswährungskennung
     sb.append(""); sb.append(sep);                                              // Basiswährungsbetrag
     sb.append(""); sb.append(sep);                                              // Kurs
@@ -212,7 +224,10 @@ public class DatevExporter implements Exporter
 
 /*********************************************************************
  * $Log: DatevExporter.java,v $
- * Revision 1.2  2010/10/13 21:51:05  willuhn
+ * Revision 1.3  2010/10/14 10:48:33  willuhn
+ * @N Steuer-Satz in der Spalte "BU-Schluessel"
+ *
+ * Revision 1.2  2010-10-13 21:51:05  willuhn
  * @N Testweise den Steuersatz der Buchung in Spalte "EU-Steuersatz" eingetragen.
  *
  * Revision 1.1  2010-10-04 09:00:07  willuhn
