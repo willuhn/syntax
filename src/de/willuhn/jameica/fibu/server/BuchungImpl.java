@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.52 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.53 $
+ * $Date: 2010/10/22 11:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,7 @@ import de.willuhn.util.ApplicationException;
  */
 public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 {
+  private double brutto = Double.NaN;
 
   /**
    * @throws RemoteException
@@ -46,6 +47,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   public double getBruttoBetrag() throws RemoteException
   {
+    if (!Double.isNaN(this.brutto))
+      return this.brutto;
+    
     double betrag = super.getBetrag();
     // jetzt muessen wir aber noch die Betraege der Hilfs-Buchungen drauf rechnen
     DBIterator hbs = getHilfsBuchungen();
@@ -55,6 +59,14 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
       betrag += hb.getBetrag();
     }
     return betrag;
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setBruttoBetrag(double)
+   */
+  public void setBruttoBetrag(double d) throws RemoteException
+  {
+    this.brutto = d;
   }
 
   /**
@@ -250,7 +262,10 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
- * Revision 1.52  2009/07/03 10:52:19  willuhn
+ * Revision 1.53  2010/10/22 11:47:30  willuhn
+ * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
+ *
+ * Revision 1.52  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.51.2.1  2008/06/25 09:40:02  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.74 $
- * $Date: 2010/10/13 21:55:31 $
+ * $Revision: 1.75 $
+ * $Date: 2010/10/22 11:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -462,28 +462,20 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       
       //////////////////////////////////////////////////////////////////////////
-      // Steuer checken
-      try {
-				getBuchung().setSteuer(((Double)getSteuer().getValue()).doubleValue());
-      }
-      catch (Exception e)
-      {
+      // Betraege
+      Math math = new Math();
+      double steuer = ((Double)getSteuer().getValue()).doubleValue();
+      double brutto = ((Double)getBetrag().getValue()).doubleValue();
+      double netto  = math.netto(brutto,steuer);
+      
+      if (Double.isNaN(steuer))
         throw new ApplicationException(i18n.tr("Steuersatz ungültig."));
-      }
-      //
-      //////////////////////////////////////////////////////////////////////////
-
-      //////////////////////////////////////////////////////////////////////////
-      // Betrag checken
-      try {
-        double brutto = ((Double)getBetrag().getValue()).doubleValue();
-        Math m = new Math();
-        getBuchung().setBetrag(m.netto(brutto,getBuchung().getSteuer()));
-      }
-      catch (Exception e)
-      {
+      if (Double.isNaN(brutto))
         throw new ApplicationException(i18n.tr("Betrag ungültig."));
-      }
+
+  		getBuchung().setSteuer(steuer);
+      getBuchung().setBruttoBetrag(brutto);
+      getBuchung().setBetrag(netto);
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -689,7 +681,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
- * Revision 1.74  2010/10/13 21:55:31  willuhn
+ * Revision 1.75  2010/10/22 11:47:30  willuhn
+ * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
+ *
+ * Revision 1.74  2010-10-13 21:55:31  willuhn
  * @N Text und Betrag nur dann mit den Werten aus der Vorlage ueberschreiben, wenn nicht schon was drin steht
  *
  * Revision 1.73  2010-06-04 00:33:56  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Buchung.java,v $
- * $Revision: 1.19 $
- * $Date: 2006/10/09 23:48:41 $
+ * $Revision: 1.20 $
+ * $Date: 2010/10/22 11:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,13 @@ public interface Buchung extends BaseBuchung
   public double getBruttoBetrag() throws RemoteException;
   
   /**
+   * Speichert den Butto-Betrag.
+   * @param d der Brutto-Betrag.
+   * @throws RemoteException
+   */
+  public void setBruttoBetrag(double d) throws RemoteException;
+  
+  /**
    * Falls mit dieser Buchung ein Anlagegut erzeugt wurde, liefert es die Funktion.
    * @return meist <code>null</code> oder das Anlagegut, wenn es zusammen mit der Buchung
    * angelegt wurde.
@@ -62,7 +69,10 @@ public interface Buchung extends BaseBuchung
 
 /*********************************************************************
  * $Log: Buchung.java,v $
- * Revision 1.19  2006/10/09 23:48:41  willuhn
+ * Revision 1.20  2010/10/22 11:47:30  willuhn
+ * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
+ *
+ * Revision 1.19  2006-10-09 23:48:41  willuhn
  * @B bug 140
  *
  * Revision 1.18  2006/05/29 17:30:26  willuhn

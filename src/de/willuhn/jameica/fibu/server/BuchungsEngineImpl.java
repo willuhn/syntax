@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/09/19 21:57:27 $
+ * $Revision: 1.14 $
+ * $Date: 2010/10/22 11:47:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -406,18 +406,16 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     if (sSteuer == null && hSteuer == null)
       return null; // Keine Steuerkonten vorhanden
     
-    Math math = new Math();
-
     double steuer  = buchung.getSteuer();
     
     if (steuer == 0.0d)
       return null; // keine Steuer zu buchen
     
     double netto   = buchung.getBetrag();
-    double brutto  = math.brutto(netto,steuer);
-    double sBetrag = math.steuer(brutto,steuer);
+    double brutto  = buchung.getBruttoBetrag();
+    double sBetrag = brutto - netto;
     
-    if (brutto == netto || sBetrag == 0.0d)
+    if (sBetrag < 0.01d)
       return null; // keine Steuer zu buchen
     
     if (buchung.getDatum() == null)
@@ -495,7 +493,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.13  2010/09/19 21:57:27  willuhn
+ * Revision 1.14  2010/10/22 11:47:30  willuhn
+ * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
+ *
+ * Revision 1.13  2010-09-19 21:57:27  willuhn
  * *** empty log message ***
  *
  * Revision 1.12  2010-08-02 22:47:55  willuhn
