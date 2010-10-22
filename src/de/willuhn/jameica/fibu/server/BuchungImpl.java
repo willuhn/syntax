@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.53 $
- * $Date: 2010/10/22 11:47:30 $
+ * $Revision: 1.54 $
+ * $Date: 2010/10/22 14:31:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -95,6 +95,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
         }
       }
       transactionCommit();
+      
+      // Forcieren, dass der Brutto-Betrag wieder aus den Hilfsbuchungen berechnet wird
+      this.brutto = Double.NaN;
     }
     catch (RemoteException e)
     {
@@ -262,7 +265,10 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
- * Revision 1.53  2010/10/22 11:47:30  willuhn
+ * Revision 1.54  2010/10/22 14:31:40  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.53  2010-10-22 11:47:30  willuhn
  * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
  *
  * Revision 1.52  2009-07-03 10:52:19  willuhn
