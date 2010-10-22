@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/10/13 21:46:14 $
+ * $Revision: 1.17 $
+ * $Date: 2010/10/22 10:22:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,7 +32,7 @@ public class Math
    */
   public double netto(double bruttoBetrag, double steuerSatz)
   {
-    return round(100d * bruttoBetrag) / (100d + steuerSatz);
+    return round((100d * bruttoBetrag) / (100d + steuerSatz));
   }
   
   /**
@@ -162,7 +162,10 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
- * Revision 1.16  2010/10/13 21:46:14  willuhn
+ * Revision 1.17  2010/10/22 10:22:06  willuhn
+ * @B Falsche Klammerung. Wie daemlich kann man eigentlich sein ;)
+ *
+ * Revision 1.16  2010-10-13 21:46:14  willuhn
  * @B Scheiss BigDecimal. Wahrscheinlich bin ich zu doof, das korrekt zu verwenden. Mit meiner haendischen Berechnung via doubles habe ich jetzt alle Betraege in Centschritten von 1,00 - 10.000,00 durchgerechnet (brutto, netto, steuer). Keine Differenzen mehr gefunden
  *
  * Revision 1.15  2010-08-02 22:42:03  willuhn
