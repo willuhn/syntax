@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/10/22 11:47:30 $
+ * $Revision: 1.15 $
+ * $Date: 2010/10/22 14:42:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -415,7 +415,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     double brutto  = buchung.getBruttoBetrag();
     double sBetrag = brutto - netto;
     
-    if (sBetrag < 0.01d)
+    if (java.lang.Math.abs(sBetrag) < 0.01d) // Achtung, kann negativ sein. Daher Math.abs
       return null; // keine Steuer zu buchen
     
     if (buchung.getDatum() == null)
@@ -493,7 +493,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.14  2010/10/22 11:47:30  willuhn
+ * Revision 1.15  2010/10/22 14:42:26  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.14  2010-10-22 11:47:30  willuhn
  * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
  *
  * Revision 1.13  2010-09-19 21:57:27  willuhn
