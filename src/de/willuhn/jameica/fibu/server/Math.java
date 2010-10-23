@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/10/22 10:22:06 $
+ * $Revision: 1.18 $
+ * $Date: 2010/10/23 11:38:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -32,6 +32,8 @@ public class Math
    */
   public double netto(double bruttoBetrag, double steuerSatz)
   {
+    if (steuerSatz < 0.01d)
+      return bruttoBetrag;
     return round((100d * bruttoBetrag) / (100d + steuerSatz));
   }
   
@@ -43,6 +45,9 @@ public class Math
    */
   public double brutto(double nettoBetrag, double steuerSatz)
   {
+    if (steuerSatz < 0.01d)
+      return nettoBetrag;
+
     double brutto = (nettoBetrag * (100d + steuerSatz)) / 100d;
     
     // Vergleich
@@ -60,6 +65,9 @@ public class Math
    */
   public double steuer(double bruttoBetrag, double steuerSatz)
   {
+    if (steuerSatz < 0.01d)
+      return 0.0d;
+
     double netto = netto(bruttoBetrag,steuerSatz);
     return bruttoBetrag - netto;
   }
@@ -162,7 +170,10 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
- * Revision 1.17  2010/10/22 10:22:06  willuhn
+ * Revision 1.18  2010/10/23 11:38:18  willuhn
+ * @B Bei Minus-Betraegen und 0% Steuer wurde 1ct Steuer berechnet - siehe Mail von Matthias vom 22.10.
+ *
+ * Revision 1.17  2010-10-22 10:22:06  willuhn
  * @B Falsche Klammerung. Wie daemlich kann man eigentlich sein ;)
  *
  * Revision 1.16  2010-10-13 21:46:14  willuhn

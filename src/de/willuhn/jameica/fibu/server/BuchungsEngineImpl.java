@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2010/10/22 14:42:26 $
+ * $Revision: 1.16 $
+ * $Date: 2010/10/23 11:38:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -408,7 +408,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     
     double steuer  = buchung.getSteuer();
     
-    if (steuer == 0.0d)
+    if (steuer < 0.01d)
       return null; // keine Steuer zu buchen
     
     double netto   = buchung.getBetrag();
@@ -493,7 +493,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.15  2010/10/22 14:42:26  willuhn
+ * Revision 1.16  2010/10/23 11:38:18  willuhn
+ * @B Bei Minus-Betraegen und 0% Steuer wurde 1ct Steuer berechnet - siehe Mail von Matthias vom 22.10.
+ *
+ * Revision 1.15  2010-10-22 14:42:26  willuhn
  * *** empty log message ***
  *
  * Revision 1.14  2010-10-22 11:47:30  willuhn
