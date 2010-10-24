@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/BuchungList.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/08/30 16:31:43 $
+ * $Revision: 1.29 $
+ * $Date: 2010/10/24 22:29:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public class BuchungList extends TablePart implements Extendable
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),"brutto",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
+    addColumn(i18n.tr("Brutto-Betrag"),"bruttoBetrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
     addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
     addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenkonto_id", new KontoFormatter());
@@ -468,7 +468,10 @@ public class BuchungList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: BuchungList.java,v $
- * Revision 1.28  2010/08/30 16:31:43  willuhn
+ * Revision 1.29  2010/10/24 22:29:37  willuhn
+ * @C Brutto-Betrag bei Buchungen mit exportieren
+ *
+ * Revision 1.28  2010-08-30 16:31:43  willuhn
  * @N Import und Export von Buchungen im XML-Format
  *
  * Revision 1.27  2010/06/01 16:37:22  willuhn

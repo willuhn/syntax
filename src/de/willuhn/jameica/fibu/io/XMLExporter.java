@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/10/04 08:37:03 $
+ * $Revision: 1.4 $
+ * $Date: 2010/10/24 22:29:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.serialize.Writer;
 import de.willuhn.datasource.serialize.XmlWriter;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.rmi.CustomSerializer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -52,7 +53,18 @@ public class XMLExporter implements Exporter
         monitor.setStatusText(i18n.tr("Exportiere Daten"));
       }
 
-      writer = new XmlWriter(os);
+      writer = new XmlWriter(os)
+      {
+        /**
+         * @see de.willuhn.datasource.serialize.XmlWriter#getAttributeNames(de.willuhn.datasource.GenericObject)
+         */
+        public String[] getAttributeNames(GenericObject object) throws RemoteException
+        {
+          if (object instanceof CustomSerializer)
+            return ((CustomSerializer) object).getCustomAttributeNames();
+          return super.getAttributeNames(object);
+        }
+      };
       for (int i=0;i<objects.length;++i)
       {
         if (monitor != null)  monitor.setPercentComplete((int)((i) * factor));
@@ -122,7 +134,10 @@ public class XMLExporter implements Exporter
 
 /*********************************************************************
  * $Log: XMLExporter.java,v $
- * Revision 1.3  2010/10/04 08:37:03  willuhn
+ * Revision 1.4  2010/10/24 22:29:37  willuhn
+ * @C Brutto-Betrag bei Buchungen mit exportieren
+ *
+ * Revision 1.3  2010-10-04 08:37:03  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2010-08-30 16:41:01  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.54 $
- * $Date: 2010/10/22 14:31:40 $
+ * $Revision: 1.55 $
+ * $Date: 2010/10/24 22:29:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.BuchungsEngine;
+import de.willuhn.jameica.fibu.rmi.CustomSerializer;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.system.Application;
@@ -30,7 +31,7 @@ import de.willuhn.util.ApplicationException;
 /**
  * Generische Buchung.
  */
-public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
+public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, CustomSerializer
 {
   private double brutto = Double.NaN;
 
@@ -141,9 +142,40 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
    */
   public Object getAttribute(String arg0) throws RemoteException
   {
-    if ("brutto".equals(arg0))
+    if ("bruttoBetrag".equals(arg0) || "brutto".equals(arg0))
       return new Double(getBruttoBetrag());
     return super.getAttribute(arg0);
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#setAttribute(java.lang.String, java.lang.Object)
+   */
+  public Object setAttribute(String arg0, Object arg1) throws RemoteException
+  {
+    if ("bruttoBetrag".equals(arg0))
+    {
+      double prev = this.brutto;
+      this.setBruttoBetrag((Double)arg1);
+      return prev;
+    }
+    else
+    {
+      return super.setAttribute(arg0, arg1);
+    }
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.CustomSerializer#getCustomAttributeNames()
+   */
+  public String[] getCustomAttributeNames() throws RemoteException
+  {
+    // Wir haengen hier noch das Attribut "bruttoBetrag" an, weil
+    // es mit serialisiert werden soll.
+    String[] names = super.getAttributeNames();
+    String[] newList = new String[names.length+1];
+    System.arraycopy(names,0,newList,0,names.length);
+    newList[names.length] = "bruttoBetrag";
+    return newList;
   }
 
   /**
@@ -265,7 +297,10 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
- * Revision 1.54  2010/10/22 14:31:40  willuhn
+ * Revision 1.55  2010/10/24 22:29:37  willuhn
+ * @C Brutto-Betrag bei Buchungen mit exportieren
+ *
+ * Revision 1.54  2010-10-22 14:31:40  willuhn
  * *** empty log message ***
  *
  * Revision 1.53  2010-10-22 11:47:30  willuhn
