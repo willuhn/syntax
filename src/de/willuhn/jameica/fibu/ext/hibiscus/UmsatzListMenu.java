@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/03 17:43:41 $
+ * $Revision: 1.8 $
+ * $Date: 2010/10/31 22:14:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -172,6 +172,10 @@ public class UmsatzListMenu implements Extension
     String zweck = (String) u.getAttribute("mergedzweck");
     if (zweck != null && zweck.length() > 0)
     {
+      // Kontoinhaber noch anhaengen, falls vorhanden
+      String name = u.getGegenkontoName();
+      if (name != null && name.length() > 0)
+        zweck = zweck.trim() + ", " + name;
       // Noch abschneiden, falls er zu lang ist
       if (zweck.length() > 255)
         zweck = zweck.substring(0,255);
@@ -388,7 +392,10 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
- * Revision 1.7  2010/06/03 17:43:41  willuhn
+ * Revision 1.8  2010/10/31 22:14:45  willuhn
+ * @N Name des Kontoinhabers mit in Buchungstext uebernehmen, soweit noch Platz vorhanden
+ *
+ * Revision 1.7  2010-06-03 17:43:41  willuhn
  * @N Aussagekraeftigere Meldungen, wenn Kategorie oder Vorlage fehlt oder Vorlage unvollstaendig ist
  *
  * Revision 1.6  2010/06/03 17:18:14  willuhn
