@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/10/31 22:14:45 $
+ * $Revision: 1.9 $
+ * $Date: 2010/10/31 22:25:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -147,7 +147,8 @@ public class UmsatzListMenu implements Extension
       if (auto && haben == null)
         throw new ApplicationException(i18n.tr("Buchungsvorlage \"{0}\" enthält kein Haben-Konto",template.getName()));
 
-      buchung.setBetrag(template.getBetrag());
+      buchung.setBruttoBetrag(template.getBetrag());
+      buchung.setBetrag(new Math().netto(template.getBetrag(),template.getSteuer()));
       buchung.setDatum(new Date());
       buchung.setSollKonto(soll);
       buchung.setHabenKonto(haben);
@@ -159,9 +160,12 @@ public class UmsatzListMenu implements Extension
     double brutto = u.getBetrag();
     if (brutto != 0.0 && !Double.isNaN(brutto))
     {
-      // Die API erwartet Netto-Betraege, wir haben hier aber den Brutto-Betrag
-      Math m = new Math();
-      buchung.setBetrag(m.netto(brutto,buchung.getSteuer()));
+      brutto = java.lang.Math.abs(brutto);
+      buchung.setBruttoBetrag(brutto);
+      if (template != null)
+        buchung.setBetrag(new Math().netto(brutto,template.getSteuer()));
+      else
+        buchung.setBetrag(brutto);
     }
     
     Date date = u.getDatum();
@@ -392,7 +396,11 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
- * Revision 1.8  2010/10/31 22:14:45  willuhn
+ * Revision 1.9  2010/10/31 22:25:17  willuhn
+ * @B Betrag aus Hibiscus als Brutto-Betrag uebernehmen
+ * @C Absolut-Wert des Betrages uebernehmen
+ *
+ * Revision 1.8  2010-10-31 22:14:45  willuhn
  * @N Name des Kontoinhabers mit in Buchungstext uebernehmen, soweit noch Platz vorhanden
  *
  * Revision 1.7  2010-06-03 17:43:41  willuhn
