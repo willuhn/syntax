@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/Math.java,v $
- * $Revision: 1.18 $
- * $Date: 2010/10/23 11:38:18 $
+ * $Revision: 1.19 $
+ * $Date: 2010/10/31 22:08:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -79,7 +79,8 @@ public class Math
    */
   public double round(double betrag)
   {
-    int i = (int) (betrag * 100 + 0.5d);
+    double d = betrag > 0 ? 0.5d : -0.5d;
+    int i = (int) (betrag * 100 + d);
     return i / 100d;
   }
 
@@ -170,7 +171,10 @@ public class Math
 
 /*********************************************************************
  * $Log: Math.java,v $
- * Revision 1.18  2010/10/23 11:38:18  willuhn
+ * Revision 1.19  2010/10/31 22:08:09  willuhn
+ * @B Bei negativen Beitraegen muss in die andere Richtung gerundet werden
+ *
+ * Revision 1.18  2010-10-23 11:38:18  willuhn
  * @B Bei Minus-Betraegen und 0% Steuer wurde 1ct Steuer berechnet - siehe Mail von Matthias vom 22.10.
  *
  * Revision 1.17  2010-10-22 10:22:06  willuhn
