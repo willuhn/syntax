@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/10/31 22:25:17 $
+ * $Revision: 1.10 $
+ * $Date: 2010/11/01 15:23:29 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,16 +48,8 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class UmsatzListMenu implements Extension
 {
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
-  /**
-   * ct.
-   */
-  public UmsatzListMenu()
-  {
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
   /**
    * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
    */
@@ -160,7 +152,9 @@ public class UmsatzListMenu implements Extension
     double brutto = u.getBetrag();
     if (brutto != 0.0 && !Double.isNaN(brutto))
     {
-      brutto = java.lang.Math.abs(brutto);
+      boolean makeAbsolute = Settings.SETTINGS.getBoolean("hibiscus.import.betrag.absolut",true);
+      if (makeAbsolute)
+        brutto = java.lang.Math.abs(brutto);
       buchung.setBruttoBetrag(brutto);
       if (template != null)
         buchung.setBetrag(new Math().netto(brutto,template.getSteuer()));
@@ -396,7 +390,10 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
- * Revision 1.9  2010/10/31 22:25:17  willuhn
+ * Revision 1.10  2010/11/01 15:23:29  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.9  2010-10-31 22:25:17  willuhn
  * @B Betrag aus Hibiscus als Brutto-Betrag uebernehmen
  * @C Absolut-Wert des Betrages uebernehmen
  *
