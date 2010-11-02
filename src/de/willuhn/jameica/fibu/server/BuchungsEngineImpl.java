@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/10/23 11:38:18 $
+ * $Revision: 1.17 $
+ * $Date: 2010/11/02 17:34:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -380,6 +380,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
    */
   public HilfsBuchung[] buche(Buchung buchung) throws RemoteException, ApplicationException
   {
+    double netto   = buchung.getBetrag();
+    double brutto  = buchung.getBruttoBetrag();
+    double sBetrag = brutto - netto;
+
     // Hilfsbuchungen loeschen
     if (!buchung.isNewObject())
     {
@@ -410,10 +414,6 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     
     if (steuer < 0.01d)
       return null; // keine Steuer zu buchen
-    
-    double netto   = buchung.getBetrag();
-    double brutto  = buchung.getBruttoBetrag();
-    double sBetrag = brutto - netto;
     
     if (java.lang.Math.abs(sBetrag) < 0.01d) // Achtung, kann negativ sein. Daher Math.abs
       return null; // keine Steuer zu buchen
@@ -493,7 +493,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.16  2010/10/23 11:38:18  willuhn
+ * Revision 1.17  2010/11/02 17:34:28  willuhn
+ * @B Der Brutto-Betrag muss geholt werden, BEVOR die Hilfsbuchungen geloescht werden
+ *
+ * Revision 1.16  2010-10-23 11:38:18  willuhn
  * @B Bei Minus-Betraegen und 0% Steuer wurde 1ct Steuer berechnet - siehe Mail von Matthias vom 22.10.
  *
  * Revision 1.15  2010-10-22 14:42:26  willuhn
