@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.24 $
- $Date: 2010/09/07 10:23:27 $
+ $Revision: 1.25 $
+ $Date: 2010/11/10 15:02:41 $
  $Author: willuhn $
  
  Copyright (c) by willuhn software & services
@@ -222,12 +222,15 @@
 	</target>
 
   <target name="sign" description="signs the jar/zip file" depends="jar">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${define.zipfilename}" />
+    <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.zipfilename}" />
+    <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.srcfilename}" />
     
     <echo message="Creating PGP signatures" />
     <exec executable="gpg" failonerror="true" timeout="60000">
       <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
+    </exec>
+    <exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
     </exec>
 
     <echo message="Creating SHA1 signatures" />
@@ -238,23 +241,13 @@
     </java>
   </target>
 
-  <target name="signsrc" description="signs the source file" depends="src">
-    <echo message="Creating MD5 checksum files" />
-    <checksum file="${project.release}/${define.srcfilename}" />
-    
-    <echo message="Creating PGP signatures" />
-    <exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
-    </exec>
-  </target>
-
 	<target name="clean" description="cleanup">
 		<delete dir="${project.tmp}" />
 		<delete dir="${project.javadoc}" />
 		<delete dir="${project.zipdir}" />
 	</target>
 
-	<target depends="init,compile,cvstag,jar,javadoc,src,sign,signsrc,clean" description="build an official release" name="all" />
+	<target depends="init,compile,cvstag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
 
 	<target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
 
