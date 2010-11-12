@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2010/06/02 15:47:42 $
+ * $Revision: 1.24 $
+ * $Date: 2010/11/12 12:58:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.UpdateProvider;
 import de.willuhn.jameica.fibu.rmi.DBService;
@@ -28,6 +29,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.sql.version.Updater;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Datenbank-Service fuer Fibu.
@@ -42,9 +44,10 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public DBServiceImpl() throws RemoteException
   {
-    super(null,null,null,null);
-    this.setClassloader(Application.getClassLoader());
-    this.setClassFinder(Application.getClassLoader().getClassFinder());
+    super();
+    MultipleClassLoader cl = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader();
+    this.setClassloader(cl);
+    this.setClassFinder(cl.getClassFinder());
   }
   
   /**
@@ -232,7 +235,10 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
- * Revision 1.23  2010/06/02 15:47:42  willuhn
+ * Revision 1.24  2010/11/12 12:58:41  willuhn
+ * @B Falscher Classloader
+ *
+ * Revision 1.23  2010-06-02 15:47:42  willuhn
  * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
  *
  * Revision 1.22  2010/06/01 17:42:03  willuhn
