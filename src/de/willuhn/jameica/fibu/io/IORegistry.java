@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/IORegistry.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/12 16:27:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.io;
 
 import java.util.ArrayList;
 
+import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
@@ -49,7 +50,7 @@ public class IORegistry
     ArrayList l = new ArrayList();
     try
     {
-      ClassFinder finder = Application.getClassLoader().getClassFinder();
+      ClassFinder finder = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getClassFinder();
       Class[] list = finder.findImplementors(type);
       if (list == null || list.length == 0)
         throw new ClassNotFoundException();
@@ -100,7 +101,10 @@ public class IORegistry
 
 /**********************************************************************
  * $Log: IORegistry.java,v $
- * Revision 1.1  2010/08/27 11:19:40  willuhn
+ * Revision 1.2  2010/11/12 16:27:27  willuhn
+ * @C Plugin-Classloader statt dem von Jameica verwenden
+ *
+ * Revision 1.1  2010-08-27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
  **********************************************************************/

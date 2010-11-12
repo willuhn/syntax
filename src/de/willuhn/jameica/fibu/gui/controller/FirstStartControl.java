@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/FirstStartControl.java,v $
- * $Revision: 1.18 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.19 $
+ * $Date: 2010/11/12 16:27:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,7 +114,7 @@ public class FirstStartControl extends AbstractControl
     {
       if (this.dbTypes == null)
       {
-        ClassFinder finder = Application.getClassLoader().getClassFinder();
+        ClassFinder finder = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getClassFinder();
         Class[] dbs = null;
         
         try
@@ -655,7 +655,10 @@ public class FirstStartControl extends AbstractControl
 
 /*********************************************************************
  * $Log: FirstStartControl.java,v $
- * Revision 1.18  2010/06/01 16:37:22  willuhn
+ * Revision 1.19  2010/11/12 16:27:27  willuhn
+ * @C Plugin-Classloader statt dem von Jameica verwenden
+ *
+ * Revision 1.18  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

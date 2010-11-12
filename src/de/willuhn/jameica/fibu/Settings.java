@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.49 $
- * $Date: 2010/08/02 22:42:03 $
+ * $Revision: 1.50 $
+ * $Date: 2010/11/12 16:27:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,7 +144,7 @@ public class Settings
     try
     {
       Logger.info("trying to load " + s);
-      Class c = Application.getClassLoader().load(s);
+      Class c = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().load(s);
       dbSupport = (DBSupport) c.newInstance();
       return dbSupport;
     }
@@ -447,7 +447,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.49  2010/08/02 22:42:03  willuhn
+ * Revision 1.50  2010/11/12 16:27:27  willuhn
+ * @C Plugin-Classloader statt dem von Jameica verwenden
+ *
+ * Revision 1.49  2010-08-02 22:42:03  willuhn
  * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
  *
  * Revision 1.48  2010/06/01 16:35:48  willuhn
