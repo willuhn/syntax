@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.31 $
- * $Date: 2010/08/30 14:36:11 $
+ * $Revision: 1.32 $
+ * $Date: 2010/11/30 23:10:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,12 +50,12 @@ public class KontoControl extends AbstractControl
 	private Konto konto			= null;
 
 	// Eingabe-Felder
-	private Input name			   = null;
-	private Input kontonummer  = null;
-	private Input steuer			 = null;
-	private Input kontoart		 = null;
-  private Input kontotyp     = null;
-  private Input saldo        = null;
+	private Input name			       = null;
+	private TextInput kontonummer  = null;
+	private Input steuer			     = null;
+	private Input kontoart		     = null;
+  private Input kontotyp         = null;
+  private Input saldo            = null;
   
   private I18N i18n = null;
 
@@ -131,6 +131,7 @@ public class KontoControl extends AbstractControl
 		if (kontonummer != null)
 			return kontonummer;
 		kontonummer = new TextInput(getKonto().getKontonummer(),4);
+		kontonummer.setValidChars("0123456789");
 		kontonummer.setMandatory(true);
 		kontonummer.setEnabled(getKonto().canChange());
 		return kontonummer;
@@ -270,7 +271,10 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.31  2010/08/30 14:36:11  willuhn
+ * Revision 1.32  2010/11/30 23:10:57  willuhn
+ * @C Nur Zahlen in der Kontonummer zulassen
+ *
+ * Revision 1.31  2010-08-30 14:36:11  willuhn
  * *** empty log message ***
  *
  * Revision 1.30  2010/06/07 16:34:22  willuhn
