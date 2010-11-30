@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AuswertungControl.java,v $
- * $Revision: 1.11 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.12 $
+ * $Date: 2010/11/30 22:45:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -360,6 +360,14 @@ public class AuswertungControl extends AbstractControl
           try
           {
             e.doReport(data,monitor);
+            GUI.getDisplay().asyncExec(new Runnable()
+            {
+              public void run()
+              {
+                if (((Boolean)getOpenAfterCreation().getValue()).booleanValue())
+                  Application.getMessagingFactory().sendMessage(new ReportMessage(i18n.tr("Auswertung erstellt"),file));
+              }
+            });
           }
           finally
           {
@@ -368,8 +376,6 @@ public class AuswertungControl extends AbstractControl
               public void run()
               {
                 getStartButton().setEnabled(true);
-                if (((Boolean)getOpenAfterCreation().getValue()).booleanValue())
-                  Application.getMessagingFactory().sendMessage(new ReportMessage(i18n.tr("Auswertung erstellt"),file));
               }
             });
           }
@@ -414,7 +420,10 @@ public class AuswertungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AuswertungControl.java,v $
- * Revision 1.11  2010/08/27 11:19:40  willuhn
+ * Revision 1.12  2010/11/30 22:45:44  willuhn
+ * @B Auswertung nur oeffnen, wenn bei der Erstellung kein Fehler auftrat
+ *
+ * Revision 1.11  2010-08-27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
  * Revision 1.10  2010/08/27 10:18:15  willuhn
