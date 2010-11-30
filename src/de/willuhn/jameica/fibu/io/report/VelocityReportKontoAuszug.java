@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportKontoAuszug.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/30 23:32:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,9 +13,10 @@
 
 package de.willuhn.jameica.fibu.io.report;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -61,7 +62,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     if (start != null) konten.addFilter("kontonummer >= ?", new String[]{start.getKontonummer()});
     if (end != null) konten.addFilter("kontonummer <= ?", new String[]{end.getKontonummer()});
 
-    ArrayList l = new ArrayList();
+    List<Konto> l = new LinkedList<Konto>();
     while (konten.hasNext())
     {
       Konto k1 = (Konto) konten.next();
@@ -70,8 +71,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
         continue;
       l.add(k1);
     }
-    Konto[] k = (Konto[]) l.toArray(new Konto[l.size()]);
-    export.addObject("konten",k);
+    export.addObject("konten",l);
     //
     //////////////////////////////////////////////////////////////////////////
 
@@ -80,26 +80,26 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     Date startDate = data.getStartDatum();
     Date endDate   = data.getEndDatum();
       
-    for (int i=0;i<k.length;++i)
+    for (Konto k:l)
     {
       Vector buchungen = new Vector();
 
-      DBIterator list = k[i].getHauptBuchungen(jahr,startDate,endDate);
+      DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate);
       while (list.hasNext())
         buchungen.add(list.next());
 
-      Kontoart ka = k[i].getKontoArt();
+      Kontoart ka = k.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
         // Ein Steuerkonto enthaelt normalerweise nur automatisch
         // erzeugte Hilfsbuchungen. Da der User aber auch echte
         // Hauptbuchungen darauf erzeugen kann, muss die Liste
         // hier noch um die Hauptbuchungen ergaenzt werden.
-        list = k[i].getHilfsBuchungen(jahr,startDate,endDate);
+        list = k.getHilfsBuchungen(jahr,startDate,endDate);
         while (list.hasNext())
           buchungen.add(list.next());
       }
-      export.addObject("buchungen." + k[i].getKontonummer(),buchungen);
+      export.addObject("buchungen." + k.getKontonummer(),buchungen);
     }
     //////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +128,11 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportKontoAuszug.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2010/11/30 23:32:18  willuhn
+ * @B BUGZILLA 953
+ * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.2  2009/07/03 10:52:18  willuhn

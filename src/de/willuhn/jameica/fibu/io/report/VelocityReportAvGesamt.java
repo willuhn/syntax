@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvGesamt.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/09/20 10:27:36 $
+ * $Revision: 1.4 $
+ * $Date: 2010/11/30 23:32:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,9 @@
 
 package de.willuhn.jameica.fibu.io.report;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
@@ -36,7 +37,7 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
     
     Date end = jahr.getEnde();
     // Liste des Anlagevermoegens ermitteln
-    ArrayList list = new ArrayList();
+    List<Anlagevermoegen> list = new LinkedList<Anlagevermoegen>();
     DBIterator i = Settings.getDBService().createList(Anlagevermoegen.class);
     while (i.hasNext())
     {
@@ -49,10 +50,9 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
         continue;
       list.add(av);
     }
-    Anlagevermoegen[] av = (Anlagevermoegen[]) list.toArray(new Anlagevermoegen[list.size()]);
     
     VelocityReportData export = new VelocityReportData();
-    export.addObject("anlagevermoegen",av);
+    export.addObject("anlagevermoegen",list);
     export.setTemplate("anlagevermoegen.vm");
     return export;
   }
@@ -81,7 +81,11 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportAvGesamt.java,v $
- * Revision 1.3  2010/09/20 10:27:36  willuhn
+ * Revision 1.4  2010/11/30 23:32:18  willuhn
+ * @B BUGZILLA 953
+ * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
+ *
+ * Revision 1.3  2010-09-20 10:27:36  willuhn
  * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
  *
  * Revision 1.2  2010-09-20 09:19:06  willuhn

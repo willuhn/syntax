@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportSaldenListe.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/30 23:32:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,8 +13,9 @@
 
 package de.willuhn.jameica.fibu.io.report;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -34,7 +35,6 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
 
     // Liste der Konten ermitteln
-    ArrayList list = new ArrayList();
     DBIterator i = jahr.getKontenrahmen().getKonten();
     
     Konto start = data.getStartKonto();
@@ -43,6 +43,7 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
     if (start != null) i.addFilter("kontonummer >= ?",new Object[]{start.getKontonummer()});
     if (end != null) i.addFilter("kontonummer <= ?",new Object[]{end.getKontonummer()});
 
+    List<Konto> list = new LinkedList<Konto>();
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
@@ -51,9 +52,8 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
       list.add(k);
     }
     
-    Konto[] konten = (Konto[]) list.toArray(new Konto[list.size()]);
     VelocityReportData export = new VelocityReportData();
-    export.addObject("konten",konten);
+    export.addObject("konten",list);
     export.setTemplate("saldenliste.vm");
     return export;
   }
@@ -81,7 +81,11 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportSaldenListe.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2010/11/30 23:32:18  willuhn
+ * @B BUGZILLA 953
+ * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.2  2009/07/03 10:52:18  willuhn

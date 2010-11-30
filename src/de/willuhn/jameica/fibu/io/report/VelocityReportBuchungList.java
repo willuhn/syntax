@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportBuchungList.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2010/11/30 23:32:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,11 +13,14 @@
 
 package de.willuhn.jameica.fibu.io.report;
 
+import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -45,37 +48,74 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
       if (start != null) list.addFilter(service.getSQLTimestamp("datum") + " >= " + start.getTime());
       if (end != null)   list.addFilter(service.getSQLTimestamp("datum") + " <=" + end.getTime());
     }
- 
-    // Filter Konto
+
+    // Das Filtern nach Konto koennen wir nicht direkt im SQL machen, weil
+    // wir hierfuer einen Join brauchen. Den koennen wir aber nicht einsetzen,
+    // weil in BuchungImpl die Funktion getListQuery ueberschrieben ist,
+    // die den aushebelt. Das Umprogrammieren von DBIteratorImpl ist mir
+    // jetzt zu umfangreich. Daher machen wir das Filtern manuell. BUGZILLA 953
     Konto startKonto = data.getStartKonto();
     Konto endKonto   = data.getEndKonto();
-    if (startKonto != null)
-      list.addFilter("(sollkonto_id >= " + startKonto.getID() + " OR habenkonto_id >= " + startKonto.getID() + ")");
-    if (endKonto != null)
-      list.addFilter("(sollkonto_id <= " + endKonto.getID() + " OR habenkonto_id <= " + endKonto.getID() + ")");
     
     list.setOrder("order by datum");
-    Buchung[] b = new Buchung[list.size()];
-    int count = 0;
+    List<Buchung> buchungen = new LinkedList<Buchung>();
     while (list.hasNext())
     {
-      b[count++] = (Buchung) list.next();
+      Buchung b = (Buchung) list.next();
+      if (startKonto != null || endKonto != null)
+      {
+        // Wir haben einen Filter angegeben
+
+        int kh = parseKontonummer(b.getHabenKonto());
+        int ks = parseKontonummer(b.getSollKonto());
+
+        // Ein alphanumerischen compareTo-Vergleich mit Strings koennen wir nicht machen, weil wir uns nicht darauf
+        // verlassen koennen, dass kurze Kontonummern vorn mit Nullen aufgefuellt sind.
+
+        // Die Kontonummer von mindestens einem der beiden Konten (Haben oder Soll) muss mindestens so gross wie die von startKonto sein
+        if (startKonto != null)
+        {
+          int min = parseKontonummer(startKonto);
+          if (kh < min && ks < min)
+            continue;
+        }
+
+        // Die Kontonummer von mindestens einem der beiden Konten (Haben oder Soll) darf maximal so gross wie die von endKonto sein
+        if (endKonto != null)
+        {
+          int max = parseKontonummer(endKonto);
+          if (kh > max && ks > max)
+            continue;
+        }
+      }
+      buchungen.add(b);
     }
     
-    list = jahr.getAnfangsbestaende();
-    Anfangsbestand[] ab = new Anfangsbestand[list.size()];
-    count = 0;
-    while (list.hasNext())
-    {
-      ab[count++] = (Anfangsbestand) list.next();
-    }
-
     VelocityReportData export = new VelocityReportData();
-    export.addObject("buchungen",b);
-    export.addObject("anfangsbestaende",ab);
+    export.addObject("buchungen",buchungen);
+    export.addObject("anfangsbestaende",PseudoIterator.asList(jahr.getAnfangsbestaende()));
     export.setTemplate("buchungsjournal.vm");
 
     return export;
+  }
+  
+  /**
+   * Liefert die Kontonummer als int.
+   * @param k das Konto.
+   * @return die Kontonummer als int.
+   * @throws RemoteException
+   */
+  private int parseKontonummer(Konto k) throws RemoteException
+  {
+    String s = k.getKontonummer();
+    try
+    {
+      return Integer.parseInt(s);
+    }
+    catch (NumberFormatException e)
+    {
+      throw new RemoteException(i18n.tr("Ungültige Kontonummer: {0}",s));
+    }
   }
   
   /**
@@ -104,7 +144,11 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportBuchungList.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2010/11/30 23:32:18  willuhn
+ * @B BUGZILLA 953
+ * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.2  2009/07/03 10:52:18  willuhn
