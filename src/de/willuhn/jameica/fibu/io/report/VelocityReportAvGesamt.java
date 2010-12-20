@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvGesamt.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/11/30 23:32:18 $
+ * $Revision: 1.5 $
+ * $Date: 2010/12/20 11:09:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,8 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
     // Liste des Anlagevermoegens ermitteln
     List<Anlagevermoegen> list = new LinkedList<Anlagevermoegen>();
     DBIterator i = Settings.getDBService().createList(Anlagevermoegen.class);
+    i.addFilter("mandant_id = " + Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    i.setOrder("order by anschaffungsdatum desc");
     while (i.hasNext())
     {
       Anlagevermoegen av = (Anlagevermoegen) i.next();
@@ -81,7 +83,10 @@ public class VelocityReportAvGesamt extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportAvGesamt.java,v $
- * Revision 1.4  2010/11/30 23:32:18  willuhn
+ * Revision 1.5  2010/12/20 11:09:09  willuhn
+ * @B BUGZILLA 957
+ *
+ * Revision 1.4  2010-11-30 23:32:18  willuhn
  * @B BUGZILLA 953
  * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
  *
