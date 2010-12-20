@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Anlagevermoegen.java,v $
- * $Revision: 1.13 $
- * $Date: 2010/09/20 10:27:36 $
+ * $Revision: 1.14 $
+ * $Date: 2010/12/20 12:58:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,6 +109,14 @@ public interface Anlagevermoegen extends DBObject
    * @throws RemoteException
    */
   public void setNutzungsdauer(int dauer) throws RemoteException;
+  
+  /**
+   * Ermittelt die Rest-Nutzungsdauer ausgehend vom angegebenen Jahr.
+   * @param jahr das Jahr (wird mitgerechnet).
+   * @return die Rest-Nutzungsdauer in Jahren.
+   * @throws RemoteException
+   */
+  public int getRestNutzungsdauer(Geschaeftsjahr jahr) throws RemoteException;
   
   /**
    * Liefert den aktuellen Restwert des Anlagegutes.
@@ -250,7 +258,10 @@ public interface Anlagevermoegen extends DBObject
 
 /*********************************************************************
  * $Log: Anlagevermoegen.java,v $
- * Revision 1.13  2010/09/20 10:27:36  willuhn
+ * Revision 1.14  2010/12/20 12:58:22  willuhn
+ * @N BUGZILLA 958
+ *
+ * Revision 1.13  2010-09-20 10:27:36  willuhn
  * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
  *
  * Revision 1.12  2006-05-29 13:02:30  willuhn
