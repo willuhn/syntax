@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.75 $
- * $Date: 2010/10/22 11:47:30 $
+ * $Revision: 1.76 $
+ * $Date: 2011/02/11 10:46:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -232,8 +232,7 @@ public class BuchungControl extends AbstractControl
       }
     
     });
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      datum.disable();
+    datum.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return datum;
   }
 
@@ -251,8 +250,7 @@ public class BuchungControl extends AbstractControl
     sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
     sollKontoAuswahl.addListener(new KontoListener());
     sollKontoAuswahl.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      sollKontoAuswahl.disable();
+    sollKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return sollKontoAuswahl;
   }
 
@@ -271,8 +269,7 @@ public class BuchungControl extends AbstractControl
     habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
     habenKontoAuswahl.addListener(new KontoListener());
     habenKontoAuswahl.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      habenKontoAuswahl.disable();
+    habenKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return habenKontoAuswahl;
 	}
 
@@ -287,8 +284,7 @@ public class BuchungControl extends AbstractControl
 			return text;
 		
 		text = new TextInput(getBuchung().getText());
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      text.disable();
+		text.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     text.setMandatory(true);
 		return text;
 	}
@@ -396,8 +392,7 @@ public class BuchungControl extends AbstractControl
 		
 		belegnummer = new IntegerInput(getBuchung().getBelegnummer());
 		belegnummer.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      belegnummer.disable();
+		belegnummer.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
 		return belegnummer;
 	}
 
@@ -415,8 +410,7 @@ public class BuchungControl extends AbstractControl
 		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
 		betrag.setMandatory(true);
     betrag.addListener(new SteuerListener());
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      betrag.disable();
+    betrag.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
 		return betrag;
 	}
 
@@ -435,8 +429,7 @@ public class BuchungControl extends AbstractControl
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
     sl.handleEvent(null);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      steuer.disable();
+    steuer.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     steuer.setMandatory(true);
 		return steuer;
 	}
@@ -623,25 +616,14 @@ public class BuchungControl extends AbstractControl
           Steuer ss = sk == null ? null : sk.getSteuer();
           Steuer hs = hk == null ? null : hk.getSteuer();
           Steuer s = (ss != null ? ss : hs);
-          if (s == null)
-          {
-            // keines der Konten hat einen Steuersatz
-            getSteuer().disable();
-          }
-          else
+          getSteuer().setEnabled(s != null);
+          if (s != null)
           {
             double satz = s.getSatz();
-            if (satz == 0.0d)
-            {
-              getSteuer().disable();
-            }
-            else
-            {
-              getSteuer().enable();
-              getSteuer().setValue(new Double(satz));
-              new SteuerListener().handleEvent(null);
-              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
-            }
+            getSteuer().enable();
+            getSteuer().setValue(new Double(satz));
+            new SteuerListener().handleEvent(null);
+            GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
           }
         }
         catch (Exception e)
@@ -681,7 +663,10 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
- * Revision 1.75  2010/10/22 11:47:30  willuhn
+ * Revision 1.76  2011/02/11 10:46:11  willuhn
+ * @B BUGZILLA 990
+ *
+ * Revision 1.75  2010-10-22 11:47:30  willuhn
  * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
  *
  * Revision 1.74  2010-10-13 21:55:31  willuhn
