@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/11/12 12:58:41 $
+ * $Revision: 1.25 $
+ * $Date: 2011/03/07 09:07:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -230,12 +230,32 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     }
   }
 
+  /**
+   * @see de.willuhn.datasource.db.DBServiceImpl#checkConnection(java.sql.Connection)
+   */
+  protected void checkConnection(Connection conn) throws SQLException
+  {
+    try
+    {
+      Settings.getDBSupport().checkConnection(conn);
+    }
+    catch (RemoteException re)
+    {
+      throw new SQLException(re.getMessage());
+    }
+    super.checkConnection(conn);
+  }
+  
+
 }
 
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
- * Revision 1.24  2010/11/12 12:58:41  willuhn
+ * Revision 1.25  2011/03/07 09:07:37  willuhn
+ * @N Datenbank-Verbindung checken, bevor sie verwendet wird (aus Hibiscus uebernommen). Siehe Mail von Simon vom 05.03.2011
+ *
+ * Revision 1.24  2010-11-12 12:58:41  willuhn
  * @B Falscher Classloader
  *
  * Revision 1.23  2010-06-02 15:47:42  willuhn

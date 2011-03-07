@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMcKoiImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2010/07/26 14:08:37 $
+ * $Revision: 1.15 $
+ * $Date: 2011/03/07 09:07:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -227,12 +227,23 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
   {
     return 1;
   }
+
+  /**
+   * @see de.willuhn.jameica.fibu.server.AbstractDBSupportImpl#checkConnection(java.sql.Connection)
+   */
+  public void checkConnection(Connection conn) throws RemoteException
+  {
+    // brauchen wir bei nicht, da Embedded
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBSupportMcKoiImpl.java,v $
- * Revision 1.14  2010/07/26 14:08:37  willuhn
+ * Revision 1.15  2011/03/07 09:07:37  willuhn
+ * @N Datenbank-Verbindung checken, bevor sie verwendet wird (aus Hibiscus uebernommen). Siehe Mail von Simon vom 05.03.2011
+ *
+ * Revision 1.14  2010-07-26 14:08:37  willuhn
  * @B Passwort wurde nicht gesetzt
  *
  * Revision 1.13  2010/06/07 15:45:15  willuhn

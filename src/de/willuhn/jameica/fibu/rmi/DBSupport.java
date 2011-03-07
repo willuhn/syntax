@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/DBSupport.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.10 $
+ * $Date: 2011/03/07 09:07:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.util.ApplicationException;
@@ -183,12 +184,21 @@ public interface DBSupport extends GenericObject, Comparable
    */
   public int getTransactionIsolationLevel() throws RemoteException;
 
+  /**
+   * Prueft die Datenbankverbindung.
+   * @param conn die Datenbank-Connection.
+   * @throws RemoteException Wenn die Verbindung defekt ist und vom DB-Service neu erzeugt werden muss.
+   */
+  public void checkConnection(Connection conn) throws RemoteException;
 }
 
 
 /*********************************************************************
  * $Log: DBSupport.java,v $
- * Revision 1.9  2010/06/01 16:37:22  willuhn
+ * Revision 1.10  2011/03/07 09:07:37  willuhn
+ * @N Datenbank-Verbindung checken, bevor sie verwendet wird (aus Hibiscus uebernommen). Siehe Mail von Simon vom 05.03.2011
+ *
+ * Revision 1.9  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

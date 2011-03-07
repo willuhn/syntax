@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractDBSupportImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/07 15:45:15 $
+ * $Revision: 1.9 $
+ * $Date: 2011/03/07 09:07:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,10 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.jameica.fibu.Fibu;
@@ -227,13 +231,58 @@ public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
     return this.getOrder() - ((AbstractDBSupportImpl)o).getOrder();
   }
   
+  private long lastCheck = 0;
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.DBSupport#checkConnection(java.sql.Connection)
+   */
+  public void checkConnection(Connection conn) throws RemoteException
+  {
+    long newCheck = System.currentTimeMillis();
+    if ((newCheck - lastCheck) < (10 * 1000L))
+      return; // Wir checken hoechstens aller 10 Sekunden
+    
+    Statement s  = null;
+    ResultSet rs = null;
+    try
+    {
+      s = conn.createStatement();
+      rs = s.executeQuery("select 1");
+      lastCheck = newCheck;
+    }
+    catch (SQLException e)
+    {
+      // das Ding liefert in getMessage() den kompletten Stacktrace mit, den brauchen wir
+      // nicht (das muellt uns nur das Log voll) Also fangen wir sie und werfen eine neue
+      // saubere mit kurzem Fehlertext
+      String msg = e.getMessage();
+      if (msg != null && msg.indexOf("\n") != -1)
+        msg = msg.substring(0,msg.indexOf("\n"));
+      throw new RemoteException(msg);
+    }
+    finally
+    {
+      try
+      {
+        if (rs != null) rs.close();
+        if (s != null)  s.close();
+      }
+      catch (Exception e)
+      {
+        throw new RemoteException("unable to close statement/resultset",e);
+      }
+    }
+  }
   
 }
 
 
 /*********************************************************************
  * $Log: AbstractDBSupportImpl.java,v $
- * Revision 1.8  2010/06/07 15:45:15  willuhn
+ * Revision 1.9  2011/03/07 09:07:37  willuhn
+ * @N Datenbank-Verbindung checken, bevor sie verwendet wird (aus Hibiscus uebernommen). Siehe Mail von Simon vom 05.03.2011
+ *
+ * Revision 1.8  2010-06-07 15:45:15  willuhn
  * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
  *
  * Revision 1.7  2010/06/02 15:47:42  willuhn
