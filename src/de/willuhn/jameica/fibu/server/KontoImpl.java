@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.54 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.54.2.1 $
+ * $Date: 2011/03/10 16:03:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -506,9 +506,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     if (this.isNewObject())
       return 0;
     
-    // Die ID muss via tonumber umgewandelt werden, da wir sie als String
-    // uebergeben
-    String sql = "select count(id) from buchung where sollkonto_id = ? or habenkonto_id = ?";
+    String sql = "select count(id) from buchung where geschaeftsjahr_id = ? and (sollkonto_id = ? or habenkonto_id = ?)";
 
     DBService service = (DBService) this.getService();
 
@@ -523,14 +521,20 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     };
 
     Integer id = new Integer(this.getID());
-    Integer i = (Integer) service.execute(sql, new Object[] {id,id},rs);
+    Integer i = (Integer) service.execute(sql, new Object[] {new Integer(jahr.getID()),id,id},rs);
     return i == null ? 0 : i.intValue();
   }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.54  2010/06/01 16:37:22  willuhn
+ * Revision 1.54.2.1  2011/03/10 16:03:55  willuhn
+ * @B Das Geschaeftsjahr wurde bei der Ermittlung der Anzahl der Buchungen gar nicht beruecksichtigt - backport
+ *
+ * Revision 1.55  2011-03-10 16:01:26  willuhn
+ * @B Das Geschaeftsjahr wurde bei der Ermittlung der Anzahl der Buchungen gar nicht beruecksichtigt
+ *
+ * Revision 1.54  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject
