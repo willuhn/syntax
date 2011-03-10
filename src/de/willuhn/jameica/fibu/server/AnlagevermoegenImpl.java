@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/09/20 10:27:36 $
+ * $Revision: 1.19.2.1 $
+ * $Date: 2011/03/10 13:50:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
@@ -150,6 +151,26 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public void setNutzungsdauer(int dauer) throws RemoteException
   {
     setAttribute("nutzungsdauer",new Integer(dauer));
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getRestNutzungsdauer(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   */
+  public int getRestNutzungsdauer(Geschaeftsjahr jahr) throws RemoteException
+  {
+    Date start = this.getAnschaffungsdatum();
+    Date now   = jahr.getEnde();
+    int jahre  = this.getNutzungsdauer();
+    
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(start);
+    cal.add(Calendar.YEAR,jahre);
+    
+    int ende = cal.get(Calendar.YEAR); // Das Jahr der letzten planmaessigen Abschreibung
+    
+    cal.setTime(now);
+    int rest = ende - cal.get(Calendar.YEAR);
+    return rest > 0 ? rest : 0;
   }
 
   /**
@@ -529,7 +550,13 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
- * Revision 1.19  2010/09/20 10:27:36  willuhn
+ * Revision 1.19.2.1  2011/03/10 13:50:28  willuhn
+ * @N BUGZILLA 958 - backport
+ *
+ * Revision 1.20  2010-12-20 12:58:22  willuhn
+ * @N BUGZILLA 958
+ *
+ * Revision 1.19  2010-09-20 10:27:36  willuhn
  * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
  *
  * Revision 1.18  2006-05-29 13:02:30  willuhn

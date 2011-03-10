@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/11/02 17:34:28 $
+ * $Revision: 1.17.2.1 $
+ * $Date: 2011/03/10 13:50:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -316,6 +316,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
     if (!gwg && jahr.check(datum))
     {
+      if (Settings.SETTINGS.getBoolean("afa.restwert",false))
+        betrag = restwert / (double) av.getRestNutzungsdauer(jahr);
+      
       monitor.log(i18n.tr("    Anschaffungsjahr: Schreibe anteilig ab"));monitor.addPercentComplete(1);
       
       Calendar cal = Calendar.getInstance();
@@ -493,7 +496,16 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.17  2010/11/02 17:34:28  willuhn
+ * Revision 1.17.2.1  2011/03/10 13:50:27  willuhn
+ * @N BUGZILLA 958 - backport
+ *
+ * Revision 1.19  2010-12-20 13:01:08  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.18  2010-12-20 12:58:22  willuhn
+ * @N BUGZILLA 958
+ *
+ * Revision 1.17  2010-11-02 17:34:28  willuhn
  * @B Der Brutto-Betrag muss geholt werden, BEVOR die Hilfsbuchungen geloescht werden
  *
  * Revision 1.16  2010-10-23 11:38:18  willuhn
