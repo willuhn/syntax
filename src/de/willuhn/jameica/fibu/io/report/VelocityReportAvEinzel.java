@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportAvEinzel.java,v $
- * $Revision: 1.4.2.1 $
- * $Date: 2010/12/20 11:15:29 $
+ * $Revision: 1.4.2.2 $
+ * $Date: 2011/03/10 13:50:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,8 +85,7 @@ public class VelocityReportAvEinzel extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportAvEinzel.java,v $
- * Revision 1.4.2.1  2010/12/20 11:15:29  willuhn
- * @N 1.6.2 branch
+ * Revision 1.4.2.2  2011/03/10 13:50:00  willuhn
  * @B BUGZILLA 957 - backport
  *
  * Revision 1.5  2010-12-20 11:09:09  willuhn
