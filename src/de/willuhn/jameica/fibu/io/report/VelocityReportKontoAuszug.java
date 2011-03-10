@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportKontoAuszug.java,v $
- * $Revision: 1.2.2.1 $
- * $Date: 2011/03/10 13:49:40 $
+ * $Revision: 1.2.2.2 $
+ * $Date: 2011/03/10 16:13:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,9 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
   protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+    Date startDate = data.getStartDatum();
+    Date endDate   = data.getEndDatum();
+      
 
     VelocityReportData export = new VelocityReportData();
     export.addObject("filenames",filenameMap);
@@ -67,7 +70,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     {
       Konto k1 = (Konto) konten.next();
       Anfangsbestand ab = k1.getAnfangsbestand(jahr);
-      if (k1.getNumBuchungen(jahr) == 0 && (ab == null || ab.getBetrag() == 0.0d))
+      if (k1.getNumBuchungen(jahr,startDate,endDate) == 0 && (ab == null || ab.getBetrag() == 0.0d))
         continue;
       l.add(k1);
     }
@@ -77,9 +80,6 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
 
     //////////////////////////////////////////////////////////////////////////
     // Buchungen
-    Date startDate = data.getStartDatum();
-    Date endDate   = data.getEndDatum();
-      
     for (Konto k:l)
     {
       Vector buchungen = new Vector();
@@ -128,8 +128,11 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportKontoAuszug.java,v $
- * Revision 1.2.2.1  2011/03/10 13:49:40  willuhn
- * @B BUGZILLA 1001 - backport
+ * Revision 1.2.2.2  2011/03/10 16:13:05  willuhn
+ * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden - backport
+ *
+ * Revision 1.4  2011-03-10 16:10:49  willuhn
+ * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
  *
  * Revision 1.3  2011-03-10 13:42:26  willuhn
  * @B BUGZILLA 1001
