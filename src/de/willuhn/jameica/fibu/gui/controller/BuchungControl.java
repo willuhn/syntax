@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.75 $
- * $Date: 2010/10/22 11:47:30 $
+ * $Revision: 1.75.2.1 $
+ * $Date: 2011/03/10 13:49:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -59,19 +59,19 @@ import de.willuhn.util.I18N;
  */
 public class BuchungControl extends AbstractControl
 {
-	
+  
   private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
 
   // Fachobjekte
-	private Buchung buchung 		= null;
+  private Buchung buchung     = null;
 
-	// Eingabe-Felder
+  // Eingabe-Felder
   private Input template         = null;
-	private Input	text					   = null;
-	private Input belegnummer		   = null;
-	private Input betrag				   = null;
+  private Input text             = null;
+  private Input belegnummer      = null;
+  private Input betrag           = null;
 
-  private DecimalInput steuer				    = null;
+  private DecimalInput steuer           = null;
   private DateInput datum               = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
@@ -90,25 +90,25 @@ public class BuchungControl extends AbstractControl
     i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
-	/**
-	 * Liefert die Buchung.
+  /**
+   * Liefert die Buchung.
    * @return die Buchung.
    * @throws RemoteException
    */
   public Buchung getBuchung() throws RemoteException
-	{
-		if (buchung != null)
-			return buchung;
-		
-		buchung = (Buchung) getCurrentObject();
-		if (buchung != null)
-			return buchung;
-		
-		buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
+  {
+    if (buchung != null)
+      return buchung;
+    
+    buchung = (Buchung) getCurrentObject();
+    if (buchung != null)
+      return buchung;
+    
+    buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
     buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
-		return buchung;
-		
-	}
+    return buchung;
+    
+  }
   
   /**
    * Liefert eine Auswahlbox mit Buchungsvorlagen.
@@ -174,14 +174,14 @@ public class BuchungControl extends AbstractControl
   }
   
   /**
-	 * Liefert das Eingabe-Feld fuer das Datum.
+   * Liefert das Eingabe-Feld fuer das Datum.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
   public DateInput getDatum() throws RemoteException
-	{
-		if (datum != null)
-			return datum;
+  {
+    if (datum != null)
+      return datum;
 
     Date d = getBuchung().getDatum();
     if (d == null)
@@ -232,38 +232,36 @@ public class BuchungControl extends AbstractControl
       }
     
     });
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      datum.disable();
+    datum.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return datum;
   }
 
-	/**
-	 * Liefert das Eingabe-Feld zur Auswahl des SollKontos.
+  /**
+   * Liefert das Eingabe-Feld zur Auswahl des SollKontos.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
   public KontoInput getSollKontoAuswahl() throws RemoteException
-	{
-		if (sollKontoAuswahl != null)
-			return sollKontoAuswahl;
+  {
+    if (sollKontoAuswahl != null)
+      return sollKontoAuswahl;
 
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
     sollKontoAuswahl.addListener(new KontoListener());
     sollKontoAuswahl.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      sollKontoAuswahl.disable();
+    sollKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return sollKontoAuswahl;
   }
 
 
-	/**
-	 * Liefert das Eingabe-Feld zur Auswahl des Haben-Kontos.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public KontoInput getHabenKontoAuswahl() throws RemoteException
-	{
+  /**
+   * Liefert das Eingabe-Feld zur Auswahl des Haben-Kontos.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public KontoInput getHabenKontoAuswahl() throws RemoteException
+  {
     if (habenKontoAuswahl != null)
       return habenKontoAuswahl;
 
@@ -271,27 +269,25 @@ public class BuchungControl extends AbstractControl
     habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
     habenKontoAuswahl.addListener(new KontoListener());
     habenKontoAuswahl.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      habenKontoAuswahl.disable();
+    habenKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return habenKontoAuswahl;
-	}
+  }
 
-	/**
-	 * Liefert das Eingabe-Feld fuer den Buchungstext.
+  /**
+   * Liefert das Eingabe-Feld fuer den Buchungstext.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
   public Input getText() throws RemoteException
-	{
-		if (text != null)
-			return text;
-		
-		text = new TextInput(getBuchung().getText());
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      text.disable();
+  {
+    if (text != null)
+      return text;
+    
+    text = new TextInput(getBuchung().getText());
+    text.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     text.setMandatory(true);
-		return text;
-	}
+    return text;
+  }
 
   /**
    * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob zu der Buchung
@@ -385,61 +381,58 @@ public class BuchungControl extends AbstractControl
   }
 
   /**
-	 * Liefert das Eingabe-Feld fuer die Belegnummer.
-	 * @return Eingabe-Feld.
-	 * @throws RemoteException
-	 */
-	public Input getBelegnummer() throws RemoteException
-	{
-		if (belegnummer != null)
-			return belegnummer;
-		
-		belegnummer = new IntegerInput(getBuchung().getBelegnummer());
-		belegnummer.setMandatory(true);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      belegnummer.disable();
-		return belegnummer;
-	}
+   * Liefert das Eingabe-Feld fuer die Belegnummer.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getBelegnummer() throws RemoteException
+  {
+    if (belegnummer != null)
+      return belegnummer;
+    
+    belegnummer = new IntegerInput(getBuchung().getBelegnummer());
+    belegnummer.setMandatory(true);
+    belegnummer.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
+    return belegnummer;
+  }
 
-	/**
-	 * Liefert das Eingabe-Feld fuer den Betrag.
+  /**
+   * Liefert das Eingabe-Feld fuer den Betrag.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
   public Input getBetrag() throws RemoteException
-	{
-		if (betrag != null)
-			return betrag;
-		
-		betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Settings.DECIMALFORMAT);
-		betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
-		betrag.setMandatory(true);
+  {
+    if (betrag != null)
+      return betrag;
+    
+    betrag = new DecimalInput(getBuchung().getBruttoBetrag(), Settings.DECIMALFORMAT);
+    betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+    betrag.setMandatory(true);
     betrag.addListener(new SteuerListener());
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      betrag.disable();
-		return betrag;
-	}
+    betrag.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
+    return betrag;
+  }
 
-	/**
-	 * Liefert das Eingabe-Feld fuer die Steuer.
+  /**
+   * Liefert das Eingabe-Feld fuer die Steuer.
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
   public DecimalInput getSteuer() throws RemoteException
-	{
-		if (steuer != null)
-			return steuer;
+  {
+    if (steuer != null)
+      return steuer;
 
-		steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
-		steuer.setComment("%");
+    steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
+    steuer.setComment("%");
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
     sl.handleEvent(null);
-    if (getBuchung().getGeschaeftsjahr().isClosed())
-      steuer.disable();
+    steuer.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     steuer.setMandatory(true);
-		return steuer;
-	}
+    return steuer;
+  }
 
   /**
    * Speichert die Buchung.
@@ -473,7 +466,7 @@ public class BuchungControl extends AbstractControl
       if (Double.isNaN(brutto))
         throw new ApplicationException(i18n.tr("Betrag ungültig."));
 
-  		getBuchung().setSteuer(steuer);
+      getBuchung().setSteuer(steuer);
       getBuchung().setBruttoBetrag(brutto);
       getBuchung().setBetrag(netto);
       //
@@ -498,7 +491,7 @@ public class BuchungControl extends AbstractControl
       getBuchung().setText((String)getText().getValue());
       
       // und jetzt speichern wir.
-			getBuchung().store();
+      getBuchung().store();
       GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
 
       // BUGZILLA 245
@@ -525,7 +518,7 @@ public class BuchungControl extends AbstractControl
     }
     catch (Throwable t)
     {
-			Logger.error("unable to store buchung",t);
+      Logger.error("unable to store buchung",t);
       GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
     }
     
@@ -623,25 +616,14 @@ public class BuchungControl extends AbstractControl
           Steuer ss = sk == null ? null : sk.getSteuer();
           Steuer hs = hk == null ? null : hk.getSteuer();
           Steuer s = (ss != null ? ss : hs);
-          if (s == null)
-          {
-            // keines der Konten hat einen Steuersatz
-            getSteuer().disable();
-          }
-          else
+          getSteuer().setEnabled(s != null);
+          if (s != null)
           {
             double satz = s.getSatz();
-            if (satz == 0.0d)
-            {
-              getSteuer().disable();
-            }
-            else
-            {
-              getSteuer().enable();
-              getSteuer().setValue(new Double(satz));
-              new SteuerListener().handleEvent(null);
-              GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
-            }
+            getSteuer().enable();
+            getSteuer().setValue(new Double(satz));
+            new SteuerListener().handleEvent(null);
+            GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
           }
         }
         catch (Exception e)
@@ -681,7 +663,13 @@ public class BuchungControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungControl.java,v $
- * Revision 1.75  2010/10/22 11:47:30  willuhn
+ * Revision 1.75.2.1  2011/03/10 13:49:12  willuhn
+ * @B BUGZILLA 990 - backport
+ *
+ * Revision 1.76  2011-02-11 10:46:11  willuhn
+ * @B BUGZILLA 990
+ *
+ * Revision 1.75  2010-10-22 11:47:30  willuhn
  * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
  *
  * Revision 1.74  2010-10-13 21:55:31  willuhn
