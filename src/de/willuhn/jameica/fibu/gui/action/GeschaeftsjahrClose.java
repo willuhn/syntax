@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrClose.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.7.2.1 $
+ * $Date: 2011/03/10 13:48:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,7 +48,7 @@ public class GeschaeftsjahrClose implements Action
       boolean b = Application.getController().getApplicationCallback().askUser(
           i18n.tr("Sind Sie sicher, dass Sie das Geschäftsjahr \"{0}\" abschließen möchten?\n\n" +
           "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der " +
-          "Konto als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
+          "Konten als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
       if (!b)
         return;
     }
@@ -106,7 +106,13 @@ public class GeschaeftsjahrClose implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrClose.java,v $
- * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * Revision 1.7.2.1  2011/03/10 13:48:43  willuhn
+ * @B typo - backport
+ *
+ * Revision 1.8  2011-01-13 16:27:45  willuhn
+ * @B typo
+ *
+ * Revision 1.7  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup
