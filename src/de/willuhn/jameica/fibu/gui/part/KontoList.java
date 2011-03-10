@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.21 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.22 $
+ * $Date: 2011/03/10 16:10:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -193,7 +193,7 @@ public class KontoList extends TablePart implements Extendable
                     k = (Konto) list.next();
 
                     // BUGZILLA 128
-                    if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr()) == 0)
+                    if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr(),null,null) == 0)
                       continue;
 
                     // Was zum Filtern da?
@@ -265,7 +265,10 @@ public class KontoList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.21  2010/06/01 16:37:22  willuhn
+ * Revision 1.22  2011/03/10 16:10:49  willuhn
+ * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
+ *
+ * Revision 1.21  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.55 $
- * $Date: 2011/03/10 16:01:26 $
+ * $Revision: 1.56 $
+ * $Date: 2011/03/10 16:10:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -499,16 +499,33 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Konto#getNumBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getNumBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
    */
-  public int getNumBuchungen(Geschaeftsjahr jahr) throws RemoteException
+  public int getNumBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
   {
     if (this.isNewObject())
       return 0;
     
+    if (von != null && !jahr.check(von))
+      throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(von)));
+
+    if (bis != null && !jahr.check(bis))
+      throw new RemoteException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(bis)));
+
+    Date start = null;
+    if (von != null)
+      start = CustomDateFormat.startOfDay(von);
+
+    Date end = null;
+    if (bis != null)
+      end = CustomDateFormat.endOfDay(bis);
+
     String sql = "select count(id) from buchung where geschaeftsjahr_id = ? and (sollkonto_id = ? or habenkonto_id = ?)";
 
-    DBService service = (DBService) this.getService();
+    DBService db = (DBService) this.getService();
+
+    if (start != null) sql += " and " + db.getSQLTimestamp("datum") + " >= " + start.getTime();
+    if (end != null)   sql += " and " + db.getSQLTimestamp("datum") + " <=" + end.getTime();
 
     ResultSetExtractor rs = new ResultSetExtractor()
     {
@@ -521,14 +538,17 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     };
 
     Integer id = new Integer(this.getID());
-    Integer i = (Integer) service.execute(sql, new Object[] {new Integer(jahr.getID()),id,id},rs);
+    Integer i = (Integer) db.execute(sql, new Object[] {new Integer(jahr.getID()),id,id},rs);
     return i == null ? 0 : i.intValue();
   }
 }
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.55  2011/03/10 16:01:26  willuhn
+ * Revision 1.56  2011/03/10 16:10:50  willuhn
+ * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
+ *
+ * Revision 1.55  2011-03-10 16:01:26  willuhn
  * @B Das Geschaeftsjahr wurde bei der Ermittlung der Anzahl der Buchungen gar nicht beruecksichtigt
  *
  * Revision 1.54  2010-06-01 16:37:22  willuhn

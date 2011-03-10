@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Konto.java,v $
- * $Revision: 1.24 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.25 $
+ * $Date: 2011/03/10 16:10:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,10 +187,12 @@ public interface Konto extends UserObject
    * Liefert der Anzahl aller Buchungen auf dem Konto in dem Geschaeftsjahr.
    * Das schliesst auch Hilfs-Buchungen ein.
    * @param jahr zu pruefendes Geschaeftsjahr.
+   * @param von Start-Datum. Kann auch weggelassen werden.
+   * @param bis End-Datum. Kann auch weggelassen werden.
    * @return true, wenn Buchungen vorhanden sind.
    * @throws RemoteException
    */
-  public int getNumBuchungen(Geschaeftsjahr jahr) throws RemoteException;
+  public int getNumBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
   
   /**
    * Liefert den Anfangsbestand des Kontos oder null wenn keiner existiert.
@@ -204,7 +206,10 @@ public interface Konto extends UserObject
 
 /*********************************************************************
  * $Log: Konto.java,v $
- * Revision 1.24  2009/07/03 10:52:19  willuhn
+ * Revision 1.25  2011/03/10 16:10:49  willuhn
+ * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
+ *
+ * Revision 1.24  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.22  2007/02/27 15:46:17  willuhn
