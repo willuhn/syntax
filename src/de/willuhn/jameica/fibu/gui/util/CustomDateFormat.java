@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/util/CustomDateFormat.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.4.2.1 $
+ * $Date: 2011/03/10 13:49:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,6 +57,7 @@ public class CustomDateFormat extends SimpleDateFormat
       case 4:
         try
         {
+          // TODO: Das funktioniert nicht mehr, weil DateInput intern vorher  DateUtil.convert2Date(text) aufruft. Und das haengt automatisch das aktuelle Jahr an
           Calendar cal = Calendar.getInstance();
           cal.setTime(Settings.getActiveGeschaeftsjahr().getBeginn());
           source += cal.get(Calendar.YEAR);
@@ -115,7 +116,13 @@ public class CustomDateFormat extends SimpleDateFormat
 
 /*********************************************************************
  * $Log: CustomDateFormat.java,v $
- * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * Revision 1.4.2.1  2011/03/10 13:49:26  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.5  2011-01-03 13:23:53  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.4  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject
