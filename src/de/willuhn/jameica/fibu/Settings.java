@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.50 $
- * $Date: 2010/11/12 16:27:27 $
+ * $Revision: 1.51 $
+ * $Date: 2011/03/21 11:17:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,11 @@ import de.willuhn.util.I18N;
  */
 public class Settings
 {
+  /**
+   * Queue, die benachrtichtigt wird, wenn ein neuer Kontenrahmen angelegt wurde.
+   */
+  public final static String QUEUE_KONTENRAHMEN_CREATED = "syntax.kontenrahmen.created";
+  
   /**
    * Die Settings.
    */
@@ -447,7 +452,10 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.50  2010/11/12 16:27:27  willuhn
+ * Revision 1.51  2011/03/21 11:17:27  willuhn
+ * @N BUGZILLA 1004
+ *
+ * Revision 1.50  2010-11-12 16:27:27  willuhn
  * @C Plugin-Classloader statt dem von Jameica verwenden
  *
  * Revision 1.49  2010-08-02 22:42:03  willuhn

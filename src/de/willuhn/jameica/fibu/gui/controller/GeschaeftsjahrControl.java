@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.8 $
+ * $Date: 2011/03/21 11:17:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.Date;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -148,7 +149,23 @@ public class GeschaeftsjahrControl extends AbstractControl
     if (kontenrahmenAuswahl != null)
       return kontenrahmenAuswahl;
 
-    kontenrahmenAuswahl = new SelectInput(Settings.getDBService().createList(Kontenrahmen.class),getGeschaeftsjahr().getKontenrahmen());
+    DBIterator list = Settings.getDBService().createList(Kontenrahmen.class);
+    String id = null;
+    try
+    {
+      id = this.getGeschaeftsjahr().getMandant().getID();
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to determine mandant",e);
+    }
+    if (id != null)
+      list.addFilter("mandant_id is null or mandant_id = " + id);
+    else
+      list.addFilter("mandant_id is null");
+    
+    list.setOrder("order by name");
+    kontenrahmenAuswahl = new SelectInput(list,getGeschaeftsjahr().getKontenrahmen());
     kontenrahmenAuswahl.setMandatory(true);
     return kontenrahmenAuswahl;
   }
@@ -198,7 +215,10 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
- * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * Revision 1.8  2011/03/21 11:17:27  willuhn
+ * @N BUGZILLA 1004
+ *
+ * Revision 1.7  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup

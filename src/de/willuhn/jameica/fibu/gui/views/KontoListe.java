@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.22 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.23 $
+ * $Date: 2011/03/21 11:17:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
@@ -24,6 +24,7 @@ import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
+import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
@@ -32,28 +33,35 @@ import de.willuhn.util.I18N;
  */
 public class KontoListe extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
-    String kr = i18n.tr("unbekannt");
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    try
+    // Checken, ob ein Kontenrahmen uebergeben wurde
+    Kontenrahmen kr = null;
+    Object context = this.getCurrentObject();
+    if (context != null && (context instanceof Kontenrahmen))
+      kr = (Kontenrahmen) context;
+    else
     {
-      kr = jahr.getKontenrahmen().getName();
+      try
+      {
+        kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while reading kr",e);
+      }
     }
-    catch (Exception e)
-    {
-      Logger.error("error while reading kr",e);
-    }
-    GUI.getView().setTitle(i18n.tr("Liste der Konten des Mandanten. Kontenrahmen: {0}",kr));
-
-    Part p = new KontoList(jahr.getKontenrahmen().getKonten(),new KontoNeu());
+    
+    if (kr == null)
+      throw new ApplicationException(i18n.tr("Kein Kontenrahmen ausgewählt"));
+    
+    GUI.getView().setTitle(i18n.tr("Liste der Konten. Kontenrahmen: {0}",kr.getName()));
+    Part p = new KontoList(kr.getKonten(),new KontoNeu());
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea(getParent(),2);
@@ -65,7 +73,10 @@ public class KontoListe extends AbstractView
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
- * Revision 1.22  2010/06/02 00:02:58  willuhn
+ * Revision 1.23  2011/03/21 11:17:26  willuhn
+ * @N BUGZILLA 1004
+ *
+ * Revision 1.22  2010-06-02 00:02:58  willuhn
  * @N Mehr Icons
  *
  * Revision 1.21  2010/06/01 23:51:56  willuhn

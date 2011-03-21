@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.20 $
+ * $Date: 2011/03/21 11:17:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,6 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -33,7 +32,7 @@ import de.willuhn.util.I18N;
 public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenrahmen
 {
 
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
    * Erzeugt einen neuen Kontorahmen.
@@ -42,7 +41,6 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   public KontenrahmenImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -72,15 +70,11 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
       if (name == null || "".equals(name))
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Namen für den Kontenrahmen ein."));
       
-      // Checken, ob fuer diesen Mandanten schon ein
-      // gleichnamiger Kontenrahmen existiert
-      Mandant m = getMandant();
+      // Checken, ob schon ein gleichnamiger Kontenrahmen existiert
       DBIterator list = getService().createList(Kontenrahmen.class);
       list.addFilter("name = ?",new String[]{name});
-      if (m != null)
-        list.addFilter("mandant_id = " + m.getID());
       if (list.hasNext())
-        throw new ApplicationException(i18n.tr("Für diesen Mandanten existiert bereits ein gleichnamiger Kontenrahmen."));
+        throw new ApplicationException(i18n.tr("Ein Kontenrahmen mit diesem Namen existiert bereits."));
     }
     catch (RemoteException e)
     {
@@ -156,7 +150,10 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
- * Revision 1.19  2009/07/03 10:52:19  willuhn
+ * Revision 1.20  2011/03/21 11:17:27  willuhn
+ * @N BUGZILLA 1004
+ *
+ * Revision 1.19  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.16  2007/11/05 01:04:49  willuhn

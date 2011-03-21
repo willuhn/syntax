@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Einstellungen.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/06/03 14:26:16 $
+ * $Revision: 1.9 $
+ * $Date: 2011/03/21 11:17:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,14 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.gui.action.KontenrahmenClone;
 import de.willuhn.jameica.fibu.gui.controller.EinstellungenControl;
+import de.willuhn.jameica.fibu.gui.part.KontenrahmenList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
@@ -45,15 +47,16 @@ public class Einstellungen extends AbstractView
     final EinstellungenControl control = new EinstellungenControl(this);
 
     Container group = new SimpleContainer(getParent());
+
+    group.addHeadline(i18n.tr("System-Einstellungen"));
+    group.addInput(control.getSystemDataWritable());
+    
     group.addHeadline(i18n.tr("Buchungsrelevante Einstellungen"));
     group.addInput(control.getAbschreibungsKonto());
     group.addInput(control.getAbschreibungsKontoGWG());
     group.addInput(control.getGwgWert());
     
-    group.addHeadline(i18n.tr("System-Einstellungen"));
-    group.addInput(control.getSystemDataWritable());
-
-    ButtonArea buttonArea = new ButtonArea(getParent(),2);
+    ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
@@ -62,14 +65,31 @@ public class Einstellungen extends AbstractView
         control.handleStore();
       }
     },null,true,"document-save.png");
+    buttonArea.paint(this.getParent());
 
+    final KontenrahmenList list = new KontenrahmenList();
+    group.addHeadline(i18n.tr("Kontenrahmen"));
+    list.paint(getParent());
+
+    ButtonArea buttonArea2 = new ButtonArea();
+    buttonArea2.addButton(i18n.tr("Kontenrahmen duplizieren..."), new Action()
+    {
+      public void handleAction(Object context) throws ApplicationException
+      {
+        new KontenrahmenClone().handleAction(list.getSelection());
+      }
+    },null,false,"gtk-dnd-multiple.png");
+    buttonArea2.paint(this.getParent());
   }
 }
 
 
 /*********************************************************************
  * $Log: Einstellungen.java,v $
- * Revision 1.8  2010/06/03 14:26:16  willuhn
+ * Revision 1.9  2011/03/21 11:17:27  willuhn
+ * @N BUGZILLA 1004
+ *
+ * Revision 1.8  2010-06-03 14:26:16  willuhn
  * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
  * @C Code-Cleanup
  *
