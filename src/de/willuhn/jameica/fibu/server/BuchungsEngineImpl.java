@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/03/25 09:16:18 $
+ * $Revision: 1.21 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -277,8 +277,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
   private AbschreibungsBuchung schreibeAb(ProgressMonitor monitor, Anlagevermoegen av, Geschaeftsjahr jahr) throws RemoteException
   {
     double anschaffung = av.getAnschaffungskosten();
-    double betrag      = anschaffung / (double) av.getNutzungsdauer();
     double restwert    = av.getRestwert(jahr);
+//     double betrag      = anschaffung / (double) av.getNutzungsdauer();
+    double betrag      = restwert / (double) av.getRestNutzungsdauer(jahr); // BUGZILLA 958
     boolean gwg        = false;
 
     if (restwert < 0.01d)
@@ -493,7 +494,11 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.20  2011/03/25 09:16:18  willuhn
+ * Revision 1.21  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.20  2011-03-25 09:16:18  willuhn
  * @R UNDO BUGZILLA 958
  *
  * Revision 1.19  2010-12-20 13:01:08  willuhn

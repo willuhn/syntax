@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.56 $
- * $Date: 2011/03/10 16:10:50 $
+ * $Revision: 1.57 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -288,7 +288,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       list.addFilter("konto_id = " + this.getID());
       
       if (list.hasNext())
-        throw new ApplicationException(i18n.tr("Das Konto besitzt bereits einen Anfangsbestand. Löschen SIe zuerst diesen."));
+        throw new ApplicationException(i18n.tr("Das Konto besitzt bereits einen Anfangsbestand. Löschen Sie zuerst diesen."));
 
       list = getService().createList(Buchung.class);
       list.addFilter("habenkonto_id = " + this.getID() + " OR sollkonto_id = " + this.getID());
@@ -545,7 +545,11 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.56  2011/03/10 16:10:50  willuhn
+ * Revision 1.57  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.56  2011-03-10 16:10:50  willuhn
  * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
  *
  * Revision 1.55  2011-03-10 16:01:26  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractUserObjectImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.7 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -121,7 +121,7 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
    */
   public void setMandant(Mandant mandant) throws RemoteException
   {
-    if (!this.isNewObject())
+    if (!this.isNewObject() && !this.canChange())
       throw new RemoteException("Datensatz gehört zum initialen Datenbestand und darf daher nicht geändert werden.");
     setAttribute("mandant_id",mandant);
   }
@@ -129,7 +129,11 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AbstractUserObjectImpl.java,v $
- * Revision 1.6  2010/06/01 16:37:22  willuhn
+ * Revision 1.7  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.6  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

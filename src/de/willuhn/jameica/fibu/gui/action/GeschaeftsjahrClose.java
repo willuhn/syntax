@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/GeschaeftsjahrClose.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/01/13 16:27:45 $
+ * $Revision: 1.9 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,7 +19,6 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.rmi.BuchungsEngine;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -47,7 +46,7 @@ public class GeschaeftsjahrClose implements Action
     {
       boolean b = Application.getController().getApplicationCallback().askUser(
           i18n.tr("Sind Sie sicher, dass Sie das Geschäftsjahr \"{0}\" abschließen möchten?\n\n" +
-          "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der " +
+          "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der\n" +
           "Konten als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
       if (!b)
         return;
@@ -66,12 +65,10 @@ public class GeschaeftsjahrClose implements Action
     {
       if (new Date().before(jahr.getEnde()))
       {
-        YesNoDialog d = new YesNoDialog(YesNoDialog.POSITION_CENTER);
-        d.setTitle(i18n.tr("Abschluss vor Ablauf"));
-        d.setText(i18n.tr("Warnung: Sie schliessen das Geschäftsjahr, noch bevor dessen Ende erreicht ist. " +
-            "Sie können anschliessend keine Buchungen mehr darauf erfassen. Sind Sie sicher?"));
-        Boolean b = (Boolean) d.open();
-        if (!b.booleanValue())
+        boolean b = Application.getController().getApplicationCallback().askUser(
+            i18n.tr("Warnung: Sie schliessen das Geschäftsjahr, noch bevor dessen Ende erreicht ist.\n" +
+                    "Sie können anschliessend keine Buchungen mehr darauf erfassen. Sind Sie sicher?"));
+        if (!b)
           return;
       }
     }
@@ -106,7 +103,11 @@ public class GeschaeftsjahrClose implements Action
 
 /*********************************************************************
  * $Log: GeschaeftsjahrClose.java,v $
- * Revision 1.8  2011/01/13 16:27:45  willuhn
+ * Revision 1.9  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.8  2011-01-13 16:27:45  willuhn
  * @B typo
  *
  * Revision 1.7  2010-06-04 00:33:56  willuhn

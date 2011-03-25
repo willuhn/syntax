@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.28 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,10 @@ import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Finanzamt;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -277,11 +280,16 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public void delete() throws RemoteException, ApplicationException
   {
+    boolean sysChange = Settings.getSystemDataWritable();
+    
     try
     {
       Logger.info("Lösche Mandant " + getAttribute(getPrimaryAttribute()));
 
       transactionBegin();
+      
+      if (!sysChange)
+        Settings.setSystemDataWritable(true);
 
       DBIterator av = getAnlagevermoegen();
       while (av.hasNext())
@@ -302,6 +310,37 @@ public class MandantImpl extends AbstractDBObject implements Mandant
       {
         Geschaeftsjahr jahr = (Geschaeftsjahr) jahre.next();
         jahr.delete();
+      }
+
+      {
+        DBIterator list = getService().createList(Kontenrahmen.class);
+        list.addFilter("mandant_id = " + this.getID());
+        while (list.hasNext())
+        {
+          Kontenrahmen kr = (Kontenrahmen) list.next();
+          kr.setMandant(null);
+          kr.store();
+        }
+      }
+      {
+        DBIterator list = getService().createList(Konto.class);
+        list.addFilter("mandant_id = " + this.getID());
+        while (list.hasNext())
+        {
+          Konto k = (Konto) list.next();
+          k.setMandant(null);
+          k.store();
+        }
+      }
+      {
+        DBIterator list = getService().createList(Steuer.class);
+        list.addFilter("mandant_id = " + this.getID());
+        while (list.hasNext())
+        {
+          Steuer s = (Steuer) list.next();
+          s.setMandant(null);
+          s.store();
+        }
       }
 
       super.delete();
@@ -345,6 +384,10 @@ public class MandantImpl extends AbstractDBObject implements Mandant
       Logger.error("unable to delete mandant",t);
       throw new ApplicationException(i18n.tr("Fehler beim Löschen des Mandanten"));
     }
+    finally
+    {
+      Settings.setSystemDataWritable(sysChange);
+    }
   }
 
   /**
@@ -386,7 +429,11 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
- * Revision 1.27  2009/07/03 10:52:19  willuhn
+ * Revision 1.28  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.27  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.26.2.1  2008/09/08 09:03:52  willuhn

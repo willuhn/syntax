@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/util/KontenrahmenUtil.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/03/21 11:17:27 $
+ * $Revision: 1.7 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,7 +114,7 @@ public class KontenrahmenUtil
         Konto k   = (Konto) service.createObject(Konto.class,null);
         k.overwrite(kt);
         k.setKontenrahmen(kr);
-        k.setMandant(mandant);
+        k.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
 
         // ggf. vorhandener Steuersatz
         Steuer st = (Steuer) kt.getSteuer();
@@ -127,7 +127,7 @@ public class KontenrahmenUtil
             // Haben wir noch nicht, also anlegen
             s = (Steuer) service.createObject(Steuer.class,null);
             s.overwrite(st);
-            s.setMandant(mandant);
+            s.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
             s.store();
             steuerCache.put(st.getID(),s);
           }
@@ -190,7 +190,11 @@ public class KontenrahmenUtil
 
 /**********************************************************************
  * $Log: KontenrahmenUtil.java,v $
- * Revision 1.6  2011/03/21 11:17:27  willuhn
+ * Revision 1.7  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.6  2011-03-21 11:17:27  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.5  2009-07-03 10:52:19  willuhn

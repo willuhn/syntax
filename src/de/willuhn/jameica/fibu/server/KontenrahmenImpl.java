@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2011/03/21 11:17:27 $
+ * $Revision: 1.21 $
+ * $Date: 2011/03/25 10:14:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -73,6 +73,9 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
       // Checken, ob schon ein gleichnamiger Kontenrahmen existiert
       DBIterator list = getService().createList(Kontenrahmen.class);
       list.addFilter("name = ?",new String[]{name});
+      if (!this.isNewObject())
+        list.addFilter("id != " + this.getID()); // Und wir sind es nicht selbst
+      
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Ein Kontenrahmen mit diesem Namen existiert bereits."));
     }
@@ -150,7 +153,11 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
- * Revision 1.20  2011/03/21 11:17:27  willuhn
+ * Revision 1.21  2011/03/25 10:14:10  willuhn
+ * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
+ * @C BUGZILLA 958
+ *
+ * Revision 1.20  2011-03-21 11:17:27  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.19  2009-07-03 10:52:19  willuhn
