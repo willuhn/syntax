@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/12/20 13:01:08 $
+ * $Revision: 1.20 $
+ * $Date: 2011/03/25 09:16:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -316,9 +316,6 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     // Anteilig abschreiben, wenn wir uns im Anschaffungsjahr befinden
     if (!gwg && jahr.check(datum))
     {
-      if (Settings.SETTINGS.getBoolean("afa.restwert",false))
-        betrag = restwert / (double) av.getRestNutzungsdauer(jahr);
-      
       monitor.log(i18n.tr("    Anschaffungsjahr: Schreibe anteilig ab"));monitor.addPercentComplete(1);
       
       Calendar cal = Calendar.getInstance();
@@ -496,7 +493,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.19  2010/12/20 13:01:08  willuhn
+ * Revision 1.20  2011/03/25 09:16:18  willuhn
+ * @R UNDO BUGZILLA 958
+ *
+ * Revision 1.19  2010-12-20 13:01:08  willuhn
  * *** empty log message ***
  *
  * Revision 1.18  2010-12-20 12:58:22  willuhn
