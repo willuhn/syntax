@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/DBObjectDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:38:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -67,6 +68,11 @@ public class DBObjectDelete implements Action
       Boolean choice = (Boolean) d.open();
       if (!choice.booleanValue())
         return;
+    }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
     }
     catch (Exception e)
     {
@@ -191,7 +197,10 @@ public class DBObjectDelete implements Action
 
 /**********************************************************************
  * $Log: DBObjectDelete.java,v $
- * Revision 1.1  2010/08/27 11:19:40  willuhn
+ * Revision 1.2  2011/05/11 10:38:52  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.1  2010-08-27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
  **********************************************************************/

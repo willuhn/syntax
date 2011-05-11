@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AbschreibungDelete.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,6 +20,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,6 +66,11 @@ public class AbschreibungDelete implements Action
       a.delete();
       GUI.getStatusBar().setSuccessText(i18n.tr("Abschreibung gelöscht"));
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete abschreibung",e);
@@ -77,7 +83,10 @@ public class AbschreibungDelete implements Action
 
 /*********************************************************************
  * $Log: AbschreibungDelete.java,v $
- * Revision 1.1  2006/05/29 13:02:30  willuhn
+ * Revision 1.2  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.1  2006-05-29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *
  **********************************************************************/

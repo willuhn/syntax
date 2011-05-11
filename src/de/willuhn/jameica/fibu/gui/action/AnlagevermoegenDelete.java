@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnlagevermoegenDelete.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -55,6 +56,11 @@ public class AnlagevermoegenDelete implements Action
       ((Anlagevermoegen)context).delete();
       GUI.getStatusBar().setSuccessText(i18n.tr("Anlage-Gegenstand gelöscht"));
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete anlagevermoegen",e);
@@ -67,7 +73,10 @@ public class AnlagevermoegenDelete implements Action
 
 /*********************************************************************
  * $Log: AnlagevermoegenDelete.java,v $
- * Revision 1.3  2005/09/26 15:15:39  willuhn
+ * Revision 1.4  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.3  2005-09-26 15:15:39  willuhn
  * *** empty log message ***
  *
  * Revision 1.2  2005/09/01 16:34:45  willuhn

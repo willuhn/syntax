@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/BuchungExport.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/30 16:31:43 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -60,6 +61,11 @@ public class BuchungExport implements Action
       ExportDialog d = new ExportDialog(u, Buchung.class);
       d.open();
 		}
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
 		catch (ApplicationException ae)
 		{
 			throw ae;
@@ -76,7 +82,10 @@ public class BuchungExport implements Action
 
 /**********************************************************************
  * $Log: BuchungExport.java,v $
- * Revision 1.1  2010/08/30 16:31:43  willuhn
+ * Revision 1.2  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.1  2010-08-30 16:31:43  willuhn
  * @N Import und Export von Buchungen im XML-Format
  *
  **********************************************************************/

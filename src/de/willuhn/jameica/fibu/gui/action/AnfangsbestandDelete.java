@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AnfangsbestandDelete.java,v $
- * $Revision: 1.4 $
- * $Date: 2006/05/29 13:02:30 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -54,6 +55,11 @@ public class AnfangsbestandDelete implements Action
       ((Anfangsbestand)context).delete();
       GUI.getStatusBar().setSuccessText(i18n.tr("Anfangsbestand gelöscht"));
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (Exception e)
     {
       Logger.error("unable to delete anfangsbestand",e);
@@ -66,7 +72,10 @@ public class AnfangsbestandDelete implements Action
 
 /*********************************************************************
  * $Log: AnfangsbestandDelete.java,v $
- * Revision 1.4  2006/05/29 13:02:30  willuhn
+ * Revision 1.5  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.4  2006-05-29 13:02:30  willuhn
  * @N Behandlung von Sonderabschreibungen
  *
  * Revision 1.3  2005/09/26 15:15:39  willuhn

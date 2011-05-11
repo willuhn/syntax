@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/KontoDelete.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -65,9 +66,17 @@ public class KontoDelete implements Action
       }
       
 
-      if (!((Boolean) d.open()).booleanValue())
+      try
       {
-        Logger.info("operation cancelled");
+        if (!((Boolean) d.open()).booleanValue())
+        {
+          Logger.info("operation cancelled");
+          return;
+        }
+      }
+      catch (OperationCanceledException oce)
+      {
+        Logger.info(oce.getMessage());
         return;
       }
 
@@ -121,7 +130,10 @@ public class KontoDelete implements Action
 
 /*********************************************************************
  * $Log: KontoDelete.java,v $
- * Revision 1.10  2010/06/01 16:37:22  willuhn
+ * Revision 1.11  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.10  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

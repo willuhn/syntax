@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/SteuerDelete.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/11 10:38:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -56,6 +57,11 @@ public class SteuerDelete implements Action
       ((Steuer)context).delete();
       GUI.getStatusBar().setSuccessText(i18n.tr("Steuersatz gelöscht"));
     }
+    catch (OperationCanceledException oce)
+    {
+      Logger.info(oce.getMessage());
+      return;
+    }
     catch (ApplicationException ae)
     {
       throw ae;
@@ -72,7 +78,10 @@ public class SteuerDelete implements Action
 
 /*********************************************************************
  * $Log: SteuerDelete.java,v $
- * Revision 1.7  2010/06/04 00:33:56  willuhn
+ * Revision 1.8  2011/05/11 10:38:51  willuhn
+ * @N OCE fangen
+ *
+ * Revision 1.7  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup
