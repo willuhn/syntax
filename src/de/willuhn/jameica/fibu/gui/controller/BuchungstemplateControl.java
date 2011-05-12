@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/03 17:07:14 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -302,9 +302,9 @@ public class BuchungstemplateControl extends AbstractControl
           if (text == null || text.length() == 0)
           {
             String t = null;
-            if (ska != null && ska.getKontoArt() != Kontoart.KONTOART_GELD)
+            if (sk != null && ska != null && ska.getKontoArt() != Kontoart.KONTOART_GELD)
               t = sk.getName();
-            else if (hka != null && hka.getKontoArt() != Kontoart.KONTOART_GELD)
+            else if (hk != null && hka != null && hka.getKontoArt() != Kontoart.KONTOART_GELD)
               t = hk.getName();
             if (t != null)
             getText().setValue(t);
@@ -359,7 +359,11 @@ public class BuchungstemplateControl extends AbstractControl
 
 /*********************************************************************
  * $Log: BuchungstemplateControl.java,v $
- * Revision 1.7  2010/06/03 17:07:14  willuhn
+ * Revision 1.8  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.7  2010-06-03 17:07:14  willuhn
  * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
  *
  * Revision 1.6  2010/06/03 14:26:16  willuhn

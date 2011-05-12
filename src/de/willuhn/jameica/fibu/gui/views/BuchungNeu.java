@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungNeu.java,v $
- * $Revision: 1.47 $
- * $Date: 2010/08/02 22:02:19 $
+ * $Revision: 1.48 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,8 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -35,14 +34,13 @@ import de.willuhn.util.I18N;
  */
 public class BuchungNeu extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
-    final I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     // Headline malen
 		GUI.getView().setTitle(i18n.tr("Buchung bearbeiten"));
@@ -76,8 +74,7 @@ public class BuchungNeu extends AbstractView
     if (closed) GUI.getView().setErrorText(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"));
 
     // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea(getParent(),4);
-    buttonArea.addButton(new Back());
+    ButtonArea buttonArea = new ButtonArea();
 
     Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), b ,false,"user-trash-full.png");
     delete.setEnabled(!closed);
@@ -100,12 +97,18 @@ public class BuchungNeu extends AbstractView
     },null,true,"go-next.png");
     storeNew.setEnabled(!closed);
     buttonArea.addButton(storeNew);
+    
+    buttonArea.paint(getParent());
   }
 }
 
 /*********************************************************************
  * $Log: BuchungNeu.java,v $
- * Revision 1.47  2010/08/02 22:02:19  willuhn
+ * Revision 1.48  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.47  2010-08-02 22:02:19  willuhn
  * *** empty log message ***
  *
  * Revision 1.46  2010/06/04 00:33:56  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/03 17:07:14 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,7 +46,7 @@ public class UmsatzListPart implements Extension
   {
     if (extendable == null || !(extendable instanceof TablePart))
     {
-      Logger.warn("invalid extendable (" + extendable.getClass().getName() + ", skipping extension");
+      Logger.warn("invalid extendable, skipping extension");
       return;
     }
     
@@ -129,7 +129,11 @@ public class UmsatzListPart implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListPart.java,v $
- * Revision 1.5  2010/06/03 17:07:14  willuhn
+ * Revision 1.6  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.5  2010-06-03 17:07:14  willuhn
  * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
  *
  * Revision 1.4  2010/06/01 11:58:04  willuhn

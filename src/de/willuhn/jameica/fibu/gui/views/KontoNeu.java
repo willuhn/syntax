@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.23 $
- * $Date: 2010/06/07 16:34:22 $
+ * $Revision: 1.24 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,9 +21,8 @@ import de.willuhn.jameica.fibu.gui.part.BuchungList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -38,15 +37,13 @@ import de.willuhn.util.I18N;
  */
 public class KontoNeu extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     final KontoControl control = new KontoControl(this);
 
     String kr = i18n.tr("unbekannt");
@@ -74,8 +71,7 @@ public class KontoNeu extends AbstractView
     group.addSeparator();
     group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
-    ButtonArea buttons = new ButtonArea(getParent(),3);
-    buttons.addButton(new Back());
+    ButtonArea buttons = new ButtonArea();
     Button delete = new Button(i18n.tr("Löschen"), new KontoDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(control.getKonto().canChange());
     buttons.addButton(delete);
@@ -89,6 +85,8 @@ public class KontoNeu extends AbstractView
     },null,true,"document-save.png");
     store.setEnabled(control.getKonto().canChange());
     buttons.addButton(store);
+    
+    buttons.paint(getParent());
 
     new Headline(getParent(),i18n.tr("Buchungen auf diesem Konto"));
     new BuchungList(control.getKonto(),new BuchungNeu()).paint(getParent());
@@ -98,7 +96,11 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
- * Revision 1.23  2010/06/07 16:34:22  willuhn
+ * Revision 1.24  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.23  2010-06-07 16:34:22  willuhn
  * @N Code zum Aendern der UST-Voranmelde-Kennzeichen im Steuersatz
  *
  * Revision 1.22  2010/06/03 14:26:16  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/BuchungstemplateNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/08/27 11:19:40 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,8 @@ import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
@@ -57,8 +56,7 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
     this.container.addInput(control.getBetrag());
     this.container.addInput(control.getSteuer());
 
-    ButtonArea buttonArea = new ButtonArea(this.getParent(),3);
-    buttonArea.addButton(new Back());
+    ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(i18n.tr("Löschen"), new DBObjectDelete(), getCurrentObject(),false,"user-trash-full.png");
     buttonArea.addButton(new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
@@ -66,6 +64,7 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
         control.handleStore(false);
       }
     },null,true,"document-save.png"));
+    buttonArea.paint(getParent());
   }
 
   
@@ -109,7 +108,11 @@ public class BuchungstemplateNeu extends AbstractView implements Extendable
 
 /*********************************************************************
  * $Log: BuchungstemplateNeu.java,v $
- * Revision 1.10  2010/08/27 11:19:40  willuhn
+ * Revision 1.11  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.10  2010-08-27 11:19:40  willuhn
  * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
  *
  * Revision 1.9  2010/06/04 00:33:56  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbschreibungsBuchungImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/08/30 16:41:01 $
+ * $Revision: 1.5 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -36,7 +36,7 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
     try
@@ -58,7 +58,7 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
@@ -68,7 +68,11 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
 
 /*********************************************************************
  * $Log: AbschreibungsBuchungImpl.java,v $
- * Revision 1.4  2010/08/30 16:41:01  willuhn
+ * Revision 1.5  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.4  2010-08-30 16:41:01  willuhn
  * @N Klartextbezeichnung bei Import/Export
  *
  * Revision 1.3  2006/05/08 22:44:18  willuhn

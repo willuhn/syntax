@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/MandantNeu.java,v $
- * $Revision: 1.30 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.31 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,10 +35,9 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -54,6 +53,8 @@ import de.willuhn.util.I18N;
  */
 public class MandantNeu extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+
   private static Integer activeTab = null;
   private TabFolder tabs           = null;
 
@@ -62,9 +63,6 @@ public class MandantNeu extends AbstractView
    */
   public void bind() throws Exception
   {
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     GUI.getView().setTitle(i18n.tr("Mandant bearbeiten"));
 
     final MandantControl control = new MandantControl(this);
@@ -86,7 +84,7 @@ public class MandantNeu extends AbstractView
     group2.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
+    ButtonArea buttonArea = new ButtonArea();
     
     boolean canDelete = true;
     Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
@@ -96,7 +94,6 @@ public class MandantNeu extends AbstractView
       canDelete = !cm.equals(control.getMandant());
     }
     
-    buttonArea.addButton(new Back(!control.storeAllowed()));
     Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
@@ -109,6 +106,8 @@ public class MandantNeu extends AbstractView
     },null,control.storeAllowed(),"document-save.png");
     button1.setEnabled(control.storeAllowed());
     buttonArea.addButton(button1);
+    
+    buttonArea.paint(getParent());
 
     this.tabs = new TabFolder(getParent(), SWT.NONE);
     this.tabs.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -152,7 +151,11 @@ public class MandantNeu extends AbstractView
 
 /*********************************************************************
  * $Log: MandantNeu.java,v $
- * Revision 1.30  2010/06/04 00:33:56  willuhn
+ * Revision 1.31  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.30  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup

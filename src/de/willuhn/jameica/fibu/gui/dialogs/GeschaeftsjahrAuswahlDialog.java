@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/dialogs/GeschaeftsjahrAuswahlDialog.java,v $
- * $Revision: 1.5 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.6 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.dialogs;
 
 import java.rmi.RemoteException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -27,11 +28,12 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
-import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -43,11 +45,10 @@ import de.willuhn.util.I18N;
  */
 public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-	private I18N i18n;
-  
-  private TablePart jahre = null;
-  private DialogInput ma          = null;
+  private TablePart jahre         = null;
+  private SelectInput ma          = null;
 
   private Mandant mandant         = null;
 	private Geschaeftsjahr choosen  = null;
@@ -59,9 +60,8 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
   public GeschaeftsjahrAuswahlDialog(int position)
   {
     super(position);
-
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 		this.setTitle(i18n.tr("Auswahl des Geschäftsjahres"));
+		setSize(500,SWT.DEFAULT);
   }
 
   /**
@@ -69,7 +69,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
    */
   protected void paint(Composite parent) throws Exception
   {
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Auswahl"));
+    Container group = new SimpleContainer(parent);
 			
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     if (jahr != null)
@@ -84,18 +84,21 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
     group.addText(i18n.tr("Bitte wählen Sie Mandant und Geschäftsjahr."),true);
 
-    MandantAuswahlDialog d = new MandantAuswahlDialog(MandantAuswahlDialog.POSITION_MOUSE);
-    d.addCloseListener(new Listener() {
+    ma = new SelectInput(Settings.getDBService().createList(Mandant.class),mandant);
+    ma.setAttribute("firma");
+    ma.setComment(mandant == null ? "" : i18n.tr("Steuernummer: {0}",mandant.getSteuernummer()));
+    ma.setName(i18n.tr("Mandant"));
+    ma.addListener(new Listener() {
       public void handleEvent(Event event)
       {
-        if (event == null || event.data == null)
-          return;
         try
         {
-          mandant = (Mandant) event.data;
+          mandant = (Mandant) ma.getValue();
+          if (mandant == null)
+            return;
+          
           choosen = null;
           
-          ma.setText(mandant.getFirma());
           ma.setComment(i18n.tr("Steuernummer: {0}",mandant.getSteuernummer()));
           if (jahre != null)
             jahre.removeAll();
@@ -113,11 +116,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
         }
       }
     });
-
-    ma = new DialogInput(mandant == null ? "" : mandant.getFirma(),d);
-    ma.setComment(mandant == null ? "" : i18n.tr("Steuernummer: {0}",mandant.getSteuernummer()));
-    ma.disableClientControl();
-    group.addLabelPair(i18n.tr("Mandant"),ma);
+    group.addInput(ma);
     
 
     Action a = new Action() {
@@ -138,7 +137,7 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
     jahre.setSummary(false);
     jahre.paint(parent);
 
-		ButtonArea b = new ButtonArea(parent,2);
+		ButtonArea b = new ButtonArea();
 		b.addButton(i18n.tr("Übernehmen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -150,14 +149,16 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
         choosen = (Geschaeftsjahr) o;
         close();
       }
-    });
+    },null,true,"ok.png");
 		b.addButton(i18n.tr("Abbrechen"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
       {
 				throw new OperationCanceledException();
       }
-    });
+    },null,true,"process-stop.png");
+		
+		b.paint(parent);
   }
 
   /**
@@ -175,7 +176,11 @@ public class GeschaeftsjahrAuswahlDialog extends AbstractDialog
 
 /**********************************************************************
  * $Log: GeschaeftsjahrAuswahlDialog.java,v $
- * Revision 1.5  2009/07/03 10:52:19  willuhn
+ * Revision 1.6  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.5  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.4.2.1  2008/07/03 10:37:08  willuhn

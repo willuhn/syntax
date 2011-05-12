@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Einstellungen.java,v $
- * $Revision: 1.9 $
- * $Date: 2011/03/21 11:17:27 $
+ * $Revision: 1.10 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,9 @@ import de.willuhn.jameica.fibu.gui.part.KontenrahmenList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
@@ -57,7 +57,6 @@ public class Einstellungen extends AbstractView
     group.addInput(control.getGwgWert());
     
     ButtonArea buttonArea = new ButtonArea();
-    buttonArea.addButton(new Back());
     buttonArea.addButton(i18n.tr("Speichern"), new Action()
     {
       public void handleAction(Object context) throws ApplicationException
@@ -68,7 +67,7 @@ public class Einstellungen extends AbstractView
     buttonArea.paint(this.getParent());
 
     final KontenrahmenList list = new KontenrahmenList();
-    group.addHeadline(i18n.tr("Kontenrahmen"));
+    new Headline(getParent(),i18n.tr("Kontenrahmen"));
     list.paint(getParent());
 
     ButtonArea buttonArea2 = new ButtonArea();
@@ -86,7 +85,11 @@ public class Einstellungen extends AbstractView
 
 /*********************************************************************
  * $Log: Einstellungen.java,v $
- * Revision 1.9  2011/03/21 11:17:27  willuhn
+ * Revision 1.10  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.9  2011-03-21 11:17:27  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.8  2010-06-03 14:26:16  willuhn

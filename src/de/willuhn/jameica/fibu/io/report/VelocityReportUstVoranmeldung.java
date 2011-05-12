@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportUstVoranmeldung.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/08/30 15:49:45 $
+ * $Revision: 1.3 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -109,6 +109,9 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
     return data;
   }
   
+  /**
+   * Eine einzelne Position auf der UST-Voranmeldung.
+   */
   public class Position
   {
     private de.willuhn.jameica.fibu.server.Math math = new de.willuhn.jameica.fibu.server.Math();
@@ -120,7 +123,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
      * Fuegt die Zahlen eines Kontos hinzu.
      * @param data die Basis-Daten des Exports. 
      * @param konto das Konto.
-     * @param true, wenn es sich um das Steuerkennzeichen handelt.
+     * @param steuer true, wenn es sich um das Steuerkennzeichen handelt.
      * @throws RemoteException
      */
     private void add(ReportData data, Konto konto, boolean steuer) throws RemoteException
@@ -211,7 +214,11 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportUstVoranmeldung.java,v $
- * Revision 1.2  2010/08/30 15:49:45  willuhn
+ * Revision 1.3  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.2  2010-08-30 15:49:45  willuhn
  * *** empty log message ***
  *
  * Revision 1.1  2010/08/27 10:18:14  willuhn

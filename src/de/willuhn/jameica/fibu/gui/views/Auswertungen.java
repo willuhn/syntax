@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/Auswertungen.java,v $
- * $Revision: 1.9 $
- * $Date: 2010/06/08 16:08:12 $
+ * $Revision: 1.10 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.controller.AuswertungControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
@@ -29,14 +28,13 @@ import de.willuhn.util.I18N;
  */
 public class Auswertungen extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     GUI.getView().setTitle(i18n.tr("Auswertungen"));
 
     final AuswertungControl control = new AuswertungControl(this);
@@ -59,16 +57,20 @@ public class Auswertungen extends AbstractView
     group.addSeparator();
     group.addInput(control.getOpenAfterCreation());
     
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
-    buttonArea.addButton(new Back());
+    ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(control.getStartButton());
+    buttonArea.paint(getParent());
   }
 }
 
 
 /*********************************************************************
  * $Log: Auswertungen.java,v $
- * Revision 1.9  2010/06/08 16:08:12  willuhn
+ * Revision 1.10  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.9  2010-06-08 16:08:12  willuhn
  * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
  *
  * Revision 1.8  2010/06/03 14:26:16  willuhn

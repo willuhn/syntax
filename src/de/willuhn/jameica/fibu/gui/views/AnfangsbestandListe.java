@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandListe.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/06/02 00:02:58 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,9 +20,8 @@ import de.willuhn.jameica.fibu.gui.part.AnfangsbestandList;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
@@ -31,32 +30,35 @@ import de.willuhn.util.I18N;
  */
 public class AnfangsbestandListe extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     GUI.getView().setTitle(i18n.tr("Anfangsbestände"));
 
     Part p = new AnfangsbestandList(new AnfangsbestandNeu());
     p.paint(getParent());
 
-    ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(new Back());
-    
+    ButtonArea buttons = new ButtonArea();
     Button button = new Button(i18n.tr("Neuer Anfangsbestand"),new AnfangsbestandNeu(),null,true,"list-add.png");
     button.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(button);
+    
+    buttons.paint(getParent());
   }
 }
 
 
 /*********************************************************************
  * $Log: AnfangsbestandListe.java,v $
- * Revision 1.7  2010/06/02 00:02:58  willuhn
+ * Revision 1.8  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.7  2010-06-02 00:02:58  willuhn
  * @N Mehr Icons
  *
  * Revision 1.6  2010/06/01 23:51:56  willuhn

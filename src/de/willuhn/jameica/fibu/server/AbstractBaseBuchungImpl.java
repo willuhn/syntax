@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2010/08/30 16:41:01 $
+ * $Revision: 1.28 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,9 +140,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
   }
   
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.jameica.fibu.server.AbstractTransferImpl#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("geschaeftsjahr_id".equals(field))
       return Geschaeftsjahr.class;
@@ -154,7 +154,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     try {
       Geschaeftsjahr jahr = getGeschaeftsjahr();
@@ -221,7 +221,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
@@ -240,7 +240,11 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
 /*********************************************************************
  * $Log: AbstractBaseBuchungImpl.java,v $
- * Revision 1.27  2010/08/30 16:41:01  willuhn
+ * Revision 1.28  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.27  2010-08-30 16:41:01  willuhn
  * @N Klartextbezeichnung bei Import/Export
  *
  * Revision 1.26  2010/06/04 00:33:56  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungImpl.java,v $
- * $Revision: 1.55 $
- * $Date: 2010/10/24 22:29:37 $
+ * $Revision: 1.56 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -234,7 +234,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
     try
@@ -259,7 +259,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
@@ -297,7 +297,11 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
 
 /*********************************************************************
  * $Log: BuchungImpl.java,v $
- * Revision 1.55  2010/10/24 22:29:37  willuhn
+ * Revision 1.56  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.55  2010-10-24 22:29:37  willuhn
  * @C Brutto-Betrag bei Buchungen mit exportieren
  *
  * Revision 1.54  2010-10-22 14:31:40  willuhn

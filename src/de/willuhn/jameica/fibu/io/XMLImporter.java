@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/XMLImporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/08/30 16:41:01 $
+ * $Revision: 1.4 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,7 +90,7 @@ public class XMLImporter implements Importer
           Object name = BeanUtil.toString(object);
           if (name != null && monitor != null)
             monitor.log(i18n.tr("Importiere {0}",name.toString()));
-          if (created > 0 && created % 10 == 0) // nur geschaetzt
+          if (created > 0 && created % 10 == 0 && monitor != null) // nur geschaetzt
             monitor.addPercentComplete(1);
         }
 
@@ -109,18 +109,21 @@ public class XMLImporter implements Importer
         }
         catch (ApplicationException ae)
         {
-          monitor.log("  " + ae.getMessage());
+          if (monitor != null) monitor.log("  " + ae.getMessage());
           error++;
         }
         catch (Exception e)
         {
           Logger.error("unable to import line",e);
-          monitor.log("  " + i18n.tr("Fehler beim Import des Datensatzes: {0}",e.getMessage()));
+          if (monitor != null) monitor.log("  " + i18n.tr("Fehler beim Import des Datensatzes: {0}",e.getMessage()));
           error++;
         }
       }
-      monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
-      monitor.setPercentComplete(100);
+      if (monitor != null)
+      {
+        monitor.setStatusText(i18n.tr("{0} Datensätze erfolgreich importiert, {1} fehlerhafte übersprungen", new String[]{""+created,""+error}));
+        monitor.setPercentComplete(100);
+      }
     }
     catch (OperationCanceledException oce)
     {
@@ -184,7 +187,11 @@ public class XMLImporter implements Importer
 
 /*******************************************************************************
  * $Log: XMLImporter.java,v $
- * Revision 1.3  2010/08/30 16:41:01  willuhn
+ * Revision 1.4  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.3  2010-08-30 16:41:01  willuhn
  * @N Klartextbezeichnung bei Import/Export
  *
  * Revision 1.2  2010/08/27 11:21:31  willuhn

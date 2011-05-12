@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/SteuerImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2010/06/04 13:49:48 $
+ * $Revision: 1.20 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -93,9 +93,9 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.jameica.fibu.server.AbstractUserObjectImpl#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("steuerkonto_id".equals(field))
       return Konto.class;
@@ -200,7 +200,11 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
 
 /*********************************************************************
  * $Log: SteuerImpl.java,v $
- * Revision 1.19  2010/06/04 13:49:48  willuhn
+ * Revision 1.20  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.19  2010-06-04 13:49:48  willuhn
  * @N Kennzeichen fuer Steuer und Bemessungsgrundlage fuer UST-Voranmeldung
  *
  * Revision 1.18  2010/06/04 13:34:45  willuhn

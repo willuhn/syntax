@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractUserObjectImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2011/03/25 10:14:10 $
+ * $Revision: 1.8 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,7 +44,7 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("mandant_id".equals(field))
       return Mandant.class;
@@ -129,7 +129,11 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AbstractUserObjectImpl.java,v $
- * Revision 1.7  2011/03/25 10:14:10  willuhn
+ * Revision 1.8  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.7  2011-03-25 10:14:10  willuhn
  * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
  * @C BUGZILLA 958
  *

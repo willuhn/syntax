@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoListe.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/03/21 11:17:26 $
+ * $Revision: 1.24 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,8 +20,7 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
-import de.willuhn.jameica.gui.internal.buttons.Back;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -64,16 +63,20 @@ public class KontoListe extends AbstractView
     Part p = new KontoList(kr.getKonten(),new KontoNeu());
     p.paint(getParent());
     
-    ButtonArea buttons = new ButtonArea(getParent(),2);
-    buttons.addButton(new Back());
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Neues Konto"), new KontoNeu(),null,true,"list-add.png");
+    buttons.paint(getParent());
 
   }
 }
 
 /*********************************************************************
  * $Log: KontoListe.java,v $
- * Revision 1.23  2011/03/21 11:17:26  willuhn
+ * Revision 1.24  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.23  2011-03-21 11:17:26  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.22  2010-06-02 00:02:58  willuhn

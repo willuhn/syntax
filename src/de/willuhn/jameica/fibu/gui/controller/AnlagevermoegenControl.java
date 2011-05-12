@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.24 $
- * $Date: 2010/09/20 10:27:36 $
+ * $Revision: 1.25 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -309,6 +309,7 @@ public class AnlagevermoegenControl extends AbstractControl
   /**
    * Liefert ein Label mit der Bezeichnung der ggf zugehoerigen Buchung samt Link zum Oeffnen.
    * @return Label mit Buchung.
+   * @throws RemoteException
    */
   public ButtonInput getBuchungLink() throws RemoteException
   {
@@ -586,7 +587,11 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
- * Revision 1.24  2010/09/20 10:27:36  willuhn
+ * Revision 1.25  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.24  2010-09-20 10:27:36  willuhn
  * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
  *
  * Revision 1.23  2010-09-20 09:19:06  willuhn

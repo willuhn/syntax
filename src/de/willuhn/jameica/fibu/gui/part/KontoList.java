@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.22 $
- * $Date: 2011/03/10 16:10:49 $
+ * $Revision: 1.23 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,9 +113,9 @@ public class KontoList extends TablePart implements Extendable
 
   /**
    * Ueberschrieben, um noch weitere Details anzuzeigen.
-   * @see de.willuhn.jameica.gui.Part#paint(org.eclipse.swt.widgets.Composite)
+   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
    */
-  public void paint(Composite parent) throws RemoteException
+  public synchronized void paint(Composite parent) throws RemoteException
   {
     if (filterEnabled)
     {
@@ -265,7 +265,11 @@ public class KontoList extends TablePart implements Extendable
 
 /*********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.22  2011/03/10 16:10:49  willuhn
+ * Revision 1.23  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.22  2011-03-10 16:10:49  willuhn
  * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
  *
  * Revision 1.21  2010-06-01 16:37:22  willuhn

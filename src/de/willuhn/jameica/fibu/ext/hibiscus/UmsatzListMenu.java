@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/11/01 15:23:29 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,7 +57,7 @@ public class UmsatzListMenu implements Extension
   {
     if (extendable == null || !(extendable instanceof ContextMenu))
     {
-      Logger.warn("invalid extendable (" + extendable.getClass().getName() + ", skipping extension");
+      Logger.warn("invalid extendable, skipping extension");
       return;
     }
     
@@ -95,7 +95,7 @@ public class UmsatzListMenu implements Extension
    * Erzeugt eine einzelne Buchung.
    * Sie wird jedoch noch nicht gespeichert.
    * @param u die zu erzeugende Buchung.
-   * @param true, wenn wir mehr als eine Buchung haben und im Automatik-Modus laufen.
+   * @param auto true, wenn wir mehr als eine Buchung haben und im Automatik-Modus laufen.
    * In dem Fall wird die Erstellung der Buchung mit einer ApplicationException
    * abgebrochen, wenn keine Umsatz-Kategorie vorhanden ist oder dieser keine
    * Buchungsvorlage zugeordnet ist.
@@ -122,7 +122,7 @@ public class UmsatzListMenu implements Extension
     }
     
     if (template == null && auto)
-      throw new ApplicationException(i18n.tr("Kategorie \"{0}\" ist keiner Buchungsvorlage zugeordnet",typ.getName()));
+      throw new ApplicationException(i18n.tr("Keine Buchungsvorlage ermittelbar"));
     
     final Buchung buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
     buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
@@ -390,7 +390,11 @@ public class UmsatzListMenu implements Extension
 
 /*********************************************************************
  * $Log: UmsatzListMenu.java,v $
- * Revision 1.10  2010/11/01 15:23:29  willuhn
+ * Revision 1.11  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.10  2010-11-01 15:23:29  willuhn
  * *** empty log message ***
  *
  * Revision 1.9  2010-10-31 22:25:17  willuhn

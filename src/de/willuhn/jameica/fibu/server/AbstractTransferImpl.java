@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractTransferImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2010/08/30 16:41:01 $
+ * $Revision: 1.9 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -131,7 +131,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("sollkonto_id".equals(field))
       return Konto.class;
@@ -178,7 +178,11 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 /*********************************************************************
  * $Log: AbstractTransferImpl.java,v $
- * Revision 1.8  2010/08/30 16:41:01  willuhn
+ * Revision 1.9  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.8  2010-08-30 16:41:01  willuhn
  * @N Klartextbezeichnung bei Import/Export
  *
  * Revision 1.7  2010/06/03 14:26:16  willuhn

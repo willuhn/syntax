@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/HilfsBuchungImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2006/10/23 22:33:20 $
+ * $Revision: 1.16 $
+ * $Date: 2011/05/12 09:10:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,9 +51,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
+   * @see de.willuhn.jameica.fibu.server.AbstractBaseBuchungImpl#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("buchung_id".equals(field))
       return Buchung.class;
@@ -61,9 +61,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   }
 
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
+   * @see de.willuhn.jameica.fibu.server.AbstractBaseBuchungImpl#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     super.insertCheck();
     try {
@@ -89,9 +89,9 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
   }
   
   /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   * @see de.willuhn.jameica.fibu.server.AbstractBaseBuchungImpl#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     this.insertCheck();
   }
@@ -109,7 +109,11 @@ public class HilfsBuchungImpl extends AbstractBaseBuchungImpl implements HilfsBu
 
 /*********************************************************************
  * $Log: HilfsBuchungImpl.java,v $
- * Revision 1.15  2006/10/23 22:33:20  willuhn
+ * Revision 1.16  2011/05/12 09:10:32  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.15  2006-10-23 22:33:20  willuhn
  * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
  *
  * Revision 1.14  2005/10/06 14:48:40  willuhn

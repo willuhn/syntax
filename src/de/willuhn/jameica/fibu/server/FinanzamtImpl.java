@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/FinanzamtImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2005/09/26 15:15:39 $
+ * $Revision: 1.13 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -135,7 +135,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
-  public void deleteCheck() throws ApplicationException
+  protected void deleteCheck() throws ApplicationException
   {
     // Wir checken ob das Finanzamt einem Mandanten zugewiesen ist.
     try {
@@ -155,7 +155,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     // erst mal das gleiche wie beim updateCheck() ;)
     insertCheck();
@@ -164,7 +164,7 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     try {
       String name = getName();
@@ -183,7 +183,11 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
 
 /*********************************************************************
  * $Log: FinanzamtImpl.java,v $
- * Revision 1.12  2005/09/26 15:15:39  willuhn
+ * Revision 1.13  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.12  2005-09-26 15:15:39  willuhn
  * *** empty log message ***
  *
  * Revision 1.11  2005/08/10 17:48:02  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/MandantImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/03/25 10:14:10 $
+ * $Revision: 1.29 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -125,7 +125,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
    */
-  public Class getForeignObject(String field) throws RemoteException
+  protected Class getForeignObject(String field) throws RemoteException
   {
     if ("finanzamt_id".equals(field))
       return Finanzamt.class;
@@ -207,7 +207,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
-  public void insertCheck() throws ApplicationException
+  protected void insertCheck() throws ApplicationException
   {
     try {
       String firma = getFirma();
@@ -230,7 +230,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
    */
-  public void updateCheck() throws ApplicationException
+  protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
@@ -429,7 +429,11 @@ public class MandantImpl extends AbstractDBObject implements Mandant
 
 /*********************************************************************
  * $Log: MandantImpl.java,v $
- * Revision 1.28  2011/03/25 10:14:10  willuhn
+ * Revision 1.29  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.28  2011-03-25 10:14:10  willuhn
  * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
  * @C BUGZILLA 958
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnfangsbestandNeu.java,v $
- * $Revision: 1.10 $
- * $Date: 2010/06/04 00:33:56 $
+ * $Revision: 1.11 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,9 +19,8 @@ import de.willuhn.jameica.fibu.gui.controller.AnfangsbestandControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
-import de.willuhn.jameica.gui.util.ButtonArea;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
@@ -34,15 +33,13 @@ import de.willuhn.util.I18N;
  */
 public class AnfangsbestandNeu extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
 		GUI.getView().setTitle(i18n.tr("Anfangsbestand"));
 
     final AnfangsbestandControl control = new AnfangsbestandControl(this);
@@ -55,8 +52,7 @@ public class AnfangsbestandNeu extends AbstractView
     boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
     if (closed) GUI.getView().setErrorText(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),3);
-    buttonArea.addButton(new Back());
+    ButtonArea buttonArea = new ButtonArea();
 
     Button delete = new Button(i18n.tr("Löschen"), new AnfangsbestandDelete(), getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(!closed);
@@ -72,12 +68,17 @@ public class AnfangsbestandNeu extends AbstractView
     store.setEnabled(!closed);
     buttonArea.addButton(store);
     
+    buttonArea.paint(getParent());
   }
 }
 
 /*********************************************************************
  * $Log: AnfangsbestandNeu.java,v $
- * Revision 1.10  2010/06/04 00:33:56  willuhn
+ * Revision 1.11  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.10  2010-06-04 00:33:56  willuhn
  * @B Debugging
  * @N Mehr Icons
  * @C GUI-Cleanup

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/AbstractVelocityReport.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -82,7 +82,8 @@ public abstract class AbstractVelocityReport extends AbstractReport
             // ignore
           }
         }
-        monitor.addPercentComplete(1);
+        if (monitor != null)
+          monitor.addPercentComplete(1);
       }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -162,7 +163,11 @@ public abstract class AbstractVelocityReport extends AbstractReport
 
 /**********************************************************************
  * $Log: AbstractVelocityReport.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.6  2010/07/19 09:08:08  willuhn

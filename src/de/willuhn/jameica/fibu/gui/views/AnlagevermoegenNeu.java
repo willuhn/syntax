@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/AnlagevermoegenNeu.java,v $
- * $Revision: 1.17 $
- * $Date: 2010/09/20 10:27:36 $
+ * $Revision: 1.18 $
+ * $Date: 2011/05/12 09:10:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,10 +23,9 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.Button;
+import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.Headline;
 import de.willuhn.jameica.gui.util.SimpleContainer;
@@ -39,14 +38,13 @@ import de.willuhn.util.I18N;
  */
 public class AnlagevermoegenNeu extends AbstractView
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   /**
    * @see de.willuhn.jameica.gui.AbstractView#bind()
    */
   public void bind() throws Exception
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
     GUI.getView().setTitle(i18n.tr("Anlagevermögen"));
 
     final AnlagevermoegenControl control = new AnlagevermoegenControl(this);
@@ -70,8 +68,7 @@ public class AnlagevermoegenNeu extends AbstractView
     afa.addLabelPair(i18n.tr("Restwert"),                     control.getRestwert());
     afa.addLabelPair("", control.getHinweis());
 
-    ButtonArea buttonArea = new ButtonArea(getParent(),4);
-    buttonArea.addButton(new Back());
+    ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(i18n.tr("Löschen"), new AnlagevermoegenDelete(), getCurrentObject(),false,"user-trash-full.png");
 
     Button b = new Button(i18n.tr("Außerplanmäßige Abschreibung..."),new Action() {
@@ -93,6 +90,8 @@ public class AnlagevermoegenNeu extends AbstractView
         control.handleStore();
       }
     },null,true,"document-save.png");
+    
+    buttonArea.paint(getParent());
 
     new Headline(getParent(),i18n.tr("Bereits gebuchte Abschreibungen"));
     TablePart table = new AbschreibungList(control.getAnlagevermoegen(),null);
@@ -103,7 +102,11 @@ public class AnlagevermoegenNeu extends AbstractView
 
 /*********************************************************************
  * $Log: AnlagevermoegenNeu.java,v $
- * Revision 1.17  2010/09/20 10:27:36  willuhn
+ * Revision 1.18  2011/05/12 09:10:31  willuhn
+ * @R Back-Buttons entfernt
+ * @C GUI-Cleanup
+ *
+ * Revision 1.17  2010-09-20 10:27:36  willuhn
  * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
  *
  * Revision 1.16  2010-09-20 09:19:06  willuhn
