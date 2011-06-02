@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/boxes/FirstStart.java,v $
- * $Revision: 1.1 $
- * $Date: 2006/06/29 23:09:28 $
+ * $Revision: 1.2 $
+ * $Date: 2011/06/02 12:22:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,9 +23,9 @@ import de.willuhn.jameica.fibu.gui.controller.FirstStartControl;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.boxes.AbstractBox;
-import de.willuhn.jameica.gui.parts.FormTextPart;
-import de.willuhn.jameica.gui.util.ButtonArea;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -90,28 +90,19 @@ public class FirstStart extends AbstractBox
 
     GUI.getView().setTitle(i18n.tr("SynTAX: Installation"));
     
-    LabelGroup group = new LabelGroup(parent,i18n.tr("Willkommen"));
-    group.addText("\n" + i18n.tr("Sie starten SynTAX zum ersten Mal. Dieser Assistent wird Sie bei " +
+    Container c  = new SimpleContainer(parent);
+    c.addHeadline(i18n.tr("Willkommen"));
+    c.addText("\n" + i18n.tr("Sie starten SynTAX zum ersten Mal. Dieser Assistent wird Sie bei " +
         "der Einrichtung der Datenbank sowie Ihrer Stammdaten unterstützen."),true);
     
-    FormTextPart t = new FormTextPart();
-    t.setText("<form><p></p>" +
-        "<li>Einrichtung der Datenbank</li>" +
-        "<li>Festlegen des Finanzamtes</li>" +
-        "<li>Anlegen eines Mandanten</li>" +
-        "<li>Erstellen eines Geschäftsjahres</li>" +
-        "<p></p></form>");
-
-    group.addPart(t);
-    ButtonArea buttons = group.createButtonArea(1);
-
+    ButtonArea buttons = new ButtonArea();
     buttons.addButton(i18n.tr("Weiter >>"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleForward();
       }
     });
-    
+    c.addButtonArea(buttons);
   }
 
 }
@@ -119,7 +110,10 @@ public class FirstStart extends AbstractBox
 
 /*********************************************************************
  * $Log: FirstStart.java,v $
- * Revision 1.1  2006/06/29 23:09:28  willuhn
+ * Revision 1.2  2011/06/02 12:22:28  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.1  2006-06-29 23:09:28  willuhn
  * @C keine eigene Startseite mehr, jetzt alles ueber Jameica-Boxsystem geregelt
  *
  * Revision 1.10  2006/06/29 15:11:31  willuhn
