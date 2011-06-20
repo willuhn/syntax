@@ -6,7 +6,7 @@
         name="syntax" version="2.1.0-nightly" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
-  <url>https://www.willuhn.de/products/syntax/releases/nightly/syntax-2.0.1-nightly.zip</url>
+  <url>https://www.willuhn.de/products/syntax/releases/nightly/syntax-2.1.0-nightly.zip</url>
   <homepage>http://www.willuhn.de/products/syntax</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
