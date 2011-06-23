@@ -5,7 +5,7 @@ CREATE TABLE property (
   UNIQUE (id),
   UNIQUE KEY name (name(255)),
   PRIMARY KEY (id)
-) TYPE = InnoDB;
+) ENGINE = InnoDB;
 
 CREATE TABLE version (
   id int(10) AUTO_INCREMENT,
@@ -13,7 +13,7 @@ CREATE TABLE version (
   version int(5) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = InnoDB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS kontenrahmen (
   id int NOT NULL AUTO_INCREMENT,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS kontenrahmen (
   UNIQUE (id),
   UNIQUE (name,mandant_id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS steuer (
   id int NOT NULL AUTO_INCREMENT,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS steuer (
   ust_nr_bemessung varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS konto (
   id int NOT NULL AUTO_INCREMENT,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS konto (
   UNIQUE (id),
   UNIQUE (kontenrahmen_id,kontonummer),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS konto_ab (
   id int NOT NULL AUTO_INCREMENT,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS konto_ab (
   betrag double NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS buchung (
   id int NOT NULL AUTO_INCREMENT,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS buchung (
   hb_umsatz_id varchar(7),
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS buchungstemplate (
   id int NOT NULL AUTO_INCREMENT,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS buchungstemplate (
   hb_umsatztyp_id varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS finanzamt (
   id int NOT NULL AUTO_INCREMENT,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS finanzamt (
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS kontoart (
   id int NOT NULL AUTO_INCREMENT,
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS kontoart (
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS kontotyp (
   id int NOT NULL AUTO_INCREMENT,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS kontotyp (
   UNIQUE (id),
   UNIQUE (name),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS mandant (
   id int NOT NULL AUTO_INCREMENT,
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS mandant (
   finanzamt_id int(10) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS geschaeftsjahr (
   id int NOT NULL AUTO_INCREMENT,
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS geschaeftsjahr (
   closed int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS anlagevermoegen (
   id int NOT NULL AUTO_INCREMENT,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS anlagevermoegen (
   status int(2) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS abschreibung (
   id int NOT NULL AUTO_INCREMENT,
@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS abschreibung (
   sonderabschreibung int(1) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+) ENGINE = InnoDB;
 
 CREATE INDEX idx_kr_mandant           ON kontenrahmen(mandant_id);
 
