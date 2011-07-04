@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontoImpl.java,v $
- * $Revision: 1.58 $
- * $Date: 2011/05/12 09:10:31 $
+ * $Revision: 1.59 $
+ * $Date: 2011/07/04 13:05:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
@@ -280,21 +281,23 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     {
       DBIterator list = getService().createList(Steuer.class);
       list.addFilter("steuerkonto_id = " + this.getID());
-      
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Das Konto ist als Sammelkonto einem Steuersatz zugeordnet."));
 
       list = getService().createList(Anfangsbestand.class);
       list.addFilter("konto_id = " + this.getID());
-      
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Das Konto besitzt bereits einen Anfangsbestand. Löschen Sie zuerst diesen."));
 
       list = getService().createList(Buchung.class);
       list.addFilter("habenkonto_id = " + this.getID() + " OR sollkonto_id = " + this.getID());
-      
       if (list.hasNext())
         throw new ApplicationException(i18n.tr("Es existieren bereits Buchungen auf diesem Konto."));
+
+      list = getService().createList(Buchungstemplate.class);
+      list.addFilter("habenkonto_id = " + this.getID() + " OR sollkonto_id = " + this.getID());
+      if (list.hasNext())
+        throw new ApplicationException(i18n.tr("Es existieren bereits Buchungsvorlagen auf diesem Konto."));
 
       list = getService().createList(Anlagevermoegen.class);
       list.addFilter("konto_id = " + this.getID());
@@ -545,7 +548,10 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
 /*********************************************************************
  * $Log: KontoImpl.java,v $
- * Revision 1.58  2011/05/12 09:10:31  willuhn
+ * Revision 1.59  2011/07/04 13:05:18  willuhn
+ * @N Delete-Check bei Buchungsvorlagen
+ *
+ * Revision 1.58  2011-05-12 09:10:31  willuhn
  * @R Back-Buttons entfernt
  * @C GUI-Cleanup
  *
