@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2011/07/25 10:01:28 $
+ * $Revision: 1.27 $
+ * $Date: 2011/07/25 10:03:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,7 +103,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
       Logger.info("init update provider");
       UpdateProvider provider = new UpdateProvider(conn);
-      Updater updater = new Updater(provider,"iso-8859-1");
+      Updater updater = new Updater(provider,Settings.ENCODING);
       updater.execute("^" + Settings.getDBSupport().getID() + "-.*");
       Logger.info("updates finished");
     }
@@ -252,7 +252,10 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
- * Revision 1.26  2011/07/25 10:01:28  willuhn
+ * Revision 1.27  2011/07/25 10:03:18  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.26  2011-07-25 10:01:28  willuhn
  * *** empty log message ***
  *
  * Revision 1.25  2011-03-07 09:07:37  willuhn
