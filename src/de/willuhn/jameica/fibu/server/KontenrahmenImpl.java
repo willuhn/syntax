@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/KontenrahmenImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2011/03/25 10:14:10 $
+ * $Revision: 1.22 $
+ * $Date: 2011/08/08 10:44:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
       
       // Checken, ob schon ein gleichnamiger Kontenrahmen existiert
       DBIterator list = getService().createList(Kontenrahmen.class);
-      list.addFilter("name = ?",new String[]{name});
+      list.addFilter("name = ?",name);
       if (!this.isNewObject())
         list.addFilter("id != " + this.getID()); // Und wir sind es nicht selbst
       
@@ -144,7 +144,7 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   public Konto findByKontonummer(String kto) throws RemoteException
   {
     DBIterator konten = getKonten();
-    konten.addFilter("kontonummer = ?",new String[]{kto});
+    konten.addFilter("kontonummer = ?",kto);
     return konten.hasNext() ? (Konto) konten.next() : null;
   }
 
@@ -153,7 +153,10 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
 
 /*********************************************************************
  * $Log: KontenrahmenImpl.java,v $
- * Revision 1.21  2011/03/25 10:14:10  willuhn
+ * Revision 1.22  2011/08/08 10:44:36  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.21  2011-03-25 10:14:10  willuhn
  * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
  * @C BUGZILLA 958
  *

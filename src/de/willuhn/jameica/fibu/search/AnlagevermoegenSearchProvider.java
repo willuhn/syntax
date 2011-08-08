@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/search/AnlagevermoegenSearchProvider.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.4 $
+ * $Date: 2011/08/08 10:44:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class AnlagevermoegenSearchProvider implements SearchProvider
     String text = "%" + search.toLowerCase() + "%";
     DBIterator list = this.jahr.getMandant().getAnlagevermoegen();
     list.setOrder("order by anschaffungsdatum desc");
-    list.addFilter("LOWER(name) LIKE ?",new String[]{text});
+    list.addFilter("LOWER(name) LIKE ?",text);
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
@@ -122,7 +122,10 @@ public class AnlagevermoegenSearchProvider implements SearchProvider
 
 /*********************************************************************
  * $Log: AnlagevermoegenSearchProvider.java,v $
- * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * Revision 1.4  2011/08/08 10:44:35  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.3  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

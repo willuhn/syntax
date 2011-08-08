@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/search/BuchungSearchProvider.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.4 $
+ * $Date: 2011/08/08 10:44:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -63,7 +63,7 @@ public class BuchungSearchProvider implements SearchProvider
     
     DBIterator list = this.jahr.getHauptBuchungen();
     list.setOrder("order by belegnummer desc");
-    list.addFilter("LOWER(buchungstext) LIKE ?",new String[]{"%" + search.toLowerCase() + "%"});
+    list.addFilter("LOWER(buchungstext) LIKE ?","%" + search.toLowerCase() + "%");
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
@@ -133,7 +133,10 @@ public class BuchungSearchProvider implements SearchProvider
 
 /*********************************************************************
  * $Log: BuchungSearchProvider.java,v $
- * Revision 1.3  2010/06/01 16:37:22  willuhn
+ * Revision 1.4  2011/08/08 10:44:35  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.3  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject

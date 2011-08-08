@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportKontoAuszug.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/03/10 16:10:49 $
+ * $Revision: 1.5 $
+ * $Date: 2011/08/08 10:44:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,8 +62,8 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     DBIterator konten   = jahr.getKontenrahmen().getKonten();
     Konto start = data.getStartKonto();
     Konto end   = data.getEndKonto();
-    if (start != null) konten.addFilter("kontonummer >= ?", new String[]{start.getKontonummer()});
-    if (end != null) konten.addFilter("kontonummer <= ?", new String[]{end.getKontonummer()});
+    if (start != null) konten.addFilter("kontonummer >= ?", start.getKontonummer());
+    if (end != null) konten.addFilter("kontonummer <= ?",   end.getKontonummer());
 
     List<Konto> l = new LinkedList<Konto>();
     while (konten.hasNext())
@@ -128,7 +128,10 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
 
 /*********************************************************************
  * $Log: VelocityReportKontoAuszug.java,v $
- * Revision 1.4  2011/03/10 16:10:49  willuhn
+ * Revision 1.5  2011/08/08 10:44:35  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.4  2011-03-10 16:10:49  willuhn
  * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
  *
  * Revision 1.3  2011-03-10 13:42:26  willuhn

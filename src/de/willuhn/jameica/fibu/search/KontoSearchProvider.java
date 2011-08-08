@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/search/KontoSearchProvider.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.3 $
+ * $Date: 2011/08/08 10:44:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -60,7 +60,7 @@ public class KontoSearchProvider implements SearchProvider
     String text = "%" + search.toLowerCase() + "%";
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.setOrder("order by kontonummer desc");
-    list.addFilter("LOWER(name) LIKE ? OR kontonummer LIKE ?",new String[]{text,text});
+    list.addFilter("LOWER(name) LIKE ? OR kontonummer LIKE ?",text,text);
 
     ArrayList results = new ArrayList();
     while (list.hasNext())
@@ -119,7 +119,10 @@ public class KontoSearchProvider implements SearchProvider
 
 /*********************************************************************
  * $Log: KontoSearchProvider.java,v $
- * Revision 1.2  2009/07/03 10:52:19  willuhn
+ * Revision 1.3  2011/08/08 10:44:35  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.2  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.1.2.1  2008/09/04 10:02:13  willuhn

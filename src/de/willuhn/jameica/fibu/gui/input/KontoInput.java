@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/input/KontoInput.java,v $
- * $Revision: 1.4 $
- * $Date: 2010/06/01 16:37:22 $
+ * $Revision: 1.5 $
+ * $Date: 2011/08/08 10:44:36 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -113,7 +113,7 @@ public class KontoInput extends ButtonInput
         try
         {
           DBIterator dbi = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-          dbi.addFilter("kontonummer = ?", new String[]{s});
+          dbi.addFilter("kontonummer = ?", s);
           if (!dbi.hasNext())
           {
             GUI.getView().setErrorText(i18n.tr("Das Konto {0} wurde nicht gefunden",s));
@@ -176,7 +176,10 @@ public class KontoInput extends ButtonInput
 
 /*********************************************************************
  * $Log: KontoInput.java,v $
- * Revision 1.4  2010/06/01 16:37:22  willuhn
+ * Revision 1.5  2011/08/08 10:44:36  willuhn
+ * @C compiler warnings
+ *
+ * Revision 1.4  2010-06-01 16:37:22  willuhn
  * @C Konstanten von Fibu zu Settings verschoben
  * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
  * @C Unterscheidung zwischen canChange und isUserObject in UserObject
