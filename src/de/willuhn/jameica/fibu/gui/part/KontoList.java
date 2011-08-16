@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/part/KontoList.java,v $
- * $Revision: 1.23 $
- * $Date: 2011/05/12 09:10:32 $
+ * $Revision: 1.24 $
+ * $Date: 2011/08/16 08:35:35 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,22 +14,22 @@
 package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
@@ -38,6 +38,8 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
+import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -48,13 +50,14 @@ import de.willuhn.util.I18N;
  */
 public class KontoList extends TablePart implements Extendable
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoList.class);
   
-  private I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private TextInput search         = null;
+  private CheckboxInput filter     = null;
+  private DelayedListener listener = null;
   
-  private TextInput search      = null;
-  private CheckboxInput filter  = null;
-  
-  private GenericIterator list  = null;
+  private List<Konto> list         = null;
 
   private boolean filterEnabled = true;
 
@@ -65,8 +68,15 @@ public class KontoList extends TablePart implements Extendable
    */
   public KontoList(GenericIterator list, Action action) throws RemoteException
   {
-    super(list,action);
-    this.list = list;
+    super(action);
+    this.list = PseudoIterator.asList(list);
+    
+    this.listener = new DelayedListener(700,new Listener() {
+      public void handleEvent(Event event)
+      {
+        reload();
+      }
+    });
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Name"),"name");
@@ -100,6 +110,10 @@ public class KontoList extends TablePart implements Extendable
         }
       }
     });
+    
+    // Initial laden
+    this.reload();
+    
     ExtensionRegistry.extend(this);
   }
 
@@ -119,138 +133,61 @@ public class KontoList extends TablePart implements Extendable
   {
     if (filterEnabled)
     {
-      SimpleContainer container = new SimpleContainer(parent);
+      TextInput text = this.getText();
       
-      this.filter = new CheckboxInput(false);
-      this.search = new TextInput("");
-      
-      container.addLabelPair(i18n.tr("Bezeichnung oder Kto-Nr. enthält"), this.search);
-      container.addCheckbox(this.filter,i18n.tr("Nur Konten mit Buchungen anzeigen"));
+      Container container = new SimpleContainer(parent);
+      container.addInput(text);
+      container.addInput(this.getFilter());
 
-      KL kl = new KL();
-      this.search.getControl().addKeyListener(kl);
-      ((Button)this.filter.getControl()).addSelectionListener(kl);
+      // Nach dem Rendern noch den delayed Listener dran haengen
+      text.getControl().addKeyListener(new KeyAdapter() {
+        public void keyReleased(KeyEvent e)
+        {
+          listener.handleEvent(null);
+        }
+      });
     }
 
     super.paint(parent);
-    
   }
   
-  private class KL extends KeyAdapter implements SelectionListener
+  /**
+   * Liefert eine Checkbox fuer "Nur Konten mit Buchungen anzeigen".
+   * @return Checkbox.
+   */
+  private CheckboxInput getFilter()
   {
-    private Thread timeout = null;
-    private long count = 900l;
+    if (this.filter != null)
+      return this.filter;
     
-    /**
-     * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-     */
-    public void keyReleased(KeyEvent e)
-    {
-      // Mal schauen, ob schon ein Thread laeuft. Wenn ja, muessen wir den
-      // erst killen
-      if (timeout != null)
+    this.filter = new CheckboxInput(settings.getBoolean("filter.checksaldo.enabled",false));
+    this.filter.setName(i18n.tr("Nur Konten mit Buchungen anzeigen"));
+    
+    // Hier gibts kein Delay
+    this.filter.addListener(new Listener() {
+      public void handleEvent(Event event)
       {
-        timeout.interrupt();
-        timeout = null;
+        reload();
       }
-      
-      // Ein neuer Timer
-      timeout = new Thread()
-      {
-        public void run()
-        {
-          try
-          {
-            // Wir warten 900ms. Vielleicht gibt der User inzwischen weitere
-            // Sachen ein.
-            sleep(count);
-            
-            // Ne, wir wurden nicht gekillt. Also machen wir uns ans Werk
-
-            GUI.getDisplay().syncExec(new Runnable()
-            {
-              public void run()
-              {
-                try
-                {
-                  // Erstmal alle rausschmeissen
-                  removeAll();
-
-                  list.begin();
-
-                  // Wir holen uns den aktuellen Text
-                  String text = (String) search.getValue();
-                  if (text != null) text = text.toLowerCase();
-
-                  boolean checkSaldo = ((Boolean)filter.getValue()).booleanValue();
-
-                  Konto k     = null;
-                  String name = null;
-                  String nr   = null;
-
-                  while (list.hasNext())
-                  {
-                    k = (Konto) list.next();
-
-                    // BUGZILLA 128
-                    if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr(),null,null) == 0)
-                      continue;
-
-                    // Was zum Filtern da?
-                    if (text == null || text.length() == 0)
-                    {
-                      // ne
-                      addItem(k);
-                      continue;
-                    }
-
-                    name = k.getName();
-                    nr   = k.getKontonummer();
-                    
-                    if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
-                      addItem(k);
-                    
-                  }
-                }
-                catch (Exception e)
-                {
-                  Logger.error("error while loading konto",e);
-                }
-              }
-            });
-          }
-          catch (InterruptedException e)
-          {
-            return;
-          }
-          finally
-          {
-            timeout = null;
-            count = 900l;
-          }
-        }
-      };
-      timeout.start();
-    }
-
-    /**
-     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-     */
-    public void widgetSelected(SelectionEvent e)
-    {
-      // Beim Klick auf die Checkbox muessen wir nichts warten
-      count = 0l;
-      keyReleased(null);
-    }
-
-    /**
-     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-     */
-    public void widgetDefaultSelected(SelectionEvent e)
-    {
-    }
+    });
+    return this.filter;
   }
-
+  
+  /**
+   * Liefert ein Eingabefeld fuer einen Suchbegriff.
+   * @return Eingabefeld.
+   */
+  private TextInput getText()
+  {
+    if (this.search != null)
+      return this.search;
+    
+    this.search = new TextInput("");
+    this.search.setName(i18n.tr("Bezeichnung oder Kto-Nr. enthält"));
+    return this.search;
+  }
+    
+  
   /**
    * Schaltet die Anzeige der Kontofilter an oder aus.
    * @param visible true, wenn die Kontofilter angezeigt werden sollen. Default: true.
@@ -259,94 +196,66 @@ public class KontoList extends TablePart implements Extendable
   {
     this.filterEnabled = visible;
   }
+  
+  /**
+   * Fuehrt das Reload durch.
+   */
+  private void reload()
+  {
+    // Erstmal alle rausschmeissen
+    this.removeAll();
 
+    // Wir holen uns den aktuellen Text
+    String text = (String) getText().getValue();
+    if (text != null) text = text.toLowerCase();
+
+    boolean checkSaldo = ((Boolean)getFilter().getValue()).booleanValue();
+    settings.setAttribute("filter.checksaldo.enabled",checkSaldo);
+
+    String name = null;
+    String nr   = null;
+
+    for (Konto k:this.list)
+    {
+      try
+      {
+        // BUGZILLA 128
+        if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr(),null,null) == 0)
+          continue;
+
+        // Was zum Filtern da?
+        if (text == null || text.length() == 0)
+        {
+          // ne
+          this.addItem(k);
+          continue;
+        }
+
+        name = k.getName();
+        nr   = k.getKontonummer();
+        
+        if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
+          this.addItem(k);
+      }
+      catch (RemoteException re)
+      {
+        Logger.error("unable to load konto",re);
+      }
+    }
+  }
 }
 
 
 /*********************************************************************
  * $Log: KontoList.java,v $
- * Revision 1.23  2011/05/12 09:10:32  willuhn
+ * Revision 1.24  2011/08/16 08:35:35  willuhn
+ * @R Refactoring (DelayedListener statt eigenem Thread verwenden)
+ * @N letzten Status der Checkbox speichern
+ *
+ * Revision 1.23  2011-05-12 09:10:32  willuhn
  * @R Back-Buttons entfernt
  * @C GUI-Cleanup
  *
  * Revision 1.22  2011-03-10 16:10:49  willuhn
  * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
- *
- * Revision 1.21  2010-06-01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.20  2010/03/03 12:37:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.17.2.2  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.17.2.1  2009/06/23 11:04:32  willuhn
- * @N Haupt- und Hilfsbuchungen in Steuerkonten anzeigen
- *
- * Revision 1.17  2007/04/23 23:41:26  willuhn
- * @B reset des Konten-Iterators
- *
- * Revision 1.16  2006/06/19 16:25:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.14  2006/05/29 13:02:30  willuhn
- * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.13  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.12  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.11  2005/10/03 21:55:24  willuhn
- * @B bug 128, 129
- *
- * Revision 1.10  2005/09/26 23:51:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.8  2005/09/01 21:18:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/09/01 21:08:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2005/09/01 16:34:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.4  2005/08/25 23:00:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/16 23:14:35  willuhn
- * @N velocity export
- * @N context menus
- * @B bugfixes
- *
- * Revision 1.2  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
  **********************************************************************/
