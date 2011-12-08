@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.32 $
- * $Date: 2010/11/30 23:10:57 $
+ * $Revision: 1.33 $
+ * $Date: 2011/12/08 22:34:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -45,6 +46,7 @@ import de.willuhn.util.I18N;
  */
 public class KontoControl extends AbstractControl
 {
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
 	// Fach-Objekte
 	private Konto konto			= null;
@@ -56,8 +58,8 @@ public class KontoControl extends AbstractControl
 	private Input kontoart		     = null;
   private Input kontotyp         = null;
   private Input saldo            = null;
+  private Input anfangsbestand   = null;
   
-  private I18N i18n = null;
 
   /**
    * @param view
@@ -65,7 +67,6 @@ public class KontoControl extends AbstractControl
   public KontoControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
 	/**
@@ -104,6 +105,21 @@ public class KontoControl extends AbstractControl
     saldo = new LabelInput(Settings.DECIMALFORMAT.format(getKonto().getSaldo(Settings.getActiveGeschaeftsjahr())));
     saldo.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
     return saldo;
+  }
+  
+  /**
+   * Liefert ein Anzeige-Feld fuer den Anfangsbestand.
+   * @return Anzeige-Feld.
+   * @throws RemoteException
+   */
+  public Input getAnfangsbestand() throws RemoteException
+  {
+    if (this.anfangsbestand != null)
+      return this.anfangsbestand;
+    Anfangsbestand ab = getKonto().getAnfangsbestand(Settings.getActiveGeschaeftsjahr());
+    anfangsbestand = new LabelInput(Settings.DECIMALFORMAT.format(ab != null ? ab.getBetrag() : 0.0d));
+    anfangsbestand.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+    return anfangsbestand;
   }
   
 	/**
@@ -271,7 +287,10 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
- * Revision 1.32  2010/11/30 23:10:57  willuhn
+ * Revision 1.33  2011/12/08 22:34:12  willuhn
+ * @N BUGZILLA 1157
+ *
+ * Revision 1.32  2010-11-30 23:10:57  willuhn
  * @C Nur Zahlen in der Kontonummer zulassen
  *
  * Revision 1.31  2010-08-30 14:36:11  willuhn

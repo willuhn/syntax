@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/views/KontoNeu.java,v $
- * $Revision: 1.24 $
- * $Date: 2011/05/12 09:10:31 $
+ * $Revision: 1.25 $
+ * $Date: 2011/12/08 22:34:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,8 @@ import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoDelete;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
 import de.willuhn.jameica.fibu.gui.part.BuchungList;
+import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -58,7 +60,8 @@ public class KontoNeu extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
-    if (!control.getKonto().canChange())
+    Konto konto = control.getKonto();
+    if (!konto.canChange())
       GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
 
     Container group = new SimpleContainer(getParent());
@@ -69,6 +72,15 @@ public class KontoNeu extends AbstractView
     group.addLabelPair(i18n.tr("Steuerkonto-Typ") , control.getKontotyp());
     group.addLabelPair(i18n.tr("Steuersatz")      , control.getSteuer());
     group.addSeparator();
+
+    // BUGZILLA 1157
+    Kontoart ka = konto.getKontoArt();
+    if (ka != null)
+    {
+      int kai = ka.getKontoArt();
+      if (kai == Kontoart.KONTOART_ANLAGE || kai == Kontoart.KONTOART_GELD)
+        group.addLabelPair(i18n.tr("Anfangsbestand"), control.getAnfangsbestand());
+    }
     group.addLabelPair(i18n.tr("Saldo")           , control.getSaldo());
     
     ButtonArea buttons = new ButtonArea();
@@ -96,7 +108,10 @@ public class KontoNeu extends AbstractView
 
 /*********************************************************************
  * $Log: KontoNeu.java,v $
- * Revision 1.24  2011/05/12 09:10:31  willuhn
+ * Revision 1.25  2011/12/08 22:34:12  willuhn
+ * @N BUGZILLA 1157
+ *
+ * Revision 1.24  2011-05-12 09:10:31  willuhn
  * @R Back-Buttons entfernt
  * @C GUI-Cleanup
  *

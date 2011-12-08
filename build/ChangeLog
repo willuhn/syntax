@@ -1,5 +1,7 @@
 2.1.0
 
+  * NEW: BUGZULLA 1157 - Bei Geld- und Anlagekonten den Anfangsbestand in der
+         Detailansicht anzeigen
   * NEW: BUGZILLA 1153 - Bei Geldkonten tolerieren wir negative Anfangsbestaende
   
 1.7.0
