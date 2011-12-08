@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnfangsbestandImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2009/07/03 10:52:19 $
+ * $Revision: 1.18 $
+ * $Date: 2011/12/08 22:12:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -103,12 +103,13 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
       if (k == null || k.isNewObject())
         throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Konto aus"));
 
-      Kontoart ka = k.getKontoArt();
-      if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
+      int ka = k.getKontoArt().getKontoArt();
+      if (ka != Kontoart.KONTOART_ANLAGE && ka != Kontoart.KONTOART_GELD)
         throw new ApplicationException(i18n.tr("Nur Anlage- und Geldkonten dürfen einen Anfangsbestand haben"));
 
-      if (getBetrag() == 0.0d)
-        throw new ApplicationException(i18n.tr("Bitte geben Sie einen Anfangsbestand ein, der nicht 0 ist"));
+      // BUGZILLA 1153 - Bei Geldkonten tolerieren wir negative Anfangsbestaende
+      if (ka == Kontoart.KONTOART_ANLAGE && this.getBetrag() < 0d)
+        throw new ApplicationException(i18n.tr("Bei Anlagekonten muss der Anfangsbestand größer als 0 sein"));
     }
     catch (RemoteException e)
     {
@@ -199,7 +200,10 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
 
 /*********************************************************************
  * $Log: AnfangsbestandImpl.java,v $
- * Revision 1.17  2009/07/03 10:52:19  willuhn
+ * Revision 1.18  2011/12/08 22:12:41  willuhn
+ * @N BUGZILLA 1153
+ *
+ * Revision 1.17  2009-07-03 10:52:19  willuhn
  * @N Merged SYNTAX_1_3_BRANCH into HEAD
  *
  * Revision 1.15  2007/02/27 18:40:14  willuhn

@@ -1,3 +1,7 @@
+2.1.0
+
+  * NEW: BUGZILLA 1153 - Bei Geldkonten tolerieren wir negative Anfangsbestaende
+  
 1.7.0
 
   * NEW: Kontenrahmen duplizierbar

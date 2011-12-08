@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2011/03/25 10:14:10 $
+ * $Revision: 1.22 $
+ * $Date: 2011/12/08 22:12:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -78,7 +79,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
       {
         try
         {
-          monitor.setStatusText(i18n.tr("Schliesse Geschäftsjahr " + jahr.getAttribute(jahr.getPrimaryAttribute())));
+          monitor.setStatusText(i18n.tr("Schliesse Geschäftsjahr {0}",BeanUtil.toString(jahr)));
 
           if (jahr.isClosed())
             throw new ApplicationException(i18n.tr("Geschäftsjahr wurde bereits abgeschlossen"));
@@ -109,12 +110,12 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
             if (buchung == null)
             {
-              monitor.log(i18n.tr("  Überspringe " + av.getName() + " - bereits abgeschrieben"));
+              monitor.log(i18n.tr("  Überspringe {0} - bereits abgeschrieben",av.getName()));
               continue;
             }
             buchung.store();
             
-            monitor.log(i18n.tr("  Abschreibung für " + av.getName()));monitor.addPercentComplete(1);
+            monitor.log(i18n.tr("  Abschreibung für {0}",av.getName()));monitor.addPercentComplete(1);
             Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
             afa.setAnlagevermoegen(av);
             afa.setBuchung(buchung);
@@ -141,19 +142,22 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           cal.add(Calendar.MONTH,jahr.getMonate());
           cal.add(Calendar.DATE,-1); // Ein Tag wieder abziehen
           jahrNeu.setEnde(cal.getTime());
+          
+          Date beginn = jahrNeu.getBeginn();
+          Date ende   = jahrNeu.getEnde();
 
-          monitor.log(i18n.tr("  Beginn: " + jahrNeu.getBeginn().toString()));
-          monitor.log(i18n.tr("  Ende  : " + jahrNeu.getEnde().toString()));
+          monitor.log(i18n.tr("  Beginn: {0}", Settings.DATEFORMAT.format(beginn)));
+          monitor.log(i18n.tr("  Ende  : {0}", Settings.DATEFORMAT.format(ende)));
 
           // Checken, ob sich in diesem Zeitraum schon ein Geschaeftsjahr befindet
           monitor.log(i18n.tr("  Prüfe, ob neues Geschäftsjahr bereits existiert"));monitor.addPercentComplete(1);
           DBIterator check = m.getGeschaeftsjahre();
-          check.addFilter(jahrNeu.getBeginn().getTime() + " < " + db.getSQLTimestamp("ende"));
-          check.addFilter(jahrNeu.getEnde().getTime() + " > " + db.getSQLTimestamp("beginn"));
+          check.addFilter(beginn.getTime() + " < " + db.getSQLTimestamp("ende")); // TODO Der Check der Ueberschneidung ist nicht sauber
+          check.addFilter(ende.getTime() + " > " + db.getSQLTimestamp("beginn"));
           if (check.hasNext())
           {
             if (!Settings.SETTINGS.getBoolean("gj.close.use-existing",false))
-              throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet", new String[]{jahrNeu.getBeginn().toString(),jahrNeu.getEnde().toString()}));
+              throw new ApplicationException(i18n.tr("Es existiert bereits ein Geschäftsjahr, welches sich mit dem Zeitraum {0}-{1} überschneidet",Settings.DATEFORMAT.format(beginn),Settings.DATEFORMAT.format(ende)));
             jahrNeu = (Geschaeftsjahr) check.next();
             monitor.log(i18n.tr("  Verwende bereits existierendes Geschäftsjahr {0}",(String) jahrNeu.getAttribute(jahrNeu.getPrimaryAttribute())));
           }
@@ -170,18 +174,21 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           {
             // Wir wollen den Saldo des alten Jahres
             Konto k = (Konto) list.next();
-            Kontoart ka = k.getKontoArt();
-            if (! (ka.getKontoArt() == Kontoart.KONTOART_ANLAGE || ka.getKontoArt() == Kontoart.KONTOART_GELD))
+            int ka = k.getKontoArt().getKontoArt();
+            if (ka != Kontoart.KONTOART_ANLAGE && ka != Kontoart.KONTOART_GELD)
             {
-              monitor.log(i18n.tr("Überspringe Konto " + k.getKontonummer()));
+              monitor.log(i18n.tr("Überspringe Konto {0} - weder Anlage- noch Geldkonto",k.getKontonummer()));
               continue;
             }
               
             double saldo = k.getSaldo(jahr);
-            
-            // Wenn der Saldo kleiner als 1 Cent ist, brauchen
-            // wir keinen Anfangsbestand im Folgejahr
-            if (Double.compare(saldo,0.01) < 0)
+
+            // Wenn der Saldo 0 ist, brauchen wir keinen Anfangsbestand
+            if (java.lang.Math.abs(saldo) < 0.01d)
+              continue;
+
+            // BUGZILLA 1153 - Negativen Anfangsbestand gibts nur bei Geldkonten
+            if (ka == Kontoart.KONTOART_ANLAGE && saldo < 0d)
               continue;
             
             monitor.addPercentComplete(1);
@@ -494,7 +501,10 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
- * Revision 1.21  2011/03/25 10:14:10  willuhn
+ * Revision 1.22  2011/12/08 22:12:41  willuhn
+ * @N BUGZILLA 1153
+ *
+ * Revision 1.21  2011-03-25 10:14:10  willuhn
  * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
  * @C BUGZILLA 958
  *
