@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/KontoControl.java,v $
- * $Revision: 1.33 $
- * $Date: 2011/12/08 22:34:12 $
+ * $Revision: 1.34 $
+ * $Date: 2011/12/19 21:42:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,12 +14,11 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -54,7 +53,7 @@ public class KontoControl extends AbstractControl
 	// Eingabe-Felder
 	private Input name			       = null;
 	private TextInput kontonummer  = null;
-	private Input steuer			     = null;
+	private SelectInput steuer		 = null;
 	private Input kontoart		     = null;
   private Input kontotyp         = null;
   private Input saldo            = null;
@@ -165,7 +164,7 @@ public class KontoControl extends AbstractControl
 
     DBIterator list = Settings.getDBService().createList(Steuer.class);
     Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
-    ArrayList found = new ArrayList();
+    List found = new ArrayList<Steuer>();
     while (list.hasNext())
     {
       Steuer s = (Steuer) list.next();
@@ -178,8 +177,8 @@ public class KontoControl extends AbstractControl
       if (kr2.equals(kr))
         found.add(s);
     }
-    GenericIterator i = PseudoIterator.fromArray((Steuer[])found.toArray(new Steuer[found.size()]));
-    steuer = new SelectInput(i,getKonto().getSteuer());
+    steuer = new SelectInput(found,getKonto().getSteuer());
+    steuer.setPleaseChoose("<" + i18n.tr("Keine Steuer") + ">");
 
     // Deaktivieren, wenn Konto nicht steuerpflichtig
     Kontoart ka = getKonto().getKontoArt();
@@ -287,6 +286,9 @@ public class KontoControl extends AbstractControl
 
 /*********************************************************************
  * $Log: KontoControl.java,v $
+ * Revision 1.34  2011/12/19 21:42:01  willuhn
+ * @N BUGZILLA 1166
+ *
  * Revision 1.33  2011/12/08 22:34:12  willuhn
  * @N BUGZILLA 1157
  *

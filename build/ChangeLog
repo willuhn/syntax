@@ -1,5 +1,6 @@
 2.1.0
 
+  * NEW: BUGZILLA 1166 - Combobox für Steuersatz frei lassen bei steuerfreien Konten
   * NEW: BUGZULLA 1157 - Bei Geld- und Anlagekonten den Anfangsbestand in der
          Detailansicht anzeigen
   * NEW: BUGZILLA 1153 - Bei Geldkonten tolerieren wir negative Anfangsbestaende
