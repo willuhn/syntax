@@ -97,7 +97,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (165, 2, '4240', 'Gas, Strom, Wasser (Verwaltung, Vertrieb)', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (166, 2, '4250', 'Reinigung', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (167, 2, '4260', 'Instandhaltung betrieblicher Räume', 1, 8);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (168, 2, '4280', 'Sonstige Raumkkosten', 1, 8);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (168, 2, '4280', 'Sonstige Raumkosten', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (169, 2, '4300', 'Nicht anrechenbare Vorsteuer', 1, 8);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (170, 2, '4360', 'Versicherungen', 1, 6);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (171, 2, '4380', 'Beiträge', 1, 6);
@@ -226,7 +226,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1163, 2, '6325', 'Gas, Strom, Wasser (Verwaltung, Vertrieb)', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1164, 2, '6330', 'Reinigung', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1165, 2, '6335', 'Instandhaltung betrieblicher Räume', 2, 1008);
-INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1166, 2, '6345', 'Sonstige Raumkkosten', 2, 1008);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1166, 2, '6345', 'Sonstige Raumkosten', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1167, 2, '6860', 'Nicht anrechenbare Vorsteuer', 2, 1008);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1168, 2, '6400', 'Versicherungen', 2, 1006);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1169, 2, '6420', 'Beiträge', 2, 1006);
