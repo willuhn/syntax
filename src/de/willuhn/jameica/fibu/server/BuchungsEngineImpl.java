@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BuchungsEngineImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2011/12/08 22:12:41 $
+ * $Revision: 1.23 $
+ * $Date: 2012/01/22 00:28:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,7 +49,7 @@ import de.willuhn.util.ProgressMonitor;
 public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsEngine
 {
 
-  private I18N i18n = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private boolean started = false;
 
   /**
@@ -59,7 +59,6 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
   public BuchungsEngineImpl() throws RemoteException
   {
     super();
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
   
   /**
@@ -99,27 +98,35 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
           
           Mandant m        = jahr.getMandant();
           DBService db     = Settings.getDBService();
+          DBIterator list  = null;
 
-          monitor.log(i18n.tr("Buche Abschreibungen für Anlagevermögen"));monitor.addPercentComplete(1);
-          DBIterator list = m.getAnlagevermoegen();
-          while (list.hasNext())
+          if (!Settings.SETTINGS.getBoolean("afa.skip",false))
           {
-            Anlagevermoegen av = (Anlagevermoegen) list.next();
-
-            AbschreibungsBuchung buchung = schreibeAb(monitor,av,jahr);
-
-            if (buchung == null)
+            monitor.log(i18n.tr("Buche Abschreibungen für Anlagevermögen"));monitor.addPercentComplete(1);
+            list = m.getAnlagevermoegen();
+            while (list.hasNext())
             {
-              monitor.log(i18n.tr("  Überspringe {0} - bereits abgeschrieben",av.getName()));
-              continue;
+              Anlagevermoegen av = (Anlagevermoegen) list.next();
+
+              AbschreibungsBuchung buchung = schreibeAb(monitor,av,jahr);
+
+              if (buchung == null)
+              {
+                monitor.log(i18n.tr("  Überspringe {0} - bereits abgeschrieben",av.getName()));
+                continue;
+              }
+              buchung.store();
+              
+              monitor.log(i18n.tr("  Abschreibung für {0}",av.getName()));monitor.addPercentComplete(1);
+              Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
+              afa.setAnlagevermoegen(av);
+              afa.setBuchung(buchung);
+              afa.store();
             }
-            buchung.store();
-            
-            monitor.log(i18n.tr("  Abschreibung für {0}",av.getName()));monitor.addPercentComplete(1);
-            Abschreibung afa = (Abschreibung) db.createObject(Abschreibung.class,null);
-            afa.setAnlagevermoegen(av);
-            afa.setBuchung(buchung);
-            afa.store();
+          }
+          else
+          {
+            monitor.log(i18n.tr("Überspringe Abschreibungsbuchungen"));monitor.addPercentComplete(1);
           }
           
           // Neues geschaeftsjahr erzeugen
@@ -501,6 +508,9 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
 
 /*********************************************************************
  * $Log: BuchungsEngineImpl.java,v $
+ * Revision 1.23  2012/01/22 00:28:39  willuhn
+ * @N Config-Paramter zum Ueberspringen der Abschreibungsbuchungen - siehe Mail von Horst vom 13.01.
+ *
  * Revision 1.22  2011/12/08 22:12:41  willuhn
  * @N BUGZILLA 1153
  *
