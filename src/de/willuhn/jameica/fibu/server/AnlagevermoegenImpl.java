@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AnlagevermoegenImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2010/12/20 12:58:22 $
+ * $Revision: 1.21 $
+ * $Date: 2012/01/27 23:14:55 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -271,7 +271,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
       
       transactionCommit();
     }
-    catch (ApplicationException e)
+    catch (Exception e)
     {
       try
       {
@@ -281,32 +281,12 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
       {
         Logger.error("unable to rollback transaction",tr);
       }
-      throw e;
-    }
-    catch (RemoteException e2)
-    {
-      try
-      {
-        transactionRollback();
-      }
-      catch (Throwable tr)
-      {
-        Logger.error("unable to rollback transaction",tr);
-      }
-      throw e2;
-    }
-    catch (Throwable t)
-    {
-      try
-      {
-        transactionRollback();
-      }
-      catch (Throwable tr)
-      {
-        Logger.error("unable to rollback transaction",tr);
-      }
-      Logger.error("unable to delete av",t);
-      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Anlage-Gegenstandes"));
+      
+      if (e instanceof ApplicationException)
+        throw (ApplicationException) e;
+      
+      Logger.error("unable to delete av",e);
+      throw new ApplicationException(i18n.tr("Fehler beim Löschen des Anlage-Gegenstandes"),e);
     }
   }
   
@@ -550,6 +530,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
 
 /*********************************************************************
  * $Log: AnlagevermoegenImpl.java,v $
+ * Revision 1.21  2012/01/27 23:14:55  willuhn
+ * cleanup
+ *
  * Revision 1.20  2010/12/20 12:58:22  willuhn
  * @N BUGZILLA 958
  *
