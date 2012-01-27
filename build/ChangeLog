@@ -1,5 +1,6 @@
 2.1.0
 
+  * NEW: Belegnummer in "Belegfeld1" im DATEV-Export mit exportieren
   * NEW: Mit dem Parameter "afa.skip=true" in de.willuhn.jameica.fibu.Fibu.properties
          kann das automatische Erstellen der Abschreibungsbuchungen uebersprungen werden.
   * NEW: BUGZILLA 1166 - Combobox für Steuersatz frei lassen bei steuerfreien Konten

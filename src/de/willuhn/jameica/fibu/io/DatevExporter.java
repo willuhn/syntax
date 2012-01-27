@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/DatevExporter.java,v $
- * $Revision: 1.3 $
- * $Date: 2010/10/14 10:48:33 $
+ * $Revision: 1.4 $
+ * $Date: 2012/01/27 22:22:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -153,7 +153,7 @@ public class DatevExporter implements Exporter
     sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getBetrag()));sb.append(sep); // Umsatz (ohne Soll/Haben-Kz)
     sb.append(buMap.get(b.getSteuer())); sb.append(sep);                        // BU-Schluessel
     sb.append(b.getHabenKonto().getKontonummer()); sb.append(sep);              // Gegenkonto (ohne BU-Schlüssel)
-    sb.append(format("")); sb.append(sep);                                      // Belegfeld 1
+    sb.append(b.getBelegnummer()); sb.append(sep);                              // Belegfeld 1
     sb.append(format("")); sb.append(sep);                                      // Belegfeld 2
     sb.append(DATEFORMAT.format(b.getDatum())); sb.append(sep);                 // Datum
     sb.append(b.getSollKonto().getKontonummer()); sb.append(sep);               // Konto
@@ -224,7 +224,10 @@ public class DatevExporter implements Exporter
 
 /*********************************************************************
  * $Log: DatevExporter.java,v $
- * Revision 1.3  2010/10/14 10:48:33  willuhn
+ * Revision 1.4  2012/01/27 22:22:59  willuhn
+ * @N Belegnummer im Feld "Belegfeld1" im DATEV-Export mit exportieren
+ *
+ * Revision 1.3  2010-10-14 10:48:33  willuhn
  * @N Steuer-Satz in der Spalte "BU-Schluessel"
  *
  * Revision 1.2  2010-10-13 21:51:05  willuhn
