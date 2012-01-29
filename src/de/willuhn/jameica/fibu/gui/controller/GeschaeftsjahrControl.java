@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/GeschaeftsjahrControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/03/21 11:17:27 $
+ * $Revision: 1.9 $
+ * $Date: 2012/01/29 22:09:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,9 +16,6 @@ package de.willuhn.jameica.fibu.gui.controller;
 import java.rmi.RemoteException;
 import java.util.Date;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -27,8 +24,7 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
-import de.willuhn.jameica.gui.input.DialogInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.system.Application;
@@ -41,22 +37,20 @@ import de.willuhn.util.I18N;
  */
 public class GeschaeftsjahrControl extends AbstractControl
 {
-
-  private DialogInput beginn             = null;
-  private DialogInput ende               = null;
-  private Input kontenrahmenAuswahl      = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  
+  private DateInput beginn             = null;
+  private DateInput ende               = null;
+  private Input kontenrahmenAuswahl    = null;
   
   private Geschaeftsjahr jahr = null;
 
-  private I18N i18n = null;
-  
   /**
    * @param view
    */
   public GeschaeftsjahrControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
 
   /**
@@ -87,23 +81,9 @@ public class GeschaeftsjahrControl extends AbstractControl
     if (beginn != null)
       return beginn;
     
-    Date start = getGeschaeftsjahr().getBeginn();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
-    d.setText(i18n.tr("Bitte wählen Sie den Beginn des Geschäftsjahres"));
-    d.setDate(start);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        beginn.setValue(event.data);
-        beginn.setText(Settings.DATEFORMAT.format((Date)event.data));
-      }
-    });
-    beginn = new DialogInput(Settings.DATEFORMAT.format(start),d);
-    beginn.setValue(start);
-    beginn.disableClientControl();
+    this.beginn = new DateInput(this.getGeschaeftsjahr().getBeginn());
+    this.beginn.setTitle(i18n.tr("Beginn des Geschäftsjahres"));
+    this.beginn.setText(i18n.tr("Bitte wählen Sie den Beginn des Geschäftsjahres"));
     beginn.setMandatory(true);
     return beginn;
   }
@@ -118,23 +98,9 @@ public class GeschaeftsjahrControl extends AbstractControl
     if (ende != null)
       return ende;
     
-    Date end = getGeschaeftsjahr().getEnde();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Ende des Geschäftsjahres"));
-    d.setText(i18n.tr("Bitte wählen Sie das Ende des Geschäftsjahres"));
-    d.setDate(end);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        ende.setValue(event.data);
-        ende.setText(Settings.DATEFORMAT.format((Date)event.data));
-      }
-    });
-    ende = new DialogInput(Settings.DATEFORMAT.format(end),d);
-    ende.setValue(end);
-    ende.disableClientControl();
+    this.ende = new DateInput(this.getGeschaeftsjahr().getEnde());
+    this.ende.setTitle(i18n.tr("Ende des Geschäftsjahres"));
+    this.ende.setText(i18n.tr("Bitte wählen Sie das Ende des Geschäftsjahres"));
     ende.setMandatory(true);
     return ende;
   }
@@ -215,7 +181,10 @@ public class GeschaeftsjahrControl extends AbstractControl
 
 /*********************************************************************
  * $Log: GeschaeftsjahrControl.java,v $
- * Revision 1.8  2011/03/21 11:17:27  willuhn
+ * Revision 1.9  2012/01/29 22:09:14  willuhn
+ * @N Neues DateInput verwenden statt manuellen CalendarDialog (mit DialogInput)
+ *
+ * Revision 1.8  2011-03-21 11:17:27  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.7  2010-06-04 00:33:56  willuhn

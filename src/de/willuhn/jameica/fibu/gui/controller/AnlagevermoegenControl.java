@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/AnlagevermoegenControl.java,v $
- * $Revision: 1.25 $
- * $Date: 2011/05/12 09:10:32 $
+ * $Revision: 1.26 $
+ * $Date: 2012/01/29 22:09:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,11 +39,10 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.dialogs.CalendarDialog;
 import de.willuhn.jameica.gui.dialogs.YesNoDialog;
 import de.willuhn.jameica.gui.input.ButtonInput;
+import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.DecimalInput;
-import de.willuhn.jameica.gui.input.DialogInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -75,7 +74,7 @@ public class AnlagevermoegenControl extends AbstractControl
   
   private KontoInput konto        = null;
   private KontoInput afaKonto     = null;
-  private DialogInput datum       = null;
+  private DateInput datum       = null;
   
   private ButtonInput buchungLink = null;
   
@@ -210,23 +209,11 @@ public class AnlagevermoegenControl extends AbstractControl
     Date date = getAnlagevermoegen().getAnschaffungsdatum();
     if (date == null)
       date = new Date();
-    CalendarDialog d = new CalendarDialog(CalendarDialog.POSITION_MOUSE);
-    d.setTitle(i18n.tr("Anschaffungsdatum"));
-    d.setText(i18n.tr("Bitte wählen Sie das Anschaffungsdatum"));
-    d.setDate(date);
-    d.addCloseListener(new Listener() {
-      public void handleEvent(Event event)
-      {
-        if (event == null || event.data == null)
-          return;
-        datum.setValue(event.data);
-        datum.setText(Settings.DATEFORMAT.format((Date)event.data));
-        new RestwertListener().handleEvent(null);
-      }
-    });
-    datum = new DialogInput(Settings.DATEFORMAT.format(date),d);
-    datum.setValue(date);
-    datum.disableClientControl();
+    
+    this.datum = new DateInput(date);
+    this.datum.setText(i18n.tr("Bitte wählen Sie das Anschaffungsdatum"));
+    this.datum.setTitle(i18n.tr("Anschaffungsdatum"));
+    this.datum.addListener(new RestwertListener());
     this.datum.setEnabled(getAnlagevermoegen().canChange());
     return datum;
   }
@@ -587,7 +574,10 @@ public class AnlagevermoegenControl extends AbstractControl
 
 /*********************************************************************
  * $Log: AnlagevermoegenControl.java,v $
- * Revision 1.25  2011/05/12 09:10:32  willuhn
+ * Revision 1.26  2012/01/29 22:09:14  willuhn
+ * @N Neues DateInput verwenden statt manuellen CalendarDialog (mit DialogInput)
+ *
+ * Revision 1.25  2011-05-12 09:10:32  willuhn
  * @R Back-Buttons entfernt
  * @C GUI-Cleanup
  *
