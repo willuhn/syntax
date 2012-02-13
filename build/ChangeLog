@@ -1,4 +1,4 @@
-2.1.0
+2.2.0
 
   * NEW: Belegnummer in "Belegfeld1" im DATEV-Export mit exportieren
   * NEW: Mit dem Parameter "afa.skip=true" in de.willuhn.jameica.fibu.Fibu.properties
