@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.51 $
- * $Date: 2011/03/21 11:17:27 $
+ * $Revision: 1.52 $
+ * $Date: 2012/03/28 22:28:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -149,7 +149,7 @@ public class Settings
     try
     {
       Logger.info("trying to load " + s);
-      Class c = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().load(s);
+      Class c = Application.getPluginLoader().getManifest(Fibu.class).getClassLoader().load(s);
       dbSupport = (DBSupport) c.newInstance();
       return dbSupport;
     }
@@ -452,7 +452,11 @@ public class Settings
 
 /*********************************************************************
  * $Log: Settings.java,v $
- * Revision 1.51  2011/03/21 11:17:27  willuhn
+ * Revision 1.52  2012/03/28 22:28:16  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.51  2011-03-21 11:17:27  willuhn
  * @N BUGZILLA 1004
  *
  * Revision 1.50  2010-11-12 16:27:27  willuhn

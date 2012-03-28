@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/IdeaFormatReport.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
+ * $Revision: 1.2 $
+ * $Date: 2012/03/28 22:28:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -175,7 +175,7 @@ public class IdeaFormatReport extends AbstractReport
       
       //////////////////////////////////////////////////////////////////////////
       // Schritt 2: gdpdu-01-08-2002.dtd
-      add("gdpdu-01-08-2002.dtd",Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getResourceAsStream("res/gdpdu-01-08-2002.dtd"));
+      add("gdpdu-01-08-2002.dtd",Application.getPluginLoader().getManifest(Fibu.class).getClassLoader().getResourceAsStream("res/gdpdu-01-08-2002.dtd"));
       //
       //////////////////////////////////////////////////////////////////////////
 
@@ -312,7 +312,11 @@ public class IdeaFormatReport extends AbstractReport
 
 /**********************************************************************
  * $Log: IdeaFormatReport.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
+ * Revision 1.2  2012/03/28 22:28:16  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.1  2010-08-27 10:18:14  willuhn
  * @C Export umbenannt in Report
  *
  * Revision 1.5  2010/06/01 16:37:22  willuhn

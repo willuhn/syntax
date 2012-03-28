@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBServiceImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2011/07/25 10:03:18 $
+ * $Revision: 1.28 $
+ * $Date: 2012/03/28 22:28:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -45,7 +45,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   public DBServiceImpl() throws RemoteException
   {
     super();
-    MultipleClassLoader cl = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader();
+    MultipleClassLoader cl = Application.getPluginLoader().getManifest(Fibu.class).getClassLoader();
     this.setClassloader(cl);
     this.setClassFinder(cl.getClassFinder());
   }
@@ -252,7 +252,11 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
- * Revision 1.27  2011/07/25 10:03:18  willuhn
+ * Revision 1.28  2012/03/28 22:28:16  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.27  2011-07-25 10:03:18  willuhn
  * *** empty log message ***
  *
  * Revision 1.26  2011-07-25 10:01:28  willuhn

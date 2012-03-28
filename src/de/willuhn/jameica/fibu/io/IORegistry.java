@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/IORegistry.java,v $
- * $Revision: 1.2 $
- * $Date: 2010/11/12 16:27:27 $
+ * $Revision: 1.3 $
+ * $Date: 2012/03/28 22:28:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,7 +50,7 @@ public class IORegistry
     ArrayList l = new ArrayList();
     try
     {
-      ClassFinder finder = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getClassLoader().getClassFinder();
+      ClassFinder finder = Application.getPluginLoader().getManifest(Fibu.class).getClassLoader().getClassFinder();
       Class[] list = finder.findImplementors(type);
       if (list == null || list.length == 0)
         throw new ClassNotFoundException();
@@ -101,7 +101,11 @@ public class IORegistry
 
 /**********************************************************************
  * $Log: IORegistry.java,v $
- * Revision 1.2  2010/11/12 16:27:27  willuhn
+ * Revision 1.3  2012/03/28 22:28:16  willuhn
+ * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
+ * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
+ *
+ * Revision 1.2  2010-11-12 16:27:27  willuhn
  * @C Plugin-Classloader statt dem von Jameica verwenden
  *
  * Revision 1.1  2010-08-27 11:19:40  willuhn
