@@ -76,7 +76,7 @@
       <td style="text-align:right">$!{decimalformat.format($math.get("oldsaldo"))} ${eur}</td>
     </tr>
     <tr>
-      <td>Summe der Umsätze:</td>
+      <td>Summe der Ums&auml;tze:</td>
       <td style="text-align:right">$!{decimalformat.format($math.abs($math.get("umsatz")))} ${eur}</td>
     </tr>
 

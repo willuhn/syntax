@@ -2,7 +2,7 @@
 #set($einnahmen      = $!{ergebnis.Einnahmen})
 #set($ausgaben       = $!{ergebnis.Ausgaben})
 
-<h1>I. Aufteilung der Beträge nach Konten:</h1>
+<h1>I. Aufteilung der Betr&auml;ge nach Konten:</h1>
 
 $math.reset("einnahmen")
 $math.reset("ausgaben")

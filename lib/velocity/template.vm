@@ -88,7 +88,7 @@
     <tr>
       <td>
         <h1>$!{name}</h1>
-        Geschäftsjahr: $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}
+        Gesch&auml;ftsjahr: $!{dateformat.format(${jahr.Beginn})} - $!{dateformat.format(${jahr.Ende})}
       </td>
       <td style="text-align:right;">
       	Druck: $!{longdateformat.format(${datum})}
