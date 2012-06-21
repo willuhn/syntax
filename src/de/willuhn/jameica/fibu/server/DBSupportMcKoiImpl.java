@@ -25,7 +25,6 @@ import java.sql.SQLException;
 
 import de.willuhn.datasource.db.EmbeddedDatabase;
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.plugin.PluginResources;
@@ -121,15 +120,14 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
       }
       else
       {
-        Logger.info("file encoding to use for sql import: " + Settings.ENCODING);
-        Reader r = new InputStreamReader(new FileInputStream(create),Settings.ENCODING);
+        Reader r = new InputStreamReader(new FileInputStream(create),ENCODING_SQL);
         monitor.setStatusText(i18n.tr("Erstelle Datenbank"));
         ScriptExecutor.execute(r,conn, monitor);
         
         // Monitor zurueckgesetzt
         monitor.setPercentComplete(0);
 
-        r = new InputStreamReader(new FileInputStream(init),Settings.ENCODING);
+        r = new InputStreamReader(new FileInputStream(init),ENCODING_SQL);
         monitor.setStatusText(i18n.tr("Erstelle Kontenrahmen"));
         ScriptExecutor.execute(r,conn, monitor);
         monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));

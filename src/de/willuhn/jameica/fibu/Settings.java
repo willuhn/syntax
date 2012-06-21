@@ -85,9 +85,9 @@ public class Settings
   public final static String WAEHRUNG = SETTINGS.getString("currency.default","EUR");
 
   /**
-   * Encoding, welches zum Einlesen der SQL-Scripts verwendet wird.
+   * Encoding, welches fuer die Reports verwendet wird.
    */
-  public final static String ENCODING = SETTINGS.getString("encoding","ISO-8859-15");
+  public final static String ENCODING_REPORTS = SETTINGS.getString("encoding","ISO-8859-15");
   
   /**
    * Wochentage

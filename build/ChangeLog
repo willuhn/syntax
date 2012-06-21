@@ -1,3 +1,8 @@
+TRUNK
+
+  * NEW: BUGZILLA 1242 Die Auswertungen verwenden jetzt nicht mehr das
+         Plattform-Encoding sondern fest ISO-8859-15
+         
 2.2.0
 
   * NEW: Belegnummer in "Belegfeld1" im DATEV-Export mit exportieren

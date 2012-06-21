@@ -31,7 +31,6 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractDBSupportImpl implements DBSupport, Comparable
 {
-  
   final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   private String username = Settings.SETTINGS.getString("database.support.username","syntax");

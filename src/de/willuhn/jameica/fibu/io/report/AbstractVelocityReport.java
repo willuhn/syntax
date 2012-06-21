@@ -27,6 +27,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.server.Math;
@@ -43,6 +44,7 @@ import de.willuhn.util.ProgressMonitor;
  */
 public abstract class AbstractVelocityReport extends AbstractReport
 {
+  final static String ENCODING_TEMPLATE = "ISO-8859-15";
   final static DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
@@ -115,17 +117,18 @@ public abstract class AbstractVelocityReport extends AbstractReport
       context.put("longdateformat", Settings.LONGDATEFORMAT);
       context.put("decimalformat",  Settings.DECIMALFORMAT);
       context.put("export",         vData);
-      context.put("charset",        System.getProperty("file.encoding"));
-      
+      context.put("charset",        Settings.ENCODING_REPORTS);
+
       Manifest mf = Application.getPluginLoader().getPlugin(Fibu.class).getManifest();
-      context.put("version",        "SynTAX " + mf.getVersion() + ", Jameica " + Application.getManifest().getVersion());
+      context.put("version","SynTAX " + mf.getVersion() + ", Jameica " + Application.getManifest().getVersion());
 
 
-      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)));
-
+      Logger.info("creating report \"" + this.getName() + "\" (encoding " + Settings.ENCODING_REPORTS + ")");
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target),Settings.ENCODING_REPORTS));
+      
       VelocityService service = (VelocityService) Application.getBootLoader().getBootable(VelocityService.class);
       VelocityEngine engine = service.getEngine(Fibu.class.getName());
-      Template t = engine.getTemplate("template.vm","ISO-8859-15");
+      Template t = engine.getTemplate("template.vm",ENCODING_TEMPLATE); // Gelesen werden die Templates aber mit dem festen Encoding
       t.merge(context,writer);
       monitor.setStatus(ProgressMonitor.STATUS_DONE);
       monitor.setStatusText(i18n.tr("Auswertung erstellt"));
@@ -146,10 +149,7 @@ public abstract class AbstractVelocityReport extends AbstractReport
     }
     finally
     {
-      if (writer != null) {
-        try { writer.close();}
-        catch (Exception e){Logger.error("error while closing outputstream",e);}
-      }
+      IOUtil.close(writer);
 
       try {
         if (fakeProgress != null) fakeProgress.cancel();

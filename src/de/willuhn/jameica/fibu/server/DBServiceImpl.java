@@ -25,6 +25,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.UpdateProvider;
 import de.willuhn.jameica.fibu.rmi.DBService;
+import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -103,7 +104,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
       Logger.info("init update provider");
       UpdateProvider provider = new UpdateProvider(conn);
-      Updater updater = new Updater(provider,Settings.ENCODING);
+      Updater updater = new Updater(provider,DBSupport.ENCODING_SQL);
       updater.execute("^" + Settings.getDBSupport().getID() + "-.*");
       Logger.info("updates finished");
     }

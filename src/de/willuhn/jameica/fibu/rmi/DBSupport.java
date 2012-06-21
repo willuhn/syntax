@@ -27,6 +27,11 @@ import de.willuhn.util.ProgressMonitor;
 public interface DBSupport extends GenericObject, Comparable
 {
   /**
+   * Das Encoding der SQL-Dateien.
+   */
+  final static String ENCODING_SQL = "ISO-8859-15";
+  
+  /**
    * Liefert den Namen der Datenbank.
    * @return Name der Datenbank.
    * @throws RemoteException
