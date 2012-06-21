@@ -11,82 +11,78 @@
 
 <project basedir=".." default="all" name="All">
 
-	<target name="init" description="inits the build">
+  <target name="init" description="inits the build">
 
-		<property environment="env" />
-		<property name="build.dir" value="build" />
-		<buildnumber file="${build.dir}/BUILD" />
-    <xmlproperty file="plugin.xml" collapseattributes="true"/>
+    <property environment="env" />
+    <property name="build.dir" value="build" />
+    <buildnumber file="${build.dir}/BUILD" />
+    <xmlproperty file="plugin.xml" collapseattributes="true" />
 
-    <!-- create cvs tag -->
+    <!-- create scm tag -->
     <propertyfile file="${build.dir}/TAG">
       <entry key="mytag" value="${plugin.version}" />
     </propertyfile>
     <replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
-    <loadproperties srcFile="${build.dir}/TAG"/>
+    <loadproperties srcFile="${build.dir}/TAG" />
     <delete file="${build.dir}/TAG" />
     <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
-    <loadproperties srcFile="${build.dir}/build.properties"/>
-	  
+    <loadproperties srcFile="${build.dir}/build.properties" />
+
     <echo message="VERSION: ${plugin.version}" />
-    <echo message="CVS-Tag: ${tag}" />
+    <echo message="Tag    : ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
-		<property name="define.jarfilename" 		value="${plugin.name}.jar" />
-		<property name="define.zipfilename" 		value="${plugin.name}.zip" />
-		<property name="define.srcfilename" 		value="${plugin.name}.src.zip" />
-		<property name="define.javadocfilename" value="${plugin.name}.javadoc.zip" />
+    <property name="define.jarfilename"     value="${plugin.name}.jar" />
+    <property name="define.zipfilename"     value="${plugin.name}.zip" />
+    <property name="define.srcfilename"     value="${plugin.name}.src.zip" />
+    <property name="define.javadocfilename" value="${plugin.name}.javadoc.zip" />
 
-		<property name="project.nightly" 			  value="releases/nightly" />
-		<property name="project.release" 			  value="releases/${plugin.version}-${build.number}" />
-		<property name="project.tmp" 				    value="${project.release}/tmp" />
-		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
-		<property name="project.zipdir" 			  value="${project.release}/${plugin.name}" />
+    <property name="project.nightly" value="releases/nightly" />
+    <property name="project.release" value="releases/${plugin.version}-${build.number}" />
+    <property name="project.tmp"     value="${project.release}/tmp" />
+    <property name="project.javadoc" value="${project.release}/javadoc" />
+    <property name="project.zipdir"  value="${project.release}/${plugin.name}" />
 
-		<property name="src.dir" 					      value="src" />
-    <property name="update.dir"             value="updates" />
-		<property name="lang.dir" 					    value="${src.dir}/lang" />
-    <property name="help.dir"               value="${src.dir}/help" />
-    <property name="res.dir"                value="${src.dir}/res" />
-    <property name="img.dir"                value="${src.dir}/img" />
-		<property name="lib.dir" 					      value="lib" />
-    <property name="sql.dir"                value="sql" />
-		<property name="webapps.dir" 			      value="webapps" />
-		<property name="class.dir" 					    value="${project.tmp}/bin" />
+    <property name="src.dir"     value="src" />
+    <property name="update.dir"  value="updates" />
+    <property name="lang.dir"    value="${src.dir}/lang" />
+    <property name="help.dir"    value="${src.dir}/help" />
+    <property name="res.dir"     value="${src.dir}/res" />
+    <property name="img.dir"     value="${src.dir}/img" />
+    <property name="lib.dir"     value="lib" />
+    <property name="sql.dir"     value="sql" />
+    <property name="webapps.dir" value="webapps" />
+    <property name="class.dir"   value="${project.tmp}/bin" />
 
-		<available file="${lib.dir}"     type="dir" property="havelib" />
-		<available file="${webapps.dir}" type="dir" property="havewebapps" />
+    <available file="${lib.dir}"     type="dir" property="havelib" />
+    <available file="${webapps.dir}" type="dir" property="havewebapps" />
 
-		<path id="compilepath">
-			<pathelement path="${define.compilepath}" />
-			<pathelement path="${class.dir}"/> <!-- wird zum Compilieren der Updates gebraucht -->
-      <fileset dir="." >
-        <include name="${lib.dir}/**/*.jar" if="havelib"/>
+    <path id="compilepath">
+      <pathelement path="${define.compilepath}" />
+      <pathelement path="${class.dir}" />
+      <!-- wird zum Compilieren der Updates gebraucht -->
+      <fileset dir=".">
+        <include name="${lib.dir}/**/*.jar" if="havelib" />
       </fileset>
-		</path>
+    </path>
 
-	</target>
+  </target>
 
-	<target depends="init" name="cvs" description="performs cvs update">
-		<exec executable="cvs" failonerror="true" dir="${basedir}">
-			<arg line="update -dP" />
-		</exec>
-	</target>
+  <target depends="init" name="update" description="performs scm update">
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="pull" />
+    </exec>
+  </target>
 
-	<target depends="init" name="compile" description="compiles everything">
+  <target depends="init" name="compile" description="compiles everything">
 
-		<mkdir dir="${class.dir}" />
+    <mkdir dir="${class.dir}" />
 
-		<javac debug="true" debuglevel="lines,vars,source" includeantruntime="false"
-		  source="${define.java.version}"
-		  target="${define.java.version}"
-		  encoding="${define.encoding}"
-		  deprecation="true"
-		  destdir="${class.dir}" srcdir="${src.dir}">
-			<classpath refid="compilepath" />
-		</javac>
+    <javac debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="${define.java.version}" target="${define.java.version}" encoding="${define.encoding}" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
+      <classpath refid="compilepath" />
+    </javac>
     <copy todir="${class.dir}/help">
       <fileset dir="${help.dir}" />
     </copy>
@@ -96,71 +92,64 @@
     <copy todir="${class.dir}/img">
       <fileset dir="${img.dir}" />
     </copy>
-	</target>
+  </target>
 
 
 
-	<target depends="compile" name="cvstag" description="tags the source in the CVS">
+  <target depends="compile" name="tag" description="tags the source in the scm">
 
-		<exec executable="cvs" failonerror="true" dir="${basedir}">
-			<arg line="tag ${tag}" />
-		</exec>
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="tag -s ${tag}" />
+    </exec>
 
-	</target>
+  </target>
 
-	<!-- Libs nur dann hinzufuegen, wenn sie existieren -->
-	<target name="addlib" if="havelib">
-		<mkdir dir="${project.zipdir}/lib" />
-		<copy todir="${project.zipdir}/lib">
-			<fileset dir="${lib.dir}" />
-		</copy>
-	</target>
-	<target name="addwebapps" if="havewebapps">
-		<mkdir dir="${project.zipdir}/webapps" />
-		<copy todir="${project.zipdir}/webapps">
-			<fileset dir="${webapps.dir}" />
-		</copy>
-	</target>
+  <!-- Libs nur dann hinzufuegen, wenn sie existieren -->
+  <target name="addlib" if="havelib">
+    <mkdir dir="${project.zipdir}/lib" />
+    <copy todir="${project.zipdir}/lib">
+      <fileset dir="${lib.dir}" />
+    </copy>
+  </target>
+  <target name="addwebapps" if="havewebapps">
+    <mkdir dir="${project.zipdir}/webapps" />
+    <copy todir="${project.zipdir}/webapps">
+      <fileset dir="${webapps.dir}" />
+    </copy>
+  </target>
 
-	<target depends="compile" name="jar" description="generates the jar file">
+  <target depends="compile" name="jar" description="generates the jar file">
 
-		<mkdir dir="${project.release}" />
-		<mkdir dir="${project.zipdir}" />
+    <mkdir dir="${project.release}" />
+    <mkdir dir="${project.zipdir}" />
 
-		<tstamp/>
-		<jar destfile="${project.zipdir}/${define.jarfilename}">
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Built-Date" value="${DSTAMP}" />
-				<attribute name="Implementation-Title" value="${plugin.name}" />
-				<attribute name="Implementation-Version" value="${plugin.version}" />
-				<attribute name="Implementation-Buildnumber" value="${build.number}" />
+    <tstamp />
+    <jar destfile="${project.zipdir}/${define.jarfilename}">
+      <manifest>
+        <attribute name="Built-By" value="${user.name}" />
+        <attribute name="Built-Date" value="${DSTAMP}" />
+        <attribute name="Implementation-Title" value="${plugin.name}" />
+        <attribute name="Implementation-Version" value="${plugin.version}" />
+        <attribute name="Implementation-Buildnumber" value="${build.number}" />
         <attribute name="Class-Path" value="lang help lib res img" />
       </manifest>
-			<fileset dir="${class.dir}" />
-		</jar>
+      <fileset dir="${class.dir}" />
+    </jar>
 
-		<antcall target="addlib"/>
-		<antcall target="addwebapps"/>
-			
+    <antcall target="addlib" />
+    <antcall target="addwebapps" />
+
     <copy file="plugin.xml" todir="${project.zipdir}" />
-    <copy file="${build.dir}/COPYING"   todir="${project.zipdir}" />
+    <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
     <copy file="${build.dir}/ChangeLog" todir="${project.zipdir}" />
 
-		<mkdir dir="${project.zipdir}/sql" />
+    <mkdir dir="${project.zipdir}/sql" />
     <copy todir="${project.zipdir}/sql">
       <fileset dir="${sql.dir}" />
     </copy>
 
     <mkdir dir="${project.zipdir}/updates" />
-    <javac debug="true"
-           debuglevel="lines,vars,source"
-           source="${define.java.version}"
-           target="${define.java.version}"
-           encoding="${define.encoding}"
-           deprecation="true"
-           destdir="${project.zipdir}/updates"
-           srcdir="${update.dir}">
+    <javac debug="true" debuglevel="lines,vars,source" source="${define.java.version}" target="${define.java.version}" encoding="${define.encoding}" deprecation="true" destdir="${project.zipdir}/updates" srcdir="${update.dir}">
       <classpath refid="compilepath" />
     </javac>
     <copy todir="${project.zipdir}/updates">
@@ -169,67 +158,66 @@
       </fileset>
     </copy>
 
-		<!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
-		<zip destfile="${project.release}/${define.zipfilename}">
-			<fileset dir="${project.release}">
-				<include name="${plugin.name}" />
-				<include name="${plugin.name}/**" />
-			</fileset>
-		</zip>
+    <!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
+    <zip destfile="${project.release}/${define.zipfilename}">
+      <fileset dir="${project.release}">
+        <include name="${plugin.name}" />
+        <include name="${plugin.name}/**" />
+      </fileset>
+    </zip>
 
-	</target>
+  </target>
 
 
 
-	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
-		<mkdir dir="${project.release}" />
-		<mkdir dir="${project.tmp}/${plugin.name}" />
-		<copy todir="${project.tmp}/${plugin.name}">
-			<fileset dir=".">
-				<include name=".project" />
-				<include name=".classpath" />
+  <target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
+    <mkdir dir="${project.release}" />
+    <mkdir dir="${project.tmp}/${plugin.name}" />
+    <copy todir="${project.tmp}/${plugin.name}">
+      <fileset dir=".">
+        <include name=".project" />
+        <include name=".classpath" />
         <include name="plugin.xml" />
-				<include name="${lib.dir}/**" />
-				<include name="${src.dir}/**" />
+        <include name="${lib.dir}/**" />
+        <include name="${src.dir}/**" />
         <include name="${update.dir}/**" />
         <include name="${sql.dir}/**" />
-				<include name="${build.dir}/**" />
-				<exclude name="${build.dir}/BUILD" />
-			</fileset>
-		</copy>
-		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
-			<fileset dir="${project.tmp}">
-				<include name="${plugin.name}/**" />
-			</fileset>
-		</zip>
-	</target>
+        <include name="${build.dir}/**" />
+        <exclude name="${build.dir}/BUILD" />
+      </fileset>
+    </copy>
+    <zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
+      <fileset dir="${project.tmp}">
+        <include name="${plugin.name}/**" />
+      </fileset>
+    </zip>
+  </target>
 
 
 
-	<target depends="jar" name="javadoc" description="creates the api doc">
+  <target depends="jar" name="javadoc" description="creates the api doc">
 
-		<mkdir dir="${project.javadoc}" />
+    <mkdir dir="${project.javadoc}" />
 
-		<javadoc charset="${define.encoding}" docencoding="${define.encoding}" encoding="${define.encoding}"
-             destdir="${project.javadoc}" packagenames="${define.javadoc.package}.*">
-			<classpath refid="compilepath" />
-			<sourcepath>
-				<pathelement location="${src.dir}" />
-			</sourcepath>
-		</javadoc>
+    <javadoc charset="${define.encoding}" docencoding="${define.encoding}" encoding="${define.encoding}" destdir="${project.javadoc}" packagenames="${define.javadoc.package}.*">
+      <classpath refid="compilepath" />
+      <sourcepath>
+        <pathelement location="${src.dir}" />
+      </sourcepath>
+    </javadoc>
 
-		<zip casesensitive="true" zipfile="${project.release}/${define.javadocfilename}">
-			<fileset dir="${project.javadoc}">
-				<include name="**" />
-			</fileset>
-		</zip>
+    <zip casesensitive="true" zipfile="${project.release}/${define.javadocfilename}">
+      <fileset dir="${project.javadoc}">
+        <include name="**" />
+      </fileset>
+    </zip>
 
-	</target>
+  </target>
 
   <target name="sign" description="signs the jar/zip file" depends="jar">
     <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.zipfilename}" />
     <checksum format="MD5SUM" algorithm="SHA" file="${project.release}/${define.srcfilename}" />
-    
+
     <echo message="Creating PGP signatures" />
     <exec executable="gpg" failonerror="true" timeout="60000">
       <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
@@ -242,27 +230,27 @@
     <loadfile property="storepass" srcFile="${signjar.storepass}" />
     <java classname="de.willuhn.security.Signature" failonerror="true" dir="${project.release}" fork="true">
       <classpath refid="compilepath" />
-      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias &quot;${signjar.alias}&quot; -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1"/>
+      <arg line="sign -keystore ${signjar.keystore} -storepass ${storepass} -alias &quot;${signjar.alias}&quot; -keypass ${storepass} -file ${define.zipfilename} -sig ${define.zipfilename}.sha1" />
     </java>
   </target>
 
-	<target name="clean" description="cleanup">
-		<delete dir="${project.tmp}" />
-		<delete dir="${project.javadoc}" />
-		<delete dir="${project.zipdir}" />
-	</target>
+  <target name="clean" description="cleanup">
+    <delete dir="${project.tmp}" />
+    <delete dir="${project.javadoc}" />
+    <delete dir="${project.zipdir}" />
+  </target>
 
-	<target depends="init,compile,cvstag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
+  <target depends="init,compile,tag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
 
-	<target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
+  <target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
 
-	<target depends="init,cvs,compile,jar,javadoc,src" description="build nightly build" name="nightly">
-		<mkdir dir="${project.nightly}" />
+  <target depends="init,update,compile,jar,javadoc,src" description="build nightly build" name="nightly">
+    <mkdir dir="${project.nightly}" />
 
-		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
-		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
+    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
+    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
 
-		<delete dir="${project.release}" />
-	</target>
+    <delete dir="${project.release}" />
+  </target>
 
 </project>
