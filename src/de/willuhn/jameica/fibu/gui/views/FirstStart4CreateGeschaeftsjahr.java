@@ -61,12 +61,12 @@ public class FirstStart4CreateGeschaeftsjahr extends AbstractView
     }
       
     ButtonArea buttons = group.createButtonArea(1);
-    buttons.addButton(i18n.tr("Fertigstellen >>"),new Action() {
+    buttons.addButton(i18n.tr("Fertigstellen"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleForward();
       }
-    });
+    },null,true,"ok.png");
   }
 
 }

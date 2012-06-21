@@ -54,7 +54,7 @@ public class FirstStart2CreateFinanzamt extends AbstractView
       {
         control.handleForward();
       }
-    });
+    },null,true,"go-next.png");
 
   }
 

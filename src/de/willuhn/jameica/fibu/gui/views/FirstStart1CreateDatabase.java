@@ -53,12 +53,12 @@ public class FirstStart1CreateDatabase extends AbstractView
     group.addPart(control.getProgressMonitor());
 
     ButtonArea buttons = group.createButtonArea(1);
-    buttons.addButton(i18n.tr("Weiter >>"),new Action() {
+    buttons.addButton(i18n.tr("Weiter"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleForward();
       }
-    });
+    },null,true,"go-next.png");
   }
 
 }

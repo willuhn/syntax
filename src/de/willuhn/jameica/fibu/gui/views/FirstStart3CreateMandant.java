@@ -76,7 +76,7 @@ public class FirstStart3CreateMandant extends AbstractView
       {
         control.handleForward();
       }
-    });
+    },null,true,"go-next.png");
   }
 
 }
