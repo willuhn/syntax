@@ -28,6 +28,7 @@ import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -123,7 +124,7 @@ public class GeschaeftsjahrControl extends AbstractControl
     }
     catch (Exception e)
     {
-      Logger.error("unable to determine mandant",e);
+      Logger.write(Level.DEBUG,"currently no mandant available",e);
     }
     if (id != null)
       list.addFilter("mandant_id is null or mandant_id = " + id);
