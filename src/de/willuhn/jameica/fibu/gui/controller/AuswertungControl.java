@@ -26,6 +26,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
+import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.io.report.Report;
 import de.willuhn.jameica.fibu.io.report.ReportData;
 import de.willuhn.jameica.fibu.io.report.ReportRegistry;
@@ -317,6 +318,8 @@ public class AuswertungControl extends AbstractControl
       
       Date start = (Date) getStart().getValue();
       Date end   = (Date) getEnd().getValue();
+      if (start != null) start = CustomDateFormat.startOfDay(start);
+      if (end != null)   end =   CustomDateFormat.endOfDay(end);
       
       if (start != null && !jahr.check(start))
         throw new ApplicationException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(start)));
