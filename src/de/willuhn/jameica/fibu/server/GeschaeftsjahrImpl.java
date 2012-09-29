@@ -24,7 +24,6 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
@@ -35,6 +34,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -91,7 +91,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     }
 
     // Jetzt noch auf den Anfang des Tages setzen.
-    d = CustomDateFormat.startOfDay(d);
+    d = DateUtil.startOfDay(d);
     setBeginn(d);
     return d;
   }
@@ -122,7 +122,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     }
 
     // Jetzt noch auf das Ende des Tages setzen
-    d = CustomDateFormat.endOfDay(d);
+    d = DateUtil.endOfDay(d);
     setEnde(d);
     return d;
   }

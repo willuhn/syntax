@@ -22,7 +22,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -37,6 +36,7 @@ import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -131,8 +131,8 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     // Wir setzen noch die Uhrzeit auf das Ende des Tages, um sicherzustellen,
     // dass die Buchungen des Tages dabei sind
-    return getUmsatz(getHauptBuchungen(jahr,jahr.getBeginn(),CustomDateFormat.endOfDay(date)),
-                     getHilfsBuchungen(jahr,jahr.getBeginn(),CustomDateFormat.endOfDay(date)));
+    return getUmsatz(getHauptBuchungen(jahr,jahr.getBeginn(),DateUtil.endOfDay(date)),
+                     getHilfsBuchungen(jahr,jahr.getBeginn(),DateUtil.endOfDay(date)));
   }
 
   /**
@@ -453,11 +453,11 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     Date start = null;
     if (von != null)
-      start = CustomDateFormat.startOfDay(von);
+      start = DateUtil.startOfDay(von);
 
     Date end = null;
     if (bis != null)
-      end = CustomDateFormat.endOfDay(bis);
+      end = DateUtil.endOfDay(bis);
     
     DBService db = ((DBService)getService());
 
@@ -517,11 +517,11 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     Date start = null;
     if (von != null)
-      start = CustomDateFormat.startOfDay(von);
+      start = DateUtil.startOfDay(von);
 
     Date end = null;
     if (bis != null)
-      end = CustomDateFormat.endOfDay(bis);
+      end = DateUtil.endOfDay(bis);
 
     String sql = "select count(id) from buchung where geschaeftsjahr_id = ? and (sollkonto_id = ? or habenkonto_id = ?)";
 

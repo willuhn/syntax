@@ -21,7 +21,6 @@ import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
@@ -38,6 +37,7 @@ import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -370,7 +370,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     
     // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch
     // _vor_ dem Ende des Geschaeftsjahres liegt
-    Date end = CustomDateFormat.startOfDay(jahr.getEnde());
+    Date end = DateUtil.startOfDay(jahr.getEnde());
 
     AbschreibungsBuchung buchung = (AbschreibungsBuchung) Settings.getDBService().createObject(AbschreibungsBuchung.class,null);
     buchung.setDatum(end);

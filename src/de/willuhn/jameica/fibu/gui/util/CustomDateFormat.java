@@ -77,40 +77,6 @@ public class CustomDateFormat extends SimpleDateFormat
     return df.parse(source);
     
   }
-  
-  /**
-   * Liefert ein Datum zurueck, bei dem die Uhrzeit auf 23:59:59 gesetzt ist.
-   * @param date Datum.
-   * @return Datum mit korrigierter Uhrzeit.
-   */
-  public final static Date endOfDay(Date date)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.HOUR_OF_DAY,23);
-    cal.set(Calendar.MINUTE,59);
-    cal.set(Calendar.SECOND,59);
-    return cal.getTime();
-  }
-  
-  /**
-   * Liefert ein Datum zurueck, bei dem die Uhrzeit auf 00:00:00 gesetzt ist.
-   * @param date Datum.
-   * @return Datum mit korrigierter Uhrzeit.
-   */
-  public final static Date startOfDay(Date date)
-  {
-    // Uhrzeiten noch zurueckdrehen
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.HOUR_OF_DAY,0);
-    cal.set(Calendar.MINUTE,0);
-    cal.set(Calendar.SECOND,0);
-    cal.set(Calendar.MILLISECOND,0);
-
-    return cal.getTime();
-  }
-
 }
 
 

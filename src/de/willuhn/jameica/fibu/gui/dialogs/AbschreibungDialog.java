@@ -21,7 +21,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
-import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -38,6 +37,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.LabelGroup;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
+import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -133,7 +133,7 @@ public class AbschreibungDialog extends AbstractDialog
           {
             // Wir setzen das Datum an den Anfang des letzten Tages damit immer noch
             // _vor_ dem Ende des Geschaeftsjahres liegt
-            d = CustomDateFormat.startOfDay(jahr.getEnde());
+            d = DateUtil.startOfDay(jahr.getEnde());
           }
           
           buchung.setDatum(d);
