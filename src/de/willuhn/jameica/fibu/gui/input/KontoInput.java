@@ -29,6 +29,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.ButtonInput;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -40,11 +41,13 @@ import de.willuhn.util.I18N;
  */
 public class KontoInput extends ButtonInput
 {
-  private I18N i18n   = null;
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   private DBIterator konten = null;
   private Konto konto       = null;
   private Text text         = null;
+  
+  private String lastValue  = null;
   
   private boolean inProgress = false;
 
@@ -64,7 +67,6 @@ public class KontoInput extends ButtonInput
    */
   public KontoInput(DBIterator list, Konto konto)
   {
-    this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.konten = list;
     this.konto = konto;
     setComment("");
@@ -100,31 +102,7 @@ public class KontoInput extends ButtonInput
     {
       public void handleEvent(Event event)
       {
-        if (inProgress || text == null || text.isDisposed())
-          return; // Damit der Listener nicht doppelt ausgeloest wird, wenn's ueber den Button kommt
-
-        String s = text.getText();
-        if (s == null || s.length() == 0)
-        {
-          setValue(null);
-          return;
-        }
-        
-        try
-        {
-          DBIterator dbi = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-          dbi.addFilter("kontonummer = ?", s);
-          if (!dbi.hasNext())
-          {
-            GUI.getView().setErrorText(i18n.tr("Das Konto {0} wurde nicht gefunden",s));
-            return;
-          }
-          setValue((Konto) dbi.next());
-        }
-        catch (RemoteException e)
-        {
-          Logger.error("unable to load konto",e);
-        }
+        setValue(getKonto());
       }
     });
   }
@@ -147,7 +125,7 @@ public class KontoInput extends ButtonInput
    */
   public Object getValue()
   {
-    return konto;
+    return this.konto;
   }
 
   /**
@@ -170,30 +148,49 @@ public class KontoInput extends ButtonInput
       }
     }
   }
+  
+  /**
+   * Laedt das zur eingegebenen Kontonummer gehoerende Konto.
+   * @return das Konto oder NULL, wenn keine Kontonummer eingegeben wurde.
+   */
+  public Konto getKonto()
+  {
+    if (this.inProgress || this.text == null || this.text.isDisposed())
+      return this.konto;
+    
+    String s = text.getText();
+    if (s == null || s.trim().length() == 0)
+    {
+      this.lastValue = null;
+      return null;
+    }
+    
+    // Hat sich seit dem letzten Mal was geaendert?
+    if (this.lastValue != null && this.lastValue.equals(s))
+      return this.konto; // hat sich nichts geaendert
+    
+    this.lastValue = s;
+    
+    try
+    {
+      DBIterator dbi = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
+      dbi.addFilter("kontonummer = ?", s);
+      if (!dbi.hasNext())
+      {
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Das Konto {0} wurde nicht gefunden",s),StatusBarMessage.TYPE_ERROR));
+        return null;
+      }
+      
+      return (Konto) dbi.next();
+    }
+    catch (RemoteException e)
+    {
+      Logger.error("unable to load konto",e);
+    }
+    
+    Logger.warn("no konto selected");
+    return null;
+  }
 
 }
 
-
-/*********************************************************************
- * $Log: KontoInput.java,v $
- * Revision 1.5  2011/08/08 10:44:36  willuhn
- * @C compiler warnings
- *
- * Revision 1.4  2010-06-01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.3  2007/01/04 12:58:50  willuhn
- * @B wrong type for kontonummer
- *
- * Revision 1.2  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.1  2005/10/06 17:27:59  willuhn
- * @N KontoInput
- * @N Einstellungen
- *
- *********************************************************************/

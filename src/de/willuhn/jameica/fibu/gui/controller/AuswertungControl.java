@@ -327,14 +327,42 @@ public class AuswertungControl extends AbstractControl
       if (end != null && !jahr.check(end))
         throw new ApplicationException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(end)));
       
+      // wir machen hier nicht "getValue()" sondern "getKonto()" damit wir auch
+      // dann einen aktuellen Wert haben, wenn der User direkt aus dem Eingabefeld
+      // heraus ENTER drueckt - dann wird das "handleExecute()" naemlich ausgeloest,
+      // *bevor* der Listener in KontoInput sein Value aktualisieren konnte. 
+      Konto ks = getStartKonto().getKonto();
+      Konto ke = getEndKonto().getKonto();
+      
+      if (ks != null && ke != null)
+      {
+        // Checken, dass das End-Konto groesser als das Start-Konto ist
+        try
+        {
+          int from = Integer.parseInt(ks.getKontonummer());
+          int to   = Integer.parseInt(ke.getKontonummer());
+          if (to < from)
+            throw new ApplicationException(i18n.tr("\"von\"- und \"bis\"-Konto vertauscht?"));
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception ex)
+        {
+          Logger.error("invalid account number",ex);
+        }
+      }
+      
+
       getStartButton().setEnabled(false);
       
       final ReportData data = e.createPreset();
       data.setGeschaeftsjahr(jahr);
       data.setStartDatum(start);
       data.setEndDatum(end);
-      data.setStartKonto((Konto)getStartKonto().getValue());
-      data.setEndKonto((Konto)getEndKonto().getValue());
+      data.setStartKonto(ks);
+      data.setEndKonto(ke);
 
       String dir = settings.getString("lastdir",System.getProperty("user.home"));
       FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);
