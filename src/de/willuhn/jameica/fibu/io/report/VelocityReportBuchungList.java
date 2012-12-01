@@ -62,33 +62,28 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
     while (list.hasNext())
     {
       Buchung b = (Buchung) list.next();
-      if (startKonto != null || endKonto != null)
+
+      // Keine Begrenzung angegeben
+      if (startKonto == null && endKonto == null)
       {
-        // Wir haben einen Filter angegeben
-
-        int kh = parseKontonummer(b.getHabenKonto());
-        int ks = parseKontonummer(b.getSollKonto());
-
-        // Ein alphanumerischen compareTo-Vergleich mit Strings koennen wir nicht machen, weil wir uns nicht darauf
-        // verlassen koennen, dass kurze Kontonummern vorn mit Nullen aufgefuellt sind.
-
-        // Die Kontonummer von mindestens einem der beiden Konten (Haben oder Soll) muss mindestens so gross wie die von startKonto sein
-        if (startKonto != null)
-        {
-          int min = parseKontonummer(startKonto);
-          if (kh < min && ks < min)
-            continue;
-        }
-
-        // Die Kontonummer von mindestens einem der beiden Konten (Haben oder Soll) darf maximal so gross wie die von endKonto sein
-        if (endKonto != null)
-        {
-          int max = parseKontonummer(endKonto);
-          if (kh > max && ks > max)
-            continue;
-        }
+        buchungen.add(b);
+        continue;
       }
-      buchungen.add(b);
+      
+      // Wir haben einen Filter angegeben
+
+      int kh = parseKontonummer(b.getHabenKonto());
+      int ks = parseKontonummer(b.getSollKonto());
+
+      // Ein alphanumerischen compareTo-Vergleich mit Strings koennen wir nicht machen, weil wir uns nicht darauf
+      // verlassen koennen, dass kurze Kontonummern vorn mit Nullen aufgefuellt sind.
+
+      // BUGZILLA 1285
+      int lower = startKonto != null ? parseKontonummer(startKonto) : Integer.MIN_VALUE; 
+      int upper = endKonto   != null ? parseKontonummer(endKonto)   : Integer.MAX_VALUE;
+
+      if (inRange(lower,upper,ks) || inRange(lower,upper,kh))
+        buchungen.add(b);
     }
     
     VelocityReportData export = new VelocityReportData();
@@ -97,6 +92,18 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
     export.setTemplate("buchungsjournal.vm");
 
     return export;
+  }
+  
+  /**
+   * Prueft, ob sich die angegebene Zahl innerhalb des Bereichs befindet.
+   * @param lower untere Schranke.
+   * @param upper obere Schranke.
+   * @param i zu pruefende Zahl.
+   * @return true, wenn die Zahl innerhalb des Bereichs liegt.
+   */
+  private boolean inRange(int lower, int upper, int i)
+  {
+    return i >= lower && i <= upper;
   }
   
   /**
