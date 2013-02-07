@@ -1,5 +1,7 @@
 TRUNK
 
+  * NEW: Patch von Gerd fuer die Berücksichtigung des Anschaffungsmonats in
+         der Restnutzungsdauer. Siehe seine Mail vom 07.02.2013
   * BUG: BUGZILLA 1285 - Eingrenzung auf ein Konto in Auswertung
   * NEW: BUGZILLA 1242 - Die Auswertungen verwenden jetzt nicht mehr das
          Plattform-Encoding sondern fest ISO-8859-15

@@ -113,7 +113,7 @@ public interface Anlagevermoegen extends DBObject
   /**
    * Ermittelt die Rest-Nutzungsdauer ausgehend vom angegebenen Jahr.
    * @param jahr das Jahr (wird mitgerechnet).
-   * @return die Rest-Nutzungsdauer in Jahren.
+   * @return die Rest-Nutzungsdauer in Monaten.
    * @throws RemoteException
    */
   public int getRestNutzungsdauer(Geschaeftsjahr jahr) throws RemoteException;
