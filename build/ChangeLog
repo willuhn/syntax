@@ -1,5 +1,6 @@
 TRUNK
 
+  * BUG: KZ 91 war doppelt in ustva.vm
   * NEW: Patch von Gerd fuer die Berücksichtigung des Anschaffungsmonats in
          der Restnutzungsdauer. Siehe seine Mail vom 07.02.2013
   * BUG: BUGZILLA 1285 - Eingrenzung auf ein Konto in Auswertung

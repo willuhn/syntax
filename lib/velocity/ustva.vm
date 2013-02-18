@@ -83,7 +83,6 @@ $math.reset("vst")
   <tr>
     <td colspan="5"><h3>Steuerpflichtige innergemeinschaftliche Erwerbe</h3></td>
   </tr>
-  #line("91","zum Steuersatz von 19%",true,false)
   #line("89","zum Steuersatz von 19%",true,"&nbsp;")
   #line("93","zum Steuersatz von 7%",true,"&nbsp;")
   #line("95","zu anderen Steuers&auml;tzen",true,"98")
