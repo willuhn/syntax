@@ -102,17 +102,20 @@ public class DatevExporter implements Exporter
         if (name != null && monitor != null)
           monitor.log(i18n.tr("Exportiere {0}",name.toString()));
         
-        Buchung b = (Buchung)objects[i];
+        BaseBuchung b = (BaseBuchung)objects[i];
         writer.write(serialize(b));
-        
-        // Jetzt noch die zugehoerigen Hilfs-Buchungen
-        DBIterator list = b.getHilfsBuchungen();
-        while (list.hasNext())
+
+        // Wenn es eine Hauptbuchung ist, dann auch noch die zugehoerigen Hilfebuchungen exportieren
+        if (b instanceof Buchung)
         {
-          BaseBuchung bb = (BaseBuchung) list.next();
-          writer.write(serialize(bb));
+          // Jetzt noch die zugehoerigen Hilfs-Buchungen
+          DBIterator list = ((Buchung)b).getHilfsBuchungen();
+          while (list.hasNext())
+          {
+            BaseBuchung bb = (BaseBuchung) list.next();
+            writer.write(serialize(bb));
+          }
         }
-        
       }
     }
     catch (IOException e)
@@ -192,7 +195,7 @@ public class DatevExporter implements Exporter
     if (objectType == null)
       return null;
     
-    if (!Buchung.class.equals(objectType))
+    if (!(BaseBuchung.class.isAssignableFrom(objectType)))
       return null;
 
     return new IOFormat[]{new IOFormat() {

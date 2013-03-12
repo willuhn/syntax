@@ -14,6 +14,7 @@ package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.dialogs.ExportDialog;
+import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -42,23 +43,23 @@ public class BuchungExport implements Action
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie mindestens eine Buchung aus"));
 
 		if (!(context instanceof Buchung) &&
-        !(Buchung[].class.isAssignableFrom(context.getClass())))
+        !(BaseBuchung[].class.isAssignableFrom(context.getClass())))
 			throw new ApplicationException(i18n.tr("Bitte wählen Sie einen oder mehrere Buchungen aus"));
 
     Object[] u = null;
 		try {
 
-			if (context instanceof Buchung)
+			if (context instanceof BaseBuchung)
 			{
-				u = new Buchung[1];
-        u[0] = (Buchung) context;
+				u = new BaseBuchung[1];
+        u[0] = (BaseBuchung) context;
 			}
       else
       {
         u = (Object[])context;
       }
 
-      ExportDialog d = new ExportDialog(u, Buchung.class);
+      ExportDialog d = new ExportDialog(u, BaseBuchung.class);
       d.open();
 		}
     catch (OperationCanceledException oce)
