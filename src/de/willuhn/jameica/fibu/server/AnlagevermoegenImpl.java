@@ -170,7 +170,14 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     int ende = cal.get(Calendar.YEAR); // Das Jahr der letzten planmaessigen Abschreibung
     
     cal.setTime(now);
-    int rest = ((ende - cal.get(Calendar.YEAR)) * 12) + month; // Offset des Anschaffungsmonats noch dazu rechnen
+    int rest = ((ende - cal.get(Calendar.YEAR)) * 12);
+    
+    // BUGZILLA 1369 - Offset des Anschaffungsmonats nur in den Folgejahren dazu rechnen
+    if(!jahr.check(start))
+    {
+      rest += month;
+    }
+    
     return rest > 0 ? rest : 0;
   }
 

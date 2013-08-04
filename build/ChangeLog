@@ -1,5 +1,6 @@
 TRUNK
   
+  * BUG: BUGZILLA 1369 - Offset des Anschaffungsmonats nur in den Folgejahren dazu rechnen
   * NEW: Export von Hilfsbuchungen (ohne zugehoerige Hauptbuchungen) zulassen
   * BUG: KZ 91 war doppelt in ustva.vm
   * NEW: Patch von Gerd fuer die Berücksichtigung des Anschaffungsmonats in
