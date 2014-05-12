@@ -11,6 +11,7 @@ $math.reset("brutto")
     <th>Datum</th>
     <th style="text-align:right">Beleg</th>
     <th>Konto</th>
+    <th>Geprüft?</th>
     <th>Buchungstext</th>
     <th style="text-align:right">Netto</th>
     <th style="text-align:right">Steuer</th>
@@ -26,10 +27,11 @@ $math.reset("brutto")
       <td>$!{dateformat.format(${jahr.Beginn})}</td>
       <td style="text-align:right">&nbsp;</td>
       <td>$!{konto.Kontonummer}</td>
+      <td>&nbsp;</td>
       <td style="width:70%">Anfangsbestands-Buchung</td>
-      <td style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
       <td style="text-align:right">&nbsp;</td>
-      <td style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
       <td>&nbsp;</td>
   
       $math.add("netto",${betrag})
@@ -48,10 +50,11 @@ $math.reset("brutto")
       <td>$!{dateformat.format(${buchung.Datum})}</td>
       <td style="text-align:right">$!{buchung.Belegnummer}</td>
       <td>$!{konto.Kontonummer}</td>
+      <td>#if ($buchung.isGeprueft())Ja#end</td>
       <td style="width:70%">$!{buchung.Text}</td>
-      <td style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-      <td style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
-      <td style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
       <td>$!{gegen.Kontonummer}</td>
   
       $math.add("netto",${netto})
@@ -61,20 +64,21 @@ $math.reset("brutto")
   #end
 
 	<tr>
-    <td colspan="8" style="border-top:1px solid #000000;">&nbsp;</td>
+    <td colspan="9" style="border-top:1px solid #000000;">&nbsp;</td>
   </tr>
 
   <tr>
     <th colspan="3" style="white-space:nowrap;">Buchungen gesamt: ${count}</th>
+    <th>&nbsp;</th>
     <th>Summen:</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))} ${eur}</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))} ${eur}</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("brutto"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("brutto"))} ${eur}</th>
     <th>&nbsp;</th>
   </tr>
 
  	<tr>
-    <td colspan="8" style="border-top:2px solid #000000;">&nbsp;</td>
+    <td colspan="9" style="border-top:2px solid #000000;">&nbsp;</td>
   </tr>
 
 </table>

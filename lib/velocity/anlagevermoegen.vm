@@ -29,12 +29,12 @@ $math.reset("restwert")
 
     <tr>
       <td>$!{av.Name}</td>
-      <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
-      <td style="text-align:right">$!{decimalformat.format(${anschaffungskosten})} ${eur}</td>
+      <td class="nowrap">$!{dateformat.format(${av.Anschaffungsdatum})}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${anschaffungskosten})} ${eur}</td>
       <td style="text-align:right">$!{av.Nutzungsdauer}</td>
-      <td style="text-align:right">$!{decimalformat.format(${anfangsbestand})} ${eur}</td>
-      <td style="text-align:right">$!{decimalformat.format(${jahresabschreibung})} ${eur}</td>
-      <td style="text-align:right">$!{decimalformat.format(${restwert})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${anfangsbestand})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${jahresabschreibung})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${restwert})} ${eur}</td>
     </tr>
   #end
 
@@ -44,11 +44,11 @@ $math.reset("restwert")
 
   <tr>
     <th colspan="2">Summen:</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anschaffungskosten"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anschaffungskosten"))} ${eur}</th>
     <th>&nbsp;</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anfangsbestand"))} ${eur}</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("jahresabschreibung"))} ${eur}</th>
-    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("restwert"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("anfangsbestand"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("jahresabschreibung"))} ${eur}</th>
+    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("restwert"))} ${eur}</th>
   </tr>
 
  	<tr>

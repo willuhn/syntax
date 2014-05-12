@@ -15,13 +15,13 @@
       <td>$!{konto.Name}</td>
       #if($konto.getAnfangsbestand(${jahr}))
         #set($ab = $konto.getAnfangsbestand(${jahr}))
-        <td style="text-align:right">$!{decimalformat.format(${ab.Betrag})} ${eur}</td>
+        <td class="nowrap" style="text-align:right">$!{decimalformat.format(${ab.Betrag})} ${eur}</td>
       #else
         <td>&nbsp;</td>
       #end
        
-      <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format(${konto.getUmsatz(${jahr})})} ${eur}</td>
-      <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format(${konto.getSaldo(${jahr})})} ${eur}</td>
+      <td class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format(${konto.getUmsatz(${jahr})})} ${eur}</td>
+      <td class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format(${konto.getSaldo(${jahr})})} ${eur}</td>
     </tr>
 	#end
 	<tr>

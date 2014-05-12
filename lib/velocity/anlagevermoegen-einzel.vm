@@ -14,10 +14,10 @@
 
     <tr>
       <td>Anschaffungsdatum</td>
-      <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
+      <td class="nowrap">$!{dateformat.format(${av.Anschaffungsdatum})}</td>
 
       <td>Anschaffungskosten</td>
-      <td style="text-align:right">$!{decimalformat.format(${av.Anschaffungskosten})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${av.Anschaffungskosten})} ${eur}</td>
     </tr>
     
     <tr>
@@ -25,7 +25,7 @@
       <td>linear</td>
 
       <td>Erinnerungswert</td>
-      <td style="text-align:right">0,00 ${eur}</td>
+      <td class="nowrap" style="text-align:right">0,00 ${eur}</td>
     </tr>
 
 	<tr>
@@ -33,7 +33,7 @@
       <td>$!{av.Nutzungsdauer}</td>
 
       <td>Restwert</td>
-      <td style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</td>
+      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})} ${eur}</td>
     </tr>
     
 	<tr>

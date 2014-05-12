@@ -13,10 +13,10 @@ $math.reset("vst")
       #if($bemessung)
         $math.add("ust",$pos.steuer)
         <td style="text-align:center">$nr</td>
-        <td style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
+        <td class="nowrap" style="text-align:right">$!{decimalformat.format($pos.bemessung)} ${eur}</td>
         #if($steuer)
           <td style="text-align:center">$steuer</td>
-          <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+          <td class="nowrap" style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
         #else
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -27,7 +27,7 @@ $math.reset("vst")
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td style="text-align:center">$nr</td>
-        <td style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
+        <td class="nowrap" style="text-align:right">$!{decimalformat.format($pos.steuer)} ${eur}</td>
       #end
     </tr>
   #end
@@ -89,7 +89,7 @@ $math.reset("vst")
 
   <tr>
     <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
-    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
+    <td class="nowrap" style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
   </tr>
 
 
@@ -106,8 +106,8 @@ $math.reset("vst")
   #line("63","Vorsteuerbetr&auml;ge, die nach allgemeinen Durchschnittss&auml;tzen berechnet sind",false,true)
 
   <tr>
-    <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
-    <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("vst"))} ${eur}</td>
+    <td class="nowrap" colspan="4" style="border-top:1px solid #000000">Summe:</td>
+    <td class="nowrap" style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("vst"))} ${eur}</td>
   </tr>
 
 
@@ -118,8 +118,8 @@ $math.reset("vst")
     <td colspan="5"><h2>3. Verbleibende Umsatzsteuer-Vorauszahlung</h2></td>
   </tr>
   <tr>
-    <td colspan="3" style="font-weight:bold;border-bottom:1px solid #000000;">Verbleibender &Uuml;berschuss</td>
-    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:center">83</td>
-    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
+    <td class="nowrap" colspan="3" style="font-weight:bold;border-bottom:1px solid #000000;">Verbleibender &Uuml;berschuss</td>
+    <td class="nowrap" style="font-weight:bold;border-bottom:1px solid #000000;text-align:center">83</td>
+    <td class="nowrap" style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ust"))} ${eur}</td>
   </tr>
 </table>

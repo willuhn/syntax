@@ -41,9 +41,12 @@
       font-weight              : bold;
       border-bottom            : 1px solid #000000;
     }
-    table.data td {
+    table.data td.nowrap {
       font-size                : 9pt;
       white-space              : nowrap;
+    }
+    table.data td {
+      font-size                : 9pt;
     }
 
     ol,ul {
