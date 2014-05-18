@@ -128,6 +128,7 @@ public class UmsatzListMenu implements Extension
     buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
     buchung.setHibiscusUmsatzID(u.getID());
     buchung.setBelegnummer(buchung.getBelegnummer()); // Das erzeugt eine neue Belegnummer
+    buchung.setKommentar(u.getKommentar());
     
     // Wir nehmen erstmal die Daten der Vorlage.
     if (template != null)
