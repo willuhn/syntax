@@ -294,7 +294,7 @@ public class UmsatzListMenu implements Extension
         if (monitor != null)
           monitor.setStatusText(i18n.tr("Buche {0} Umsätze",""+list.length));
 
-        double factor = 100d / (double) list.length;
+        double factor = 100d / list.length;
         
         int created = 0;
         int error   = 0;

@@ -83,7 +83,7 @@ public class AnlagevermoegenList extends TablePart
           Anlagevermoegen a = (Anlagevermoegen) item.getData();
           if (a == null)
             return;
-          item.setForeground(a.getStatus() == Anlagevermoegen.STATUS_BESTAND ? Color.WIDGET_FG.getSWTColor() : Color.COMMENT.getSWTColor());
+          item.setForeground(a.getStatus() == Anlagevermoegen.STATUS_BESTAND ? Color.FOREGROUND.getSWTColor() : Color.COMMENT.getSWTColor());
         }
         catch (Exception e)
         {

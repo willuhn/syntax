@@ -1,5 +1,6 @@
 TRUNK
-  
+
+  * NEW: Neues Feld "Notiz" in Buchungen
   * NEW: Neue Spalte "Geprüft" in Buchungsjournal
   * NEW: Textumbruch in Auswertungen zulassen
   * BUG: BUGZILLA 1369 - Offset des Anschaffungsmonats nur in den Folgejahren dazu rechnen
@@ -35,4 +36,3 @@ TRUNK
   * BUG: Bugfixes bei Prüfung von Pflichtfeldern
   * BUG: In der UST-Voranmeldung wurden Storno-Buchungen auf Erlös-Konten nicht
          korrekt verrechnet
-  

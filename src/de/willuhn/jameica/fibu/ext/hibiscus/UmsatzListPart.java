@@ -59,7 +59,7 @@ public class UmsatzListPart implements Extension
         if (o == null || !(o instanceof Integer))
           return null;
 
-        Buchung b = (Buchung) getCache().get(o.toString());
+        Buchung b = getCache().get(o.toString());
         if (b == null)
           return null;
         try

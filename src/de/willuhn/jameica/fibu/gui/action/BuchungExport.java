@@ -52,7 +52,7 @@ public class BuchungExport implements Action
 			if (context instanceof BaseBuchung)
 			{
 				u = new BaseBuchung[1];
-        u[0] = (BaseBuchung) context;
+        u[0] = context;
 			}
       else
       {

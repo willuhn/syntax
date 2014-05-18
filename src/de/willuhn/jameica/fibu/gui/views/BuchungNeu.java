@@ -49,16 +49,17 @@ public class BuchungNeu extends AbstractView
     
     // Gruppe Konto erzeugen
     SimpleContainer group = new SimpleContainer(getParent());
-    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Vorlage"),         control.getBuchungstemplate());
-    group.addSeparator();
+    
+    group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Datum"),           control.getDatum());
+    group.addLabelPair(i18n.tr("Text"),            control.getText());
     group.addLabelPair(i18n.tr("Soll-Konto"),      control.getSollKontoAuswahl());
     group.addLabelPair(i18n.tr("Haben-Konto"),     control.getHabenKontoAuswahl());
-    group.addLabelPair(i18n.tr("Text"),            control.getText());
     group.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
     group.addLabelPair(i18n.tr("Brutto-Betrag"),   control.getBetrag());
     group.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
+    group.addLabelPair(i18n.tr("Notiz"),           control.getKommentar());
     
     Buchung b = control.getBuchung();
     Anlagevermoegen av = b.getAnlagevermoegen();

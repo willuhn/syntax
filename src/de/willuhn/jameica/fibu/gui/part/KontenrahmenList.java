@@ -72,7 +72,7 @@ public class KontenrahmenList extends TablePart
         try
         {
           Kontenrahmen kr = (Kontenrahmen) data;
-          Color c = kr.getMandant() == null ? Color.ERROR : Color.WIDGET_FG;
+          Color c = kr.getMandant() == null ? Color.ERROR : Color.FOREGROUND;
           item.setForeground(c.getSWTColor());
         }
         catch (Exception e)

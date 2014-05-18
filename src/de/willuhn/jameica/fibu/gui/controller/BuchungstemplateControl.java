@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungstemplateControl.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/05/12 09:10:32 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -356,38 +350,3 @@ public class BuchungstemplateControl extends AbstractControl
     }
   }
 }
-
-/*********************************************************************
- * $Log: BuchungstemplateControl.java,v $
- * Revision 1.8  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.7  2010-06-03 17:07:14  willuhn
- * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
- *
- * Revision 1.6  2010/06/03 14:26:16  willuhn
- * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
- * @C Code-Cleanup
- *
- * Revision 1.5  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.4  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.2  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.1  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- **********************************************************************/

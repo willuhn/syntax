@@ -80,7 +80,7 @@ public class KontoInput extends ButtonInput
         try
         {
           inProgress = true;
-          setValue((Konto) d.open());
+          setValue(d.open());
         }
         catch (OperationCanceledException oce)
         {

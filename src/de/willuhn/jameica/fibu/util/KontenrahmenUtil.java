@@ -117,7 +117,7 @@ public class KontenrahmenUtil
         k.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
 
         // ggf. vorhandener Steuersatz
-        Steuer st = (Steuer) kt.getSteuer();
+        Steuer st = kt.getSteuer();
         if (st != null)
         {
           // checken, ob wir den Steuersatz schon angelegt haben

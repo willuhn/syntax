@@ -70,7 +70,7 @@ public class MandantList extends TablePart
           if (active.equals(m))
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
-            item.setForeground(Color.WIDGET_FG.getSWTColor());
+            item.setForeground(Color.FOREGROUND.getSWTColor());
         }
         catch (Exception e)
         {

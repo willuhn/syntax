@@ -72,6 +72,7 @@ CREATE TABLE buchung (
   buchung_id int(10),
   geprueft int(1) NULL,
   hb_umsatz_id varchar(7),
+  kommentar varchar(1000),
   UNIQUE (id),
   PRIMARY KEY (id)
 );

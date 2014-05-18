@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS buchung (
   buchung_id int(10),
   geprueft int(1) NULL,
   hb_umsatz_id varchar(7),
+  kommentar text NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 ) ENGINE = InnoDB;

@@ -152,7 +152,7 @@ public class BuchungList extends TablePart implements Extendable
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
-            item.setForeground(Color.WIDGET_FG.getSWTColor());
+            item.setForeground(Color.FOREGROUND.getSWTColor());
         }
         catch (Exception e)
         {

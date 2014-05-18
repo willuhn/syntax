@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/BuchungControl.java,v $
- * $Revision: 1.77 $
- * $Date: 2011/05/12 09:10:32 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -68,6 +62,7 @@ public class BuchungControl extends AbstractControl
 	// Eingabe-Felder
   private Input template         = null;
 	private Input	text					   = null;
+	private Input kommentar        = null;
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 
@@ -290,6 +285,21 @@ public class BuchungControl extends AbstractControl
 	}
 
   /**
+   * Liefert das Eingabe-Feld fuer den Kommentar.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getKommentar() throws RemoteException
+  {
+    if (kommentar != null)
+      return kommentar;
+    
+    kommentar = new TextInput(getBuchung().getKommentar(),1000);
+    kommentar.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
+    return kommentar;
+  }
+
+  /**
    * Liefert eine Checkbox, mit der ausgewaehlt werden kann, ob zu der Buchung
    * gleich ein Datensatz im Anlagevermoegen angelegt werden soll.
    * @return Checkbox.
@@ -489,6 +499,7 @@ public class BuchungControl extends AbstractControl
       getBuchung().setSollKonto((Konto) getSollKontoAuswahl().getValue());
       getBuchung().setHabenKonto((Konto) getHabenKontoAuswahl().getValue());
       getBuchung().setText((String)getText().getValue());
+      getBuchung().setKommentar((String)getKommentar().getValue());
       
       // und jetzt speichern wir.
 			getBuchung().store();
@@ -661,259 +672,3 @@ public class BuchungControl extends AbstractControl
   }
 }
 
-/*********************************************************************
- * $Log: BuchungControl.java,v $
- * Revision 1.77  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.76  2011-02-11 10:46:11  willuhn
- * @B BUGZILLA 990
- *
- * Revision 1.75  2010-10-22 11:47:30  willuhn
- * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
- *
- * Revision 1.74  2010-10-13 21:55:31  willuhn
- * @N Text und Betrag nur dann mit den Werten aus der Vorlage ueberschreiben, wenn nicht schon was drin steht
- *
- * Revision 1.73  2010-06-04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.72  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.71  2010/02/08 15:39:48  willuhn
- * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
- * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
- * @N Anzeige von Pflichtfeldern
- *
- * Revision 1.70  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.69.2.2  2008/10/06 10:38:36  willuhn
- * @C Bei Konten ohne Steuer Netto=Brutto anzeigen
- *
- * Revision 1.69.2.1  2008/07/03 10:37:08  willuhn
- * @N Effektivere Erzeugung neuer Buchungsnummern
- * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
- *
- * Revision 1.69  2006/10/10 22:30:07  willuhn
- * @C DialogInput gegen DateInput ersetzt
- *
- * Revision 1.68  2006/10/09 23:48:41  willuhn
- * @B bug 140
- *
- * Revision 1.67  2006/07/17 21:58:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.66  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.65  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.64  2006/01/04 17:05:32  willuhn
- * @B bug 170
- *
- * Revision 1.63  2006/01/03 23:58:35  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.62  2006/01/02 16:09:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.61  2006/01/02 15:51:12  willuhn
- * @B NPE
- *
- * Revision 1.60  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.59  2005/10/13 15:44:33  willuhn
- * @B bug 139
- *
- * Revision 1.58  2005/10/06 22:27:16  willuhn
- * @N KontoInput
- *
- * Revision 1.57  2005/10/06 17:27:59  willuhn
- * @N KontoInput
- * @N Einstellungen
- *
- * Revision 1.56  2005/10/05 17:52:33  willuhn
- * @N steuer behaviour
- *
- * Revision 1.55  2005/10/04 23:36:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.54  2005/10/03 14:22:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.53  2005/09/30 17:12:06  willuhn
- * @B bug 122
- *
- * Revision 1.52  2005/09/26 23:52:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.51  2005/09/25 22:18:22  willuhn
- * @B bug 122
- *
- * Revision 1.50  2005/09/24 13:00:13  willuhn
- * @B bugfixes according to bugzilla
- *
- * Revision 1.49  2005/09/05 13:47:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.48  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- * Revision 1.47  2005/09/02 13:27:35  willuhn
- * @C transaction behavior
- *
- * Revision 1.46  2005/09/02 11:26:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.45  2005/09/02 11:26:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.44  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.43  2005/09/01 21:18:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.42  2005/08/29 22:52:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.41  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.40  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.39  2005/08/29 15:20:51  willuhn
- * @B bugfixing
- *
- * Revision 1.38  2005/08/29 14:54:28  willuhn
- * @B bugfixing
- *
- * Revision 1.37  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.36  2005/08/29 00:20:29  willuhn
- * @N anlagevermoegen
- *
- * Revision 1.35  2005/08/25 21:58:57  willuhn
- * @N SKR04
- *
- * Revision 1.34  2005/08/22 23:13:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.33  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.32  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.31  2005/08/22 13:31:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.30  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.29  2005/08/15 23:38:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.28  2005/08/15 13:18:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.27  2005/08/12 16:43:08  willuhn
- * @B DecimalInput
- *
- * Revision 1.26  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.25  2005/08/10 17:48:03  willuhn
- * @C refactoring
- *
- * Revision 1.24  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.23  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.22  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.21  2004/02/26 18:46:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2004/02/25 23:11:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/02/24 22:48:08  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/01/29 01:11:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/01/29 00:06:46  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/01/27 21:38:06  willuhn
- * @C refactoring finished
- *
- * Revision 1.15  2004/01/27 00:09:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.13  2003/12/16 02:27:32  willuhn
- * @N BuchungsEngine
- *
- * Revision 1.12  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2003/12/12 01:28:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2003/12/11 21:00:35  willuhn
- * @C refactoring
- *
- * Revision 1.9  2003/12/05 17:11:58  willuhn
- * @N added GeldKonto, Kontoart
- *
- * Revision 1.8  2003/12/01 21:23:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.5  2003/11/25 01:23:19  willuhn
- * @N added Menu shortcuts
- *
- * Revision 1.4  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
- * Revision 1.3  2003/11/24 17:27:53  willuhn
- * @N Context menu in table
- *
- * Revision 1.2  2003/11/24 14:21:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/11/22 20:43:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/11/21 02:10:57  willuhn
- * @N buchung dialog works now
- *
- **********************************************************************/

@@ -293,7 +293,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     double anschaffung = av.getAnschaffungskosten();
     double restwert    = av.getRestwert(jahr);
 //     double betrag      = anschaffung / (double) av.getNutzungsdauer();
-    double betrag      = restwert / ((double) av.getRestNutzungsdauer(jahr) / 12d); // BUGZILLA 958
+    double betrag      = restwert / (av.getRestNutzungsdauer(jahr) / 12d); // BUGZILLA 958
     boolean gwg        = false;
 
     if (restwert < 0.01d)

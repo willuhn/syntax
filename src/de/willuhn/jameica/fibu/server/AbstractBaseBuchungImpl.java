@@ -236,181 +236,20 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
     SaldenCache.remove(getSollKonto().getKontonummer());
     SaldenCache.remove(getHabenKonto().getKontonummer());
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#getKommentar()
+   */
+  public String getKommentar() throws RemoteException
+  {
+    return (String) this.getAttribute("kommentar");
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setKommentar(java.lang.String)
+   */
+  public void setKommentar(String kommentar) throws RemoteException
+  {
+    this.setAttribute("kommentar",kommentar);
+  }
 }
-
-/*********************************************************************
- * $Log: AbstractBaseBuchungImpl.java,v $
- * Revision 1.28  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.27  2010-08-30 16:41:01  willuhn
- * @N Klartextbezeichnung bei Import/Export
- *
- * Revision 1.26  2010/06/04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.25  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.23.2.1  2008/07/03 10:37:08  willuhn
- * @N Effektivere Erzeugung neuer Buchungsnummern
- * @B Nach Wechsel des Geschaeftsjahres nicht Dialog "Geschaeftsjahr bearbeiten" oeffnen
- *
- * Revision 1.23  2006/01/09 01:52:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.21  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.20  2005/10/06 22:50:32  willuhn
- * @N auswertungen
- *
- * Revision 1.19  2005/10/06 14:48:40  willuhn
- * @N Sonderregelung fuer Abschreibunsgbuchungen
- *
- * Revision 1.18  2005/10/06 14:32:22  willuhn
- * @B check auf abschreibung in insertCheck
- *
- * Revision 1.17  2005/10/06 13:19:22  willuhn
- * @B bug 133
- *
- * Revision 1.16  2005/10/04 23:36:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2005/09/30 17:12:06  willuhn
- * @B bug 122
- *
- * Revision 1.14  2005/09/27 17:41:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2005/09/25 22:18:23  willuhn
- * @B bug 122
- *
- * Revision 1.12  2005/09/25 22:05:09  willuhn
- * @B bug 121
- *
- * Revision 1.11  2005/09/24 13:00:13  willuhn
- * @B bugfixes according to bugzilla
- *
- * Revision 1.10  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.9  2005/08/29 15:20:51  willuhn
- * @B bugfixing
- *
- * Revision 1.8  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.7  2005/08/28 01:08:03  willuhn
- * @N buchungsjournal
- *
- * Revision 1.6  2005/08/22 23:13:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.4  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.3  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/08/15 13:18:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.28  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.27  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.26  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.25  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.24  2004/01/29 01:01:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2004/01/29 00:45:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/01/29 00:06:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2004/01/27 22:47:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.18  2003/12/19 19:45:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2003/12/16 02:27:33  willuhn
- * @N BuchungsEngine
- *
- * Revision 1.16  2003/12/12 21:11:27  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.15  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.14  2003/12/10 23:51:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2003/12/05 18:42:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2003/12/05 17:11:58  willuhn
- * @N added GeldKonto, Kontoart
- *
- * Revision 1.11  2003/12/01 23:01:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2003/12/01 21:23:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
- * Revision 1.8  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.6  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
- * Revision 1.5  2003/11/24 16:26:15  willuhn
- * @N AbstractDBObject is now able to resolve foreign keys
- *
- * Revision 1.4  2003/11/24 14:21:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2003/11/22 20:43:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/11/21 02:10:56  willuhn
- * @N buchung dialog works now
- *
- * Revision 1.1  2003/11/20 03:48:44  willuhn
- * @N first dialogues
- *
- **********************************************************************/

@@ -51,7 +51,7 @@ public class BuchungstemplateExport implements Action
 			if (context instanceof Buchungstemplate)
 			{
 				u = new Buchungstemplate[1];
-        u[0] = (Buchungstemplate) context;
+        u[0] = context;
 			}
       else
       {
