@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.Map;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -151,8 +152,15 @@ public interface Geschaeftsjahr extends DBObject
    * @throws RemoteException
    */
   public Betriebsergebnis getBetriebsergebnis() throws RemoteException;
-}
 
+  /**
+   * Liefert die Betriebsergebnisse jedes Monats des Geschaeftsjahres.
+   * @return Map von Betriebsergebnissen.
+   * @throws RemoteException
+   */
+  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich()
+      throws RemoteException;
+}
 
 /*********************************************************************
  * $Log: Geschaeftsjahr.java,v $

@@ -1,0 +1,34 @@
+#set($monate = ${jahr.BetriebsergebnisseMonatlich.entrySet()})
+$math.reset("gesamtEinnahmen")
+$math.reset("gesamtAusgaben")
+$math.reset("gesamtErgebnis")
+<table class="data">
+  <tr>
+    <th style="width:70%">Monat</th>
+    <th style="text-align:right">Einnahmen</th>
+    <th style="text-align:right">Ausgaben</th>
+    <th style="text-align:right">Ergebnis</th>
+  </tr>
+#foreach($monat in $monate)
+  #set($name = ${monat.key})
+  #set($betriebsergebnis = ${monat.value})
+  #set($ausgaben = ${betriebsergebnis.AusgabenWert})
+  $math.add("gesamtAusgaben",${ausgaben})
+  #set($einnahmen = ${betriebsergebnis.EinnahmenWert})
+  $math.add("gesamtEinnahmen",${einnahmen})
+  #set($ergebnis = ${betriebsergebnis.Betriebsergebnis})
+  $math.add("gesamtErgebnis",${ergebnis})
+  <tr>
+    <td>${name}</td>
+    <td class="nowrap" style="text-align:right">${decimalformat.format(${einnahmen})} ${eur}</td>
+    <td class="nowrap" style="text-align:right">${decimalformat.format(${ausgaben})} ${eur}</td>
+    <td class="nowrap" style="text-align:right">${decimalformat.format(${ergebnis})} ${eur}</td>
+  </tr>
+#end
+  <tr>
+    <td style="border-top:1px solid #000000">Gesamt</td>
+    <td class="nowrap" style="text-align:right;border-top:1px solid #000000">${decimalformat.format($math.get("gesamtEinnahmen"))} ${eur}</td>
+    <td class="nowrap" style="text-align:right;border-top:1px solid #000000">${decimalformat.format($math.get("gesamtAusgaben"))} ${eur}</td>
+    <td class="nowrap" style="text-align:right;border-top:1px solid #000000">${decimalformat.format($math.get("gesamtErgebnis"))} ${eur}</td>
+  </tr>
+</table>

@@ -14,9 +14,12 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.db.AbstractDBObject;
@@ -504,7 +507,44 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     return new BetriebsergebnisImpl(this);
   }
 
-  /**
+  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich()
+      throws RemoteException
+  {
+    Map<String, Betriebsergebnis> betriebsergebnisse = new LinkedHashMap<String, Betriebsergebnis>();
+    Date monatsErster = getBeginn();
+    while (monatsErster != null && monatsErster.before(getEnde()))
+    {
+      Date monatsLetzter = monatsLetzterNach(monatsErster);
+      betriebsergebnisse.put(monatsnameAus(monatsErster),
+          new BetriebsergebnisImpl(this, monatsErster, monatsLetzter));
+      monatsErster = naechsterMonatsersterNach(monatsErster);
+    }
+    return betriebsergebnisse;
+  }
+
+  private Date monatsLetzterNach(Date monatsErster)
+  {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(naechsterMonatsersterNach(monatsErster));
+    cal.add(Calendar.DATE, -1);
+    return cal.getTime();
+  }
+
+  private String monatsnameAus(Date monatsErster)
+  {
+    return new SimpleDateFormat("MMMM").format(monatsErster);
+  }
+
+  private Date naechsterMonatsersterNach(Date monatsErster)
+  {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(monatsErster);
+    cal.add(Calendar.MONTH, 1);
+    cal.set(Calendar.DAY_OF_MONTH, 1);
+    return cal.getTime();
+  }
+
+/**
    * @see de.willuhn.datasource.rmi.Changeable#store()
    */
   public void store() throws RemoteException, ApplicationException
