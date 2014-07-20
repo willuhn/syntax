@@ -15,6 +15,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
 import java.util.ArrayList;
 
 import de.willuhn.datasource.rmi.DBIterator;
@@ -31,8 +32,19 @@ import de.willuhn.jameica.fibu.rmi.Kontotyp;
 public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betriebsergebnis
 {
 
-  private Geschaeftsjahr jahr = null;
-  
+  private final Geschaeftsjahr jahr;
+  private final Date von;
+  private final Date bis;
+
+  public BetriebsergebnisImpl(Geschaeftsjahr jahr, Date von, Date bis)
+      throws RemoteException
+  {
+    super();
+    this.jahr = jahr;
+    this.von = von;
+    this.bis = bis;
+  }
+
   /**
    * ct.
    * @param jahr Geschaeftsjahr.
@@ -40,8 +52,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
    */
   public BetriebsergebnisImpl(Geschaeftsjahr jahr) throws RemoteException
   {
-    super();
-    this.jahr = jahr;
+    this(jahr, null, null);
   }
 
   /**
@@ -57,11 +68,26 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getUmsatz(jahr) == 0.0d)
+      if (k.getUmsatz(jahr, von, bis) == 0.0d)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
     return (Konto[]) list.toArray(new Konto[list.size()]);
+  }
+
+  public double getEinnahmenWert() throws RemoteException
+  {
+    return getWertAusKonten(getEinnahmen());
+  }
+
+  private double getWertAusKonten(Konto[] konten) throws RemoteException
+  {
+    double wert = 0;
+    for (Konto konto : konten)
+    {
+      wert += konto.getUmsatz(jahr, von, bis);
+    }
+    return wert;
   }
 
   /**
@@ -75,12 +101,17 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getUmsatz(jahr) == 0.0d)
+      if (k.getUmsatz(jahr, von, bis) == 0.0d)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
     
     return (Konto[]) list.toArray(new Konto[list.size()]);
+  }
+
+  public double getAusgabenWert() throws RemoteException
+  {
+    return getWertAusKonten(getAusgaben());
   }
 
   /**
@@ -92,12 +123,12 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     Konto[] einnamen = getEinnahmen();
     for (int i=0;i<einnamen.length;++i)
     {
-      ergebnis += einnamen[i].getUmsatz(jahr);
+      ergebnis += einnamen[i].getUmsatz(jahr, von, bis);
     }
     Konto[] ausgaben = getAusgaben();
     for (int i=0;i<ausgaben.length;++i)
     {
-      ergebnis -= ausgaben[i].getUmsatz(jahr);
+      ergebnis -= ausgaben[i].getUmsatz(jahr, von, bis);
     }
     return ergebnis;
   }

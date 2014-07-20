@@ -70,7 +70,20 @@ public interface Konto extends UserObject
    * @throws RemoteException
    */
   public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException;
-  
+
+  /**
+   * Liefert den Umsatz auf dem Konto im aktuellen Geschaeftsjahr eingeschränkt
+   * auf den angegebenen Zeitraum. Das entspricht der Summe der Buchungen auf
+   * dem Konto.
+   * @param jahr das Geschaeftsjahr.
+   * @param von Start-Datum, inklusive. Kann auch weggelassen werden.
+   * @param bis End-Datum, inklusive. Kann auch weggelassen werden.
+   * @return Umsatz.
+   * @throws RemoteException
+   */
+  public double getUmsatz(Geschaeftsjahr jahr, Date von, Date bis)
+      throws RemoteException;
+
   /**
    * Liefert den Namen des Kontos.
    * @return Liefert die Bezeichnung des Kontos.

@@ -32,6 +32,13 @@ public interface Betriebsergebnis extends Remote
   public Konto[] getEinnahmen() throws RemoteException;
 
   /**
+   * @return die Summe aller Buchungen auf Konten mit Einnahmen im
+   *         Geschäftsjahr.
+   * @throws RemoteException
+   */
+  public double getEinnahmenWert() throws RemoteException;
+
+  /**
    * Liefert die bereinigte Liste der Konten mit Ausgaben im Geschaeftsjahr.
    * Bereinigt, weil die Liste nur Konten enthaelt, auf denen tatsaechlich
    * Umsaetze gebucht wurden.
@@ -39,7 +46,13 @@ public interface Betriebsergebnis extends Remote
    * @throws RemoteException
    */
   public Konto[] getAusgaben() throws RemoteException;
-  
+
+  /**
+   * @return die Summe aller Buchungen auf Konten mit Ausgaben im Geschäftsjahr.
+   * @throws RemoteException
+   */
+  public double getAusgabenWert() throws RemoteException;
+
   /**
    * Liefert das Betriebsergebnis.
    * Bei Gewinn ein positiver Wert, bei Verlust ein negativer.
