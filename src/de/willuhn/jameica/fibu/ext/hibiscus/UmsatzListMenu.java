@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListMenu.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/05/12 09:10:32 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -23,6 +17,7 @@ import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -123,9 +118,28 @@ public class UmsatzListMenu implements Extension
     
     if (template == null && auto)
       throw new ApplicationException(i18n.tr("Keine Buchungsvorlage ermittelbar"));
+
+    Geschaeftsjahr jahr = null;
     
+    // BUGZILLA 1593 - Ermitteln, zu welchem Mandanten das Template gehoert.
+    // Wir nehmen dann dessen aktives Geschaeftsjahr
+    if (template != null)
+    {
+      Mandant m = template.getMandant();
+      DBIterator jahre = m.getGeschaeftsjahre();
+      jahre.addFilter("(closed is null or closed = 0)");
+      jahre.setOrder("order by beginn");
+      if (!jahre.hasNext())
+        throw new ApplicationException(i18n.tr("Kein offenes Geschäftsjahr zum Mandanten der Buchungsvorlage gefunden"));
+      
+      jahr = (Geschaeftsjahr) jahre.next();
+    }
+    
+    if (jahr == null)
+      jahr = Settings.getActiveGeschaeftsjahr();
+
     final Buchung buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
-    buchung.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
+    buchung.setGeschaeftsjahr(jahr);
     buchung.setHibiscusUmsatzID(u.getID());
     buchung.setBelegnummer(buchung.getBelegnummer()); // Das erzeugt eine neue Belegnummer
     buchung.setKommentar(u.getKommentar());
@@ -157,6 +171,7 @@ public class UmsatzListMenu implements Extension
       if (makeAbsolute)
         brutto = java.lang.Math.abs(brutto);
       buchung.setBruttoBetrag(brutto);
+      
       if (template != null)
         buchung.setBetrag(new Math().netto(brutto,template.getSteuer()));
       else
@@ -242,11 +257,8 @@ public class UmsatzListMenu implements Extension
    */
   private boolean isAssigned(Umsatz u) throws Exception
   {
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    if (jahr == null)
-      throw new ApplicationException(i18n.tr("Kein aktives Geschäftsjahr ausgewählt"));
-    
-    DBIterator list = jahr.getHauptBuchungen();
+    // BUGZILLA 1593 - Wir suchen Mandanten-uebergreifend
+    DBIterator list = Settings.getDBService().createList(Buchung.class);
     list.addFilter("hb_umsatz_id = ?",new Object[]{u.getID()});
     return list.hasNext();
   }
@@ -385,48 +397,4 @@ public class UmsatzListMenu implements Extension
       }
     }
   }
-
 }
-
-
-/*********************************************************************
- * $Log: UmsatzListMenu.java,v $
- * Revision 1.11  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.10  2010-11-01 15:23:29  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2010-10-31 22:25:17  willuhn
- * @B Betrag aus Hibiscus als Brutto-Betrag uebernehmen
- * @C Absolut-Wert des Betrages uebernehmen
- *
- * Revision 1.8  2010-10-31 22:14:45  willuhn
- * @N Name des Kontoinhabers mit in Buchungstext uebernehmen, soweit noch Platz vorhanden
- *
- * Revision 1.7  2010-06-03 17:43:41  willuhn
- * @N Aussagekraeftigere Meldungen, wenn Kategorie oder Vorlage fehlt oder Vorlage unvollstaendig ist
- *
- * Revision 1.6  2010/06/03 17:18:14  willuhn
- * @N Bei mehr als einer Buchung im Hintergrund ausfuehren. Wenn man das erst ab 20 macht, hat man anschliessend keinen schoenen Ueberblick, bei welchen es geklemmt hat
- *
- * Revision 1.5  2010/06/03 17:07:14  willuhn
- * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
- *
- * Revision 1.4  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.3.2.1  2009/01/09 11:19:41  willuhn
- * @B NPE wenn noch kein Geschaeftsjahr existiert
- *
- * Revision 1.3  2007/03/23 10:15:35  willuhn
- * @B classcastexception
- *
- * Revision 1.2  2006/10/12 21:51:10  willuhn
- * @Uebernahme der Buchungen aus Hibiscus.
- *
- * Revision 1.1  2006/10/09 23:48:41  willuhn
- * @B bug 140
- *
- **********************************************************************/

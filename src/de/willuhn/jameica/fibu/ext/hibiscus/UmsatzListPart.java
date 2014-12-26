@@ -21,7 +21,6 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
-import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -88,18 +87,15 @@ public class UmsatzListPart implements Extension
     this.cache = new HashMap<String,Buchung>();
     try
     {
-      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-      if (jahr != null)
+      // BUGZILLA 1593 - Wir suchen Mandanten-uebergreifend
+      DBIterator list = Settings.getDBService().createList(Buchung.class);
+      list.addFilter("hb_umsatz_id is not null");
+      while (list.hasNext())
       {
-        DBIterator list = jahr.getHauptBuchungen();
-        list.addFilter("hb_umsatz_id is not null");
-        while (list.hasNext())
-        {
-          Buchung b = (Buchung) list.next();
-          if (b.getHibiscusUmsatzID() == null)
-            continue;
-          cache.put(b.getHibiscusUmsatzID(),b);
-        }
+        Buchung b = (Buchung) list.next();
+        if (b.getHibiscusUmsatzID() == null)
+          continue;
+        cache.put(b.getHibiscusUmsatzID(),b);
       }
     }
     catch (Exception e)
