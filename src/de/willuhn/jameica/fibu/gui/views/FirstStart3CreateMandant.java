@@ -68,6 +68,7 @@ public class FirstStart3CreateMandant extends AbstractView
       group.addLabelPair(i18n.tr("Finanzamt"),    control.getMandantControl().getFinanzamtAuswahl());
       group.addLabelPair(i18n.tr("Steuernummer"), control.getMandantControl().getSteuernummer());
       group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getMandantControl().getWaehrung());
+      group.addLabelPair(i18n.tr("Mandantenkürzel"), control.getMandantControl().getKuerzel());
     }
 
     ButtonArea buttons = group.createButtonArea(1);

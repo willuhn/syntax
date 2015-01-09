@@ -59,11 +59,13 @@ public class UmsatzListPart implements Extension
           return null;
 
         Buchung b = getCache().get(o.toString());
+
         if (b == null)
           return null;
         try
         {
-          return Integer.toString(b.getBelegnummer());
+          String kuerzel = b.getGeschaeftsjahr().getMandant().getKuerzel();
+          return String.format("%s%04d", kuerzel, b.getBelegnummer());
         }
         catch (RemoteException re)
         {

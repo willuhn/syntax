@@ -172,6 +172,20 @@ public interface Mandant extends DBObject
    * @throws RemoteException
    */
   public void setWaehrung(String waehrung) throws RemoteException;
+
+  /**
+   * Liefert das Mandatenkürzel.
+   * @return Waehrung.
+   * @throws RemoteException
+   */
+  public String getKuerzel() throws RemoteException;
+
+  /**
+   * Legt das Mandatenkürzelfest.
+   * @param waehrung
+   * @throws RemoteException
+   */
+  public void setKuerzel(String waehrung) throws RemoteException;
 }
 
 

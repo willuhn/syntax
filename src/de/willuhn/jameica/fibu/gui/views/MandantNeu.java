@@ -83,6 +83,7 @@ public class MandantNeu extends AbstractView
     group2.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
     group2.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
+    group2.addLabelPair(i18n.tr("Mandantenkürzel"),	control.getKuerzel());
 
     ButtonArea buttonArea = new ButtonArea();
     
