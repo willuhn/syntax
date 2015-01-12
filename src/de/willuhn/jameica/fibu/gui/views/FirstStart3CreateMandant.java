@@ -58,6 +58,7 @@ public class FirstStart3CreateMandant extends AbstractView
       group = new LabelGroup(getParent(),i18n.tr("Neuer Mandant"));
       group.addLabelPair(i18n.tr("Name 1")  , control.getMandantControl().getName1());
       group.addLabelPair(i18n.tr("Name 2")  , control.getMandantControl().getName2());
+      group.addLabelPair(i18n.tr("Kürzel")  , control.getMandantControl().getKuerzel());
       group.addLabelPair(i18n.tr("Firma")   , control.getMandantControl().getFirma());
       group.addLabelPair(i18n.tr("Strasse") , control.getMandantControl().getStrasse());
       group.addLabelPair(i18n.tr("PLZ")     , control.getMandantControl().getPLZ());
@@ -68,7 +69,6 @@ public class FirstStart3CreateMandant extends AbstractView
       group.addLabelPair(i18n.tr("Finanzamt"),    control.getMandantControl().getFinanzamtAuswahl());
       group.addLabelPair(i18n.tr("Steuernummer"), control.getMandantControl().getSteuernummer());
       group.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getMandantControl().getWaehrung());
-      group.addLabelPair(i18n.tr("Mandantenkürzel"), control.getMandantControl().getKuerzel());
     }
 
     ButtonArea buttons = group.createButtonArea(1);
