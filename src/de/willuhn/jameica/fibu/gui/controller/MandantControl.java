@@ -50,6 +50,7 @@ public class MandantControl extends AbstractControl
 	private Input ort									= null;
 	private Input steuernummer				= null;
   private Input waehrung            = null;
+	private Input kuerzel            = null;
 	private Input finanzamtAuswahl		= null;
 
 
@@ -96,6 +97,21 @@ public class MandantControl extends AbstractControl
     
     waehrung = new TextInput(getMandant().getWaehrung());
     return waehrung;
+  }
+
+
+  /**
+   * Liefert das Eingabe-Feld fuer die Waehrung.
+   * @return Eingabe-Feld.
+   * @throws RemoteException
+   */
+  public Input getKuerzel() throws RemoteException
+  {
+    if (kuerzel != null)
+      return kuerzel;
+
+    kuerzel = new TextInput(getMandant().getKuerzel());
+    return kuerzel;
   }
 
   /**
@@ -248,11 +264,12 @@ public class MandantControl extends AbstractControl
 
       getMandant().setName1((String)getName1().getValue());
       getMandant().setName2((String)getName2().getValue());
-			getMandant().setFirma((String)getFirma().getValue());
-			getMandant().setStrasse((String)getStrasse().getValue());
-			getMandant().setPLZ((String)getPLZ().getValue());
-			getMandant().setOrt((String)getOrt().getValue());
-			getMandant().setSteuernummer((String)getSteuernummer().getValue());
+      getMandant().setFirma((String)getFirma().getValue());
+      getMandant().setStrasse((String)getStrasse().getValue());
+      getMandant().setPLZ((String)getPLZ().getValue());
+      getMandant().setOrt((String)getOrt().getValue());
+      getMandant().setSteuernummer((String)getSteuernummer().getValue());
+      getMandant().setKuerzel((String)getKuerzel().getValue());
 
       
       // und jetzt speichern wir.

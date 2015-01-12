@@ -131,6 +131,7 @@ CREATE TABLE mandant (
   steuernummer varchar(100) NULL,
   waehrung varchar(10) NULL,
   finanzamt_id int(10) NOT NULL,
+  kuerzel varchar(10) NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );

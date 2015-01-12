@@ -254,6 +254,26 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     setAttribute("waehrung",waehrung);
   }
 
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#getKuerzel()
+   */
+  public String getKuerzel() throws RemoteException
+  {
+    String s = (String) getAttribute("kuerzel");
+    if (s != null && s.length() > 0)
+      return s;
+    return "";
+  }
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Mandant#setKuerzel(java.lang.String)
+   */
+  public void setKuerzel(String kuerzel) throws RemoteException
+  {
+    setAttribute("kuerzel",kuerzel);
+  }
+
   /**
    * @see de.willuhn.jameica.fibu.rmi.Mandant#getGeschaeftsjahre()
    */
