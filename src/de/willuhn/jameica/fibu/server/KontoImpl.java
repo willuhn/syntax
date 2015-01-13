@@ -231,6 +231,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     return getUmsatz(getHauptBuchungen(jahr), getHilfsBuchungen(jahr));
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatz(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
+   */
   public double getUmsatz(Geschaeftsjahr jahr, Date von, Date bis)
       throws RemoteException
   {

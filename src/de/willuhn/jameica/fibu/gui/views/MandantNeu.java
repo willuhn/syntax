@@ -73,6 +73,7 @@ public class MandantNeu extends AbstractView
     group.addHeadline(i18n.tr("Eigenschaften"));
     group.addLabelPair(i18n.tr("Name 1")  , control.getName1());
     group.addLabelPair(i18n.tr("Name 2")  , control.getName2());
+    group.addLabelPair(i18n.tr("Kürzel")  , control.getKuerzel());
     group.addLabelPair(i18n.tr("Firma")   , control.getFirma());
     group.addLabelPair(i18n.tr("Strasse") , control.getStrasse());
     group.addLabelPair(i18n.tr("PLZ")     , control.getPLZ());
@@ -83,7 +84,6 @@ public class MandantNeu extends AbstractView
     group2.addLabelPair(i18n.tr("Finanzamt"),		control.getFinanzamtAuswahl());
     group2.addLabelPair(i18n.tr("Steuernummer"),	control.getSteuernummer());
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
-    group2.addLabelPair(i18n.tr("Mandantenkürzel"),	control.getKuerzel());
 
     ButtonArea buttonArea = new ButtonArea();
     

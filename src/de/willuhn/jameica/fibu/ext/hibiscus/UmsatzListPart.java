@@ -24,7 +24,6 @@ import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.formatter.Formatter;
-import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -64,7 +63,7 @@ public class UmsatzListPart implements Extension
     this.cache.clear(); // Cache loeschen, damit die Daten neu gelesen werden
     
     TablePart table = (TablePart) extendable;
-    Column col = new Column("id-int", i18n.tr("SynTAX-Beleg") ,new Formatter() {
+    table.addColumn(i18n.tr("SynTAX-Beleg"),"id-int", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof Integer))
@@ -78,7 +77,7 @@ public class UmsatzListPart implements Extension
           return null;
         try
         {
-            return String.format("%s%04d", kuerzel, b.getBelegnummer());
+          return String.format("%s%04d", kuerzel, b.getBelegnummer());
         }
         catch (RemoteException re)
         {
@@ -87,9 +86,7 @@ public class UmsatzListPart implements Extension
         return null;
       }
     
-    }, false, Column.ALIGN_AUTO, Column.SORT_BY_DISPLAY);
-
-    table.addColumn(col);
+    });
   }
   
   /**

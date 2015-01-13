@@ -110,7 +110,7 @@ public class MandantControl extends AbstractControl
     if (kuerzel != null)
       return kuerzel;
 
-    kuerzel = new TextInput(getMandant().getKuerzel());
+    kuerzel = new TextInput(getMandant().getKuerzel(),4);
     return kuerzel;
   }
 

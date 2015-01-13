@@ -260,10 +260,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   public String getKuerzel() throws RemoteException
   {
-    String s = (String) getAttribute("kuerzel");
-    if (s != null && s.length() > 0)
-      return s;
-    return "";
+    return (String) getAttribute("kuerzel");
   }
 
   /**
