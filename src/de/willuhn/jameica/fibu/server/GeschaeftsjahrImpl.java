@@ -320,6 +320,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     try
     {
+      
+      Cache.clear(Geschaeftsjahr.class);
+      
       Logger.info("Lösche Geschaeftsjahr " + getAttribute(getPrimaryAttribute()));
 
       transactionBegin();
@@ -550,6 +553,8 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   public void store() throws RemoteException, ApplicationException
   {
     super.store();
+    
+    Cache.clear(Geschaeftsjahr.class);
     
     // Falls wir das aktuelle Geschaeftsjahr sind, laden wir es neu
     Settings.reloadActiveGeschaeftsjahr();

@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/ext/hibiscus/UmsatzListPart.java,v $
- * $Revision: 1.6 $
- * $Date: 2011/05/12 09:10:32 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -17,10 +11,14 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.formatter.Formatter;
@@ -36,7 +34,8 @@ import de.willuhn.util.I18N;
 public class UmsatzListPart implements Extension
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  private Map<String,Buchung> cache = null;
+  private Map<String,Buchung> umsatzCache = null;
+  private Map<String,String> kuerzelCache = new HashMap<String,String>();
   
   /**
    * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
@@ -49,7 +48,9 @@ public class UmsatzListPart implements Extension
       return;
     }
     
-    this.cache = null; // Cache loeschen, damit die Daten neu gelesen werden
+    // Cache leeren, damit die Daten neu gelesen werden
+    this.umsatzCache = null;
+    this.kuerzelCache.clear();
     
     TablePart table = (TablePart) extendable;
     table.addColumn(i18n.tr("SynTAX-Beleg"),"id-int", new Formatter() {
@@ -62,9 +63,21 @@ public class UmsatzListPart implements Extension
 
         if (b == null)
           return null;
+        
         try
         {
-          return Integer.toString(b.getBelegnummer());
+          Geschaeftsjahr jahr = b.getGeschaeftsjahr(); // kommt bei Bedarf automatisch aus dem Cache
+          
+          // Checken, wir hierzu bereits das Mandantenkuerzel geladen haben
+          String kuerzel = kuerzelCache.get(jahr.getID());
+          if (kuerzel == null)
+          {
+            Mandant m = jahr.getMandant();
+            kuerzel = StringUtils.trimToEmpty(m.getKuerzel());
+            kuerzelCache.put(jahr.getID(),kuerzel);
+          }
+          
+          return kuerzel.length() > 0 ? String.format("%s%04d", kuerzel, b.getBelegnummer()) : Integer.toString(b.getBelegnummer());
         }
         catch (RemoteException re)
         {
@@ -82,10 +95,10 @@ public class UmsatzListPart implements Extension
    */
   private Map<String,Buchung> getCache()
   {
-    if (this.cache != null)
-      return this.cache;
+    if (this.umsatzCache != null)
+      return this.umsatzCache;
     
-    this.cache = new HashMap<String,Buchung>();
+    this.umsatzCache = new HashMap<String,Buchung>();
     try
     {
       // BUGZILLA 1593 - Wir suchen Mandanten-uebergreifend
@@ -96,14 +109,14 @@ public class UmsatzListPart implements Extension
         Buchung b = (Buchung) list.next();
         if (b.getHibiscusUmsatzID() == null)
           continue;
-        cache.put(b.getHibiscusUmsatzID(),b);
+        umsatzCache.put(b.getHibiscusUmsatzID(),b);
       }
     }
     catch (Exception e)
     {
-      Logger.error("unable to fill lookup cache",e);
+      Logger.error("unable to fill lookup umsatzCache",e);
     }
-    return this.cache;
+    return this.umsatzCache;
   }
 
   /**
@@ -122,30 +135,3 @@ public class UmsatzListPart implements Extension
     getCache().put(umsatzId,b);
   }
 }
-
-
-/*********************************************************************
- * $Log: UmsatzListPart.java,v $
- * Revision 1.6  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.5  2010-06-03 17:07:14  willuhn
- * @N Erste Version der vollautomatischen Uebernahme von Umsatzen in Hibiscus!
- *
- * Revision 1.4  2010/06/01 11:58:04  willuhn
- * @R removed debug output
- *
- * Revision 1.3  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.2.2.1  2008/06/25 09:40:02  willuhn
- * @B Buchungsnummer wurde unter Umstaenden nicht korrekt angezeigt
- *
- * Revision 1.2  2007/04/04 22:19:09  willuhn
- * @B Umsatzliste nur erweitern, wenn GJ vorhanden
- *
- * Revision 1.1  2006/10/09 23:48:41  willuhn
- * @B bug 140
- *
- **********************************************************************/

@@ -36,7 +36,7 @@ public interface BaseBuchung extends Transfer
    * @throws RemoteException
    */
   public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException;
-
+  
   /**
    * Liefert die Belegnummer oder erzeugt eine neue, wenn sie null ist.
    * @return Belegnummer.

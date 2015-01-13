@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/AbstractBaseBuchungImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2011/05/12 09:10:32 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -89,9 +83,14 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public Geschaeftsjahr getGeschaeftsjahr() throws RemoteException
   {
-    return (Geschaeftsjahr) getAttribute("geschaeftsjahr_id");
+    Integer i = (Integer) super.getAttribute("geschaeftsjahr_id");
+    if (i == null)
+      return null; // Noch kein Geschaeftsjahr zugeordnet
+   
+    Cache cache = Cache.get(Geschaeftsjahr.class,true);
+    return (Geschaeftsjahr) cache.get(i);
   }
-
+  
   /**
    * @see de.willuhn.jameica.fibu.rmi.BaseBuchung#setDatum(java.util.Date)
    */
@@ -105,7 +104,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
   {
-    setAttribute("geschaeftsjahr_id",jahr);
+    setAttribute("geschaeftsjahr_id",jahr == null || jahr.getID() == null ? null : new Integer(jahr.getID()));
   }
 
   /**
@@ -139,18 +138,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
     return n == null ? 1 : n.intValue();
   }
   
-  /**
-   * @see de.willuhn.jameica.fibu.server.AbstractTransferImpl#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException
-  {
-    if ("geschaeftsjahr_id".equals(field))
-      return Geschaeftsjahr.class;
-
-    return super.getForeignObject(field);
-  }
-  
-
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
