@@ -35,8 +35,19 @@ import de.willuhn.util.I18N;
  */
 public class UmsatzListPart implements Extension
 {
+  private class Cache {
+	  public Map<String,Buchung> buchungen = null;
+	  public Map<String,String> kuerzel = null;
+
+	  public void clear() {
+		  buchungen = null;
+		  kuerzel = null;
+	  }
+  }
+
+  private Cache cache = new Cache();
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  private Map<String,Buchung> cache = null;
+   
   
   /**
    * @see de.willuhn.jameica.gui.extension.Extension#extend(de.willuhn.jameica.gui.extension.Extendable)
@@ -49,7 +60,7 @@ public class UmsatzListPart implements Extension
       return;
     }
     
-    this.cache = null; // Cache loeschen, damit die Daten neu gelesen werden
+    this.cache.clear(); // Cache loeschen, damit die Daten neu gelesen werden
     
     TablePart table = (TablePart) extendable;
     table.addColumn(i18n.tr("SynTAX-Beleg"),"id-int", new Formatter() {
@@ -58,13 +69,15 @@ public class UmsatzListPart implements Extension
         if (o == null || !(o instanceof Integer))
           return null;
 
-        Buchung b = getCache().get(o.toString());
-
+        Cache cache = getCache();
+        Buchung b = cache.buchungen.get(o.toString());
+        String kuerzel = cache.kuerzel.get(o.toString());
+        		
         if (b == null)
           return null;
         try
         {
-          return Integer.toString(b.getBelegnummer());
+          return String.format("%s%04d", kuerzel, b.getBelegnummer());
         }
         catch (RemoteException re)
         {
@@ -80,12 +93,13 @@ public class UmsatzListPart implements Extension
    * Liefert den Cache zum Lookup von Hibiscus Umsatz-ID zu Buchung.
    * @return der Cache.
    */
-  private Map<String,Buchung> getCache()
+  private Cache getCache()
   {
-    if (this.cache != null)
+    if (this.cache != null && this.cache.buchungen != null && this.cache.kuerzel != null)
       return this.cache;
     
-    this.cache = new HashMap<String,Buchung>();
+    this.cache.buchungen = new HashMap<String,Buchung>();
+    this.cache.kuerzel = new HashMap<String,String>();
     try
     {
       // BUGZILLA 1593 - Wir suchen Mandanten-uebergreifend
@@ -96,7 +110,9 @@ public class UmsatzListPart implements Extension
         Buchung b = (Buchung) list.next();
         if (b.getHibiscusUmsatzID() == null)
           continue;
-        cache.put(b.getHibiscusUmsatzID(),b);
+        cache.buchungen.put(b.getHibiscusUmsatzID(),b);
+        String kuerzel = b.getGeschaeftsjahr().getMandant().getKuerzel();
+        cache.kuerzel.put(b.getHibiscusUmsatzID(), kuerzel);
       }
     }
     catch (Exception e)
@@ -119,7 +135,7 @@ public class UmsatzListPart implements Extension
     String umsatzId = b.getHibiscusUmsatzID();
     if (umsatzId == null || umsatzId.length() == 0)
       return; // Buchung ist gar nicht zugeordnet
-    getCache().put(umsatzId,b);
+    getCache().buchungen.put(umsatzId,b);
   }
 }
 
