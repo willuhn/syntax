@@ -145,7 +145,7 @@ public class KontoControl extends AbstractControl
 	{
 		if (kontonummer != null)
 			return kontonummer;
-		kontonummer = new TextInput(getKonto().getKontonummer(),4);
+		kontonummer = new TextInput(getKonto().getKontonummer(),6);
 		kontonummer.setValidChars("0123456789");
 		kontonummer.setMandatory(true);
 		kontonummer.setEnabled(getKonto().canChange());

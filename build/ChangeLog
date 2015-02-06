@@ -1,5 +1,6 @@
 TRUNK
 
+  * NEW: Länge von Kontonummern von 4 auf 6 Zeichen vergrößert
   * BUG: BUGZILLA 1593 - Buchung per Hibiscus-Übernahme dem Mandanten der Vorlage zuordnen, nicht dem aktiven Mandanten
   * NEW: Neue Auswertung "Ergebnis - monatlich" - Pull-Request https://github.com/willuhn/syntax/pull/1
   * NEW: Neues Feld "Notiz" in Buchungen
