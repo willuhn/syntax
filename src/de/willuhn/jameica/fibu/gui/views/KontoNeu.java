@@ -13,7 +13,6 @@
 package de.willuhn.jameica.fibu.gui.views;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoDelete;
 import de.willuhn.jameica.fibu.gui.controller.KontoControl;
@@ -48,10 +47,11 @@ public class KontoNeu extends AbstractView
   {
     final KontoControl control = new KontoControl(this);
 
+    final Konto konto = control.getKonto();
     String kr = i18n.tr("unbekannt");
     try
     {
-      kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getName();
+      kr = konto.getKontenrahmen().getName();
     }
     catch (Exception e)
     {
@@ -60,7 +60,6 @@ public class KontoNeu extends AbstractView
 
     GUI.getView().setTitle(i18n.tr("Konto bearbeiten. Kontenrahmen: {0}",kr));
 
-    Konto konto = control.getKonto();
     if (!konto.canChange())
       GUI.getView().setErrorText(i18n.tr("Konto ist ein System-Konto und darf daher nicht geändert werden"));
 

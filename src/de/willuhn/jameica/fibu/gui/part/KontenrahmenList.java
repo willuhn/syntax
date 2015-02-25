@@ -16,7 +16,6 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -26,11 +25,9 @@ import de.willuhn.jameica.fibu.gui.action.KontenrahmenClone;
 import de.willuhn.jameica.fibu.gui.action.KontoListe;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.formatter.TableFormatter;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
-import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.messaging.QueryMessage;
@@ -59,28 +56,6 @@ public class KontenrahmenList extends TablePart
     this.setSummary(false);
     this.addColumn(i18n.tr("Bezeichnung"),"name");
     this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant_id");
-    this.setFormatter(new TableFormatter() {
-      public void format(TableItem item)
-      {
-        if (item == null)
-          return;
-        
-        Object data = item.getData();
-        if (data == null || !(data instanceof Kontenrahmen))
-          return;
-        
-        try
-        {
-          Kontenrahmen kr = (Kontenrahmen) data;
-          Color c = kr.getMandant() == null ? Color.ERROR : Color.FOREGROUND;
-          item.setForeground(c.getSWTColor());
-        }
-        catch (Exception e)
-        {
-          Logger.error("unable to format table",e);
-        }
-      }
-    });
     
     ContextMenu menu = new ContextMenu();
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."),new KontenrahmenClone(),"gtk-dnd-multiple.png"));

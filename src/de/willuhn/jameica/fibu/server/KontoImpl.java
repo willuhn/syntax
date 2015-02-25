@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.Fibu;
@@ -406,6 +407,13 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     if ("saldo".equals(arg0))
     {
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
+      if (jahr == null)
+        return new Double(0.0d);
+      
+      // Checken, ob das ueberhaupt der selbe Kontenrahmen ist
+      if (!BeanUtil.equals(this.getKontenrahmen(),jahr.getKontenrahmen()))
+        return new Double(0.0d);
+      
       return new Double(getSaldo(jahr));
     }
     return super.getAttribute(arg0);

@@ -19,10 +19,12 @@ import java.util.List;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -59,6 +61,8 @@ public class KontoControl extends AbstractControl
   private Input saldo            = null;
   private Input anfangsbestand   = null;
   
+  private Boolean inCurrentKontenrahmen = null;
+  
 
   /**
    * @param view
@@ -82,15 +86,43 @@ public class KontoControl extends AbstractControl
 		if (konto != null)
 			return konto;
 
+		// Neues Konto erstellen und gleich dem aktuellen Geschaeftsjahr zuweisen
 		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
-    konto.setKontenrahmen(Settings.getActiveGeschaeftsjahr().getKontenrahmen());
-    konto.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+		
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    if (jahr != null)
+    {
+      konto.setKontenrahmen(jahr.getKontenrahmen());
+      konto.setMandant(jahr.getMandant());
+    }
     
     // Konto-Art definieren wir mit der haeufigsten Konto-Art vor
     konto.setKontoArt((Kontoart) Settings.getDBService().createObject(Kontoart.class,""+Kontoart.KONTOART_AUFWAND));
     
 		return konto;
 	}
+  
+  /**
+   * Liefert true, wenn das Konto Teil des Kontenrahmens des aktiven Geschaeftsjahres ist.
+   * @return true, wenn das Konto Teil des Kontenrahmens des aktiven Geschaeftsjahres ist.
+   * @throws RemoteException
+   */
+  private boolean inCurrentKontenrahmen() throws RemoteException
+  {
+    // Damit wir das nicht immer wieder machen muessen.
+    // Ein Konto aendert seinen Kontenrahmen ja nicht.
+    if (this.inCurrentKontenrahmen != null)
+      return this.inCurrentKontenrahmen;
+    
+    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    if (jahr == null)
+      return false;
+    
+    Kontenrahmen k1 = this.getKonto().getKontenrahmen();
+    Kontenrahmen k2 = jahr.getKontenrahmen();
+    this.inCurrentKontenrahmen = BeanUtil.equals(k1,k2);
+    return this.inCurrentKontenrahmen;
+  }
 
   /**
    * Liefert ein Anzeige-Feld fuer den Saldo.
@@ -101,8 +133,18 @@ public class KontoControl extends AbstractControl
   {
     if (this.saldo != null)
       return this.saldo;
-    saldo = new LabelInput(Settings.DECIMALFORMAT.format(getKonto().getSaldo(Settings.getActiveGeschaeftsjahr())));
-    saldo.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+    
+    // Saldo basiert auf dem aktuellen Geschaeftsjahr und damit auf dem Kontenrahmen
+    if (this.inCurrentKontenrahmen())
+    {
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      saldo = new LabelInput(Settings.DECIMALFORMAT.format(getKonto().getSaldo(jahr)));
+      saldo.setComment(jahr.getMandant().getWaehrung());
+    }
+    else
+    {
+      saldo = new LabelInput("");
+    }
     return saldo;
   }
   
@@ -115,9 +157,19 @@ public class KontoControl extends AbstractControl
   {
     if (this.anfangsbestand != null)
       return this.anfangsbestand;
-    Anfangsbestand ab = getKonto().getAnfangsbestand(Settings.getActiveGeschaeftsjahr());
-    anfangsbestand = new LabelInput(Settings.DECIMALFORMAT.format(ab != null ? ab.getBetrag() : 0.0d));
-    anfangsbestand.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+    
+    // Saldo basiert auf dem aktuellen Geschaeftsjahr und damit auf dem Kontenrahmen
+    if (this.inCurrentKontenrahmen())
+    {
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      Anfangsbestand ab = getKonto().getAnfangsbestand(jahr);
+      anfangsbestand = new LabelInput(Settings.DECIMALFORMAT.format(ab != null ? ab.getBetrag() : 0.0d));
+      anfangsbestand.setComment(jahr.getMandant().getWaehrung());
+    }
+    else
+    {
+      anfangsbestand = new LabelInput("");
+    }
     return anfangsbestand;
   }
   
@@ -163,18 +215,15 @@ public class KontoControl extends AbstractControl
 			return steuer;
 
     DBIterator list = Settings.getDBService().createList(Steuer.class);
-    Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
-    List found = new ArrayList<Steuer>();
+    Kontenrahmen kr = this.getKonto().getKontenrahmen();
+    List<Steuer> found = new ArrayList<Steuer>();
     while (list.hasNext())
     {
       Steuer s = (Steuer) list.next();
       Konto k = s.getSteuerKonto();
       if (k == null)
         continue;
-      Kontenrahmen kr2 = k.getKontenrahmen();
-      if (kr2 == null)
-        continue;
-      if (kr2.equals(kr))
+      if (BeanUtil.equals(k.getKontenrahmen(),kr))
         found.add(s);
     }
     steuer = new SelectInput(found,getKonto().getSteuer());

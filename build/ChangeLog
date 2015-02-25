@@ -1,5 +1,7 @@
 TRUNK
 
+  * BUG: In der Detailansicht wurden Daten des aktuellen Geschäftsjahres/Kontenrahmens angezeigt. Auch dann,
+         wenn das Konto gar nicht Teil dieses war (sondern aus einem anderen Kontenrahmen stammt)
   * NEW: Länge von Kontonummern von 4 auf 6 Zeichen vergrößert
   * BUG: BUGZILLA 1593 - Buchung per Hibiscus-Übernahme dem Mandanten der Vorlage zuordnen, nicht dem aktiven Mandanten
   * NEW: Neue Auswertung "Ergebnis - monatlich" - Pull-Request https://github.com/willuhn/syntax/pull/1
