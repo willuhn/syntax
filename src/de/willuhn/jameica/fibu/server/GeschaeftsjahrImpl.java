@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/GeschaeftsjahrImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2010/06/01 16:37:22 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -14,6 +8,7 @@
 package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -510,44 +505,40 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     return new BetriebsergebnisImpl(this);
   }
 
-  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich()
-      throws RemoteException
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getBetriebsergebnisseMonatlich()
+   */
+  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich() throws RemoteException
   {
-    Map<String, Betriebsergebnis> betriebsergebnisse = new LinkedHashMap<String, Betriebsergebnis>();
-    Date monatsErster = getBeginn();
-    while (monatsErster != null && monatsErster.before(getEnde()))
+    final DateFormat df = new SimpleDateFormat("MMMM");
+    final Calendar cal  = Calendar.getInstance();
+
+    Map<String, Betriebsergebnis> result = new LinkedHashMap<String, Betriebsergebnis>();
+    Date start = this.getBeginn();
+    Date end   = this.getEnde();
+    
+    // Wir iterieren monatsweise ueber das Geschaeftsjahr und erzeugen jeweils
+    // ein Betriebsergebnis fuer diesen Zeitraum
+    while (start != null && start.before(end))
     {
-      Date monatsLetzter = monatsLetzterNach(monatsErster);
-      betriebsergebnisse.put(monatsnameAus(monatsErster),
-          new BetriebsergebnisImpl(this, monatsErster, monatsLetzter));
-      monatsErster = naechsterMonatsersterNach(monatsErster);
+      // Monatsletzten ermitteln
+      cal.setTime(start);
+      cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+      
+      result.put(df.format(start),new BetriebsergebnisImpl(this, start, DateUtil.endOfDay(cal.getTime())));
+      
+      // Naechsten Monatsersten ermitteln
+      cal.setTime(start);
+      cal.add(Calendar.MONTH, 1);
+      cal.set(Calendar.DAY_OF_MONTH, 1);
+      
+      // Fuer die naechste Iteration
+      start = DateUtil.startOfDay(cal.getTime());
     }
-    return betriebsergebnisse;
+    return result;
   }
 
-  private Date monatsLetzterNach(Date monatsErster)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(naechsterMonatsersterNach(monatsErster));
-    cal.add(Calendar.DATE, -1);
-    return cal.getTime();
-  }
-
-  private String monatsnameAus(Date monatsErster)
-  {
-    return new SimpleDateFormat("MMMM").format(monatsErster);
-  }
-
-  private Date naechsterMonatsersterNach(Date monatsErster)
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(monatsErster);
-    cal.add(Calendar.MONTH, 1);
-    cal.set(Calendar.DAY_OF_MONTH, 1);
-    return cal.getTime();
-  }
-
-/**
+  /**
    * @see de.willuhn.datasource.rmi.Changeable#store()
    */
   public void store() throws RemoteException, ApplicationException
@@ -597,104 +588,3 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   }
 
 }
-
-
-/*********************************************************************
- * $Log: GeschaeftsjahrImpl.java,v $
- * Revision 1.29  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.28  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.26.2.1  2008/09/08 09:03:51  willuhn
- * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
- *
- * Revision 1.26  2007/02/27 15:46:17  willuhn
- * @N Anzeige des vorherigen Kontostandes im Kontoauszug
- *
- * Revision 1.25  2006/05/30 23:33:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2006/03/17 16:23:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2006/01/09 01:40:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2006/01/08 15:28:41  willuhn
- * @N Loeschen von Sonderabschreibungen
- *
- * Revision 1.21  2006/01/06 11:25:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2006/01/04 17:05:32  willuhn
- * @B bug 170
- *
- * Revision 1.19  2006/01/04 16:04:33  willuhn
- * @B gj/mandant handling (insb. Loeschen)
- *
- * Revision 1.18  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.17  2006/01/03 11:29:03  willuhn
- * @N Erzeugen der Abschreibungs-Buchung in eine separate Funktion ausgelagert
- *
- * Revision 1.16  2005/10/06 15:15:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2005/09/30 17:12:06  willuhn
- * @B bug 122
- *
- * Revision 1.14  2005/09/27 17:41:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2005/09/26 23:51:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2005/09/05 15:00:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2005/09/05 13:14:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2005/09/04 23:40:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- * Revision 1.8  2005/09/01 23:28:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/08/30 22:51:31  willuhn
- * @B bugfixing
- *
- * Revision 1.6  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.5  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.4  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.2  2005/08/29 16:43:14  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- **********************************************************************/

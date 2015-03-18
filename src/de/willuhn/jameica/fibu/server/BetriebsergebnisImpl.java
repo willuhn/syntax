@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/BetriebsergebnisImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2006/05/08 22:44:18 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -15,8 +9,8 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
@@ -27,7 +21,6 @@ import de.willuhn.jameica.fibu.rmi.Kontotyp;
 
 /**
  * Implementierung des Betriebsergebnisses des aktuellen Geschaeftsjahres.
- * @author willuhn
  */
 public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betriebsergebnis
 {
@@ -36,8 +29,14 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
   private final Date von;
   private final Date bis;
 
-  public BetriebsergebnisImpl(Geschaeftsjahr jahr, Date von, Date bis)
-      throws RemoteException
+  /**
+   * ct.
+   * @param jahr Geschaeftsjahr.
+   * @param von optionaler einschraenkender Zeitraum.
+   * @param bis optionaler einschraenkender Zeitraum.
+   * @throws RemoteException
+   */
+  public BetriebsergebnisImpl(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
   {
     super();
     this.jahr = jahr;
@@ -75,11 +74,20 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     return (Konto[]) list.toArray(new Konto[list.size()]);
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Betriebsergebnis#getEinnahmenWert()
+   */
   public double getEinnahmenWert() throws RemoteException
   {
     return getWertAusKonten(getEinnahmen());
   }
 
+  /**
+   * Liefert die Summe der Umsaetze aus den genannten Konten.
+   * @param konten die Konten.
+   * @return die Summe.
+   * @throws RemoteException
+   */
   private double getWertAusKonten(Konto[] konten) throws RemoteException
   {
     double wert = 0;
@@ -101,7 +109,7 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getUmsatz(jahr, von, bis) == 0.0d)
+      if (java.lang.Math.abs(k.getUmsatz(jahr, von, bis)) < 0.01d)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
@@ -109,6 +117,9 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
     return (Konto[]) list.toArray(new Konto[list.size()]);
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Betriebsergebnis#getAusgabenWert()
+   */
   public double getAusgabenWert() throws RemoteException
   {
     return getWertAusKonten(getAusgaben());
@@ -134,24 +145,3 @@ public class BetriebsergebnisImpl extends UnicastRemoteObject implements Betrieb
   }
 
 }
-
-
-/*********************************************************************
- * $Log: BetriebsergebnisImpl.java,v $
- * Revision 1.5  2006/05/08 22:44:18  willuhn
- * @N Debugging
- *
- * Revision 1.4  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.3  2005/09/26 23:51:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/09/04 23:10:14  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- *********************************************************************/
