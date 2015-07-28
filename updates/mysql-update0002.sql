@@ -9,7 +9,7 @@ CREATE TABLE property (
   UNIQUE (id),
   UNIQUE KEY name (name(255)),
   PRIMARY KEY (id)
-) TYPE = InnoDB;
+) ENGINE = InnoDB;
 
 COMMIT;
 

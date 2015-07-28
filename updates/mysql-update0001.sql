@@ -8,7 +8,7 @@ CREATE TABLE version (
   version int(5) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
-) TYPE = InnoDB;
+) ENGINE = InnoDB;
 
 COMMIT;
 

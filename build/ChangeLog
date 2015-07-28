@@ -1,5 +1,6 @@
 TRUNK
 
+  * BUG: BUGZILLA 1648 - Veraltete SQL-Syntax in den MySQL-Kommandos
   * BUG: In der Detailansicht wurden Daten des aktuellen Geschäftsjahres/Kontenrahmens angezeigt. Auch dann,
          wenn das Konto gar nicht Teil dieses war (sondern aus einem anderen Kontenrahmen stammt)
   * NEW: Länge von Kontonummern von 4 auf 6 Zeichen vergrößert
