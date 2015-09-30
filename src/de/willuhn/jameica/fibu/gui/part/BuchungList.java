@@ -262,7 +262,7 @@ public class BuchungList extends TablePart implements Extendable
             }
 
             String s = a.getText();
-            String nr = Integer.toHexString(a.getBelegnummer());
+            String nr = Integer.toString(a.getBelegnummer());
             s = s == null ? "" : s.toLowerCase();
             
             if (s.contains(text) || nr.contains(text))
