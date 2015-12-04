@@ -29,9 +29,9 @@ $math.reset("brutto")
       <td>$!{konto.Kontonummer}</td>
       <td>&nbsp;</td>
       <td style="width:70%">Anfangsbestands-Buchung</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${betrag})}&nbsp;${eur}</td>
       <td style="text-align:right">&nbsp;</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${betrag})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${betrag})}&nbsp;${eur}</td>
       <td>&nbsp;</td>
   
       $math.add("netto",${betrag})
@@ -52,9 +52,9 @@ $math.reset("brutto")
       <td>$!{konto.Kontonummer}</td>
       <td>#if ($buchung.isGeprueft())Ja#end</td>
       <td style="width:70%">$!{buchung.Text}</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${netto})} ${eur}</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${steuer})} ${eur}</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${netto})}&nbsp;${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${steuer})}&nbsp;${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${brutto})}&nbsp;${eur}</td>
       <td>$!{gegen.Kontonummer}</td>
   
       $math.add("netto",${netto})
@@ -71,9 +71,9 @@ $math.reset("brutto")
     <th colspan="3" style="white-space:nowrap;">Buchungen gesamt: ${count}</th>
     <th>&nbsp;</th>
     <th>Summen:</th>
-    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))} ${eur}</th>
-    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))} ${eur}</th>
-    <th class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("brutto"))} ${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("netto"))}&nbsp;${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("steuer"))}&nbsp;${eur}</th>
+    <th style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("brutto"))}&nbsp;${eur}</th>
     <th>&nbsp;</th>
   </tr>
 

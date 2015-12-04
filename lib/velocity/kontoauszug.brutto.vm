@@ -12,16 +12,16 @@
 
 	#set($gegen = $buchung.SollKonto)
     #if ($gegen.Kontonummer == $konto.Kontonummer)
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${brutto})}&nbsp;${eur}</td>
       <td>&nbsp;</td>
       #set($gegen = $buchung.HabenKonto)
       $math.add("soll",${brutto})
     #else
       <td>&nbsp;</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${brutto})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${brutto})}&nbsp;${eur}</td>
       $math.add("haben",${brutto})
     #end
-    <td class="nowrap" style="text-align:right">$!{decimalformat.format($buchung.Steuer)} %</td>
+    <td style="text-align:right; white-space: nowrap;">$!{decimalformat.format($buchung.Steuer)} %</td>
     <td>$!{gegen.Kontonummer}</td>
   </tr>
 #end

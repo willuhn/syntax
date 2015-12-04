@@ -42,8 +42,8 @@
 
     <tr>
       <td colspan="3" style="border-top:1px solid #000000">Gesamt:</td>
-      <td class="nowrap" style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("soll"))} ${eur}</td>
-      <td class="nowrap" style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("haben"))} ${eur}</td>
+      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("soll"))}&nbsp;${eur}</td>
+      <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("haben"))}&nbsp;${eur}</td>
       <td colspan="2" style="border-top:1px solid #000000">&nbsp;</td>
     </tr>
   </table>
@@ -66,23 +66,23 @@
       $math.add("oldsaldo",${anfangsbestand})
       $math.add("newsaldo",${anfangsbestand})
       <tr>
-        <td class="nowrap" style="color:#909090">Anfangsbestand (zum $!{dateformat.format(${jahr.Beginn})}):</td>
-        <td class="nowrap" style="color:#909090;text-align:right">$!{decimalformat.format($anfangsbestand)} ${eur}</td>
+        <td style="color:#909090">Anfangsbestand (zum $!{dateformat.format(${jahr.Beginn})}):</td>
+        <td style="color:#909090;text-align:right">$!{decimalformat.format($anfangsbestand)}&nbsp;${eur}</td>
       </tr>
     #end
 
     <tr>
-      <td class="nowrap">Alter Kontostand (zum $!{dateformat.format(${start})}):</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format($math.get("oldsaldo"))} ${eur}</td>
+      <td>Alter Kontostand (zum $!{dateformat.format(${start})}):</td>
+      <td style="text-align:right">$!{decimalformat.format($math.get("oldsaldo"))}&nbsp;${eur}</td>
     </tr>
     <tr>
-      <td class="nowrap">Summe der Ums&auml;tze:</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format($math.abs($math.get("umsatz")))} ${eur}</td>
+      <td>Summe der Ums&auml;tze:</td>
+      <td style="text-align:right">$!{decimalformat.format($math.abs($math.get("umsatz")))}&nbsp;${eur}</td>
     </tr>
 
     <tr>
-      <td class="nowrap" style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand (zum $!{dateformat.format(${end})}):</td>
-      <td class="nowrap" style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("newsaldo"))} ${eur}</b></td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000">Neuer Kontostand (zum $!{dateformat.format(${end})}):</td>
+      <td style="border-top:1px solid #000000;border-bottom:2px solid #000000;text-align:right;white-space:nowrap;"><b>$!{decimalformat.format($math.get("newsaldo"))}&nbsp;${eur}</b></td>
     </tr>
   </table>
 

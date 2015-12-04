@@ -1,5 +1,6 @@
 TRUNK
 
+  * CHG: Keine Zeilenumbrueche mehr zwischen Betrag und Waehrung in Auswertungen
   * NEW: Buchungsliste: Suchbegriff sucht auch in Buchungsnummer.
   * BUG: BUGZILLA 1648 - Veraltete SQL-Syntax in den MySQL-Kommandos
   * BUG: In der Detailansicht wurden Daten des aktuellen Geschäftsjahres/Kontenrahmens angezeigt. Auch dann,

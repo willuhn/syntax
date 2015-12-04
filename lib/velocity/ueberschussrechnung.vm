@@ -23,7 +23,7 @@ $math.reset("ausgaben")
     <tr>
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${umsatz})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${umsatz})}&nbsp;${eur}</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -38,15 +38,15 @@ $math.reset("ausgaben")
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
       <td>&nbsp;</td>
-      <td class="nowrap" style="text-align:right">$!{decimalformat.format(${umsatz})} ${eur}</td>
+      <td style="text-align:right">$!{decimalformat.format(${umsatz})}&nbsp;${eur}</td>
     </tr>
 
   #end
 
   <tr>
     <td colspan="2" style="border-top:1px solid #000000">Summen:</td>
-    <td class="nowrap" style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("einnahmen"))} ${eur}</td>
-    <td class="nowrap" style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ausgaben"))} ${eur}</td>
+    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("einnahmen"))}&nbsp;${eur}</td>
+    <td style="border-top:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ausgaben"))}&nbsp;${eur}</td>
   </tr>
 </table>
 
@@ -56,17 +56,17 @@ $math.reset("ausgaben")
 <table class="data">
   <tr>
     <td>Betriebseinnahmen</td>
-    <td class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("einnahmen"))} ${eur}</td>
+    <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("einnahmen"))}&nbsp;${eur}</td>
   </tr>
   <tr>
     <td>- Betriebsausgaben</td>
-    <td class="nowrap" style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ausgaben"))} ${eur}</td>
+    <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format($math.get("ausgaben"))}&nbsp;${eur}</td>
   </tr>
   <tr>
     <td colspan="2" style="border-top:1px solid #000000;">&nbsp;</td>
   </tr>
   <tr>
     <td style="font-weight:bold;border-bottom:1px solid #000000;">Ergebnis</td>
-    <td class="nowrap" style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($ergebnis.Betriebsergebnis)} ${eur}</td>
+    <td style="font-weight:bold;border-bottom:1px solid #000000;text-align:right;white-space:nowrap;">$!{decimalformat.format($ergebnis.Betriebsergebnis)}&nbsp;${eur}</td>
   </tr>
 </table>
