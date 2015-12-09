@@ -6,7 +6,7 @@
 #if($start)
   #if($end)
     <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
-    Hinweis: Der angegebene Zeitraum wird nur in der Spalte &quot;Umsatz&quot; berücksichtigt. 
+    Hinweis: Ein vom Geschäftsjahr abweichender Zeitraum wird nur in der Spalte &quot;Umsatz&quot; berücksichtigt.
     <br/><br/>
   #end
 #end
