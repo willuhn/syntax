@@ -1,5 +1,6 @@
 TRUNK
 
+  * NEW: Support für konkreten Zeitraum in Auswertung "Summen- und Saldenliste"
   * CHG: Keine Zeilenumbrueche mehr zwischen Betrag und Waehrung in Auswertungen
   * NEW: Buchungsliste: Suchbegriff sucht auch in Buchungsnummer.
   * BUG: BUGZILLA 1648 - Veraltete SQL-Syntax in den MySQL-Kommandos
