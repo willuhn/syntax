@@ -6,8 +6,7 @@
 #if($start)
   #if($end)
     <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
-    Hinweis: Ein vom Geschäftsjahr abweichender Zeitraum wird nur in der Spalte &quot;Umsatz&quot; berücksichtigt.
-    <br/><br/>
+    <br/>
   #end
 #end
 
@@ -16,8 +15,8 @@
     <th>Konto-Nr.</th>
     <th>Konto-Bezeichnung</th>
     <th style="text-align:right">Anfangsbestand</th>
-    <th style="text-align:right">Umsatz</th>
-    <th style="text-align:right">Saldo</th>
+    <th style="text-align:right">Umsatz im Zeitraum</th>
+    <th style="text-align:right">Saldo zum $!{dateformat.format(${end})}</th>
   </tr>
 
   #foreach($konto in $konten)
@@ -32,7 +31,7 @@
       #end
        
       <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format($konto.getUmsatz($jahr,$start,$end))}&nbsp;${eur}</td>
-      <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format($konto.getSaldo($jahr))}&nbsp;${eur}</td>
+      <td style="text-align:right;white-space:nowrap;">$!{decimalformat.format($konto.getSaldo($end))}&nbsp;${eur}</td>
     </tr>
 	#end
 	<tr>

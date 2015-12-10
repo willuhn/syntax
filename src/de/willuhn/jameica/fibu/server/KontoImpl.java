@@ -113,6 +113,32 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     SaldenCache.put(jahr,this.getKontonummer(),new Double(saldo));
     return saldo;
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getSaldo(java.util.Date)
+   */
+  @Override
+  public double getSaldo(Date date) throws RemoteException
+  {
+    // das ist ein neues Konto. Von daher wissen wir den Saldo natuerlich noch nicht ;)
+    if (getID() == null || getID().length() == 0 || date == null)
+      return 0;
+
+    Geschaeftsjahr jahr = findGeschaeftsjahr(date);
+    if (jahr == null)
+    {
+      Logger.warn("no geschaeftsjahr found for date " + date);
+      return 0.0d;
+    }
+
+    double saldo = 0.0d;
+    Anfangsbestand a = getAnfangsbestand(jahr);
+    if (a != null)
+      saldo = a.getBetrag();
+
+    saldo += getUmsatz(jahr,null,date);
+    return saldo;
+  }
 
   /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getUmsatzAfter(java.util.Date)

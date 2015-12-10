@@ -47,6 +47,14 @@ public interface Konto extends UserObject
   public double getSaldo(Geschaeftsjahr jahr) throws RemoteException;
   
   /**
+   * Liefert den Saldo zum angegeben Tag.
+   * @param date das Datum.
+   * @return der Saldo.
+   * @throws RemoteException
+   */
+  public double getSaldo(Date date) throws RemoteException;
+  
+  /**
    * Liefert den Umsatz des Kontos exclusive dem angegeben Datum.
    * @param date Datum.
    * @return Umsatz
