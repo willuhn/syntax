@@ -1,4 +1,6 @@
-TRUNK
+HEAD 2.7 (nightly)
+
+2016-03-29 Version 2.6.1
 
   * NEW: Support für konkreten Zeitraum in Auswertung "Summen- und Saldenliste"
   * CHG: Keine Zeilenumbrueche mehr zwischen Betrag und Waehrung in Auswertungen
@@ -12,6 +14,9 @@ TRUNK
   * NEW: Neues Feld "Notiz" in Buchungen
   * NEW: Neue Spalte "Geprüft" in Buchungsjournal
   * NEW: Textumbruch in Auswertungen zulassen
+
+2013-12-18 Version 2.6.0
+
   * BUG: BUGZILLA 1369 - Offset des Anschaffungsmonats nur in den Folgejahren dazu rechnen
   * NEW: Export von Hilfsbuchungen (ohne zugehoerige Hauptbuchungen) zulassen
   * BUG: KZ 91 war doppelt in ustva.vm
