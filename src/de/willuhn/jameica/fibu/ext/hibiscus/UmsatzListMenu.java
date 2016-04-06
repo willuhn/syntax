@@ -132,7 +132,19 @@ public class UmsatzListMenu implements Extension
       if (!jahre.hasNext())
         throw new ApplicationException(i18n.tr("Kein offenes Geschäftsjahr zum Mandanten der Buchungsvorlage gefunden"));
       
-      jahr = (Geschaeftsjahr) jahre.next();
+      Date testDate = u.getDatum();
+      if (testDate == null)
+        testDate = new Date();
+      while (jahre.hasNext())
+      {
+        Geschaeftsjahr test = (Geschaeftsjahr) jahre.next();
+        // Checken, ob der Zeitraum passt
+        if (test.check(testDate))
+        {
+          jahr = test;
+          break;
+        }
+      }
     }
     
     if (jahr == null)
