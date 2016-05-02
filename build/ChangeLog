@@ -1,5 +1,7 @@
 HEAD 2.7 (nightly)
 
+2016-05-02 Version 2.6.2
+
   * CHG: BUGZILLA 1593 - Nachtrag: Nicht das erste offene Geschaeftsjahr des Mandanten nehmen sondern das erste mit passendem Datum
 
 2016-03-29 Version 2.6.1
