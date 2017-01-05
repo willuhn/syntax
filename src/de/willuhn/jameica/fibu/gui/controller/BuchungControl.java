@@ -155,7 +155,7 @@ public class BuchungControl extends AbstractControl
             // Das Setzen des Focus geht zwar. Aber danach laesst sich die
             // Combo-Box nicht mehr bedienen. Scheint ein SWT-Bug zu sein.
             // getBetrag().focus();
-            new KontoListener().handleEvent(null);
+            new KontoListener(null).handleEvent(null);
           }
           catch (RemoteException e)
           {
@@ -243,7 +243,7 @@ public class BuchungControl extends AbstractControl
 
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     sollKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getSollKonto());
-    sollKontoAuswahl.addListener(new KontoListener());
+    sollKontoAuswahl.addListener(new KontoListener(sollKontoAuswahl));
     sollKontoAuswahl.setMandatory(true);
     sollKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return sollKontoAuswahl;
@@ -262,7 +262,7 @@ public class BuchungControl extends AbstractControl
 
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     habenKontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getHabenKonto());
-    habenKontoAuswahl.addListener(new KontoListener());
+    habenKontoAuswahl.addListener(new KontoListener(habenKontoAuswahl));
     habenKontoAuswahl.setMandatory(true);
     habenKontoAuswahl.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     return habenKontoAuswahl;
@@ -586,11 +586,25 @@ public class BuchungControl extends AbstractControl
    */
   private class KontoListener implements Listener
   {
+    private KontoInput input = null;
+    
+    /**
+     * ct.
+     * @param input
+     */
+    private KontoListener(KontoInput input)
+    {
+      this.input = input;
+    }
+    
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event)
     {
+      if (this.input != null && !this.input.hasChanged())
+        return;
+      
       // Texte und Kommentare ergaenzen
       try {
 
