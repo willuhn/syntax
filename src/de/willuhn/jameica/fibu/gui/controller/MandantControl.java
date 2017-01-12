@@ -270,7 +270,7 @@ public class MandantControl extends AbstractControl
       getMandant().setOrt((String)getOrt().getValue());
       getMandant().setSteuernummer((String)getSteuernummer().getValue());
       getMandant().setKuerzel((String)getKuerzel().getValue());
-
+      getMandant().setWaehrung((String)getWaehrung().getValue());
       
       // und jetzt speichern wir.
 			getMandant().store();

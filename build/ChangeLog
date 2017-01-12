@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * BUG: Im Mandanten geänderte Währung wurde nicht übernommen
   * BUG: BUGZILLA 1785 - Steuersatz nur dann auf Vorgabewert zurücksetzen, wenn Konto geändert wurde
   
 2016-05-02 Version 2.6.2
