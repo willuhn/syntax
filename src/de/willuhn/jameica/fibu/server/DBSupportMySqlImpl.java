@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/server/DBSupportMySqlImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2010/06/02 15:47:42 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -37,7 +32,6 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSupport
 {
-  
   /**
    * @see de.willuhn.datasource.GenericObject#getID()
    */
@@ -218,7 +212,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcDriver() throws RemoteException
   {
-    return "com.mysql.jdbc.Driver";
+    return "com.mysql.cj.jdbc.Driver";
   }
 
   /**
@@ -249,52 +243,3 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
   }
   
 }
-
-
-/*********************************************************************
- * $Log: DBSupportMySqlImpl.java,v $
- * Revision 1.12  2010/06/02 15:47:42  willuhn
- * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
- *
- * Revision 1.11  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.10  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.9.2.1  2009/06/23 10:08:29  willuhn
- * @C kleinere Todos
- *
- * Revision 1.9  2007/11/05 01:02:27  willuhn
- * @C Transaction-Isolation-Level in SynTAX
- *
- * Revision 1.8  2006/12/27 15:58:08  willuhn
- * @R removed unused method
- *
- * Revision 1.7  2006/12/27 14:42:23  willuhn
- * @N Update fuer MwSt.-Erhoehung
- *
- * Revision 1.6  2006/11/21 13:17:56  willuhn
- * @B merged encoding bug into mysql support
- *
- * Revision 1.5  2006/11/17 00:11:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2006/06/29 15:11:31  willuhn
- * @N Setup-Wizard fertig
- * @N Auswahl des Geschaeftsjahres
- *
- * Revision 1.3  2006/06/19 16:25:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/06/13 22:52:10  willuhn
- * @N Setup wizard redesign and code cleanup
- *
- * Revision 1.1  2006/06/12 23:05:47  willuhn
- * *** empty log message ***
- *
- **********************************************************************/

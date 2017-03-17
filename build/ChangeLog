@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * CHG: Migration des MySQL-Treibers von com.mysql.jdbc.Driver auf com.mysql.cj.jdbc.Driver
   * BUG: Im Mandanten geänderte Währung wurde nicht übernommen
   * BUG: BUGZILLA 1785 - Steuersatz nur dann auf Vorgabewert zurücksetzen, wenn Konto geändert wurde
   
