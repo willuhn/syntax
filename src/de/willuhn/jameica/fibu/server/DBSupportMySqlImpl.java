@@ -212,7 +212,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcDriver() throws RemoteException
   {
-    return "com.mysql.cj.jdbc.Driver";
+    return "com.mysql.jdbc.Driver";
   }
 
   /**
