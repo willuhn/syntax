@@ -33,12 +33,7 @@ $math.reset("vst")
   #end
 #end
 
-#if($start)
-  #if($end)
-    <h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
-    <br/>
-  #end
-#end
+<h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
 
 <table class="data">
 

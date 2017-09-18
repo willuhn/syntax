@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: Auswertung "Ergebnis: Einnahme-Überschuss-Rechnung (EÜR)" jetzt auf tag-genauer Basis möglich
   * CHG: MySQL-Treiber wieder zurueck von  com.mysql.cj.jdbc.Driver auf com.mysql.jdbc.Driver migriert 
   * CHG: Migration des MySQL-Treibers von com.mysql.jdbc.Driver auf com.mysql.cj.jdbc.Driver
   * BUG: Im Mandanten geänderte Währung wurde nicht übernommen

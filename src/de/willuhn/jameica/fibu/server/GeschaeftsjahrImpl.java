@@ -504,6 +504,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
     return new BetriebsergebnisImpl(this);
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getBetriebsergebnis(java.util.Date, java.util.Date)
+   */
+  @Override
+  public Betriebsergebnis getBetriebsergebnis(Date start, Date end) throws RemoteException
+  {
+    return new BetriebsergebnisImpl(this,start,end);
+  }
 
   /**
    * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getBetriebsergebnisseMonatlich()

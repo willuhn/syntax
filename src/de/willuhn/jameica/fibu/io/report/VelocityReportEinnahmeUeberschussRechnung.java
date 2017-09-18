@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/io/report/VelocityReportEinnahmeUeberschussRechnung.java,v $
- * $Revision: 1.1 $
- * $Date: 2010/08/27 10:18:14 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -45,27 +40,9 @@ public class VelocityReportEinnahmeUeberschussRechnung extends AbstractVelocityR
   public ReportData createPreset()
   {
     ReportData data = super.createPreset();
-    data.setNeedDatum(false);
+    data.setNeedDatum(true);
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-einnahme-ueberschuss.html",DATEFORMAT.format(new Date())));
     return data;
   }
 }
-
-
-/*********************************************************************
- * $Log: VelocityReportEinnahmeUeberschussRechnung.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.2  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- **********************************************************************/

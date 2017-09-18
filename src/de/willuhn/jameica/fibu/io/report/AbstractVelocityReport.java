@@ -30,6 +30,7 @@ import org.apache.velocity.app.VelocityEngine;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.services.VelocityService;
@@ -103,9 +104,13 @@ public abstract class AbstractVelocityReport extends AbstractReport
         throw new ApplicationException(i18n.tr("Kein Template angegeben"));
       
       // Basis-Daten der User-Eingaben noch uebernehmen
-      vData.addObject("jahr",       data.getGeschaeftsjahr());
-      vData.addObject("start",      data.getStartDatum());
-      vData.addObject("end",        data.getEndDatum());
+      final Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+      final Date start = data.getStartDatum();
+      final Date end   = data.getEndDatum(); 
+      vData.addObject("jahr",       jahr);
+      vData.addObject("start",      start != null ? start : jahr.getBeginn());
+      vData.addObject("end",        end != null ? end : jahr.getEnde());
+      
       vData.addObject("startkonto", data.getStartKonto());
       vData.addObject("endkonto",   data.getEndKonto());
 

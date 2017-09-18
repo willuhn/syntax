@@ -156,7 +156,12 @@ public class Math
     Double d = (Double) this.table.get(name);
     if (d == null)
       return 0.0d;
-    return d.doubleValue();
+    
+    double result = d.doubleValue();
+    if (Double.isNaN(result))
+      return 0.0d;
+    
+    return result;
   }
   
   /**

@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.jameica.fibu.gui.util.CustomDateFormat;
-import de.willuhn.jameica.fibu.gui.util.CustomDecimalFormat;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -29,6 +28,7 @@ import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.View;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.jameica.util.CustomDecimalFormat;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;

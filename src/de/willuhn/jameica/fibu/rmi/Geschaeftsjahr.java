@@ -1,13 +1,8 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/rmi/Geschaeftsjahr.java,v $
- * $Revision: 1.12 $
- * $Date: 2009/07/03 10:52:19 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
+ * GPLv2
  *
  **********************************************************************/
 
@@ -152,50 +147,20 @@ public interface Geschaeftsjahr extends DBObject
    * @throws RemoteException
    */
   public Betriebsergebnis getBetriebsergebnis() throws RemoteException;
+  
+  /**
+   * Liefert das Betriebsergebnis des Geschaeftsjahres fuer den angegebenen Zeitraum.
+   * @param start Das Startdatum.
+   * @param end das Enddatum.
+   * @return Betriebsergebnis.
+   * @throws RemoteException
+   */
+  public Betriebsergebnis getBetriebsergebnis(Date start, Date end) throws RemoteException;
 
   /**
    * Liefert die Betriebsergebnisse jedes Monats des Geschaeftsjahres.
    * @return Map von Betriebsergebnissen.
    * @throws RemoteException
    */
-  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich()
-      throws RemoteException;
+  public Map<String, Betriebsergebnis> getBetriebsergebnisseMonatlich() throws RemoteException;
 }
-
-/*********************************************************************
- * $Log: Geschaeftsjahr.java,v $
- * Revision 1.12  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.10  2006/05/30 23:33:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/09/05 15:00:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2005/09/05 13:14:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- * Revision 1.6  2005/09/01 23:28:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.4  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.2  2005/08/29 16:43:14  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 12:17:28  willuhn
- * @N Geschaeftsjahr
- *
- **********************************************************************/

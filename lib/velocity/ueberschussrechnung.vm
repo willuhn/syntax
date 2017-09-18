@@ -1,6 +1,10 @@
-#set($ergebnis       = $!{jahr.Betriebsergebnis})
+#set($start = $!{export.getObjects("start")})
+#set($end = $!{export.getObjects("end")})
+#set($ergebnis       = $!{jahr.getBetriebsergebnis($start,$end)})
 #set($einnahmen      = $!{ergebnis.Einnahmen})
 #set($ausgaben       = $!{ergebnis.Ausgaben})
+
+<h2>Zeitraum: $!{dateformat.format(${start})} - $!{dateformat.format(${end})}</h2>
 
 <h1>I. Aufteilung der Betr&auml;ge nach Konten:</h1>
 
@@ -17,7 +21,7 @@ $math.reset("ausgaben")
 
   #foreach($konto in $einnahmen)
 
-    #set($umsatz = $konto.getUmsatz(${jahr}))
+    #set($umsatz = $konto.getUmsatz(${jahr},${start},${end}))
     $math.add("einnahmen",${umsatz})
 
     <tr>
@@ -31,7 +35,7 @@ $math.reset("ausgaben")
 
   #foreach($konto in $ausgaben)
 
-    #set($umsatz = $konto.getUmsatz(${jahr}))
+    #set($umsatz = $konto.getUmsatz(${jahr},${start},${end}))
     $math.add("ausgaben",${umsatz})
 
     <tr>
