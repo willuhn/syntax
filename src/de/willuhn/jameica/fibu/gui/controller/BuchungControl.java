@@ -439,7 +439,6 @@ public class BuchungControl extends AbstractControl
     SteuerListener sl = new SteuerListener();
     steuer.addListener(sl);
     sl.handleEvent(null);
-    steuer.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     steuer.setMandatory(true);
 		return steuer;
 	}
@@ -548,6 +547,21 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
+        try
+        {
+          Konto sk = (Konto) getSollKontoAuswahl().getValue();
+          Konto hk = (Konto) getHabenKontoAuswahl().getValue();
+          Steuer ss = sk == null ? null : sk.getSteuer();
+          Steuer hs = hk == null ? null : hk.getSteuer();
+          Steuer s = (ss != null ? ss : hs);
+          getSteuer().setEnabled(s != null && !getBuchung().getGeschaeftsjahr().isClosed());
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to determine steuer",e);
+          GUI.getView().setErrorText(i18n.tr("Fehler beim Ermitten des Steuersatzes für das Konto"));
+        }
+
         Double betrag = (Double) getBetrag().getValue();
         double brutto = betrag == null ? getBuchung().getBruttoBetrag() : betrag.doubleValue();
         double steuer = 0d;
@@ -641,15 +655,12 @@ public class BuchungControl extends AbstractControl
           Steuer ss = sk == null ? null : sk.getSteuer();
           Steuer hs = hk == null ? null : hk.getSteuer();
           Steuer s = (ss != null ? ss : hs);
-          getSteuer().setEnabled(s != null);
-          if (s != null)
-          {
-            double satz = s.getSatz();
-            getSteuer().enable();
-            getSteuer().setValue(new Double(satz));
-            new SteuerListener().handleEvent(null);
-            GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
-          }
+          
+          // BUGZILLA 1828 - Sicherstellen, dass kein Steuersatz mehr drin steht, wenn das Feld Steuer deaktiviert wurde.
+          Double satz = new Double(s != null ? s.getSatz() : 0);
+          getSteuer().setValue(satz);
+          new SteuerListener().handleEvent(null);
+          GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
         }
         catch (Exception e)
         {
