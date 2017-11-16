@@ -10,6 +10,8 @@ package de.willuhn.jameica.fibu.ext.hibiscus;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -172,7 +174,7 @@ public class UmsatzListMenu implements Extension
       buchung.setSollKonto(soll);
       buchung.setHabenKonto(haben);
       buchung.setSteuer(template.getSteuer());
-      buchung.setText(template.getText());
+      buchung.setText(StringUtils.trimToEmpty(template.getText()));
     }
 
     // Wenn der Umsatz Werte mitbringt, ersetzen wir die gegen die von der Vorlage
@@ -195,18 +197,33 @@ public class UmsatzListMenu implements Extension
       buchung.setDatum(date);
     
     // Wir werfen alle Verwendungszwecke zusammen
-    String zweck = (String) u.getAttribute("mergedzweck");
-    if (zweck != null && zweck.length() > 0)
+    String text  = StringUtils.trimToNull((String) u.getAttribute("mergedzweck"));
+    String name  = StringUtils.trimToNull(u.getGegenkontoName());
+    if (name != null )
     {
       // Kontoinhaber noch anhaengen, falls vorhanden
-      String name = u.getGegenkontoName();
-      if (name != null && name.length() > 0)
-        zweck = zweck.trim() + ", " + name;
-      // Noch abschneiden, falls er zu lang ist
-      if (zweck.length() > 255)
-        zweck = zweck.substring(0,255);
-      buchung.setText(zweck);
+      if (text != null)
+      {
+        // Wir haben einen Verwendungszweck, dann nehmen wir den
+        text = text + ", " + name;
+      }
+      else
+      {
+        // Wir haben keinen Verwendungszweck, dann behalten wir wenigstens den Template-Text
+        // und haengen dort den Namen an
+        text = buchung.getText();
+        text = text != null && text.length() > 0 ? (text + ", " + name) : name;
+      }
     }
+    
+    if (text != null)
+    {
+      // Noch abschneiden, falls er zu lang ist
+      if (text.length() > 255)
+        text = text.substring(0,255);
+      buchung.setText(text);
+    }
+
     return buchung;
   }
 

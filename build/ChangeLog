@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: BUGZILLA 1928 - Zahlungsempfänger auch dann übernehmen, wenn Umsatzbuchung keinen Verwendungszweck besitzt
   * BUG: BUGZILLA 1828 - Steuersatz auf 0% ändern, wenn in einer Buchung ein steuerpflichtiges Konto gegen eines ohne Steuer ersetzt wird
   * NEW: Auswertung "Ergebnis: Einnahme-Überschuss-Rechnung (EÜR)" jetzt auf tag-genauer Basis möglich
   * CHG: MySQL-Treiber wieder zurueck von  com.mysql.cj.jdbc.Driver auf com.mysql.jdbc.Driver migriert 
