@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/menus/BuchungListMenu.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/08/30 16:31:43 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -16,10 +10,9 @@ package de.willuhn.jameica.fibu.gui.menus;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
 import de.willuhn.jameica.fibu.gui.action.BuchungExport;
-import de.willuhn.jameica.fibu.gui.action.BuchungGeprueft;
 import de.willuhn.jameica.fibu.gui.action.BuchungImport;
+import de.willuhn.jameica.fibu.gui.action.BuchungMarkChecked;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
-import de.willuhn.jameica.fibu.gui.action.BuchungUnGeprueft;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -45,8 +38,8 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung..."), new BNeu(),"list-add.png"));
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungDelete(),"user-trash-full.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
-    this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungGeprueft(),false,"emblem-default.png"));
-    this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungUnGeprueft(),true,"edit-undo.png"));
+    this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungMarkChecked(true),false,"emblem-default.png"));
+    this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungMarkChecked(false),true,"edit-undo.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new BuchungExport(),"document-save.png"));
     this.addItem(new ContextMenuItem(i18n.tr("Importieren..."),new BuchungImport(),"document-open.png"));
@@ -132,37 +125,3 @@ public class BuchungListMenu extends ContextMenu
     
   }
 }
-
-
-/*********************************************************************
- * $Log: BuchungListMenu.java,v $
- * Revision 1.7  2010/08/30 16:31:43  willuhn
- * @N Import und Export von Buchungen im XML-Format
- *
- * Revision 1.6  2010/06/04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.5  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.4.2.1  2009/06/23 10:45:53  willuhn
- * @N Buchung nach Aenderung live aktualisieren
- *
- * Revision 1.4  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.3  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.2  2005/08/25 21:58:57  willuhn
- * @N SKR04
- *
- * Revision 1.1  2005/08/16 23:14:36  willuhn
- * @N velocity export
- * @N context menus
- * @B bugfixes
- *
- **********************************************************************/

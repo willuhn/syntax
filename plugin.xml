@@ -45,6 +45,10 @@
     <service name="engine"   depends="database" autostart="true" class="de.willuhn.jameica.fibu.rmi.BuchungsEngine" />
   </services>
   
+  <messaging>
+    <consumer queue="hibiscus.umsatz.markchecked" class="de.willuhn.jameica.fibu.messaging.HibiscusUmsatzMarkCheckedMessageConsumer" />
+  </messaging>
+  
   <extensions>
     <!-- Hibiscus-Extensions -->
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart"   extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList" requires="hibiscus" />

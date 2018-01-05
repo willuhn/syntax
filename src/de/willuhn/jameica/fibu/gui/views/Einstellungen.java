@@ -50,6 +50,8 @@ public class Einstellungen extends AbstractView
 
     group.addHeadline(i18n.tr("System-Einstellungen"));
     group.addInput(control.getSystemDataWritable());
+    if (Application.getPluginLoader().isInstalled("de.willuhn.jameica.hbci.HBCI"))
+      group.addInput(control.getSyncCheckmarks());
     
     group.addHeadline(i18n.tr("Buchungsrelevante Einstellungen"));
     group.addInput(control.getAbschreibungsKonto());

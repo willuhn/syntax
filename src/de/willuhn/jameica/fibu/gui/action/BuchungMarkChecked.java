@@ -1,22 +1,18 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/action/AbstractBuchungGeprueft.java,v $
- * $Revision: 1.2 $
- * $Date: 2009/07/03 10:52:19 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
 package de.willuhn.jameica.fibu.gui.action;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -24,11 +20,22 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Aktion Markieren von Buchungen als geprueft oder ungeprueft.
+ * Markiert Buchungen als geprueft oder ungeprueft.
  */
-public abstract class AbstractBuchungGeprueft implements Action
+public class BuchungMarkChecked implements Action
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  
+  private boolean state = false;
+  
+  /**
+   * ct.
+   * @param state true, wenn die Markierung gesetzt werden soll, sonst false.
+   */
+  public BuchungMarkChecked(boolean state)
+  {
+    this.state = state;
+  }
   
 
   /**
@@ -50,14 +57,27 @@ public abstract class AbstractBuchungGeprueft implements Action
         b = new Buchung[] {(Buchung) context};
       else
         b = (Buchung[]) context;
+
+      boolean haveHibiscus = (Application.getPluginLoader().isInstalled("de.willuhn.jameica.hbci.HBCI"));
+      boolean haveSync     = Settings.getSyncCheckmarks();
       
       for (int i=0;i<b.length;++i)
       {
         try
         {
-          b[i].setGeprueft(getNewState());
+          b[i].setGeprueft(this.state);
           b[i].store();
           Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(b[i]));
+          
+          // Wenn Hibiscus installiert ist und die Buchung aus einem Hibiscus-Umsatz erzeugt wurde, synchronisieren wir
+          // den Geprueft-Status zurueck nach Hibiscus
+          if (haveHibiscus && haveSync)
+          {
+            String hid = b[i].getHibiscusUmsatzID();
+            if (hid != null && hid.length() > 0)
+              Application.getMessagingFactory().getMessagingQueue("syntax.buchung.markchecked").sendMessage(new QueryMessage(Boolean.toString(this.state),hid));
+          }
+          
         }
         catch (Exception e)
         {
@@ -76,26 +96,4 @@ public abstract class AbstractBuchungGeprueft implements Action
       throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Buchung(en): {0}",e.getMessage()));
     }
   }
-  
-  /**
-   * Liefert den neuen Pruefungs-Status der Buchung.
-   * @return true oder false.
-   */
-  abstract boolean getNewState();
-
 }
-
-
-/*********************************************************************
- * $Log: AbstractBuchungGeprueft.java,v $
- * Revision 1.2  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.1  2009/06/23 10:45:53  willuhn
- * @N Buchung nach Aenderung live aktualisieren
- *
- * Revision 1.1  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- **********************************************************************/

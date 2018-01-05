@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/Settings.java,v $
- * $Revision: 1.52 $
- * $Date: 2012/03/28 22:28:16 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 package de.willuhn.jameica.fibu;
@@ -448,37 +442,22 @@ public class Settings
   {
     SETTINGS.setAttribute("systemdata.writable",b);
   }
+  
+  /**
+   * Liefert true, wenn die Geprueft-Markierung von SynTAX- mit Hibiscus-Buchungen synchronisiert werden soll.
+   * @return true, wenn die Geprueft-Markierung von SynTAX- mit Hibiscus-Buchungen synchronisiert werden soll.
+   */
+  public static boolean getSyncCheckmarks()
+  {
+    return SETTINGS.getBoolean("checkmarks.sync",true);
+  }
+  
+  /**
+   * Legt fest, ob die Geprueft-Markierung von SynTAX- mit Hibiscus-Buchungen synchronisiert werden soll.
+   * @param b true, wenn die Geprueft-Markierung von SynTAX- mit Hibiscus-Buchungen synchronisiert werden soll.
+   */
+  public static void setSyncCheckmarks(boolean b)
+  {
+    SETTINGS.setAttribute("checkmarks.sync",b);
+  }
 }
-
-/*********************************************************************
- * $Log: Settings.java,v $
- * Revision 1.52  2012/03/28 22:28:16  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.51  2011-03-21 11:17:27  willuhn
- * @N BUGZILLA 1004
- *
- * Revision 1.50  2010-11-12 16:27:27  willuhn
- * @C Plugin-Classloader statt dem von Jameica verwenden
- *
- * Revision 1.49  2010-08-02 22:42:03  willuhn
- * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
- *
- * Revision 1.48  2010/06/01 16:35:48  willuhn
- * @C Konstanten verschoben
- *
- * Revision 1.47  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.45.2.3  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
- *
- * Revision 1.45.2.2  2008/06/25 10:06:51  willuhn
- * *** empty log message ***
- *
- * Revision 1.45.2.1  2008/06/25 10:06:19  willuhn
- * @C Default-GWG-Wert aktualisiert
- **********************************************************************/

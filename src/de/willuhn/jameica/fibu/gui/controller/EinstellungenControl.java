@@ -1,13 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/syntax/syntax/src/de/willuhn/jameica/fibu/gui/controller/EinstellungenControl.java,v $
- * $Revision: 1.5 $
- * $Date: 2010/06/01 16:37:22 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) by Olaf Willuhn
+ * GPLv2
  *
  **********************************************************************/
 
@@ -46,12 +40,14 @@ public class EinstellungenControl extends AbstractControl
   private KontoInput afaKontoGWG           = null;
   private Input gwgWert                    = null;
   private CheckboxInput systemDataWritable = null;
+  private CheckboxInput syncCheckmarks     = null;
   
   /**
    * ct.
    * @param view
    */
-  public EinstellungenControl(AbstractView view) {
+  public EinstellungenControl(AbstractView view)
+  {
     super(view);
     this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   }
@@ -128,7 +124,21 @@ public class EinstellungenControl extends AbstractControl
     }
     return this.systemDataWritable;
   }
-  
+
+  /**
+   * Liefert eine Checkbox, mit der die Synchronisierung der Geprueft-Markierung aktiviert werden kann.
+   * @return Checkbox.
+   */
+  public CheckboxInput getSyncCheckmarks()
+  {
+    if (this.syncCheckmarks != null)
+      return this.syncCheckmarks;
+    
+    this.syncCheckmarks = new CheckboxInput(Settings.getSyncCheckmarks());
+    this.syncCheckmarks.setName(i18n.tr("Geprüft-Markierung mit Buchungen aus Hibiscus-Umsätzen synchronisieren"));
+    return this.syncCheckmarks;
+  }
+
   /**
    * Speichert die Einstellungen.
    */
@@ -177,6 +187,9 @@ public class EinstellungenControl extends AbstractControl
       }
       getSystemDataWritable().setValue(Boolean.valueOf(sysChange));
       Settings.setSystemDataWritable(sysChange);
+      
+      boolean sync = ((Boolean) getSyncCheckmarks().getValue()).booleanValue();
+      Settings.setSyncCheckmarks(sync);
 
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }
@@ -193,33 +206,3 @@ public class EinstellungenControl extends AbstractControl
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: EinstellungenControl.java,v $
- * Revision 1.5  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.4  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.3.2.1  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
- *
- * Revision 1.3  2006/01/03 23:58:35  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.2  2005/10/13 15:44:33  willuhn
- * @B bug 139
- *
- * Revision 1.1  2005/10/06 17:27:59  willuhn
- * @N KontoInput
- * @N Einstellungen
- *
- *********************************************************************/

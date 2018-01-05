@@ -288,7 +288,7 @@ public class UmsatzListMenu implements Extension
   {
     // BUGZILLA 1593 - Wir suchen Mandanten-uebergreifend
     DBIterator list = Settings.getDBService().createList(Buchung.class);
-    list.addFilter("hb_umsatz_id = ?",new Object[]{u.getID()});
+    list.addFilter("hb_umsatz_id = ?",u.getID());
     return list.hasNext();
   }
 
