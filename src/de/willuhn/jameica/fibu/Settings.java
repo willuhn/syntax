@@ -22,8 +22,7 @@ import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.View;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.CustomDecimalFormat;
 import de.willuhn.logging.Logger;
@@ -387,9 +386,7 @@ public class Settings
 
     if (jahr == null)
     {
-      View view = GUI.getView();
-      if (view != null)
-        view.setLogoText(i18n.tr("Kein aktives Geschäftsjahr definiert"));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kein aktives Geschäftsjahr definiert"),StatusBarMessage.TYPE_INFO));
       return;
     }
 
@@ -400,9 +397,7 @@ public class Settings
                          (String)jahr.getAttribute(jahr.getPrimaryAttribute()),
                          jahr.isClosed() ? i18n.tr("geschlossen") : "in Bearbeitung"};
       
-      View view = GUI.getView();
-      if (view != null)
-        view.setLogoText(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Mandant: {0}, Jahr: {1}, Status: {2}", params),StatusBarMessage.TYPE_INFO));
     }
     catch (RemoteException e)
     {
