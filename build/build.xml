@@ -144,8 +144,8 @@
     <antcall target="addwebapps" />
 
     <copy file="plugin.xml" todir="${project.zipdir}" />
-    <copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
-    <copy file="${build.dir}/ChangeLog" todir="${project.zipdir}" />
+    <copy file="${basedir}/LICENSE" todir="${project.zipdir}" />
+    <copy file="${basedir}/COPYING" todir="${project.zipdir}" />
 
     <mkdir dir="${project.zipdir}/sql" />
     <copy todir="${project.zipdir}/sql">
@@ -186,6 +186,8 @@
         <include name="${src.dir}/**" />
         <include name="${update.dir}/**" />
         <include name="${sql.dir}/**" />
+        <include name="LICENSE" />
+        <include name="COPYING" />
         <include name="${build.dir}/**" />
         <exclude name="${build.dir}/BUILD" />
       </fileset>
