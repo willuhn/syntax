@@ -269,7 +269,7 @@ public class AuswertungControl extends AbstractControl
         {
           handleExecute();
         }
-      },null,true,"gnome-finance.png");
+      },null,true,"x-office-spreadsheet.png");
     }
     this.startButton.setEnabled(false);
     return this.startButton;

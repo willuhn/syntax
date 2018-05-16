@@ -1,5 +1,6 @@
 HEAD 2.7 (nightly)
 
+  * NEW: HiDPI-Icons
   * NEW: Neue Option "Geprüft-Markierung mit Buchungen aus Hibiscus-Umsätzen synchronisieren"
   * NEW: BUGZILLA 1829 - Zahlungsempfänger auch dann übernehmen, wenn Umsatzbuchung keinen Verwendungszweck besitzt
   * BUG: BUGZILLA 1828 - Steuersatz auf 0% ändern, wenn in einer Buchung ein steuerpflichtiges Konto gegen eines ohne Steuer ersetzt wird

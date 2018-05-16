@@ -57,7 +57,7 @@ public class KontenrahmenList extends TablePart
     this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant_id");
     
     ContextMenu menu = new ContextMenu();
-    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."),new KontenrahmenClone(),"gtk-dnd-multiple.png"));
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."),new KontenrahmenClone(),"edit-copy.png"));
     
     // TODO: Support zum Loeschen von Kontenrahmen fehlt noch
 //    menu.addItem(ContextMenuItem.SEPARATOR);

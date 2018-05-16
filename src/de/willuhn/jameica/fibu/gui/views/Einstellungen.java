@@ -76,7 +76,7 @@ public class Einstellungen extends AbstractView
       {
         new KontenrahmenClone().handleAction(list.getSelection());
       }
-    },null,false,"gtk-dnd-multiple.png");
+    },null,false,"edit-copy.png");
     buttonArea2.paint(this.getParent());
   }
 }

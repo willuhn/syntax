@@ -21,22 +21,22 @@
 
   <menu>
     <item id="syntax.menu" name="SynTAX">
-      <item id="syntax.menu.buchung"          enabled="false" name="Neue B&amp;uchung"        					shortcut="CTRL+U" icon="evolution-calendar.png" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
+      <item id="syntax.menu.buchung"          enabled="false" name="Neue B&amp;uchung"        					shortcut="CTRL+U" icon="emblem-documents.png" action="de.willuhn.jameica.fibu.gui.action.BuchungNeu" />
 	    <item id="syntax.menu.geschaeftsjahre"  enabled="false" name="Geschäftsjahr auswählen" 						shortcut="CTRL+G" icon="document-open.png"      action="de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrChoose" />
       <item name="-" />
 	    <item id="syntax.menu.mandanten"        enabled="false" name="Mandanten" 													icon="system-users.png"        action="de.willuhn.jameica.fibu.gui.action.MandantListe" />
-	    <item id="syntax.menu.finanzaemter"     enabled="false" name="Finanzämter"  											icon="emblem-shared.png"       action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
+	    <item id="syntax.menu.finanzaemter"     enabled="false" name="Finanzämter"  											icon="applications-office.png" action="de.willuhn.jameica.fibu.gui.action.FinanzamtListe" />
       <item id="syntax.menu.einstellungen"    enabled="false" name="&amp;Einstellungen"       					icon="document-properties.png" action="de.willuhn.jameica.fibu.gui.action.Einstellungen" />
     </item>
   </menu>
 
   <navigation>
 	  <item enabled="false" id="syntax.navi" 									 name="SynTAX"					  icon-close="folder.png">
-	    <item enabled="false" id="syntax.navi.buchungen" 			 name="Buchungen" 				icon-close="evolution-calendar.png" action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
-	    <item enabled="false" id="syntax.navi.konten" 				 name="Konten"    				icon-close="gtk-dnd-multiple.png" action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
+	    <item enabled="false" id="syntax.navi.buchungen" 			 name="Buchungen" 				icon-close="emblem-documents.png" action="de.willuhn.jameica.fibu.gui.action.BuchungListe" />
+	    <item enabled="false" id="syntax.navi.konten" 				 name="Konten"    				icon-close="edit-copy.png" action="de.willuhn.jameica.fibu.gui.action.KontoListe" />
 	    <item enabled="false" id="syntax.navi.anfangsbestand"  name="Anfangsbestände"   icon-close="emblem-package.png" action="de.willuhn.jameica.fibu.gui.action.AnfangsbestandListe" />
 	    <item enabled="false" id="syntax.navi.anlagevermoegen" name="Anlagevermögen"    icon-close="system-file-manager.png" action="de.willuhn.jameica.fibu.gui.action.AnlagevermoegenListe" />
-	    <item enabled="false" id="syntax.navi.auswertungen"    name="Auswertungen"   		icon-close="gnome-finance.png" action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
+	    <item enabled="false" id="syntax.navi.auswertungen"    name="Auswertungen"   		icon-close="x-office-spreadsheet.png" action="de.willuhn.jameica.fibu.gui.action.Auswertungen" />
 	  </item>
   </navigation>
 
