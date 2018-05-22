@@ -34,10 +34,10 @@
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
-    <property name="define.jarfilename"     value="${plugin.name}.jar" />
-    <property name="define.zipfilename"     value="${plugin.name}.zip" />
-    <property name="define.srcfilename"     value="${plugin.name}.src.zip" />
-    <property name="define.javadocfilename" value="${plugin.name}.javadoc.zip" />
+    <property name="define.jarfilename"     value="${plugin.name}-${plugin.version}.jar" />
+    <property name="define.zipfilename"     value="${plugin.name}-${plugin.version}.zip" />
+    <property name="define.srcfilename"     value="${plugin.name}-${plugin.version}.src.zip" />
+    <property name="define.javadocfilename" value="${plugin.name}-${plugin.version}.javadoc.zip" />
 
     <property name="project.nightly" value="releases/nightly" />
     <property name="project.release" value="releases/${plugin.version}-${build.number}" />
@@ -253,8 +253,8 @@
   <target depends="init,compile,jar,javadoc,src" description="build nightly build" name="nightly">
     <mkdir dir="${project.nightly}" />
 
-    <copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.zip" />
-    <copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}.src.zip" />
+    <copy file="${project.release}/${define.zipfilename}" todir="${project.nightly}" />
+    <copy file="${project.release}/${define.srcfilename}" todir="${project.nightly}" />
 
     <delete dir="${project.release}" />
   </target>

@@ -1,4 +1,6 @@
-HEAD 2.7 (nightly)
+HEAD 2.9 (nightly)
+
+2018-05-22 Version 2.8.0
 
   * NEW: HiDPI-Icons
   * NEW: Neue Option "Geprüft-Markierung mit Buchungen aus Hibiscus-Umsätzen synchronisieren"
