@@ -34,7 +34,7 @@
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
-    <property name="define.jarfilename"     value="${plugin.name}-${plugin.version}.jar" />
+    <property name="define.jarfilename"     value="${plugin.name}.jar" />
     <property name="define.zipfilename"     value="${plugin.name}-${plugin.version}.zip" />
     <property name="define.srcfilename"     value="${plugin.name}-${plugin.version}.src.zip" />
     <property name="define.javadocfilename" value="${plugin.name}-${plugin.version}.javadoc.zip" />
