@@ -58,18 +58,19 @@ public class AuswertungControl extends AbstractControl
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(Report.class);
   
-  private SelectInput auswertungen = null;
-  private SelectInput jahr         = null;
-  private DateInput start          = null;
-  private DateInput end            = null;
-  private LabelInput notiz         = null;
+  private SelectInput auswertungen  = null;
+  private SelectInput jahr          = null;
+  private DateInput start           = null;
+  private DateInput end             = null;
+  private LabelInput notiz          = null;
   
-  private KontoInput startKonto    = null;
-  private KontoInput endKonto      = null;
+  private KontoInput startKonto     = null;
+  private KontoInput endKonto       = null;
   
-  private Button startButton       = null;
+  private Button startButton        = null;
   
-  private CheckboxInput open       = null;
+  private CheckboxInput leereKonten = null;
+  private CheckboxInput open        = null;
   
   /**
    * @param view
@@ -108,6 +109,7 @@ public class AuswertungControl extends AbstractControl
           getStart().setEnabled(data != null && data.isNeedDatum());
           getEnd().setEnabled(data != null && data.isNeedDatum());
           getStartButton().setEnabled(data != null);
+          getLeereKonten().setEnabled(data != null && data.isNeedLeereKonten());
           getOpenAfterCreation().setEnabled(data != null);
         }
         catch (Exception e)
@@ -298,6 +300,30 @@ public class AuswertungControl extends AbstractControl
     return this.open;
   }
 
+  
+  /**
+   * Liefert eine Checkbox, mit der der User festlegen kann, ob
+   * auch Konten ohne Buchungen mit ausgegeben werden sollen.
+   * @return Checkbox.
+   */
+  public CheckboxInput getLeereKonten()
+  {
+    if (this.leereKonten == null)
+    {
+      this.leereKonten = new CheckboxInput(settings.getBoolean("leerekonten",true));
+      this.leereKonten.setName(i18n.tr("Auch Konten ohne Buchungen mit ausgeben"));
+      this.leereKonten.setEnabled(false);
+      this.leereKonten.addListener(new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          settings.setAttribute("leerekonten",((Boolean)leereKonten.getValue()).booleanValue());
+        }
+      });
+    }
+    return this.leereKonten;
+  }
+
   /**
    * Fuehrt die ausgewaehlte Auswertung aus.
    */
@@ -360,6 +386,7 @@ public class AuswertungControl extends AbstractControl
       data.setEndDatum(end);
       data.setStartKonto(ks);
       data.setEndKonto(ke);
+      data.setLeereKonten(((Boolean)getLeereKonten().getValue()).booleanValue());
 
       String dir = settings.getString("lastdir",System.getProperty("user.home"));
       FileDialog fd = new FileDialog(GUI.getShell(),SWT.SAVE);

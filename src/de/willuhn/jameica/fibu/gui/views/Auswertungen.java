@@ -50,6 +50,7 @@ public class Auswertungen extends AbstractView
     group.addHeadline(i18n.tr("Konten"));
     group.addInput(control.getStartKonto());
     group.addInput(control.getEndKonto());
+    group.addInput(control.getLeereKonten());
     
     group.addSeparator();
     group.addInput(control.getOpenAfterCreation());
@@ -59,34 +60,3 @@ public class Auswertungen extends AbstractView
     buttonArea.paint(getParent());
   }
 }
-
-
-/*********************************************************************
- * $Log: Auswertungen.java,v $
- * Revision 1.10  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.9  2010-06-08 16:08:12  willuhn
- * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
- *
- * Revision 1.8  2010/06/03 14:26:16  willuhn
- * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
- * @C Code-Cleanup
- *
- * Revision 1.7  2010/06/01 23:51:56  willuhn
- * @N Neue Icons - erster Teil
- *
- * Revision 1.6  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.5  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.4.2.1  2009/06/25 15:21:18  willuhn
- * @N weiterer Code fuer IDEA-Export
- **********************************************************************/

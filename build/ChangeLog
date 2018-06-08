@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Neue Option "Auch Konten ohne Buhcungen mit ausgeben" in den Auswertungen
+
 2018-05-22 Version 2.8.0
 
   * NEW: HiDPI-Icons

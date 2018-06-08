@@ -27,10 +27,12 @@ public class ReportData
   private Date endDatum                 = null;
   private Konto startKonto              = null;
   private Konto endKonto                = null;
+  private boolean leereKonten           = false;
   
   private boolean needGeschaeftsjahr    = true;
   private boolean needDatum             = true;
   private boolean needKonto             = true;
+  private boolean needLeereKonten       = false;
   
   private String target                 = null;
   
@@ -177,6 +179,42 @@ public class ReportData
   {
     this.needKonto = needKonto;
   }
+  
+  /**
+   * True, wenn auch Konten ohne Buchungen mit ausgegeben werden sollen.
+   * @return true, wenn auch Konten ohne Buchungen mit ausgegeben werden sollen.
+   */
+  public boolean isLeereKonten()
+  {
+    return this.leereKonten;
+  }
+  
+  /**
+   * Legt fest, ob auch Konten ohne Buchungen mit ausgegeben werden sollen.
+   * @param b true, wenn auch Konten ohne Buchungen mit ausgegeben werden sollen.
+   */
+  public void setLeereKonten(boolean b)
+  {
+    this.leereKonten = b;
+  }
+
+  /**
+   * True, wenn der Parameter fuer leere Konten gesetzt werden kann.
+   * @return true, wenn der Parameter fuer leere Konten gesetzt werden kann.
+   */
+  public boolean isNeedLeereKonten()
+  {
+    return this.needLeereKonten;
+  }
+  
+  /**
+   * Legt fest, der Parameter fuer leere Konten gesetzt werden kann.
+   * @param b true, wenn der Parameter fuer leere Konten gesetzt werden kann.
+   */
+  public void setNeedLeereKonten(boolean b)
+  {
+    this.needLeereKonten = b;
+  }
 
   /**
    * Liefert die Ziel-Datei.
@@ -195,20 +233,4 @@ public class ReportData
   {
     this.target = target;
   }
-  
-
 }
-
-
-/**********************************************************************
- * $Log: ReportData.java,v $
- * Revision 1.1  2010/08/27 10:18:14  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.2  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- **********************************************************************/

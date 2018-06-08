@@ -67,7 +67,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     {
       Konto k1 = (Konto) konten.next();
       Anfangsbestand ab = k1.getAnfangsbestand(jahr);
-      if (k1.getNumBuchungen(jahr,startDate,endDate) == 0 && (ab == null || ab.getBetrag() == 0.0d))
+      if (!data.isLeereKonten() && k1.getNumBuchungen(jahr,startDate,endDate) == 0 && (ab == null || ab.getBetrag() == 0.0d))
         continue;
       l.add(k1);
     }
@@ -109,6 +109,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
   public ReportData createPreset()
   {
     ReportData data = super.createPreset();
+    data.setNeedLeereKonten(true);
     data.setTarget(i18n.tr("syntax-{0}-kontoauszug.html",DATEFORMAT.format(new Date())));
     return data;
   }

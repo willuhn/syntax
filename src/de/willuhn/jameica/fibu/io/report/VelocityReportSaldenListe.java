@@ -44,7 +44,7 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
     while (i.hasNext())
     {
       Konto k = (Konto) i.next();
-      if (k.getNumBuchungen(jahr,null,null) == 0)
+      if (!data.isLeereKonten() && k.getNumBuchungen(jahr,null,null) == 0)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
     }
@@ -63,6 +63,7 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
   public ReportData createPreset()
   {
     ReportData data = super.createPreset();
+    data.setNeedLeereKonten(true);
     data.setNeedDatum(true);
     data.setTarget(i18n.tr("syntax-{0}-salden.html",DATEFORMAT.format(new Date())));
     return data;
