@@ -310,7 +310,7 @@ public class AuswertungControl extends AbstractControl
   {
     if (this.leereKonten == null)
     {
-      this.leereKonten = new CheckboxInput(settings.getBoolean("leerekonten",true));
+      this.leereKonten = new CheckboxInput(settings.getBoolean("leerekonten",false));
       this.leereKonten.setName(i18n.tr("Auch Konten ohne Buchungen mit ausgeben"));
       this.leereKonten.setEnabled(false);
       this.leereKonten.addListener(new Listener()
