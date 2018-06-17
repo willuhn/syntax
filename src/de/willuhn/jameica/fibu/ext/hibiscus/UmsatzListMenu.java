@@ -34,6 +34,7 @@ import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
+import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -200,7 +201,7 @@ public class UmsatzListMenu implements Extension
       buchung.setDatum(date);
     
     // Wir werfen alle Verwendungszwecke zusammen
-    String text  = StringUtils.trimToNull((String) u.getAttribute("mergedzweck"));
+    String text  = StringUtils.trimToNull((String) u.getAttribute(Tag.SVWZ.name()));
     String name  = StringUtils.trimToNull(u.getGegenkontoName());
     if (name != null )
     {
