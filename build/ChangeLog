@@ -1,4 +1,4 @@
-HEAD 2.9 (nightly)
+2018-xx-xx Version 2.8.2
 
   * NEW: Beim Übernehmen von Buchungen Hibiscus den SEPA-Verwendungszweck (SVWZ) berücksichtigen
   * NEW: Neue Option "Auch Konten ohne Buchungen mit ausgeben" in den Auswertungen
