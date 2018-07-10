@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: Rundungsfehler: Wenn der Steueranteil einer Buchung unter 1 ct war (aber gerundet dennoch einer), wurde der Steuer-Anteil weggelassen
   * NEW: Beim Übernehmen von Buchungen Hibiscus den SEPA-Verwendungszweck (SVWZ) berücksichtigen
   * NEW: Neue Option "Auch Konten ohne Buchungen mit ausgeben" in den Auswertungen
 
