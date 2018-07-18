@@ -39,11 +39,12 @@ public class EinstellungenControl extends AbstractControl
 {
   private I18N i18n = null;
 
-  private KontoInput afaKonto              = null;
-  private KontoInput afaKontoGWG           = null;
-  private Input gwgWert                    = null;
-  private CheckboxInput systemDataWritable = null;
-  private CheckboxInput syncCheckmarks     = null;
+  private KontoInput afaKonto                = null;
+  private KontoInput afaKontoGWG             = null;
+  private Input gwgWert                      = null;
+  private CheckboxInput systemDataWritable   = null;
+  private CheckboxInput syncCheckmarks       = null;
+  private CheckboxInput useExistingGjOnClose = null;
   
   /**
    * ct.
@@ -120,12 +121,28 @@ public class EinstellungenControl extends AbstractControl
    */
   public CheckboxInput getSystemDataWritable()
   {
-    if (this.systemDataWritable == null)
-    {
-      this.systemDataWritable = new CheckboxInput(Settings.getSystemDataWritable());
-      this.systemDataWritable.setName(i18n.tr("Änderungen des System-Kontenrahmen zulassen"));
-    }
+    if (this.systemDataWritable != null)
+      return this.systemDataWritable;
+    
+    this.systemDataWritable = new CheckboxInput(Settings.getSystemDataWritable());
+    this.systemDataWritable.setName(i18n.tr("Änderungen des System-Kontenrahmen zulassen"));
     return this.systemDataWritable;
+  }
+  
+  /**
+   * Liefert eine Checkbox, mit der eingestellt werden kann, ob beim Schliessen eines
+   * Geschaeftsjahres alternativ zur automatischen Erstellung des Folgejahres auch ein
+   * eventuell bereits vorhandenes verwendet werden kann.
+   * @return Checkbox.
+   */
+  public CheckboxInput getUseExistingGjOnClose()
+  {
+    if (this.useExistingGjOnClose != null)
+      return this.useExistingGjOnClose;
+    
+    this.useExistingGjOnClose = new CheckboxInput(Settings.getUseExistingGjOnClose());
+    this.useExistingGjOnClose.setName(i18n.tr("Beim Schließen des Geschäftsjahres ein evtl. vorhandenes Folgejahr wiederverwenden"));
+    return this.useExistingGjOnClose;
   }
 
   /**
@@ -191,8 +208,8 @@ public class EinstellungenControl extends AbstractControl
       getSystemDataWritable().setValue(Boolean.valueOf(sysChange));
       Settings.setSystemDataWritable(sysChange);
       
-      boolean sync = ((Boolean) getSyncCheckmarks().getValue()).booleanValue();
-      Settings.setSyncCheckmarks(sync);
+      Settings.setSyncCheckmarks(((Boolean) getSyncCheckmarks().getValue()).booleanValue());
+      Settings.setUseExistingGjOnClose(((Boolean) getUseExistingGjOnClose().getValue()).booleanValue());
 
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Einstellungen gespeichert"),StatusBarMessage.TYPE_SUCCESS));
     }

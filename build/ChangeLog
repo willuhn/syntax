@@ -1,5 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Option "Beim Schließen des Geschäftsjahres ein evtl. vorhandenes Folgejahr wiederverwenden" in den Einstellungen konfigurierbar
+  * NEW: Beim Erstellen eines neuen Geschäftsjahres prüfen, ob bereits ein offenes existiert und darauf hinweisen, dass dieses erst geschlossen werden sollte
+  * NEW: Button zum Abschließen des aktuellen Geschäftsjahres nochmal deutlicher untergebracht - direkt in der Ansicht des Mandanten
   * BUG: Rundungsfehler: Wenn der Steueranteil einer Buchung unter 1 ct war (aber gerundet dennoch einer), wurde der Steuer-Anteil weggelassen
   * NEW: Beim Übernehmen von Buchungen Hibiscus den SEPA-Verwendungszweck (SVWZ) berücksichtigen
   * NEW: Neue Option "Auch Konten ohne Buchungen mit ausgeben" in den Auswertungen
