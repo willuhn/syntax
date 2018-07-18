@@ -47,6 +47,7 @@ public class Einstellungen extends AbstractView
 
     group.addHeadline(i18n.tr("System-Einstellungen"));
     group.addInput(control.getSystemDataWritable());
+    group.addInput(control.getUseExistingGjOnClose());
     if (Application.getPluginLoader().isInstalled("de.willuhn.jameica.hbci.HBCI"))
       group.addInput(control.getSyncCheckmarks());
     

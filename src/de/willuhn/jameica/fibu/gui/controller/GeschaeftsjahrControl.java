@@ -18,12 +18,13 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Level;
 import de.willuhn.logging.Logger;
@@ -140,73 +141,64 @@ public class GeschaeftsjahrControl extends AbstractControl
    */
   public boolean handleStore()
   {
-    try {
+    try
+    {
+      Geschaeftsjahr jahr = this.getGeschaeftsjahr();
+      
+      // Wir checken mal, ob es ein neues Objekt ist. Wenn ja, pruefen wir,
+      // ob der Mandant bereits ein offenes Jahr hat. Ist das der Fall zeigen
+      // wir einen Hinweis an, dass es besser waere, erst das Vorjahr zu schliessen
+      if (jahr.isNewObject())
+      {
+        Mandant m = jahr.getMandant();
+        if (m == null)
+          throw new ApplicationException(i18n.tr("Kein Mandant ausgewählt"));
+        
+        DBIterator it = m.getGeschaeftsjahre();
+        it.addFilter("(closed is NULL or closed = 0)");
+        if (it.hasNext())
+        {
+          String q = i18n.tr("Es existiert ein noch offenes Geschäftsjahr, welches zuerst geschlossen werden sollte.\n" +
+                             "Beim Schließen eines Geschäftsjahres werden automatisch die Abschreibungen gebucht,\n" +
+                             "ein passendes Folgejahr erstellt und die Salden der Bestandskonten als Anfangsbestände\n" +
+                             "in das neue Geschäftsjahr übernommen. Das manuelle Anlegen eines Geschäftsjahres ist\n" +
+                             "daher meist nicht notwendig.\n\n" +
+                             "Klicken Sie mit der rechten Maustaste auf das Geschäftsjahr (aktivieren Sie es ggf. vorher)\n" +
+                             "und wählen Sie die Option \"Geschäftsjahr abschließen...\".\n\n" +
+                             "Neues Geschäftsjahr dennoch speichern?");
+          if (!Application.getCallback().askUser(q,true))
+            return false;
+        }
+      }
 
       //////////////////////////////////////////////////////////////////////////
       // Kontenrahmen checken
-      getGeschaeftsjahr().setKontenrahmen((Kontenrahmen) getKontenrahmenAuswahl().getValue());
+      jahr.setKontenrahmen((Kontenrahmen) getKontenrahmenAuswahl().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
       //////////////////////////////////////////////////////////////////////////
       // Geschaeftsjahr checken
 
-      getGeschaeftsjahr().setBeginn((Date)getBeginn().getValue());
-      getGeschaeftsjahr().setEnde((Date)getEnde().getValue());
+      jahr.setBeginn((Date)getBeginn().getValue());
+      jahr.setEnde((Date)getEnde().getValue());
       //
       //////////////////////////////////////////////////////////////////////////
 
       // und jetzt speichern wir.
-      getGeschaeftsjahr().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Geschäftsjahr gespeichert."));
+      jahr.store();
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Geschäftsjahr gespeichert."),StatusBarMessage.TYPE_SUCCESS));
       return true;
     }
     catch (ApplicationException e1)
     {
-      GUI.getView().setErrorText(e1.getLocalizedMessage());
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(e1.getMessage(),StatusBarMessage.TYPE_ERROR));
     }
-    catch (RemoteException e)
+    catch (Exception e)
     {
       Logger.error("unable to store gj",e);
-      GUI.getView().setErrorText("Fehler beim Speichern des Geschäftsjahres.");
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern des Geschäftsjahres."),StatusBarMessage.TYPE_ERROR));
     }
     return false;
   }
-
-
 }
-
-
-/*********************************************************************
- * $Log: GeschaeftsjahrControl.java,v $
- * Revision 1.9  2012/01/29 22:09:14  willuhn
- * @N Neues DateInput verwenden statt manuellen CalendarDialog (mit DialogInput)
- *
- * Revision 1.8  2011-03-21 11:17:27  willuhn
- * @N BUGZILLA 1004
- *
- * Revision 1.7  2010-06-04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.6  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.5  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.3  2006/06/19 22:23:47  willuhn
- * @N Wizard
- *
- * Revision 1.2  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- **********************************************************************/

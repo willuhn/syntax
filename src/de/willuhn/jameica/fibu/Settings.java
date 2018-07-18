@@ -458,4 +458,25 @@ public class Settings
   {
     SETTINGS.setAttribute("checkmarks.sync",b);
   }
+  
+  /**
+   * Legt fest, ob beim Schliessen eines Geschaeftsjahres alternativ zur automatischen Erstellung des
+   * Folgejahres auch ein eventuell bereits vorhandenes verwendet werden kann.
+   * @return true, wenn ein existierendes Folgejahr benutzt werden kann.
+   */
+  public static boolean getUseExistingGjOnClose()
+  {
+    return SETTINGS.getBoolean("gj.close.use-existing",true);
+  }
+  
+  /**
+   * Legt fest, ob beim Schliessen eines Geschaeftsjahres alternativ zur automatischen Erstellung des
+   * Folgejahres auch ein eventuell bereits vorhandenes verwendet werden kann.
+   * @param b true, wenn ein existierendes Folgejahr benutzt werden kann.
+   */
+  public static void setUseExistingGjOnClose(boolean b)
+  {
+    SETTINGS.setAttribute("gj.close.use-existing",b);
+  }
+  
 }

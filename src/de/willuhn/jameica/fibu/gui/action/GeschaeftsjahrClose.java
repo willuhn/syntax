@@ -43,8 +43,8 @@ public class GeschaeftsjahrClose implements Action
     {
       boolean b = Application.getController().getApplicationCallback().askUser(
           i18n.tr("Sind Sie sicher, dass Sie das Geschäftsjahr \"{0}\" abschließen möchten?\n\n" +
-          "Hierbei werden alle Abschreibungsbuchungen vorgenommen und die Salden der\n" +
-          "Konten als Anfangsbestand auf das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
+                  "Hierbei werden automatisch die Abschreibungen gebucht, ein passendes Folgejahr erstellt\n" +
+                  "und die Salden der Bestandskonten als Anfangsbestände in das neue Geschäftsjahr übernommen.",jahr.getAttribute(jahr.getPrimaryAttribute()).toString()));
       if (!b)
         return;
     }

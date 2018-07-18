@@ -17,6 +17,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
+import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
@@ -83,14 +84,20 @@ public class MandantNeu extends AbstractView
     group2.addLabelPair(i18n.tr("Währungsbezeichnung"), control.getWaehrung());
 
     ButtonArea buttonArea = new ButtonArea();
-    
+
+    boolean canClose = false;
     boolean canDelete = true;
     Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
     if (current != null)
     {
       Mandant cm = current.getMandant();
       canDelete = !cm.equals(control.getMandant());
+      canClose = !canDelete && !current.isClosed();
     }
+    
+    Button close = new Button(i18n.tr("Aktuelles Geschäftsjahr abschließen..."),new GeschaeftsjahrClose(),current,false,"go-next.png");
+    close.setEnabled(canClose);
+    buttonArea.addButton(close);
     
     Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
