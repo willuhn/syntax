@@ -1,6 +1,9 @@
 HEAD 2.9 (nightly)
 
   * BUG: Auswertung "Ergebnis: monatliche Übersicht" fehlte in 2.8.1 (Inhalt der Klasse war beim Hinzufügen der Kommentare verloren gegangen)
+
+2018-07-18 Version 2.8.2
+
   * NEW: Option "Beim Schließen des Geschäftsjahres ein evtl. vorhandenes Folgejahr wiederverwenden" in den Einstellungen konfigurierbar
   * NEW: Beim Erstellen eines neuen Geschäftsjahres prüfen, ob bereits ein offenes existiert und darauf hinweisen, dass dieses erst geschlossen werden sollte
   * NEW: Button zum Abschließen des aktuellen Geschäftsjahres nochmal deutlicher untergebracht - direkt in der Ansicht des Mandanten
