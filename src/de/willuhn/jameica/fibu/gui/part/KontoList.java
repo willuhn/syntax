@@ -26,6 +26,7 @@ import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -59,11 +60,12 @@ public class KontoList extends TablePart implements Extendable
   private boolean filterEnabled = true;
 
   /**
-   * @param list
+   * @param mandant der Mandant.
+   * @param list die Liste der Konten.
    * @param action
    * @throws RemoteException
    */
-  public KontoList(GenericIterator list, Action action) throws RemoteException
+  public KontoList(Mandant mandant, GenericIterator list, Action action) throws RemoteException
   {
     super(action);
     this.list = PseudoIterator.asList(list);
@@ -80,7 +82,7 @@ public class KontoList extends TablePart implements Extendable
     addColumn(i18n.tr("Kontoart"),"kontoart_id");
     addColumn(i18n.tr("Steuer"),"steuer_id");
     addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
-    setContextMenu(new KontoListMenu());
+    setContextMenu(new KontoListMenu(mandant));
     setMulti(true);
     setRememberColWidths(true);
     setRememberOrder(true);
@@ -241,18 +243,3 @@ public class KontoList extends TablePart implements Extendable
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: KontoList.java,v $
- * Revision 1.24  2011/08/16 08:35:35  willuhn
- * @R Refactoring (DelayedListener statt eigenem Thread verwenden)
- * @N letzten Status der Checkbox speichern
- *
- * Revision 1.23  2011-05-12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.22  2011-03-10 16:10:49  willuhn
- * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
- **********************************************************************/

@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -29,6 +30,7 @@ import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.gui.part.SteuerList;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
@@ -87,11 +89,12 @@ public class MandantNeu extends AbstractView
 
     boolean canClose = false;
     boolean canDelete = true;
-    Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    final Geschaeftsjahr current = Settings.getActiveGeschaeftsjahr();
+    final Mandant mandant = control.getMandant();
     if (current != null)
     {
       Mandant cm = current.getMandant();
-      canDelete = !cm.equals(control.getMandant());
+      canDelete = !cm.equals(mandant);
       canClose = !canDelete && !current.isClosed();
     }
     
@@ -119,25 +122,37 @@ public class MandantNeu extends AbstractView
     this.tabs.setBackground(Color.BACKGROUND.getSWTColor());
 
     TabGroup jahre = new TabGroup(this.tabs,i18n.tr("Vorhandene Geschäftsjahre"));
-    TablePart t1 = new GeschaeftsjahrList(control.getMandant(), new GeschaeftsjahrNeu());
+    TablePart t1 = new GeschaeftsjahrList(mandant, new GeschaeftsjahrNeu());
     t1.paint(jahre.getComposite());
 
     TabGroup konten = new TabGroup(this.tabs,i18n.tr("Benutzerdefinierte Konten"),false,1);
-    DBIterator kontenList = Settings.getActiveGeschaeftsjahr().getKontenrahmen().getKonten();
-    kontenList.addFilter("mandant_id = " + control.getMandant().getID());
-    KontoList t2 = new KontoList(kontenList, new KontoNeu());
+    
+    DBIterator kontenList = null;
+    {
+      // Als Kontenrahmen nehmen wir den des letzten Geschaeftsjahres
+      DBIterator i = mandant.getGeschaeftsjahre();
+      i.setOrder("order by beginn desc");
+      if (i.hasNext())
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) i.next();
+        kontenList = jahr.getKontenrahmen().getKonten();
+        // Wir muessen trotzdem noch auf die benutzerdefinierten Konten einschraenken
+        kontenList.addFilter("mandant_id = " + mandant.getID());
+      }
+    }
+    KontoList t2 = new KontoList(mandant, kontenList != null ? kontenList : PseudoIterator.fromArray(new Konto[0]), new KontoNeu());
     t2.setFilterVisible(false);
     t2.paint(konten.getComposite());
 
     TabGroup steuern = new TabGroup(this.tabs,i18n.tr("Steuersätze"));
-    TablePart t3 = new SteuerList(control.getMandant(), new SteuerNeu());
+    TablePart t3 = new SteuerList(mandant, new SteuerNeu());
     t3.paint(steuern.getComposite());
     
     TabGroup vorlagen = new TabGroup(this.tabs,i18n.tr("Buchungsvorlagen"));
     DBIterator vorlagenList = Settings.getDBService().createList(Buchungstemplate.class);
-    vorlagenList.addFilter("mandant_id = " + control.getMandant().getID());
+    vorlagenList.addFilter("mandant_id = " + mandant.getID());
     vorlagenList.setOrder("order by name");
-    TablePart t4 = new BuchungstemplateList(vorlagenList, new BuchungstemplateNeu());
+    TablePart t4 = new BuchungstemplateList(mandant, vorlagenList, new BuchungstemplateNeu());
     t4.paint(vorlagen.getComposite());
 
     if (activeTab != null)
@@ -153,43 +168,3 @@ public class MandantNeu extends AbstractView
       activeTab = this.tabs.getSelectionIndex();
   }
 }
-
-/*********************************************************************
- * $Log: MandantNeu.java,v $
- * Revision 1.31  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.30  2010-06-04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.29  2010/06/03 14:26:16  willuhn
- * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
- * @C Code-Cleanup
- *
- * Revision 1.28  2010/06/02 00:02:59  willuhn
- * @N Mehr Icons
- *
- * Revision 1.27  2010/06/01 23:51:56  willuhn
- * @N Neue Icons - erster Teil
- *
- * Revision 1.26  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.25  2010/02/08 15:39:48  willuhn
- * @N Option "Geschaeftsjahr abschliessen" in Kontextmenu des Geschaeftsjahres
- * @N Zweispaltiges Layout in Mandant-Details - damit bleibt mehr Platz fuer die Reiter unten drunter
- * @N Anzeige von Pflichtfeldern
- *
- * Revision 1.24  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.23.2.1  2008/09/08 09:03:51  willuhn
- * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
- **********************************************************************/

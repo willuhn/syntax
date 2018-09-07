@@ -57,7 +57,7 @@ public class KontoListe extends AbstractView
       throw new ApplicationException(i18n.tr("Kein Kontenrahmen ausgewählt"));
     
     GUI.getView().setTitle(i18n.tr("Liste der Konten. Kontenrahmen: {0}",kr.getName()));
-    Part p = new KontoList(kr.getKonten(),new KontoNeu());
+    Part p = new KontoList(kr.getMandant(),kr.getKonten(),new KontoNeu());
     p.paint(getParent());
     
     ButtonArea buttons = new ButtonArea();
@@ -66,27 +66,3 @@ public class KontoListe extends AbstractView
 
   }
 }
-
-/*********************************************************************
- * $Log: KontoListe.java,v $
- * Revision 1.24  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.23  2011-03-21 11:17:26  willuhn
- * @N BUGZILLA 1004
- *
- * Revision 1.22  2010-06-02 00:02:58  willuhn
- * @N Mehr Icons
- *
- * Revision 1.21  2010/06/01 23:51:56  willuhn
- * @N Neue Icons - erster Teil
- *
- * Revision 1.20  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- **********************************************************************/

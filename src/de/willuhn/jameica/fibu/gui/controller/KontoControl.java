@@ -26,6 +26,7 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -76,23 +77,43 @@ public class KontoControl extends AbstractControl
    */
   public Konto getKonto() throws RemoteException
 	{
-		if (konto != null)
-			return konto;
+		if (this.konto != null)
+			return this.konto;
 		
-		konto = (Konto) getCurrentObject();
-		if (konto != null)
-			return konto;
+		Object object = this.getCurrentObject();
+		
+		if (object instanceof Konto)
+		{
+		  this.konto = (Konto) object;
+		  return this.konto;
+		}
 
-		// Neues Konto erstellen und gleich dem aktuellen Geschaeftsjahr zuweisen
-		konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
-		
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    if (jahr != null)
+    this.konto = (Konto) Settings.getDBService().createObject(Konto.class,null);
+
+    if (object instanceof Mandant)
     {
-      konto.setKontenrahmen(jahr.getKontenrahmen());
-      konto.setMandant(jahr.getMandant());
+      Mandant m = (Mandant) object;
+      this.konto.setMandant(m);
+      
+      // Als Kontenrahmen nehmen wir den des letzten Geschaeftsjahres
+      DBIterator i = m.getGeschaeftsjahre();
+      i.setOrder("order by beginn desc");
+      if (i.hasNext())
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) i.next();
+        this.konto.setKontenrahmen(jahr.getKontenrahmen());
+      }
     }
-    
+    else
+    {
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      if (jahr != null)
+      {
+        konto.setKontenrahmen(jahr.getKontenrahmen());
+        konto.setMandant(jahr.getMandant());
+      }
+    }
+
     // Konto-Art definieren wir mit der haeufigsten Konto-Art vor
     konto.setKontoArt((Kontoart) Settings.getDBService().createObject(Kontoart.class,""+Kontoart.KONTOART_AUFWAND));
     

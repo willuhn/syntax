@@ -30,26 +30,3 @@ public class KontoNeu implements Action
   }
 
 }
-
-
-/*********************************************************************
- * $Log: KontoNeu.java,v $
- * Revision 1.6  2006/05/08 22:44:18  willuhn
- * @N Debugging
- *
- * Revision 1.5  2005/09/26 15:15:39  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- *********************************************************************/
