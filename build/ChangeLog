@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Buchungen aus Hibiscus nicht in der angezeigten Reihenfolge übernehmen sondern immer chronologisch
   * BUG: Die benutzerdefinierten Konten und Buchungsvorlagen wurden immer im Mandanten des aktiven Geschäftsjahres angelegt anstatt im ausgewählten
   * BUG: Auswertung "Ergebnis: monatliche Übersicht" fehlte in 2.8.1 (Inhalt der Klasse war beim Hinzufügen der Kommentare verloren gegangen)
 

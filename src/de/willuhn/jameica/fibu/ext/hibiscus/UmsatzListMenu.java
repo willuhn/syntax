@@ -10,6 +10,11 @@
 
 package de.willuhn.jameica.fibu.ext.hibiscus;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -303,7 +308,7 @@ public class UmsatzListMenu implements Extension
   private class Worker implements BackgroundTask
   {
     private boolean cancel = false;
-    private Umsatz[] list = null;
+    private List<Umsatz> list = null;
 
     /**
      * ct.
@@ -311,7 +316,49 @@ public class UmsatzListMenu implements Extension
      */
     private Worker(Umsatz[] list)
     {
-      this.list = list;
+      this.list = this.sort(list);
+    }
+    
+    /**
+     * Sortiert die Umsaetze chronologisch.
+     * Das ist notwendig, weil die hier in der Anzeige-Reihenfolge ankommen. Wir wollen ja aber, dass die
+     * Buchungen chronologisch angelegt werden.
+     * @param list die Liste der Umsaetze.
+     * @return die sortierte Liste der Umsaetze.
+     */
+    private List<Umsatz> sort(Umsatz[] list)
+    {
+      List<Umsatz> umsaetze = new ArrayList<Umsatz>();
+      umsaetze.addAll(Arrays.asList(list));
+      
+      Collections.sort(umsaetze,new Comparator<Umsatz>() {
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare(Umsatz o1, Umsatz o2)
+        {
+          try
+          {
+            Date d1 = (Date) o1.getAttribute("datum_pseudo");
+            Date d2 = (Date) o2.getAttribute("datum_pseudo");
+            if (d1 == d2)
+              return 0;
+            if (d1 == null)
+              return -1;
+            if (d2 == null)
+              return 1;
+            return d1.compareTo(d2);
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("unable to sort data",re);
+            return 0;
+          }
+        }
+      });
+      
+      return umsaetze;
     }
     
     /**
@@ -337,17 +384,21 @@ public class UmsatzListMenu implements Extension
     {
       try
       {
+        int size = this.list.size();
+        
         if (monitor != null)
-          monitor.setStatusText(i18n.tr("Buche {0} Umsätze",""+list.length));
+          monitor.setStatusText(i18n.tr("Buche {0} Umsätze",Integer.toString(size)));
 
-        double factor = 100d / list.length;
+        double factor = 100d / size;
         
         int created = 0;
         int error   = 0;
         int skipped = 0;
 
-        for (int i=0;i<list.length;++i)
+        for (int i=0;i<size;++i)
         {
+          Umsatz u = list.get(i);
+          
           if (monitor != null)
           {
             monitor.setPercentComplete((int)((i+1) * factor));
@@ -358,13 +409,13 @@ public class UmsatzListMenu implements Extension
           try
           {
             // Checken, ob der Umsatz schon einer Buchung zugeordnet ist
-            if (isAssigned(list[i]))
+            if (isAssigned(u))
             {
               skipped++;
               continue;
             }
             
-            buchung = createBuchung(list[i],list.length > 1);
+            buchung = createBuchung(u,size > 1);
             buchung.store();
             created++;
             
@@ -383,7 +434,7 @@ public class UmsatzListMenu implements Extension
                 }
               }
             }
-            Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(list[i]));
+            Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(u));
           }
           catch (ApplicationException ae)
           {
@@ -391,7 +442,7 @@ public class UmsatzListMenu implements Extension
             // ApplicationException, dann fehlen noch Eingaben
             // Da wir nur eine Buchung haben, oeffnen wir
             // die Erfassungsmaske.
-            if (list.length == 1)
+            if (size == 1)
             {
               Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
               new BuchungNeu().handleAction(buchung);
@@ -412,7 +463,7 @@ public class UmsatzListMenu implements Extension
         }
         
         String text = i18n.tr("Umsatz importiert");
-        if (list.length > 1)
+        if (size > 1)
           text = i18n.tr("{0} Umsätze importiert, {1} fehlerhaft, {2} bereits vorhanden", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)});
         
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
