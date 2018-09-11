@@ -40,9 +40,11 @@ import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -85,10 +87,29 @@ public class UmsatzListMenu implements Extension
         
         if (umsaetze == null || umsaetze.length == 0)
           return;
+        
+        boolean markChecked = false;
+        try
+        {
+          String text = i18n.tr("Umsätze hierbei als geprüft markieren?");
+          markChecked = Application.getCallback().askUser(text);
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to ask user if bookings shall be marked as checked",e);
+        }
 
         // Wenn wir mehr als 1 Buchung haben, fuehren wir das
         // im Hintergrund aus. 
-        Worker worker = new Worker(umsaetze);
+        Worker worker = new Worker(umsaetze,markChecked);
         if (umsaetze.length > 1)
           Application.getController().start(worker);
         else
@@ -308,15 +329,18 @@ public class UmsatzListMenu implements Extension
   private class Worker implements BackgroundTask
   {
     private boolean cancel = false;
+    private boolean markChecked = false;
     private List<Umsatz> list = null;
 
     /**
      * ct.
      * @param list
+     * @param markChecked true, wenn die Umsatzbuchungen gleich als geprueft markiert werden sollen.
      */
-    private Worker(Umsatz[] list)
+    private Worker(Umsatz[] list, boolean markChecked)
     {
       this.list = this.sort(list);
+      this.markChecked = markChecked;
     }
     
     /**
@@ -395,6 +419,12 @@ public class UmsatzListMenu implements Extension
         int error   = 0;
         int skipped = 0;
 
+        
+        // Mit der Benachrichtigung wird dann gleich die Buchungsnummer in der Liste
+        // angezeigt. Vorher muessen wir der anderen Extension aber noch die neue
+        // Buchung mitteilen
+        final List<Extension> extensions = ExtensionRegistry.getExtensions("de.willuhn.jameica.hbci.gui.parts.UmsatzList");
+
         for (int i=0;i<size;++i)
         {
           Umsatz u = list.get(i);
@@ -417,12 +447,15 @@ public class UmsatzListMenu implements Extension
             
             buchung = createBuchung(u,size > 1);
             buchung.store();
-            created++;
             
-            // Mit der Benachrichtigung wird dann gleich die Buchungsnummer in der Liste
-            // angezeigt. Vorher muessen wir der anderen Extension aber noch die neue
-            // Buchung mitteilen
-            List<Extension> extensions = ExtensionRegistry.getExtensions("de.willuhn.jameica.hbci.gui.parts.UmsatzList");
+            if (markChecked && !u.hasFlag(Umsatz.FLAG_CHECKED))
+            {
+              u.setFlags(u.getFlags() | Umsatz.FLAG_CHECKED);
+              u.store();
+              Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.TRUE.toString(),u));
+            }
+              
+            created++;
             if (extensions != null)
             {
               for (Extension e:extensions)
