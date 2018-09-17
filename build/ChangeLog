@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2018-09-17 Version 2.8.3
+
   * NEW: Beim Übernehmen von Umsätzen nach SynTAX Option "Umsätze hierbei als geprüft markieren?" anbieten
   * NEW: Buchungen aus Hibiscus nicht in der angezeigten Reihenfolge übernehmen sondern immer chronologisch
   * BUG: Die benutzerdefinierten Konten und Buchungsvorlagen wurden immer im Mandanten des aktiven Geschäftsjahres angelegt anstatt im ausgewählten
