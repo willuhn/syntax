@@ -65,7 +65,7 @@ public class KontoAuswahlDialog extends AbstractDialog
       }
     };
     this.konten.begin();
-		final KontoList konten = new KontoList(this.konten,a);
+		final KontoList konten = new KontoList(null,this.konten,a);
     konten.setContextMenu(null);
     konten.setMulti(false);
     konten.setSummary(false);
@@ -104,48 +104,3 @@ public class KontoAuswahlDialog extends AbstractDialog
   }
 
 }
-
-
-/**********************************************************************
- * $Log: KontoAuswahlDialog.java,v $
- * Revision 1.7  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.6.2.1  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.6  2007/04/23 23:41:26  willuhn
- * @B reset des Konten-Iterators
- *
- * Revision 1.5  2006/07/17 21:58:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/08/25 23:00:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.2  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.5  2005/06/27 15:35:27  web0
- * @B bug 84
- *
- * Revision 1.4  2005/06/23 23:03:20  web0
- * @N much better KontoAuswahlDialog
- *
- * Revision 1.3  2004/10/25 23:12:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/19 23:33:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/10/17 16:28:46  willuhn
- * @N Die ersten Dauerauftraege abgerufen ;)
- *
- **********************************************************************/

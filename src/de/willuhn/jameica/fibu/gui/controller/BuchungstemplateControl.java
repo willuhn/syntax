@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
@@ -21,6 +22,7 @@ import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -69,16 +71,37 @@ public class BuchungstemplateControl extends AbstractControl
 		if (this.buchung != null)
 			return this.buchung;
 		
-		this.buchung = (Buchungstemplate) getCurrentObject();
-		if (this.buchung != null)
-			return this.buchung;
+		Object object = this.getCurrentObject();
 		
-		this.buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
+		if (object instanceof Buchungstemplate)
+		{
+	    this.buchung = (Buchungstemplate) object;
+	    return this.buchung;
+		}
+
+    this.buchung = (Buchungstemplate) Settings.getDBService().createObject(Buchungstemplate.class,null);
     
-    // Die beiden Parameter geben wir automatisch vor.
-    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-    this.buchung.setMandant(jahr.getMandant());
-    this.buchung.setKontenrahmen(jahr.getKontenrahmen());
+		if (object instanceof Mandant)
+		{
+		  Mandant m = (Mandant) object;
+	    this.buchung.setMandant(m);
+	    
+      // Als Kontenrahmen nehmen wir den des letzten Geschaeftsjahres
+      DBIterator i = m.getGeschaeftsjahre();
+      i.setOrder("order by beginn desc");
+      if (i.hasNext())
+      {
+        Geschaeftsjahr jahr = (Geschaeftsjahr) i.next();
+        this.buchung.setKontenrahmen(jahr.getKontenrahmen());
+      }
+		}
+		else
+		{
+	    // Wenn kein Mandant angegeben ist, nehmen wir den des aktuellen Geschaeftsjahres.
+	    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+	    this.buchung.setMandant(jahr.getMandant());
+	    this.buchung.setKontenrahmen(jahr.getKontenrahmen());
+		}
 		return this.buchung;
 		
 	}

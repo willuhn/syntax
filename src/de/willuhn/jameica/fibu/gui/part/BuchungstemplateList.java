@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -44,40 +45,16 @@ import de.willuhn.util.I18N;
 public class BuchungstemplateList extends TablePart
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  
   private MessageConsumer mc = new MyMessageConsumer();
 
   /**
    * ct.
-   * @param action
-   * @throws RemoteException
-   */
-  public BuchungstemplateList(Action action) throws RemoteException
-  {
-    this(init(),action);
-  }
-
-  /**
-   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
-   */
-  public synchronized void paint(Composite parent) throws RemoteException
-  {
-    super.paint(parent);
-    Application.getMessagingFactory().registerMessageConsumer(this.mc);
-
-    parent.addDisposeListener(new DisposeListener() {
-      public void widgetDisposed(DisposeEvent e)
-      {
-        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
-      }
-    });
-  }
-
-  /**
-   * ct.
+   * @param mandant der Mandant.
    * @param list Liste der Buchungs-Vorlagen.
    * @param action
    */
-  public BuchungstemplateList(GenericIterator list, Action action)
+  public BuchungstemplateList(Mandant mandant, GenericIterator list, Action action)
   {
     super(list, action);
     addColumn(i18n.tr("Bezeichnung"),"name");
@@ -116,7 +93,7 @@ public class BuchungstemplateList extends TablePart
         }
       }
     });
-    setContextMenu(new BuchungstemplateListMenu());
+    setContextMenu(new BuchungstemplateListMenu(mandant));
     setRememberColWidths(true);
     setRememberOrder(true);
     setMulti(true);
@@ -135,6 +112,22 @@ public class BuchungstemplateList extends TablePart
     list.addFilter("(kontenrahmen_id is null or kontenrahmen_id = " + jahr.getKontenrahmen().getID() + ")");
     list.setOrder("order by name");
     return list;
+  }
+
+  /**
+   * @see de.willuhn.jameica.gui.parts.TablePart#paint(org.eclipse.swt.widgets.Composite)
+   */
+  public synchronized void paint(Composite parent) throws RemoteException
+  {
+    super.paint(parent);
+    Application.getMessagingFactory().registerMessageConsumer(this.mc);
+
+    parent.addDisposeListener(new DisposeListener() {
+      public void widgetDisposed(DisposeEvent e)
+      {
+        Application.getMessagingFactory().unRegisterMessageConsumer(mc);
+      }
+    });
   }
 
   /**

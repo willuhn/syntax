@@ -10,6 +10,11 @@
 
 package de.willuhn.jameica.fibu.ext.hibiscus;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -35,9 +40,11 @@ import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.hbci.rmi.Umsatz;
 import de.willuhn.jameica.hbci.rmi.UmsatzTyp;
 import de.willuhn.jameica.hbci.server.VerwendungszweckUtil.Tag;
+import de.willuhn.jameica.messaging.QueryMessage;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
+import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -80,10 +87,29 @@ public class UmsatzListMenu implements Extension
         
         if (umsaetze == null || umsaetze.length == 0)
           return;
+        
+        boolean markChecked = false;
+        try
+        {
+          String text = i18n.tr("Umsätze hierbei als geprüft markieren?");
+          markChecked = Application.getCallback().askUser(text);
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to ask user if bookings shall be marked as checked",e);
+        }
 
         // Wenn wir mehr als 1 Buchung haben, fuehren wir das
         // im Hintergrund aus. 
-        Worker worker = new Worker(umsaetze);
+        Worker worker = new Worker(umsaetze,markChecked);
         if (umsaetze.length > 1)
           Application.getController().start(worker);
         else
@@ -303,15 +329,60 @@ public class UmsatzListMenu implements Extension
   private class Worker implements BackgroundTask
   {
     private boolean cancel = false;
-    private Umsatz[] list = null;
+    private boolean markChecked = false;
+    private List<Umsatz> list = null;
 
     /**
      * ct.
      * @param list
+     * @param markChecked true, wenn die Umsatzbuchungen gleich als geprueft markiert werden sollen.
      */
-    private Worker(Umsatz[] list)
+    private Worker(Umsatz[] list, boolean markChecked)
     {
-      this.list = list;
+      this.list = this.sort(list);
+      this.markChecked = markChecked;
+    }
+    
+    /**
+     * Sortiert die Umsaetze chronologisch.
+     * Das ist notwendig, weil die hier in der Anzeige-Reihenfolge ankommen. Wir wollen ja aber, dass die
+     * Buchungen chronologisch angelegt werden.
+     * @param list die Liste der Umsaetze.
+     * @return die sortierte Liste der Umsaetze.
+     */
+    private List<Umsatz> sort(Umsatz[] list)
+    {
+      List<Umsatz> umsaetze = new ArrayList<Umsatz>();
+      umsaetze.addAll(Arrays.asList(list));
+      
+      Collections.sort(umsaetze,new Comparator<Umsatz>() {
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare(Umsatz o1, Umsatz o2)
+        {
+          try
+          {
+            Date d1 = (Date) o1.getAttribute("datum_pseudo");
+            Date d2 = (Date) o2.getAttribute("datum_pseudo");
+            if (d1 == d2)
+              return 0;
+            if (d1 == null)
+              return -1;
+            if (d2 == null)
+              return 1;
+            return d1.compareTo(d2);
+          }
+          catch (RemoteException re)
+          {
+            Logger.error("unable to sort data",re);
+            return 0;
+          }
+        }
+      });
+      
+      return umsaetze;
     }
     
     /**
@@ -337,17 +408,27 @@ public class UmsatzListMenu implements Extension
     {
       try
       {
+        int size = this.list.size();
+        
         if (monitor != null)
-          monitor.setStatusText(i18n.tr("Buche {0} Umsätze",""+list.length));
+          monitor.setStatusText(i18n.tr("Buche {0} Umsätze",Integer.toString(size)));
 
-        double factor = 100d / list.length;
+        double factor = 100d / size;
         
         int created = 0;
         int error   = 0;
         int skipped = 0;
 
-        for (int i=0;i<list.length;++i)
+        
+        // Mit der Benachrichtigung wird dann gleich die Buchungsnummer in der Liste
+        // angezeigt. Vorher muessen wir der anderen Extension aber noch die neue
+        // Buchung mitteilen
+        final List<Extension> extensions = ExtensionRegistry.getExtensions("de.willuhn.jameica.hbci.gui.parts.UmsatzList");
+
+        for (int i=0;i<size;++i)
         {
+          Umsatz u = list.get(i);
+          
           if (monitor != null)
           {
             monitor.setPercentComplete((int)((i+1) * factor));
@@ -358,20 +439,23 @@ public class UmsatzListMenu implements Extension
           try
           {
             // Checken, ob der Umsatz schon einer Buchung zugeordnet ist
-            if (isAssigned(list[i]))
+            if (isAssigned(u))
             {
               skipped++;
               continue;
             }
             
-            buchung = createBuchung(list[i],list.length > 1);
+            buchung = createBuchung(u,size > 1);
             buchung.store();
-            created++;
             
-            // Mit der Benachrichtigung wird dann gleich die Buchungsnummer in der Liste
-            // angezeigt. Vorher muessen wir der anderen Extension aber noch die neue
-            // Buchung mitteilen
-            List<Extension> extensions = ExtensionRegistry.getExtensions("de.willuhn.jameica.hbci.gui.parts.UmsatzList");
+            if (markChecked && !u.hasFlag(Umsatz.FLAG_CHECKED))
+            {
+              u.setFlags(u.getFlags() | Umsatz.FLAG_CHECKED);
+              u.store();
+              Application.getMessagingFactory().getMessagingQueue("hibiscus.umsatz.markchecked").sendMessage(new QueryMessage(Boolean.TRUE.toString(),u));
+            }
+              
+            created++;
             if (extensions != null)
             {
               for (Extension e:extensions)
@@ -383,7 +467,7 @@ public class UmsatzListMenu implements Extension
                 }
               }
             }
-            Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(list[i]));
+            Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(u));
           }
           catch (ApplicationException ae)
           {
@@ -391,7 +475,7 @@ public class UmsatzListMenu implements Extension
             // ApplicationException, dann fehlen noch Eingaben
             // Da wir nur eine Buchung haben, oeffnen wir
             // die Erfassungsmaske.
-            if (list.length == 1)
+            if (size == 1)
             {
               Application.getMessagingFactory().sendMessage(new StatusBarMessage(ae.getMessage(),StatusBarMessage.TYPE_ERROR));
               new BuchungNeu().handleAction(buchung);
@@ -412,7 +496,7 @@ public class UmsatzListMenu implements Extension
         }
         
         String text = i18n.tr("Umsatz importiert");
-        if (list.length > 1)
+        if (size > 1)
           text = i18n.tr("{0} Umsätze importiert, {1} fehlerhaft, {2} bereits vorhanden", new String[]{Integer.toString(created),Integer.toString(error),Integer.toString(skipped)});
         
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(text,StatusBarMessage.TYPE_SUCCESS));
