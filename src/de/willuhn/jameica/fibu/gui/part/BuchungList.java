@@ -69,7 +69,6 @@ public class BuchungList extends TablePart implements Extendable
   private Konto konto               = null;
   private GenericIterator buchungen = null;
   private TextInput search          = null;
-  private boolean showFilter        = true;
   private DateInput from            = null;
   private DateInput to              = null;
 
@@ -94,7 +93,7 @@ public class BuchungList extends TablePart implements Extendable
    */
   public BuchungList(Konto konto, Action action) throws RemoteException
   {
-    this(init(konto,getConfiguredFrom(),getConfiguredTo()), action);
+    this(init(konto,getConfiguredFrom(konto),getConfiguredTo(konto)), action);
     this.konto = konto;
   }
   
@@ -216,17 +215,6 @@ public class BuchungList extends TablePart implements Extendable
     return list;
   }
   
-
-  /**
-   * Legt fest, ob der Filter angezeigt werden soll.
-   * @param filter true, wenn der Filter angezeigt werden soll.
-   * Default: true.
-   */
-  public void showFilter(boolean filter)
-  {
-    this.showFilter = filter;
-  }
-  
   /**
    * Aktualisiert die Tabelle
    * @param reload true, wenn die Buchungen aus der Datenbank neu geladen werden sollen.
@@ -293,20 +281,19 @@ public class BuchungList extends TablePart implements Extendable
    */
   public synchronized void paint(Composite parent) throws RemoteException
   {
-    if (showFilter)
-    {
-      Container group = new SimpleContainer(parent);
+    Container group = new SimpleContainer(parent);
+    
+    if (this.konto == null) // Wenn ein Konto angegeben ist, befinden wir uns auf der Detailseite des Kontos
       group.addHeadline(i18n.tr("Anzeige einschränken"));
 
-      // Eingabe-Feld fuer die Suche mit Button hinten dran.
-      this.search = this.getSearch();
-      group.addInput(this.search);
-      this.search.getControl().addKeyListener(new KL()); // Listener fuer die Aktualisierung der Suche
-      
-      MultiInput m = new MultiInput(this.getFrom(),this.getTo());
-      m.setName(i18n.tr("Zeitraum von"));
-      group.addInput(m);
-    }
+    // Eingabe-Feld fuer die Suche mit Button hinten dran.
+    this.search = this.getSearch();
+    group.addInput(this.search);
+    this.search.getControl().addKeyListener(new KL()); // Listener fuer die Aktualisierung der Suche
+    
+    MultiInput m = new MultiInput(this.getFrom(),this.getTo());
+    m.setName(i18n.tr("Zeitraum von"));
+    group.addInput(m);
 
     super.paint(parent);
     Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
@@ -322,6 +309,21 @@ public class BuchungList extends TablePart implements Extendable
   }
   
   /**
+   * Liefert den Parameter-Suffix.
+   * @param konto optionale Angabe des Konto.
+   * @return Suffix.
+   */
+  private static String getSuffix(Konto konto)
+  {
+    try
+    {
+      return konto != null ? konto.getID() : "";
+    }
+    catch (Exception e) {}
+    return "";
+  }
+  
+  /**
    * Liefert ein Eingabefeld mit dem Suchbegriff.
    * @return Eingabefeld.
    */
@@ -330,14 +332,14 @@ public class BuchungList extends TablePart implements Extendable
     if (this.search != null)
       return this.search;
     
-    this.search = new TextInput(settings.getString("buchungen.search.text",""));
+    this.search = new TextInput(settings.getString("buchungen.search.text" + getSuffix(this.konto),""));
     this.search.setName(i18n.tr("Buchungstext enthält"));
     this.search.addListener(new Listener() {
       
       @Override
       public void handleEvent(Event event)
       {
-        settings.setAttribute("buchungen.search.text",(String) search.getValue());
+        settings.setAttribute("buchungen.search.text" + getSuffix(konto),(String) search.getValue());
       }
     });
     
@@ -354,14 +356,14 @@ public class BuchungList extends TablePart implements Extendable
     if (this.from != null)
       return this.from;
     
-    this.from = new DateInput(getConfiguredFrom());
+    this.from = new DateInput(getConfiguredFrom(this.konto));
     this.from.addListener(new Listener() {
       
       @Override
       public void handleEvent(Event event)
       {
         Date d = (Date) from.getValue();
-        settings.setAttribute("buchungen.search.from",d != null ? Settings.DATEFORMAT.format(d) : null);
+        settings.setAttribute("buchungen.search.from" + getSuffix(konto),d != null ? Settings.DATEFORMAT.format(d) : null);
         update(true);
       }
     });
@@ -377,7 +379,7 @@ public class BuchungList extends TablePart implements Extendable
     if (this.to != null)
       return this.to;
     
-    this.to = new DateInput(getConfiguredTo());
+    this.to = new DateInput(getConfiguredTo(this.konto));
     this.to.setName(i18n.tr("bis"));
     this.to.addListener(new Listener() {
       
@@ -385,7 +387,7 @@ public class BuchungList extends TablePart implements Extendable
       public void handleEvent(Event event)
       {
         Date d = (Date) to.getValue();
-        settings.setAttribute("buchungen.search.to",d != null ? Settings.DATEFORMAT.format(d) : null);
+        settings.setAttribute("buchungen.search.to" + getSuffix(konto),d != null ? Settings.DATEFORMAT.format(d) : null);
         update(true);
       }
     });
@@ -394,11 +396,12 @@ public class BuchungList extends TablePart implements Extendable
 
   /**
    * Liefert das konfigurierte Start-Datum.
+   * @param konto optionale Angabe des Konto.
    * @return das konfigurierte Start-Datum.
    */
-  private static Date getConfiguredFrom()
+  private static Date getConfiguredFrom(Konto k)
   {
-    Date d = getConfiguredDate("buchungen.search.from");
+    Date d = getConfiguredDate("buchungen.search.from" + getSuffix(k));
     if (d != null)
       return d;
     
@@ -415,11 +418,12 @@ public class BuchungList extends TablePart implements Extendable
   
   /**
    * Liefert das konfigurierte End-Datum.
+   * @param konto optionale Angabe des Konto.
    * @return das konfigurierte End-Datum.
    */
-  private static Date getConfiguredTo()
+  private static Date getConfiguredTo(Konto k)
   {
-    Date d = getConfiguredDate("buchungen.search.to");
+    Date d = getConfiguredDate("buchungen.search.to" + getSuffix(k));
     if (d != null)
       return d;
     

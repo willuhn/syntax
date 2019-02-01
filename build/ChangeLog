@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Suchparameter optional auch pro Konto speichern
   * NEW: Speichern und Wiederherstellen des Suchbegriffs in der Buchungsliste
   * NEW: BUGZILLA 1649 - Neue Filter-Kriterien Von/Bis in der Buchungsliste
   
