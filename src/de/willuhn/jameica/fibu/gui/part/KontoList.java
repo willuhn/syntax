@@ -132,9 +132,11 @@ public class KontoList extends TablePart implements Extendable
   {
     if (filterEnabled)
     {
+      Container container = new SimpleContainer(parent);
+      container.addHeadline(i18n.tr("Anzeige einschränken"));
+
       TextInput text = this.getText();
       
-      Container container = new SimpleContainer(parent);
       container.addInput(text);
       container.addInput(this.getFilter());
 

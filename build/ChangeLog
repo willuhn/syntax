@@ -1,5 +1,8 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Speichern und Wiederherstellen des Suchbegriffs in der Buchungsliste
+  * NEW: BUGZILLA 1649 - Neue Filter-Kriterien Von/Bis in der Buchungsliste
+  
 2018-09-17 Version 2.8.3
 
   * NEW: Beim Übernehmen von Umsätzen nach SynTAX Option "Umsätze hierbei als geprüft markieren?" anbieten

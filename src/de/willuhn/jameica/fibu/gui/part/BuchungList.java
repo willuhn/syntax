@@ -12,6 +12,7 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.events.DisposeEvent;
@@ -43,11 +44,14 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
+import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.LabelGroup;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -60,11 +64,14 @@ import de.willuhn.util.I18N;
 public class BuchungList extends TablePart implements Extendable
 {
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getSettings();
 
   private Konto konto               = null;
   private GenericIterator buchungen = null;
   private TextInput search          = null;
   private boolean showFilter        = true;
+  private DateInput from            = null;
+  private DateInput to              = null;
 
   private MessageConsumer mcChanged    = new ChangedMessageConsumer();
   private MessageConsumer mcImported   = new ImportedMessageConsumer();
@@ -87,7 +94,7 @@ public class BuchungList extends TablePart implements Extendable
    */
   public BuchungList(Konto konto, Action action) throws RemoteException
   {
-    this(init(konto), action);
+    this(init(konto,getConfiguredFrom(),getConfiguredTo()), action);
     this.konto = konto;
   }
   
@@ -170,22 +177,24 @@ public class BuchungList extends TablePart implements Extendable
 
   /**
    * Initialisiert die Liste der Buchungen.
-   * @param konto
+   * @param konto Optional.
+   * @param von Startdatum. Optional.
+   * @param bis Enddatum. Optional.
    * @return Liste der Buchungen
    * @throws RemoteException
    */
-  private static GenericIterator init(Konto konto) throws RemoteException
+  private static GenericIterator init(Konto konto, Date von, Date bis) throws RemoteException
   {
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
-      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr);
+      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr, von, bis);
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
-        DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr);
+        DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr, von, bis);
         if (hauptbuchungen.size() == 0)
           return hilfsbuchungen;
         
@@ -202,7 +211,7 @@ public class BuchungList extends TablePart implements Extendable
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getHauptBuchungen();
+    DBIterator list = jahr.getHauptBuchungen(von, bis);
     list.setOrder("order by belegnummer desc");
     return list;
   }
@@ -236,14 +245,16 @@ public class BuchungList extends TablePart implements Extendable
           BaseBuchung a = null;
 
           // Wir holen uns den aktuellen Text
-          String text = (String) search.getValue();
+          String text = (String) getSearch().getValue();
+          Date start = (Date) getFrom().getValue();
+          Date end   = (Date) getTo().getValue();
 
           boolean empty = text == null || text.length() == 0;
           if (!empty) text = text.toLowerCase();
 
           // Daten neu laden?
           if (reload)
-            buchungen = init(konto);
+            buchungen = init(konto,start,end);
           
           buchungen.begin();
           while (buchungen.hasNext())
@@ -284,12 +295,17 @@ public class BuchungList extends TablePart implements Extendable
   {
     if (showFilter)
     {
-      LabelGroup group = new LabelGroup(parent,i18n.tr("Filter"));
+      Container group = new SimpleContainer(parent);
+      group.addHeadline(i18n.tr("Anzeige einschränken"));
 
       // Eingabe-Feld fuer die Suche mit Button hinten dran.
-      this.search = new TextInput("");
-      group.addLabelPair(i18n.tr("Buchungstext enthält"), this.search);
-      this.search.getControl().addKeyListener(new KL());
+      this.search = this.getSearch();
+      group.addInput(this.search);
+      this.search.getControl().addKeyListener(new KL()); // Listener fuer die Aktualisierung der Suche
+      
+      MultiInput m = new MultiInput(this.getFrom(),this.getTo());
+      m.setName(i18n.tr("Zeitraum von"));
+      group.addInput(m);
     }
 
     super.paint(parent);
@@ -303,6 +319,139 @@ public class BuchungList extends TablePart implements Extendable
         Application.getMessagingFactory().unRegisterMessageConsumer(mcImported);
       }
     });
+  }
+  
+  /**
+   * Liefert ein Eingabefeld mit dem Suchbegriff.
+   * @return Eingabefeld.
+   */
+  private TextInput getSearch()
+  {
+    if (this.search != null)
+      return this.search;
+    
+    this.search = new TextInput(settings.getString("buchungen.search.text",""));
+    this.search.setName(i18n.tr("Buchungstext enthält"));
+    this.search.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("buchungen.search.text",(String) search.getValue());
+      }
+    });
+    
+    this.update(false); // einmal initial den Filter ausloesen
+    return this.search;
+  }
+  
+  /**
+   * Liefert ein Auswahlfeld fuer das Startdatum.
+   * @return ein Auswahlfeld fuer das Startdatum.
+   */
+  private DateInput getFrom()
+  {
+    if (this.from != null)
+      return this.from;
+    
+    this.from = new DateInput(getConfiguredFrom());
+    this.from.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        Date d = (Date) from.getValue();
+        settings.setAttribute("buchungen.search.from",d != null ? Settings.DATEFORMAT.format(d) : null);
+        update(true);
+      }
+    });
+    return this.from;
+  }
+  
+  /**
+   * Liefert ein Auswahlfeld fuer das Enddatum.
+   * @return ein Auswahlfeld fuer das Enddatum.
+   */
+  private DateInput getTo()
+  {
+    if (this.to != null)
+      return this.to;
+    
+    this.to = new DateInput(getConfiguredTo());
+    this.to.setName(i18n.tr("bis"));
+    this.to.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        Date d = (Date) to.getValue();
+        settings.setAttribute("buchungen.search.to",d != null ? Settings.DATEFORMAT.format(d) : null);
+        update(true);
+      }
+    });
+    return this.to;
+  }
+
+  /**
+   * Liefert das konfigurierte Start-Datum.
+   * @return das konfigurierte Start-Datum.
+   */
+  private static Date getConfiguredFrom()
+  {
+    Date d = getConfiguredDate("buchungen.search.from");
+    if (d != null)
+      return d;
+    
+    try
+    {
+      return Settings.getActiveGeschaeftsjahr().getBeginn();
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    return null;
+  }
+  
+  /**
+   * Liefert das konfigurierte End-Datum.
+   * @return das konfigurierte End-Datum.
+   */
+  private static Date getConfiguredTo()
+  {
+    Date d = getConfiguredDate("buchungen.search.to");
+    if (d != null)
+      return d;
+    
+    try
+    {
+      return Settings.getActiveGeschaeftsjahr().getEnde();
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    return null;
+  }
+  
+  /**
+   * Liefert das vorkonfigurierte Datum.
+   * @param s der Parameter, in dem das Datum gespeichert ist.
+   * @return das Datum oder NULL.
+   */
+  private static Date getConfiguredDate(String s)
+  {
+    try
+    {
+      String v = settings.getString(s,null);
+      if (v != null)
+        return Settings.DATEFORMAT.parse(v);
+    }
+    catch (Exception e)
+    {
+      // ignore
+    }
+    return null;
   }
 
   private class KL extends KeyAdapter
@@ -463,112 +612,3 @@ public class BuchungList extends TablePart implements Extendable
   }
 
 }
-
-
-/*********************************************************************
- * $Log: BuchungList.java,v $
- * Revision 1.29  2010/10/24 22:29:37  willuhn
- * @C Brutto-Betrag bei Buchungen mit exportieren
- *
- * Revision 1.28  2010-08-30 16:31:43  willuhn
- * @N Import und Export von Buchungen im XML-Format
- *
- * Revision 1.27  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.26  2010/03/03 12:37:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.25  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.24.2.3  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.24.2.2  2009/06/23 11:04:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.24.2.1  2009/06/23 10:45:53  willuhn
- * @N Buchung nach Aenderung live aktualisieren
- *
- * Revision 1.24  2007/07/30 21:05:50  willuhn
- * @B typo
- *
- * Revision 1.23  2006/07/17 21:58:06  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2006/05/30 23:33:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.20  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.19  2006/05/29 13:02:30  willuhn
- * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.18  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.17  2006/05/07 16:40:12  willuhn
- * @N Suchfilter
- *
- * Revision 1.16  2006/05/07 16:27:37  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2006/01/09 01:17:12  willuhn
- * *** empty log message ***
- *
- * Revision 1.14  2005/09/26 23:52:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2005/08/30 22:51:31  willuhn
- * @B bugfixing
- *
- * Revision 1.12  2005/08/30 22:33:45  willuhn
- * @B bugfixing
- *
- * Revision 1.11  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.10  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.9  2005/08/25 21:58:58  willuhn
- * @N SKR04
- *
- * Revision 1.8  2005/08/24 23:02:32  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.6  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.5  2005/08/16 23:14:35  willuhn
- * @N velocity export
- * @N context menus
- * @B bugfixes
- *
- * Revision 1.4  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.1  2005/08/08 22:54:15  willuhn
- * @N massive refactoring
- *
- **********************************************************************/
