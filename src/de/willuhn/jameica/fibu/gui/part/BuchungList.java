@@ -185,6 +185,14 @@ public class BuchungList extends TablePart implements Extendable
   private static GenericIterator init(Konto konto, Date von, Date bis) throws RemoteException
   {
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+    
+    // Start- und End-Datum checken, falls angegeben. Wenn sie sich ausserhalb des 
+    // Geschaeftsjahres befinden, dann zuruecksetzen
+    if (von != null && !jahr.check(von))
+      von = jahr.getBeginn();
+    
+    if (bis != null && !jahr.check(bis))
+      bis = jahr.getEnde();
 
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
@@ -401,13 +409,15 @@ public class BuchungList extends TablePart implements Extendable
    */
   private static Date getConfiguredFrom(Konto k)
   {
-    Date d = getConfiguredDate("buchungen.search.from" + getSuffix(k));
-    if (d != null)
-      return d;
-    
     try
     {
-      return Settings.getActiveGeschaeftsjahr().getBeginn();
+      final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      
+      Date d = getConfiguredDate("buchungen.search.from" + getSuffix(k));
+      if (d != null && jahr.check(d))
+        return d;
+      
+      return jahr.getBeginn();
     }
     catch (Exception e)
     {
@@ -423,13 +433,15 @@ public class BuchungList extends TablePart implements Extendable
    */
   private static Date getConfiguredTo(Konto k)
   {
-    Date d = getConfiguredDate("buchungen.search.to" + getSuffix(k));
-    if (d != null)
-      return d;
-    
     try
     {
-      return Settings.getActiveGeschaeftsjahr().getEnde();
+      final Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+
+      Date d = getConfiguredDate("buchungen.search.to" + getSuffix(k));
+      if (d != null && jahr.check(d))
+        return d;
+
+      return jahr.getEnde();
     }
     catch (Exception e)
     {
