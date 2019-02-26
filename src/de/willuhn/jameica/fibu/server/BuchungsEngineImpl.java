@@ -31,6 +31,7 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.util.GeschaeftsjahrUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -342,7 +343,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
       if (ist < soll)
       {
         monitor.log(i18n.tr("    Anlagegut wurde vor " + soll + " angeschafft. Es gilt die Halbjahresregel"));monitor.addPercentComplete(1);
-        if (cal.get(Calendar.MONTH) < Calendar.JULY)
+        if (GeschaeftsjahrUtil.beforeMiddle(jahr.getBeginn(),jahr.getEnde(),datum))
           months = 12;
         else
           months = 6;

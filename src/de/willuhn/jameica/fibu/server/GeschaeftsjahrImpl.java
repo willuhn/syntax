@@ -34,6 +34,7 @@ import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.util.GeschaeftsjahrUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -139,14 +140,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public boolean check(Date d) throws RemoteException
   {
-    if (d == null)
-      return false;
-    
-    Date ende   = getEnde();
-    Date beginn = getBeginn();
-    
-    return ((d.after(beginn) || d.equals(beginn)) && // Nach oder identisch mit Beginn
-            (d.before(ende)  || d.equals(ende)));    //  Vor oder identisch mit Ende
+    return GeschaeftsjahrUtil.within(this.getBeginn(),this.getEnde(),d);
   }
 
   /**
