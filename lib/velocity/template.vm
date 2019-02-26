@@ -49,6 +49,11 @@
       font-size                : 9pt;
     }
 
+
+    table.data tr.content td {
+      border-bottom            : 1px dashed #bebebe;
+    }
+
     ol,ul {
       list-style-position      : outside;
     }

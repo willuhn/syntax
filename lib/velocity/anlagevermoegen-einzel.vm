@@ -12,7 +12,7 @@
       <th colspan="2">$!{av.Name}</th>
     </tr>
 
-    <tr>
+    <tr class="content">
       <td>Anschaffungsdatum</td>
       <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
 
@@ -20,7 +20,7 @@
       <td style="text-align:right">$!{decimalformat.format(${av.Anschaffungskosten})}&nbsp;${eur}</td>
     </tr>
     
-    <tr>
+    <tr class="content">
       <td>Abschreibungsart</td>
       <td>linear</td>
 
@@ -28,7 +28,7 @@
       <td style="text-align:right">0,00&nbsp;${eur}</td>
     </tr>
 
-	<tr>
+	  <tr class="content">
       <td>Nutzungsdauer (in Jahren)</td>
       <td>$!{av.Nutzungsdauer}</td>
 
@@ -36,15 +36,15 @@
       <td style="text-align:right">$!{decimalformat.format(${av.getRestwert(${jahr})})}&nbsp;${eur}</td>
     </tr>
     
-	<tr>
+	  <tr>
 	    <td colspan="4">&nbsp;</td>
 	  </tr>
 
-    <tr>
+    <tr class="content">
       <td colspan="2">Buchwert zum $!{dateformat.format(${jahr.Beginn})}</td>
       <td colspan="2" style="text-align:right">$!{decimalformat.format($anfangsbestand)}&nbsp;${eur}</td>
     </tr>
-    <tr>
+    <tr class="content">
       <td colspan="2">- Abschreibung</td>
       <td colspan="2" style="text-align:right">$!{decimalformat.format(${av.getJahresAbschreibung(${jahr})})}&nbsp;${eur}</td>
     </tr>

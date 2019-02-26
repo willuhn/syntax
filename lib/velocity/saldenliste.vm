@@ -20,7 +20,7 @@
   </tr>
 
   #foreach($konto in $konten)
-    <tr>
+    <tr class="content">
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
       #if($konto.getAnfangsbestand(${jahr}))

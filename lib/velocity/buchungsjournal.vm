@@ -23,7 +23,7 @@ $math.reset("brutto")
     #set($betrag = $ab.Betrag)
     #set($konto  = $ab.Konto)
     #set($count  = $count + 1)
-    <tr>
+    <tr class="content">
       <td>$!{dateformat.format(${jahr.Beginn})}</td>
       <td style="text-align:right">&nbsp;</td>
       <td>$!{konto.Kontonummer}</td>
@@ -46,7 +46,7 @@ $math.reset("brutto")
     #set($konto  = $buchung.SollKonto)
     #set($gegen  = $buchung.HabenKonto)
     #set($count  = $count + 1)
-    <tr>
+    <tr class="content">
       <td>$!{dateformat.format(${buchung.Datum})}</td>
       <td style="text-align:right">$!{buchung.Belegnummer}</td>
       <td>$!{konto.Kontonummer}</td>

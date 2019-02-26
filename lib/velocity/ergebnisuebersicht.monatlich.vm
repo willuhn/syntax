@@ -18,7 +18,7 @@ $math.reset("gesamtErgebnis")
   $math.add("gesamtEinnahmen",${einnahmen})
   #set($ergebnis = ${betriebsergebnis.Betriebsergebnis})
   $math.add("gesamtErgebnis",${ergebnis})
-  <tr>
+  <tr class="content">
     <td>${name}</td>
     <td class="nowrap" style="text-align:right">${decimalformat.format(${einnahmen})} ${eur}</td>
     <td class="nowrap" style="text-align:right">${decimalformat.format(${ausgaben})} ${eur}</td>

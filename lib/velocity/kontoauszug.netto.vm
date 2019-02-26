@@ -4,7 +4,7 @@
 #foreach($buchung in $buchungen)
 
   #set($netto = $buchung.Betrag)
-  <tr>
+  <tr class="content">
     <td>$!{dateformat.format(${buchung.Datum})}</td>
     <td style="text-align:right">$!{buchung.Belegnummer}</td>
     <td style="width:70%">$!{buchung.Text}</td>
