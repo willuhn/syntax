@@ -290,8 +290,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
   {
     double anschaffung = av.getAnschaffungskosten();
     double restwert    = av.getRestwert(jahr);
-//     double betrag      = anschaffung / (double) av.getNutzungsdauer();
-    double betrag      = restwert / (av.getRestNutzungsdauer(jahr) / 12d); // BUGZILLA 958
+    int rnd            = GeschaeftsjahrUtil.getRestnutzungsdauer(av.getAnschaffungsdatum(),av.getNutzungsdauer(),jahr.getBeginn(),jahr.getEnde()); // in Monaten
+    double betrag      = restwert / (rnd / 12d); // BUGZILLA 958
     boolean gwg        = false;
 
     if (restwert < 0.01d)
@@ -350,7 +350,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
       }
       else
       {
-        months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
+        months = GeschaeftsjahrUtil.getMonths(datum,jahr.getEnde());
       }
       
       monitor.log(i18n.tr("    Berechne anteilige Abschreibung für " + months + " Monate"));monitor.addPercentComplete(1);

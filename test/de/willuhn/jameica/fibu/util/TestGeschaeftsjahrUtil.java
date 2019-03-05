@@ -56,6 +56,141 @@ public class TestGeschaeftsjahrUtil
   }
   
   /**
+   * Testet die Berechnung der Anzahl der Monate.
+   * @throws Exception
+   */
+  @Test
+  public void testMonths() throws Exception
+  {
+    Assert.assertEquals(12,prepareMonths("01.01.2017","31.12.2017"));
+    Assert.assertEquals(6,prepareMonths("01.07.2017","31.12.2017"));
+    Assert.assertEquals(6,prepareMonths("01.07.2017","01.12.2017"));
+    Assert.assertEquals(11,prepareMonths("01.01.2017","30.11.2017"));
+    Assert.assertEquals(11,prepareMonths("31.01.2017","30.11.2017"));
+    Assert.assertEquals(1,prepareMonths("01.12.2017","31.12.2017"));
+    Assert.assertEquals(8,prepareMonths("23.11.2017","30.06.2018"));
+    Assert.assertEquals(20,prepareMonths("23.11.2017","30.06.2019"));
+    Assert.assertEquals(0,prepareMonths(null,"30.06.2019"));
+    Assert.assertEquals(0,prepareMonths("23.11.2017",null));
+    Assert.assertEquals(1000,prepareMonths("23.11.1700","30.06.2300"));
+  }
+
+  /**
+   * Testet die Berechnung der Restnutzungsdauer.
+   * @throws Exception
+   */
+  @Test
+  public void testRestnutzungsdauer() throws Exception
+  {
+    //////////////////////////////////
+    // Einfachster Fall - nur ganze Jahre
+    Assert.assertEquals(12,prepareRnd("01.01.2017",1,"01.01.2017","31.12.2017"));
+    Assert.assertEquals(120,prepareRnd("01.01.2017",10,"01.01.2017","31.12.2017"));
+    Assert.assertEquals(108,prepareRnd("01.01.2017",10,"01.01.2018","31.12.2018"));
+    Assert.assertEquals(12,prepareRnd("01.01.2017",10,"01.01.2026","31.12.2026"));
+    
+    Assert.assertEquals(12,prepareRnd("31.01.2017",1,"01.01.2017","31.12.2017"));
+    Assert.assertEquals(120,prepareRnd("31.01.2017",10,"01.01.2017","31.12.2017"));
+    Assert.assertEquals(108,prepareRnd("31.01.2017",10,"01.01.2018","31.12.2018"));
+    Assert.assertEquals(12,prepareRnd("31.01.2017",10,"01.01.2026","31.12.2026"));
+    //////////////////////////////////
+    
+    //////////////////////////////////
+    // Etwas schwieriger: In der Mitte des Jahres angeschafft
+    
+    // Jahr 1
+    Assert.assertEquals(120,prepareRnd("01.07.2017",10,"01.01.2017","31.12.2017"));
+    
+    // Jahr 2 - im ersten Jahr waren nur 6 Monate
+    Assert.assertEquals(114,prepareRnd("01.07.2017",10,"01.01.2018","31.12.2018"));
+    
+    // Jahr 3
+    Assert.assertEquals(102,prepareRnd("01.07.2017",10,"01.01.2019","31.12.2019"));
+    
+    // Jahr 10
+    Assert.assertEquals(6,prepareRnd("01.07.2017",10,"01.01.2027","31.12.2027"));
+    
+    // Jahr 1
+    Assert.assertEquals(12,prepareRnd("01.07.2017",1,"01.01.2017","31.12.2017"));
+    // Jahr 2 - im ersten Jahr waren nur 6 Monate
+    Assert.assertEquals(6,prepareRnd("01.07.2017",1,"01.01.2018","31.12.2018"));
+
+    //
+    //////////////////////////////////
+    
+    //////////////////////////////////
+    // Noch schwieriger: "Krummes" Geschaeftsjahr
+    Assert.assertEquals(120,prepareRnd("01.07.2017",10,"01.07.2017","30.06.2018"));
+    Assert.assertEquals(108,prepareRnd("01.07.2017",10,"01.07.2018","30.06.2019"));
+    Assert.assertEquals(96, prepareRnd("01.07.2017",10,"01.07.2019","30.06.2020"));
+    Assert.assertEquals(12, prepareRnd("01.07.2017",10,"01.07.2026","30.06.2027"));
+    
+    Assert.assertEquals(120,prepareRnd("30.07.2017",10,"01.07.2017","30.06.2018"));
+    Assert.assertEquals(108,prepareRnd("30.07.2017",10,"01.07.2018","30.06.2019"));
+    Assert.assertEquals(96, prepareRnd("30.07.2017",10,"01.07.2019","30.06.2020"));
+    Assert.assertEquals(12, prepareRnd("30.07.2017",10,"01.07.2026","30.06.2027"));
+    
+    Assert.assertEquals(12,prepareRnd("30.07.2017",1,"01.07.2017","30.06.2018"));
+    Assert.assertEquals(0,prepareRnd("30.07.2017",1,"01.07.2018","30.06.2019"));
+    //
+    //////////////////////////////////
+
+  
+    //////////////////////////////////
+    // Ganz schwierig: "Krummes" Geschaeftsjahr und mitten im Jahr gekauft
+
+    Assert.assertEquals(12,prepareRnd("23.11.2017",1,"01.07.2017","30.06.2018"));
+    // Jahr 2 - im ersten Jahr waren nur 8 Monate
+    Assert.assertEquals(4,prepareRnd("23.11.2017",1,"01.07.2018","30.06.2019"));
+
+    // Jahr 1
+    Assert.assertEquals(120,prepareRnd("23.11.2017",10,"01.07.2017","30.06.2018"));
+    // Jahr 2 - im ersten Jahr waren nur 8 Monate
+    Assert.assertEquals(112,prepareRnd("23.11.2017",10,"01.07.2018","30.06.2019"));
+    Assert.assertEquals(100,prepareRnd("23.11.2017",10,"01.07.2019","30.06.2020"));
+    Assert.assertEquals(88,prepareRnd("23.11.2017",10,"01.07.2020","30.06.2021"));
+    Assert.assertEquals(76,prepareRnd("23.11.2017",10,"01.07.2021","30.06.2022"));
+    Assert.assertEquals(64,prepareRnd("23.11.2017",10,"01.07.2022","30.06.2023"));
+    Assert.assertEquals(52,prepareRnd("23.11.2017",10,"01.07.2023","30.06.2024"));
+    Assert.assertEquals(40,prepareRnd("23.11.2017",10,"01.07.2024","30.06.2025"));
+    Assert.assertEquals(28,prepareRnd("23.11.2017",10,"01.07.2025","30.06.2026"));
+    Assert.assertEquals(16,prepareRnd("23.11.2017",10,"01.07.2026","30.06.2027"));
+    Assert.assertEquals(4,prepareRnd("23.11.2017",10,"01.07.2027","30.06.2028"));
+    Assert.assertEquals(0,prepareRnd("23.11.2017",10,"01.07.2028","30.06.2029"));
+    //
+    //////////////////////////////////
+  }
+
+  /**
+   * Ermittelt die Anzahl der Monate fuer einen Testdatensatz.
+   * @param from Start-Datum.
+   * @param to End-Datum.
+   * @return Anzahl der Monate.
+   * @throws Exception
+   */
+  private int prepareRnd(String date, int jahre, String from, String to) throws Exception
+  {
+    final Date d     = date != null ? DF.parse(date) : null;
+    final Date start = from != null ? DF.parse(from) : null;
+    final Date end   = to   != null ? DF.parse(to) : null;
+    return GeschaeftsjahrUtil.getRestnutzungsdauer(d,jahre,start,end);
+  }
+
+  /**
+   * Ermittelt die Anzahl der Monate fuer einen Testdatensatz.
+   * @param from Start-Datum.
+   * @param to End-Datum.
+   * @return Anzahl der Monate.
+   * @throws Exception
+   */
+  private int prepareMonths(String from, String to) throws Exception
+  {
+    final Date start = from != null ? DF.parse(from) : null;
+    final Date end   = to   != null ? DF.parse(to) : null;
+    return GeschaeftsjahrUtil.getMonths(start,end);
+  }
+  
+  /**
    * Testet fuer einen Satz Daten, ob sich das Datum vor der Mitte des Geschaeftsjahres befindet oder nicht.
    * @param from Startdatum des Geschaeftsjahres im Format dd.mm.yyyy.
    * @param to Enddatum des Geschaeftsjahres im Format dd.mm.yyyy.

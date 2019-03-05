@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * BUG: Berechnung der Nutzungsmonate falsch bei "ungeraden" Geschäftsjahren
   * BUG: TICKET #176 - Abschreibung: Halbjahresregel gefixt, konnte nicht mit "ungeraden" Geschäftsjahren (die nicht vom 01.01. - 31.12. gehen) umgehen
   * NEW: TICKET #175 - Trennlinien in den Auswertungen zwischen den Buchungszeilen
   * BUG: Wenn der gespeicherte Zeitraum in der Buchungsliste nicht zum aktiven Geschäftsjahr passt, dann Zeitraum automatisch zurück auf ganzes Geschäftsjahr setzen

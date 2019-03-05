@@ -108,14 +108,6 @@ public interface Anlagevermoegen extends DBObject
   public void setNutzungsdauer(int dauer) throws RemoteException;
   
   /**
-   * Ermittelt die Rest-Nutzungsdauer ausgehend vom angegebenen Jahr.
-   * @param jahr das Jahr (wird mitgerechnet).
-   * @return die Rest-Nutzungsdauer in Monaten.
-   * @throws RemoteException
-   */
-  public int getRestNutzungsdauer(Geschaeftsjahr jahr) throws RemoteException;
-  
-  /**
    * Liefert den aktuellen Restwert des Anlagegutes.
    * Wurde im Geschaeftsjahr noch keine Abschreibungsbuchung vorgenommen,
    * entspricht der Restwert dem Anfangsbestand.

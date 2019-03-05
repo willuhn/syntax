@@ -12,7 +12,6 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import de.willuhn.datasource.GenericIterator;
@@ -148,34 +147,6 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public void setNutzungsdauer(int dauer) throws RemoteException
   {
     setAttribute("nutzungsdauer",new Integer(dauer));
-  }
-
-  /**
-   * @see de.willuhn.jameica.fibu.rmi.Anlagevermoegen#getRestNutzungsdauer(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
-   */
-  public int getRestNutzungsdauer(Geschaeftsjahr jahr) throws RemoteException
-  {
-    Date start = this.getAnschaffungsdatum();
-    Date now   = jahr.getEnde();
-    int jahre  = this.getNutzungsdauer();
-    
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(start);
-    int month = cal.get(Calendar.MONTH);// Monat der Anschaffung holen
-    cal.add(Calendar.YEAR,jahre);
-    
-    int ende = cal.get(Calendar.YEAR); // Das Jahr der letzten planmaessigen Abschreibung
-    
-    cal.setTime(now);
-    int rest = ((ende - cal.get(Calendar.YEAR)) * 12);
-    
-    // BUGZILLA 1369 - Offset des Anschaffungsmonats nur in den Folgejahren dazu rechnen
-    if(!jahr.check(start))
-    {
-      rest += month;
-    }
-    
-    return rest > 0 ? rest : 0;
   }
 
   /**
