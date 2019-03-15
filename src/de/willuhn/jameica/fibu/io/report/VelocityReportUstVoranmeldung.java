@@ -77,7 +77,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
     for (String key:keys)
     {
       Position p = positions.get(key);
-      if (p.getBemessung() < 0.01d && p.getSteuer() < 0.01d)
+      if (Math.abs(p.getBemessung()) < 0.01d && Math.abs(p.getSteuer()) < 0.01d)
         positions.remove(key);
     }
     

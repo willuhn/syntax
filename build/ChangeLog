@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: TICKET #185 - Negative Beträge in UST-Voranmeldung zulassen
   * BUG: Berechnung der Nutzungsmonate falsch bei "ungeraden" Geschäftsjahren
   * BUG: TICKET #176 - Abschreibung: Halbjahresregel gefixt, konnte nicht mit "ungeraden" Geschäftsjahren (die nicht vom 01.01. - 31.12. gehen) umgehen
   * NEW: TICKET #175 - Trennlinien in den Auswertungen zwischen den Buchungszeilen
