@@ -31,6 +31,7 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.util.GeschaeftsjahrUtil;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
@@ -289,8 +290,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
   {
     double anschaffung = av.getAnschaffungskosten();
     double restwert    = av.getRestwert(jahr);
-//     double betrag      = anschaffung / (double) av.getNutzungsdauer();
-    double betrag      = restwert / (av.getRestNutzungsdauer(jahr) / 12d); // BUGZILLA 958
+    int rnd            = GeschaeftsjahrUtil.getRestnutzungsdauer(av.getAnschaffungsdatum(),av.getNutzungsdauer(),jahr.getBeginn(),jahr.getEnde()); // in Monaten
+    double betrag      = restwert / (rnd / 12d); // BUGZILLA 958
     boolean gwg        = false;
 
     if (restwert < 0.01d)
@@ -342,14 +343,14 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
       if (ist < soll)
       {
         monitor.log(i18n.tr("    Anlagegut wurde vor " + soll + " angeschafft. Es gilt die Halbjahresregel"));monitor.addPercentComplete(1);
-        if (cal.get(Calendar.MONTH) < Calendar.JULY)
+        if (GeschaeftsjahrUtil.beforeMiddle(jahr.getBeginn(),jahr.getEnde(),datum))
           months = 12;
         else
           months = 6;
       }
       else
       {
-        months = 12 - cal.get(Calendar.MONTH); // Anschaffungsmonat wird mit abgeschrieben
+        months = GeschaeftsjahrUtil.getMonths(datum,jahr.getEnde());
       }
       
       monitor.log(i18n.tr("    Berechne anteilige Abschreibung für " + months + " Monate"));monitor.addPercentComplete(1);

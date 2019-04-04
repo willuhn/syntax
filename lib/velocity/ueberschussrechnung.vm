@@ -24,7 +24,7 @@ $math.reset("ausgaben")
     #set($umsatz = $konto.getUmsatz(${jahr},${start},${end}))
     $math.add("einnahmen",${umsatz})
 
-    <tr>
+    <tr class="content">
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
       <td style="text-align:right">$!{decimalformat.format(${umsatz})}&nbsp;${eur}</td>
@@ -38,7 +38,7 @@ $math.reset("ausgaben")
     #set($umsatz = $konto.getUmsatz(${jahr},${start},${end}))
     $math.add("ausgaben",${umsatz})
 
-    <tr>
+    <tr class="content">
       <td>$!{konto.Kontonummer}</td>
       <td>$!{konto.Name}</td>
       <td>&nbsp;</td>

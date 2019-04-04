@@ -8,7 +8,7 @@ $math.reset("vst")
 #macro(line $nr $text $bemessung $steuer)
   #if(${positions.get($nr)})
     #set($pos = ${positions.get($nr)})
-    <tr>
+    <tr class="content">
       <td>$text</td>
       #if($bemessung)
         $math.add("ust",$pos.steuer)

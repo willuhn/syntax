@@ -102,7 +102,7 @@ public class MandantNeu extends AbstractView
     close.setEnabled(canClose);
     buttonArea.addButton(close);
     
-    Button delete = new Button(i18n.tr("Löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
+    Button delete = new Button(i18n.tr("Mandant löschen"),new MandantDelete(),getCurrentObject(),false,"user-trash-full.png");
     delete.setEnabled(canDelete);
     buttonArea.addButton(delete);
     Button button1 = new Button(i18n.tr("Speichern"), new Action()

@@ -27,7 +27,7 @@ $math.reset("restwert")
     $math.add("jahresabschreibung",${jahresabschreibung})
     $math.add("restwert",${restwert})
 
-    <tr>
+    <tr class="content">
       <td>$!{av.Name}</td>
       <td>$!{dateformat.format(${av.Anschaffungsdatum})}</td>
       <td style="text-align:right">$!{decimalformat.format(${anschaffungskosten})}&nbsp;${eur}</td>

@@ -93,7 +93,16 @@ public interface Geschaeftsjahr extends DBObject
    * @throws RemoteException
    */
   public DBIterator getHauptBuchungen() throws RemoteException;
-  
+
+  /**
+   * Liefert die Haupt-Buchungen des Geschaeftsjahres.
+   * @param von Start-Datum. Kann auch weggelassen werden.
+   * @param bis End-Datum. Kann auch weggelassen werden.
+   * @return Buchungen.
+   * @throws RemoteException
+   */
+  public DBIterator getHauptBuchungen(Date von, Date bis) throws RemoteException;
+
   /**
    * Liefert die Anfangsbestaende.
    * @return Anfangsbestaende.

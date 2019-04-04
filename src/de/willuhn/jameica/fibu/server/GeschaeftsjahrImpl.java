@@ -34,6 +34,7 @@ import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.util.GeschaeftsjahrUtil;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.util.DateUtil;
 import de.willuhn.logging.Logger;
@@ -46,7 +47,7 @@ import de.willuhn.util.I18N;
 public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsjahr
 {
 
-  private transient I18N i18n  = null;
+  private final static transient I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
    * @throws java.rmi.RemoteException
@@ -54,8 +55,6 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   public GeschaeftsjahrImpl() throws RemoteException
   {
     super();
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
   }
 
   /**
@@ -141,14 +140,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public boolean check(Date d) throws RemoteException
   {
-    if (d == null)
-      return false;
-    
-    Date ende   = getEnde();
-    Date beginn = getBeginn();
-    
-    return ((d.after(beginn) || d.equals(beginn)) && // Nach oder identisch mit Beginn
-            (d.before(ende)  || d.equals(ende)));    //  Vor oder identisch mit Ende
+    return GeschaeftsjahrUtil.within(this.getBeginn(),this.getEnde(),d);
   }
 
   /**
@@ -296,8 +288,37 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public DBIterator getHauptBuchungen() throws RemoteException
   {
-    DBIterator list = getService().createList(Buchung.class);
+    return this.getHauptBuchungen(null,null);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(java.util.Date, java.util.Date)
+   */
+  @Override
+  public DBIterator getHauptBuchungen(Date von, Date bis) throws RemoteException
+  {
+    if (von != null && !this.check(von))
+      throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(von)));
+
+    if (bis != null && !this.check(bis))
+      throw new RemoteException(i18n.tr("Das End-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(bis)));
+
+    Date start = null;
+    if (von != null)
+      start = DateUtil.startOfDay(von);
+
+    Date end = null;
+    if (bis != null)
+      end = DateUtil.endOfDay(bis);
+
+    DBService db = ((DBService)getService());
+    DBIterator list = db.createList(Buchung.class);
+    if (start != null)
+      list.addFilter(db.getSQLTimestamp("datum") + " >= " + start.getTime());
+    if (end != null)
+      list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     list.addFilter("geschaeftsjahr_id = " + this.getID());
+    list.setOrder("order by datum,belegnummer");
     return list;
   }
 

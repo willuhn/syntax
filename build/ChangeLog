@@ -1,3 +1,14 @@
+2019-04-04 Version 2.8.4
+
+  * NEW: TICKET #185 - Negative Beträge in UST-Voranmeldung zulassen
+  * BUG: Berechnung der Nutzungsmonate falsch bei "ungeraden" Geschäftsjahren
+  * BUG: TICKET #176 - Abschreibung: Halbjahresregel gefixt, konnte nicht mit "ungeraden" Geschäftsjahren (die nicht vom 01.01. - 31.12. gehen) umgehen
+  * NEW: TICKET #175 - Trennlinien in den Auswertungen zwischen den Buchungszeilen
+  * BUG: Wenn der gespeicherte Zeitraum in der Buchungsliste nicht zum aktiven Geschäftsjahr passt, dann Zeitraum automatisch zurück auf ganzes Geschäftsjahr setzen
+  * NEW: Suchparameter optional auch pro Konto speichern
+  * NEW: Speichern und Wiederherstellen des Suchbegriffs in der Buchungsliste
+  * NEW: BUGZILLA 1649 - Neue Filter-Kriterien Von/Bis in der Buchungsliste
+  
 2018-09-17 Version 2.8.3
 
   * NEW: Beim Übernehmen von Umsätzen nach SynTAX Option "Umsätze hierbei als geprüft markieren?" anbieten
