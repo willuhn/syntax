@@ -18,6 +18,7 @@ import de.willuhn.jameica.fibu.gui.part.KontoList;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
+import de.willuhn.jameica.gui.parts.table.FeatureSummary;
 import de.willuhn.jameica.gui.util.ButtonArea;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
@@ -29,23 +30,22 @@ import de.willuhn.util.I18N;
  */
 public class KontoAuswahlDialog extends AbstractDialog
 {
-
-	private I18N i18n;
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 	private Konto choosen = null;
   private DBIterator konten = null;
+  private String query = null;
 
   /**
    * ct.
    * @param konten
    * @param position
+   * @param query optionale Angabe des Suchbegriffes fuer die Kontosuche.
    */
-  public KontoAuswahlDialog(DBIterator konten, int position)
+  public KontoAuswahlDialog(DBIterator konten, int position, String query)
   {
     super(position);
     this.konten = konten;
-
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-
+    this.query = query;
 		this.setTitle(i18n.tr("Konto-Auswahl"));
     this.setSize(SWT.DEFAULT,350);
   }
@@ -65,10 +65,10 @@ public class KontoAuswahlDialog extends AbstractDialog
       }
     };
     this.konten.begin();
-		final KontoList konten = new KontoList(null,this.konten,a);
+		final KontoList konten = new KontoList(null,this.konten,this.query,a);
     konten.setContextMenu(null);
     konten.setMulti(false);
-    konten.setSummary(false);
+    konten.removeFeature(FeatureSummary.class);
     konten.paint(parent);
 
 		ButtonArea b = new ButtonArea(parent,2);

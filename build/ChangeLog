@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Beim Öffnen des Kontoauswahldialogs automatisch den aktuell eingegebenen Text als Suchbegriff übernehmen
+  
 2019-04-04 Version 2.8.4
 
   * NEW: TICKET #185 - Negative Beträge in UST-Voranmeldung zulassen

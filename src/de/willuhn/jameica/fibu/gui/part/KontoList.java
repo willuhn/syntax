@@ -51,6 +51,7 @@ public class KontoList extends TablePart implements Extendable
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoList.class);
   
+  private String query             = null;
   private TextInput search         = null;
   private CheckboxInput filter     = null;
   private DelayedListener listener = null;
@@ -67,8 +68,21 @@ public class KontoList extends TablePart implements Extendable
    */
   public KontoList(Mandant mandant, GenericIterator list, Action action) throws RemoteException
   {
+    this(mandant,list,null,action);
+  }
+
+  /**
+   * @param mandant der Mandant.
+   * @param list die Liste der Konten.
+   * @param query optionale Angabe eines Suchbegriffes.
+   * @param action
+   * @throws RemoteException
+   */
+  public KontoList(Mandant mandant, GenericIterator list, String query, Action action) throws RemoteException
+  {
     super(action);
     this.list = PseudoIterator.asList(list);
+    this.query = query;
     
     this.listener = new DelayedListener(700,new Listener() {
       public void handleEvent(Event event)
@@ -183,7 +197,7 @@ public class KontoList extends TablePart implements Extendable
     if (this.search != null)
       return this.search;
     
-    this.search = new TextInput("");
+    this.search = new TextInput(this.query);
     this.search.setName(i18n.tr("Bezeichnung oder Kto-Nr. enthält"));
     return this.search;
   }

@@ -73,7 +73,7 @@ public class KontoInput extends ButtonInput
     {
       public void handleEvent(Event event)
       {
-        KontoAuswahlDialog d = new KontoAuswahlDialog(konten,KontoAuswahlDialog.POSITION_MOUSE);
+        KontoAuswahlDialog d = new KontoAuswahlDialog(konten,KontoAuswahlDialog.POSITION_MOUSE,text.isDisposed() ? null : text.getText());
         try
         {
           inProgress = true;
@@ -99,7 +99,9 @@ public class KontoInput extends ButtonInput
     {
       public void handleEvent(Event event)
       {
-        setValue(getKonto());
+        Konto k = getKonto();
+        if (k != null)
+          setValue(k);
       }
     });
   }
