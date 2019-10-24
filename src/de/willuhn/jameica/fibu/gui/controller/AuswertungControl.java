@@ -263,16 +263,16 @@ public class AuswertungControl extends AbstractControl
    */
   public Button getStartButton()
   {
-    if (this.startButton == null)
+    if (this.startButton != null)
+      return this.startButton;
+    
+    this.startButton = new Button(i18n.tr("Auswertung erstellen..."),new Action()
     {
-      this.startButton = new Button(i18n.tr("Auswertung erstellen..."),new Action()
+      public void handleAction(Object context) throws ApplicationException
       {
-        public void handleAction(Object context) throws ApplicationException
-        {
-          handleExecute();
-        }
-      },null,true,"x-office-spreadsheet.png");
-    }
+        handleExecute();
+      }
+    },null,true,"x-office-spreadsheet.png");
     this.startButton.setEnabled(false);
     return this.startButton;
   }
