@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Support für Umsaetze nach §13b Absatz 5 UStG
   * NEW: Beim Öffnen des Kontoauswahldialogs automatisch den aktuell eingegebenen Text als Suchbegriff übernehmen
   
 2019-04-04 Version 2.8.4

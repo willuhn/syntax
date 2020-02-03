@@ -150,6 +150,7 @@ INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_
 INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1002, 6, 2, '1401', 'Abziehbare Vorsteuer 7 %', 2, NULL);
 INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1133, 6, 2, '1406', 'Abziehbare Vorsteuer 19%', 2, NULL);
 INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1003, 6, 1, '3800', 'Umsatzsteuer', 2, NULL);
+INSERT INTO konto (id,kontoart_id, kontotyp_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1004, 6, 2, '1408', 'Abziehbare Vorsteuer §13b UStG', 2, NULL);
 
 -- Steuern SKR04
 INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessung) VALUES (1001,'Vorsteuer 16%', '16', 1001, '66', NULL);
@@ -161,6 +162,7 @@ INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessu
 INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessung) VALUES (1007,'Umsatzsteuer 0%', '0', 1003, NULL, '48');
 INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessung) VALUES (1008,'Vorsteuer 19%', '19', 1133, '66', NULL);
 INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessung) VALUES (1009,'Umsatzsteuer 19%', '19', 1003, NULL, '81');
+INSERT INTO steuer (id,name, satz, steuerkonto_id, ust_nr_steuer, ust_nr_bemessung) VALUES (1010,'§13b Umsatzsteuer 0%', '0', 1004, NULL, '60');
 
 -- Restliche SKR04-Konten
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1100, 4, '0135', 'EDV-Software', 2, 1008);
@@ -273,5 +275,7 @@ INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_i
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1208, 1, '4600', 'Eigenverbrauch', 2, 1009);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1209, 1, '4695', 'Umsatzsteuervergütungen', 2, NULL);
 INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1210, 1, '7100', 'Zinserträge', 2, 1007);
+INSERT INTO konto (id, kontoart_id, kontonummer, name, kontenrahmen_id, steuer_id) VALUES (1211, 1, '4337', 'Erlöse aus Leistungen §13b', 2, 1010);
 
 INSERT INTO version (name,version) values ('db',9);
+

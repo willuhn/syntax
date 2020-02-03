@@ -83,6 +83,11 @@ $math.reset("vst")
   #line("95","zu anderen Steuers&auml;tzen",true,"98")
 
   <tr>
+    <td colspan="5"><h3>Erg&auml;nzende Angaben zu Ums&auml;tzen</h3></td>
+  </tr>
+  #line("60","Ums&auml;tze nach §13b Absatz 5 UStG",true,false)
+   
+  <tr>
     <td colspan="4" style="border-top:1px solid #000000">Summe:</td>
     <td style="border-top:1px solid #000000;border-bottom:1px solid #000000;text-align:right">$!{decimalformat.format($math.get("ust"))}&nbsp;${eur}</td>
   </tr>
