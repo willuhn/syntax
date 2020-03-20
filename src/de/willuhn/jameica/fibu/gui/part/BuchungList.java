@@ -34,6 +34,7 @@ import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -54,6 +55,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -173,6 +175,10 @@ public class BuchungList extends TablePart implements Extendable
 
         try
         {
+          if(b instanceof Buchung && ((Buchung)b).getSplitHauptBuchung() != null)
+        	  item.setFont(Font.ITALIC.getSWTFont());
+          else if (b instanceof Buchung && ((Buchung)b).getSplitBuchungen().hasNext())
+          	  item.setFont(Font.BOLD.getSWTFont());
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
@@ -232,14 +238,18 @@ public class BuchungList extends TablePart implements Extendable
         // ggf. um die Hauptbuchungen ergaenzt werden.
         List l = new ArrayList();
         while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
+        hauptbuchungen.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
         while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
+        
         return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
+      hauptbuchungen.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
       return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
     DBIterator list = jahr.getHauptBuchungen(von, bis);
+    list.addFilter("split_id is NULL");
     list.setOrder("order by belegnummer desc");
     return list;
   }

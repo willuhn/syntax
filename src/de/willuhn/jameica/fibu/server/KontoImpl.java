@@ -231,6 +231,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     while (buchungen.hasNext())
     {
       Transfer t = (Transfer) buchungen.next();
+      //Split-Hauptbuchungen ueberspringen
+      if(((Buchung)t).getSplitBuchungen().hasNext())
+    	  continue;
       if (t.getSollKonto().equals(this))
         soll += t.getBetrag();
       else

@@ -34,6 +34,7 @@ public class BuchungNeu implements Action
   public void handleAction(Object context) throws ApplicationException
   {
     Buchung b = null;
+    boolean split = false;
     if (context != null)
     {
       if (context instanceof Buchung)
@@ -51,8 +52,21 @@ public class BuchungNeu implements Action
           throw new ApplicationException(i18n.tr("Fehler beim Laden der Buchung"));
         }
       }
+	    try {
+	    	//Wenn die Buchung Splitbuchungen hat, de Splitansicht öffnen
+	    	split = b!=null && b.getSplitBuchungen().hasNext();
+	    }
+	    catch (RemoteException e)
+	    {
+	      Logger.error("unable to load splitbchung",e);
+	      I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+	      throw new ApplicationException(i18n.tr("Fehler beim Laden der Buchung"));
+	    }
     }
-    GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungNeu.class,b);
+    if(split)
+    	GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungSplit.class,b);
+    else
+    	GUI.startView(de.willuhn.jameica.fibu.gui.views.BuchungNeu.class,b);
   }
 
 }

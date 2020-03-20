@@ -60,6 +60,10 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
     {
       Buchung b = (Buchung) list.next();
 
+      //Split-HauptBuchungen überspringen
+      if(b.getSplitBuchungen().hasNext())
+    	  continue;
+      
       // Keine Begrenzung angegeben
       if (startKonto == null && endKonto == null)
       {

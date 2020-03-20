@@ -356,6 +356,14 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       
       Logger.info("Lösche Buchungen");
       GenericIterator buchungen = getHauptBuchungen();
+      //Erstmal die SplitBuchungen löschen
+      while (buchungen.hasNext()) {
+    	  Buchung b = (Buchung) buchungen.next();
+    	  if(b.getSplitHauptBuchung() != null)
+    		  b.delete();
+      }
+      //Jetzt die anderen buchungen inkl. der (ehemaligen) SplitHauptbuchungen
+      buchungen = getHauptBuchungen();
       while (buchungen.hasNext())
       {
         // Wir muessen nur die Haupt-Buchungen loeschen.
