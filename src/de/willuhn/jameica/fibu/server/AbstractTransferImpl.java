@@ -15,6 +15,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -84,15 +85,23 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuer()
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuer_satz()
    */
-  public double getSteuer() throws RemoteException
+  public double getSteuer_satz() throws RemoteException
   {
-    Double d = (Double) getAttribute("steuer");
-    if (d != null)
-      return d.doubleValue();
+	Steuer s = getSteuer();
+    if (s != null)
+      return s.getSatz();
 
     return 0;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuer()
+   */
+  public Steuer getSteuer() throws RemoteException
+  {
+   return (Steuer) getAttribute("steuer_id");
   }
 
   /**
@@ -130,9 +139,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   /**
    * @see de.willuhn.jameica.fibu.rmi.Transfer#setSteuer(double)
    */
-  public void setSteuer(double steuer) throws RemoteException
+  public void setSteuer(Steuer steuer) throws RemoteException
   {
-    setAttribute("steuer", new Double(steuer));
+    setAttribute("steuer_id", steuer);
   }
 
   /**

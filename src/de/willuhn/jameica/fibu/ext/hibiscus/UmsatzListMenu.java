@@ -271,7 +271,7 @@ public class UmsatzListMenu implements Extension
         throw new ApplicationException(i18n.tr("Buchungsvorlage \"{0}\" enthält kein Haben-Konto",template.getName()));
 
       buchung.setBruttoBetrag(template.getBetrag());
-      buchung.setBetrag(new Math().netto(template.getBetrag(),template.getSteuer()));
+      buchung.setBetrag(new Math().netto(template.getBetrag(),template.getSteuer_satz()));
       buchung.setDatum(new Date());
       buchung.setSollKonto(soll);
       buchung.setHabenKonto(haben);
@@ -289,7 +289,7 @@ public class UmsatzListMenu implements Extension
       buchung.setBruttoBetrag(brutto);
       
       if (template != null)
-        buchung.setBetrag(new Math().netto(brutto,template.getSteuer()));
+        buchung.setBetrag(new Math().netto(brutto,template.getSteuer_satz()));
       else
         buchung.setBetrag(brutto);
     }

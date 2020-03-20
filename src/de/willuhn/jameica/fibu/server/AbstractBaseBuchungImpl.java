@@ -18,6 +18,9 @@ import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -162,7 +165,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
       if (jahr.isClosed())
         throw new ApplicationException(i18n.tr("Geschäftsjahr ist bereits geschlossen"));
 
-      if (getBetrag() == 0.0d)
+      if (getBetrag() == 0.0d && getSteuer() != null)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen Buchungsbetrag ungleich 0 ein."));
 
       String text = getText();
@@ -180,10 +183,16 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
 
       if (soll.equals(haben))
         throw new ApplicationException(i18n.tr("Soll- und Haben-Konto dürfen nicht identisch sein."));
-      
-      double steuer = getSteuer();
-      if (steuer > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
+        
+      double steuer_satz = getSteuer_satz();
+      if (steuer_satz > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
         throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Konten ausgewählt wurden"));
+      
+      Steuer steuer = getSteuer();
+      if(steuer != null && steuer.getSteuerKonto().getKontoTyp().getKontoTyp() != Kontotyp.KONTOTYP_AUSGABE && (soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND || soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_ANLAGE))
+    	  throw new ApplicationException(i18n.tr("Es wurde Umsatzsteuer statt Vorsteuer gewählt."));
+      if(steuer != null && steuer.getSteuerKonto().getKontoTyp().getKontoTyp() != Kontotyp.KONTOTYP_EINNAHME && (haben.getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES))
+    	  throw new ApplicationException(i18n.tr("Es wurde Vorsteuer statt Umsatzsteuer gewählt."));
       
       Date d = getDatum();
       if (d == null)

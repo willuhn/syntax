@@ -151,7 +151,7 @@ public class DatevExporter implements Exporter
     sb.append(format(curr)); sb.append(sep);                                    // Waehrungskennung
     sb.append(format("S")); sb.append(sep);                                     // Soll/Haben-Kennzeichen
     sb.append(de.willuhn.jameica.fibu.Settings.DECIMALFORMAT.format(b.getBetrag()));sb.append(sep); // Umsatz (ohne Soll/Haben-Kz)
-    sb.append(buMap.get(b.getSteuer())); sb.append(sep);                        // BU-Schluessel
+    sb.append(buMap.get(b.getSteuer_satz())); sb.append(sep);                        // BU-Schluessel
     sb.append(b.getHabenKonto().getKontonummer()); sb.append(sep);              // Gegenkonto (ohne BU-Schlüssel)
     sb.append(b.getBelegnummer()); sb.append(sep);                              // Belegfeld 1
     sb.append(format("")); sb.append(sep);                                      // Belegfeld 2
