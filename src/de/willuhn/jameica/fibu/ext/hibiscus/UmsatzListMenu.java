@@ -300,7 +300,7 @@ public class UmsatzListMenu implements Extension
       }
       catch (Exception e)
       {
-        Logger.error("unable to detect if buchung is allready assigned",e);
+        Logger.error("unable to detect if booking is already assigned",e);
         Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen, ob die Buchung bereits in SynTAX zugeordnet ist"), StatusBarMessage.TYPE_ERROR));
       }
       return !found && super.isEnabledFor(o);

@@ -86,7 +86,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
 
     if (this.isStarted())
     {
-      Logger.warn("service allready started, skipping request");
+      Logger.warn("service already started, skipping request");
       return;
     }
 

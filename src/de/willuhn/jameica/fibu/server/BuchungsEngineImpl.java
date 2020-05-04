@@ -460,7 +460,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     }
     if (isStarted())
     {
-      Logger.warn("engine allready started, skipping request");
+      Logger.warn("engine already started, skipping request");
       return;
     }
     this.started = true;
