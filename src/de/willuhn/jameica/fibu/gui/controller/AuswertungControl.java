@@ -13,7 +13,9 @@ package de.willuhn.jameica.fibu.gui.controller;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -90,13 +92,24 @@ public class AuswertungControl extends AbstractControl
     if (auswertungen != null)
       return auswertungen;
     
-    auswertungen = new SelectInput(ReportRegistry.getReports(),null);
-    auswertungen.setName(i18n.tr("Art der Auswertung"));
-    auswertungen.setPleaseChoose(i18n.tr("Bitte wählen..."));
-    auswertungen.setAttribute("name");
-    auswertungen.setComment("");
-    auswertungen.addListener(new Listener()
+    final List<Report> reports = ReportRegistry.getReports();
+    Report selected = null;
+    final String name = StringUtils.trimToNull(settings.getString("report",null));
+    if (name != null)
     {
+      for (Report r:reports)
+      {
+        if (r.getClass().getName().equals(name))
+        {
+          selected = r;
+          break;
+        }
+      }
+    }
+    
+    final Listener l = new Listener() {
+      
+      @Override
       public void handleEvent(Event event)
       {
         try
@@ -111,13 +124,25 @@ public class AuswertungControl extends AbstractControl
           getStartButton().setEnabled(data != null);
           getLeereKonten().setEnabled(data != null && data.isNeedLeereKonten());
           getOpenAfterCreation().setEnabled(data != null);
+          
+          settings.setAttribute("report",e != null ? e.getClass().getName() : (String) null);
         }
         catch (Exception e)
         {
           Logger.error("unable to update view",e);
         }
       }
-    });
+    };
+    auswertungen = new SelectInput(reports,selected);
+    auswertungen.setName(i18n.tr("Art der Auswertung"));
+    auswertungen.setPleaseChoose(i18n.tr("Bitte wählen..."));
+    auswertungen.setAttribute("name");
+    auswertungen.setComment("");
+    auswertungen.addListener(l);
+    
+    // Einmal initial per Hand ausloesen
+    l.handleEvent(null);
+    
     return auswertungen;
   }
   
@@ -189,12 +214,28 @@ public class AuswertungControl extends AbstractControl
     if (this.start != null)
       return this.start;
 
-    this.start = new DateInput(Settings.getActiveGeschaeftsjahr().getBeginn(),Settings.CUSTOM_DATEFORMAT);
+    this.start = new DateInput(this.getStoredDate("startdatum",Settings.getActiveGeschaeftsjahr().getBeginn()),Settings.CUSTOM_DATEFORMAT);
     this.start.setName(i18n.tr("Start-Datum"));
     this.start.setText(i18n.tr("Wählen Sie bitte den Beginn des Auswertungszeitraumes aus"));
     this.start.setTitle(i18n.tr("Beginn des Auswertungszeitraumes"));
     this.start.setEnabled(false);
     this.start.setComment("");
+    this.start.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Date d = (Date) getStart().getValue();
+          setStoredDate("startdatum",d);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to store date",e);
+        }
+      }
+    });
     return this.start;
   }
   
@@ -208,13 +249,94 @@ public class AuswertungControl extends AbstractControl
     if (this.end != null)
       return this.end;
     
-    this.end = new DateInput(Settings.getActiveGeschaeftsjahr().getEnde(),Settings.CUSTOM_DATEFORMAT);
+    this.end = new DateInput(this.getStoredDate("enddatum",Settings.getActiveGeschaeftsjahr().getEnde()),Settings.CUSTOM_DATEFORMAT);
     this.end.setText(i18n.tr("Wählen Sie bitte das Ende des Auswertungszeitraumes aus"));
     this.end.setName(i18n.tr("End-Datum"));
     this.end.setTitle(i18n.tr("Ende des Auswertungszeitraumes"));
     this.end.setEnabled(false);
     this.end.setComment("");
+    this.end.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          Date d = (Date) getEnd().getValue();
+          setStoredDate("enddatum",d);
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to store date",e);
+        }
+      }
+    });
     return this.end;
+  }
+  
+  /**
+   * Speichert das Datum.
+   * @param name der Name des Parameters.
+   * @param d das Datum.
+   */
+  private void setStoredDate(String name, Date d)
+  {
+    if (d != null)
+    {
+      try
+      {
+        // Wenn ein Datum ausgewaehlt wurde, pruefen wir, dass es sich innerhalb des Geschaeftsjahres befindet
+        Geschaeftsjahr jahr = (Geschaeftsjahr) getJahr().getValue();
+        if (jahr != null && !jahr.check(d))
+        {
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Das Datum {0} befindet sich ausserhalb des Geschäftsjahres",Settings.CUSTOM_DATEFORMAT.format(d)),StatusBarMessage.TYPE_ERROR));
+          return;
+        }
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to check year",e);
+        Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Prüfen des Geschäftsjahres: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        return;
+      }
+    }
+    settings.setAttribute(name,d != null ? Settings.CUSTOM_DATEFORMAT.format(d) : (String) null);
+  }
+  
+  /**
+   * Liefert das gespeicherte Datum.
+   * @param name Name des Parameters in den Einstellungen.
+   * @param def das Default-Datum, wenn keines oder kein gueltiges gespeichert wurde.
+   * @return das Datum oder der Default-Wert (kann NULL sein), wenn keines oder kein gueltiges gespeichert wurde.
+   */
+  private Date getStoredDate(String name, Date def)
+  {
+    String s = StringUtils.trimToNull(settings.getString(name,null));
+    if (s == null)
+      return def;
+    
+    try
+    {
+      final Date d = Settings.CUSTOM_DATEFORMAT.parse(s);
+      if (d == null)
+        return def;
+      
+      // Jetzt noch checken, ob es sich im aktuellen Geschaeftsjahr befindet
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      if (jahr == null)
+        return d; // Kein Geschaeftsjahr ausgewaehlt, dann koennen wir es nicht ueberpruefen.
+      
+      if (jahr.check(d))
+        return d;
+      
+      // Befindet sich ausserhalb des Geschaeftsjahres
+      return def;
+    }
+    catch (Exception e)
+    {
+      // Ignore
+    }
+    return def;
   }
   
   /**
@@ -231,9 +353,24 @@ public class AuswertungControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.setOrder("order by kontonummer");
     
-    this.startKonto = new KontoInput((Konto) list.next());
+    this.startKonto = new KontoInput(this.getStoredKonto("startkonto",(Konto) list.next()));
     this.startKonto.setName(i18n.tr("von"));
     this.startKonto.setEnabled(false);
+    this.startKonto.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          setStoredKonto("startkonto",getStartKonto().getKonto());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to store account",re);
+        }
+      }
+    });
     return this.startKonto;
   }
   
@@ -251,11 +388,101 @@ public class AuswertungControl extends AbstractControl
     DBIterator list = jahr.getKontenrahmen().getKonten();
     list.setOrder("order by kontonummer desc");
     
-    this.endKonto = new KontoInput((Konto) list.next());
+    this.endKonto = new KontoInput(this.getStoredKonto("endkonto",(Konto) list.next()));
     this.endKonto.setName(i18n.tr("bis"));
     this.endKonto.setEnabled(false);
+    this.endKonto.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        try
+        {
+          setStoredKonto("endkonto",getEndKonto().getKonto());
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to store account",re);
+        }
+      }
+    });
     return this.endKonto;
   }
+  
+  /**
+   * Speichert das Konto.
+   * @param name der Name des Parameters.
+   * @param k das Konto.
+   */
+  private void setStoredKonto(String name, Konto k)
+  {
+    try
+    {
+      if (k != null)
+      {
+        // Pruefen, ob es sich im Kontenrahmen des aktuellen Geschaeftsjahres befindet.
+        Geschaeftsjahr jahr = (Geschaeftsjahr) getJahr().getValue();
+        if (jahr != null)
+        {
+          DBIterator<Konto> konten = jahr.getKontenrahmen().getKonten();
+          boolean found = false;
+          while (konten.hasNext())
+          {
+            Konto check = konten.next();
+            if (check.getID().equals(k.getID()))
+            {
+              found = true;
+              break;
+            }
+          }
+          
+          if (!found)
+          {
+            Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Das Konto {0} befindet sich nicht im aktuellen Kontenrahmen",k.getKontonummer()),StatusBarMessage.TYPE_ERROR));
+            return;
+          }
+        }
+        
+      }
+      settings.setAttribute(name,k != null ? k.getID() : (String) null);
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to store account",re);
+    }
+  }
+  
+  /**
+   * Liefert das gespeicherte Konto.
+   * @param name der Name des Parameters.
+   * @param def das Default-Konto, wenn keines oder kein gueltiges gespeichert war.
+   * @return das gespeicherte Konto oder der Default-Wert.
+   */
+  private Konto getStoredKonto(String name, Konto def)
+  {
+    String id = StringUtils.trimToNull(settings.getString(name,null));
+    if (id == null)
+      return def;
+    
+    try
+    {
+      // Im aktuellen Kontenrahmen suchen
+      Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
+      DBIterator<Konto> list = jahr.getKontenrahmen().getKonten();
+      while (list.hasNext())
+      {
+        Konto k = list.next();
+        if (k.getID().equals(id))
+          return k;
+      }
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to load stored account",e);
+    }
+    return def;
+  }
+  
   
   /**
    * Liefert den Start-Button.
@@ -471,60 +698,3 @@ public class AuswertungControl extends AbstractControl
     
   }
 }
-
-
-/*********************************************************************
- * $Log: AuswertungControl.java,v $
- * Revision 1.12  2010/11/30 22:45:44  willuhn
- * @B Auswertung nur oeffnen, wenn bei der Erstellung kein Fehler auftrat
- *
- * Revision 1.11  2010-08-27 11:19:40  willuhn
- * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
- *
- * Revision 1.10  2010/08/27 10:18:15  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.9  2010/06/08 16:08:12  willuhn
- * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
- *
- * Revision 1.8  2010/06/08 11:28:11  willuhn
- * @N SWT besitzt jetzt selbst eine Option im FileDialog, mit der geprueft werden kann, ob die Datei ueberschrieben werden soll oder nicht
- *
- * Revision 1.7  2010/06/04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.6  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.5  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.4.2.3  2009/06/25 15:21:18  willuhn
- * @N weiterer Code fuer IDEA-Export
- *
- * Revision 1.4.2.2  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.4.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- * Revision 1.4  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.3  2006/01/04 17:59:11  willuhn
- * @B bug 171
- *
- * Revision 1.2  2005/10/17 22:59:38  willuhn
- * @B bug 135
- *
- * Revision 1.1  2005/10/06 22:50:32  willuhn
- * @N auswertungen
- *
- **********************************************************************/
