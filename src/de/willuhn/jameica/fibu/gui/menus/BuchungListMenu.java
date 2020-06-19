@@ -12,10 +12,12 @@ package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
+import de.willuhn.jameica.fibu.gui.action.BuchungDuplicate;
 import de.willuhn.jameica.fibu.gui.action.BuchungExport;
 import de.willuhn.jameica.fibu.gui.action.BuchungImport;
 import de.willuhn.jameica.fibu.gui.action.BuchungMarkChecked;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
+import de.willuhn.jameica.fibu.gui.action.BuchungReversal;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -40,6 +42,9 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(new SingleItem(i18n.tr("Öffnen"), new BuchungNeu(),"document-open.png"));
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung..."), new BNeu(),"list-add.png"));
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungDelete(),"user-trash-full.png"));
+    this.addItem(ContextMenuItem.SEPARATOR);
+    this.addItem(new SingleItem(i18n.tr("Duplizieren..."), new BuchungDuplicate(),"edit-copy.png"));
+    this.addItem(new SingleItem(i18n.tr("Storno-Buchung erstellen..."), new BuchungReversal(),"view-refresh.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungMarkChecked(true),false,"emblem-default.png"));
     this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungMarkChecked(false),true,"edit-undo.png"));

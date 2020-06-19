@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Erzeugen von Storno-Buchungen und Duplizieren von Buchungen
   * NEW: Speichern der ausgewählten Werte in den Auswertungen
   * NEW: In Auswertung "Summen- und Saldenliste" am Ende eine Summenzeile anzeigen
   * NEW: Support für Umsaetze nach §13b Absatz 5 UStG

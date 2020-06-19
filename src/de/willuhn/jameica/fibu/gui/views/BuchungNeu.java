@@ -12,6 +12,8 @@ package de.willuhn.jameica.fibu.gui.views;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.BuchungDelete;
+import de.willuhn.jameica.fibu.gui.action.BuchungDuplicate;
+import de.willuhn.jameica.fibu.gui.action.BuchungReversal;
 import de.willuhn.jameica.fibu.gui.controller.BuchungControl;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
@@ -21,7 +23,9 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
@@ -58,7 +62,7 @@ public class BuchungNeu extends AbstractView
     group.addLabelPair(i18n.tr("Steuersatz"),      control.getSteuer());
     group.addLabelPair(i18n.tr("Notiz"),           control.getKommentar());
     
-    Buchung b = control.getBuchung();
+    final Buchung b = control.getBuchung();
     Anlagevermoegen av = b.getAnlagevermoegen();
     if (av != null)
       group.addLabelPair(i18n.tr("Zugehöriges Anlagegut"), control.getAnlageVermoegenLink());
@@ -69,66 +73,91 @@ public class BuchungNeu extends AbstractView
     control.getDatum().focus();
 
     boolean closed = Settings.getActiveGeschaeftsjahr().isClosed();
-    if (closed) GUI.getView().setErrorText(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"));
+    if (closed)
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchung kann nicht mehr geändert werden, da das Geschäftsjahr abgeschlossen ist"),StatusBarMessage.TYPE_ERROR));
 
-    // und noch die Abschicken-Knoepfe
-    ButtonArea buttonArea = new ButtonArea();
 
-    Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), b ,false,"user-trash-full.png");
+    final Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), b,false,"user-trash-full.png");
     delete.setEnabled(!closed);
-    buttonArea.addButton(delete);
 
-    Button store = new Button(i18n.tr("Speichern"),new Action() {
+    final Button store = new Button(i18n.tr("Speichern"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore(false);
       }
     },null,false,"document-save.png");
     store.setEnabled(!closed);
-    buttonArea.addButton(store);
+    
+    final Button duplicate = new Button(i18n.tr("Duplizieren..."), new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          boolean ok = true;
+          if (Application.getCallback().askUser(i18n.tr("Buchung vorher speichern?")))
+            ok = control.handleStore(false);
+          
+          if (ok)
+            new BuchungDuplicate().handleAction(b);
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to duplicate booking",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Duplizieren fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    },null,false,"edit-copy.png");
+    duplicate.setEnabled(!closed);
 
-    Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
+    final Button reversal = new Button(i18n.tr("Storno-Buchung erstellen..."), new Action() {
+      
+      @Override
+      public void handleAction(Object context) throws ApplicationException
+      {
+        try
+        {
+          boolean ok = true;
+          if (Application.getCallback().askUser(i18n.tr("Buchung vorher speichern?")))
+            ok = control.handleStore(false);
+          
+          if (ok)
+            new BuchungReversal().handleAction(b);
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to reverse booking",e);
+          Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Erstellen der Storno-Buchung fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
+        }
+      }
+    },null,false,"view-refresh.png");
+    reversal.setEnabled(!closed);
+
+    final Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
       public void handleAction(Object context) throws ApplicationException
       {
         control.handleStore(true);
       }
     },null,true,"go-next.png");
     storeNew.setEnabled(!closed);
+    
+    // und noch die Abschicken-Knoepfe
+    ButtonArea buttonArea = new ButtonArea();
+    buttonArea.addButton(delete);
+    buttonArea.addButton(duplicate);
+    buttonArea.addButton(reversal);
+    buttonArea.addButton(store);
     buttonArea.addButton(storeNew);
     
     buttonArea.paint(getParent());
   }
 }
-
-/*********************************************************************
- * $Log: BuchungNeu.java,v $
- * Revision 1.48  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.47  2010-08-02 22:02:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.46  2010/06/04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.45  2010/06/03 14:26:16  willuhn
- * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
- * @C Code-Cleanup
- *
- * Revision 1.44  2010/06/02 00:02:59  willuhn
- * @N Mehr Icons
- *
- * Revision 1.43  2010/06/01 23:51:56  willuhn
- * @N Neue Icons - erster Teil
- *
- * Revision 1.42  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- **********************************************************************/

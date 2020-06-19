@@ -46,6 +46,7 @@ import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -449,8 +450,10 @@ public class BuchungControl extends AbstractControl
   /**
    * Speichert die Buchung.
    * @param startNew legt fest, ob danach sofort der Dialog zum Erfassen einer neuen Buchung geoeffnet werden soll.
+   * @return true, wenn das Speichern erfolgreich war.
+   * @throws ApplicationException
    */
-  public void handleStore(boolean startNew)
+  public boolean handleStore(boolean startNew) throws ApplicationException
   {
     try {
 
@@ -505,7 +508,7 @@ public class BuchungControl extends AbstractControl
       
       // und jetzt speichern wir.
 			getBuchung().store();
-      GUI.getStatusBar().setSuccessText(i18n.tr("Buchung Nr. {0} gespeichert.",""+getBuchung().getBelegnummer()));
+      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchung Nr. {0} gespeichert.",Integer.toString(getBuchung().getBelegnummer())),StatusBarMessage.TYPE_SUCCESS));
 
       // BUGZILLA 245
       
@@ -524,16 +527,19 @@ public class BuchungControl extends AbstractControl
       }
       else if (startNew)
         new de.willuhn.jameica.fibu.gui.action.BuchungNeu().handleAction(null);
+      
+      return true;
     }
-    catch (ApplicationException e1)
+    catch (ApplicationException ae)
     {
-      GUI.getView().setErrorText(e1.getLocalizedMessage());
+      throw ae;
     }
-    catch (Throwable t)
+    catch (Exception e)
     {
-			Logger.error("unable to store buchung",t);
-      GUI.getView().setErrorText("Fehler beim Speichern der Buchung.");
+			Logger.error("unable to store booking",e);
+			Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Speichern der Buchung fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
     }
+    return false;
     
   }
 
