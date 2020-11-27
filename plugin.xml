@@ -3,11 +3,11 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.2.xsd"
-        name="syntax" version="2.9.0-nightly" class="de.willuhn.jameica.fibu.Fibu">
+        name="syntax" version="2.11.0-nightly" class="de.willuhn.jameica.fibu.Fibu">
 
   <description>Finanzbuchhaltung für Jameica</description>
-  <url>https://www.willuhn.de/products/syntax/nightly/syntax-2.9.0-nightly.zip</url>
-  <homepage>http://www.willuhn.de/products/syntax</homepage>
+  <url>https://www.willuhn.de/products/syntax/nightly/syntax-2.11.0-nightly.zip</url>
+  <homepage>https://www.willuhn.de/products/syntax</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
   <requires jameica="2.9.0+">

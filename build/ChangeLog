@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+2020-11-27 Version 2.10.0
+
   * NEW: Erzeugen von Storno-Buchungen und Duplizieren von Buchungen
   * NEW: Speichern der ausgewählten Werte in den Auswertungen
   * NEW: In Auswertung "Summen- und Saldenliste" am Ende eine Summenzeile anzeigen
