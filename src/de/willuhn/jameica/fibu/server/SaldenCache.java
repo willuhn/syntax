@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2021 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -19,7 +19,7 @@ import de.willuhn.util.Session;
 /**
  * Cache fuer die Salden.
  */
-class SaldenCache
+public class SaldenCache
 {
   private static Session session = new Session();
   
@@ -30,7 +30,7 @@ class SaldenCache
    * @return Saldo.
    * @throws RemoteException
    */
-  protected static Double get(Geschaeftsjahr jahr, String kontonummer) throws RemoteException
+  public static Double get(Geschaeftsjahr jahr, String kontonummer) throws RemoteException
   {
     if (jahr == null || kontonummer == null || kontonummer.length() == 0)
       return null;
@@ -45,7 +45,7 @@ class SaldenCache
    * Entfernt den Saldo aus dem Cache.
    * @param kontonummer
    */
-  protected static void remove(String kontonummer)
+  public static void remove(String kontonummer)
   {
     if (kontonummer == null || kontonummer.length() == 0)
       return;
@@ -64,7 +64,7 @@ class SaldenCache
    * @param kontonummer
    * @throws RemoteException
    */
-  protected static void remove(Geschaeftsjahr jahr, String kontonummer) throws RemoteException
+  public static void remove(Geschaeftsjahr jahr, String kontonummer) throws RemoteException
   {
     if (jahr == null || kontonummer == null || kontonummer.length() == 0)
       return;
@@ -80,7 +80,7 @@ class SaldenCache
    * @param d
    * @throws RemoteException
    */
-  protected static void put(Geschaeftsjahr jahr, String kontonummer, Double d) throws RemoteException
+  public static void put(Geschaeftsjahr jahr, String kontonummer, Double d) throws RemoteException
   {
     if (jahr == null || kontonummer == null || kontonummer.length() == 0)
       return;
@@ -96,13 +96,3 @@ class SaldenCache
 
 }
 
-
-/*********************************************************************
- * $Log: SaldenCache.java,v $
- * Revision 1.2  2005/10/03 14:22:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- **********************************************************************/

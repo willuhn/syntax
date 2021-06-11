@@ -1,5 +1,7 @@
 HEAD 2.9 (nightly)
 
+  * BUG: Beim Ändern der Konten in einer Buchung den Saldo-Cache der vorherigen Konten ebenfalls aktualisieren
+
 2020-11-27 Version 2.10.0
 
   * NEW: Erzeugen von Storno-Buchungen und Duplizieren von Buchungen

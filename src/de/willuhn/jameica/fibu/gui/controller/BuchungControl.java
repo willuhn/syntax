@@ -34,6 +34,7 @@ import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.server.Math;
+import de.willuhn.jameica.fibu.server.SaldenCache;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
@@ -501,6 +502,18 @@ public class BuchungControl extends AbstractControl
       //
       //////////////////////////////////////////////////////////////////////////
       
+      //////////////////////////////////////////////////////////////////////////
+      // Fuer den Fall, dass der User die Konten geaendert hat, muss auch der Saldo-Cache der
+      // vorherigen Konten aktualisiert werden. Siehe https://homebanking-hilfe.de/forum/topic.php?p=159869#real159869
+      final Konto ks = getBuchung().getSollKonto();
+      if (ks != null)
+        SaldenCache.remove(Settings.getActiveGeschaeftsjahr(),ks.getKontonummer());
+      final Konto kh = getBuchung().getHabenKonto();
+      if (kh != null)
+        SaldenCache.remove(Settings.getActiveGeschaeftsjahr(),kh.getKontonummer());
+      //
+      //////////////////////////////////////////////////////////////////////////
+
       getBuchung().setSollKonto((Konto) getSollKontoAuswahl().getValue());
       getBuchung().setHabenKonto((Konto) getHabenKontoAuswahl().getValue());
       getBuchung().setText((String)getText().getValue());
