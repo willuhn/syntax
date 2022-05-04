@@ -447,6 +447,27 @@ public class BuchungControl extends AbstractControl
     steuer.setMandatory(true);
 		return steuer;
 	}
+  
+  /**
+   * Tauscht Soll- und Haben-Konto.
+   * @throws ApplicationException
+   */
+  public void handleFlipAccounts() throws ApplicationException
+  {
+    try
+    {
+      final Konto soll = this.getSollKontoAuswahl().getKonto();
+      final Konto haben = this.getHabenKontoAuswahl().getKonto();
+      
+      this.getSollKontoAuswahl().setValue(haben);
+      this.getHabenKontoAuswahl().setValue(soll);
+    }
+    catch (Exception e)
+    {
+      Logger.error("unable to flip accounts",e);
+      throw new ApplicationException(i18n.tr("Tauschen von Soll/Haben fehlgeschlagen: {0}",e.getMessage()));
+    }
+  }
 
   /**
    * Speichert die Buchung.
