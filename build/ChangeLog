@@ -1,3 +1,10 @@
+2023-01-25 Version 2.10.1
+
+  * NEW: Konten, Kontoarten, Kontotypen, Kontenrahmen und Steuern cachen
+  * NEW: Funktion zum Tauschen von Soll- und Haben-Konto in einer Buchung - siehe https://homebanking-hilfe.de/forum/topic.php?t=25167#real162642
+  * NEW: Kontextmenü von Hibiscus-Umsätzen um einen neuen Eintrag "Buchung in SynTAX öffnen..." ergänzt
+  * BUG: Beim Ändern der Konten in einer Buchung den Saldo-Cache der vorherigen Konten ebenfalls aktualisieren
+
 2020-11-27 Version 2.10.0
 
   * NEW: Erzeugen von Storno-Buchungen und Duplizieren von Buchungen

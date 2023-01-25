@@ -192,70 +192,24 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
     setAttribute("ust_nr_bemessung",s);
   }
   
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  @Override
+  public void delete() throws RemoteException, ApplicationException
+  {
+    super.delete();
+    Cache.clear(Steuer.class);
+  }
   
-}
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    Cache.clear(Steuer.class);
+  }
 
-/*********************************************************************
- * $Log: SteuerImpl.java,v $
- * Revision 1.20  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.19  2010-06-04 13:49:48  willuhn
- * @N Kennzeichen fuer Steuer und Bemessungsgrundlage fuer UST-Voranmeldung
- *
- * Revision 1.18  2010/06/04 13:34:45  willuhn
- * @B Da fehlten ein paar Commits
- *
- * Revision 1.17  2010/06/04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.16  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.14  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.13  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.12  2005/10/05 17:52:33  willuhn
- * @N steuer behaviour
- *
- * Revision 1.11  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.10  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.9  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.8  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.7  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.5  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2003/12/12 21:11:27  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.3  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.2  2003/12/10 23:51:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
- **********************************************************************/
+}

@@ -80,12 +80,7 @@ public class BuchungNeu extends AbstractView
     final Button delete = new Button(i18n.tr("Löschen"), new BuchungDelete(), b,false,"user-trash-full.png");
     delete.setEnabled(!closed);
 
-    final Button store = new Button(i18n.tr("Speichern"),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleStore(false);
-      }
-    },null,false,"document-save.png");
+    final Button store = new Button(i18n.tr("Speichern"),x -> control.handleStore(false),null,false,"document-save.png");
     store.setEnabled(!closed);
     
     final Button duplicate = new Button(i18n.tr("Duplizieren..."), new Action() {
@@ -115,7 +110,10 @@ public class BuchungNeu extends AbstractView
     },null,false,"edit-copy.png");
     duplicate.setEnabled(!closed);
 
-    final Button reversal = new Button(i18n.tr("Storno-Buchung erstellen..."), new Action() {
+    final Button flip = new Button(i18n.tr("Soll/Haben tauschen"), x -> control.handleFlipAccounts(),null,false,"view-refresh.png");
+    flip.setEnabled(!closed);
+
+    final Button reversal = new Button(i18n.tr("Storno..."), new Action() {
       
       @Override
       public void handleAction(Object context) throws ApplicationException
@@ -139,25 +137,23 @@ public class BuchungNeu extends AbstractView
           Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Erstellen der Storno-Buchung fehlgeschlagen: {0}",e.getMessage()),StatusBarMessage.TYPE_ERROR));
         }
       }
-    },null,false,"view-refresh.png");
+    },null,false,"edit-undo.png");
     reversal.setEnabled(!closed);
 
-    final Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
-      public void handleAction(Object context) throws ApplicationException
-      {
-        control.handleStore(true);
-      }
-    },null,true,"go-next.png");
+    final Button storeNew = new Button(i18n.tr("Speichern + Neu"),x -> control.handleStore(true),null,true,"go-next.png");
     storeNew.setEnabled(!closed);
     
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(delete);
-    buttonArea.addButton(duplicate);
+    buttonArea.addButton(flip);
     buttonArea.addButton(reversal);
+    buttonArea.addButton(duplicate);
     buttonArea.addButton(store);
     buttonArea.addButton(storeNew);
     
     buttonArea.paint(getParent());
+    
+    
   }
 }

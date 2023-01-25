@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.util.ApplicationException;
 
 /**
  * @author willuhn
@@ -66,12 +67,24 @@ public class KontotypImpl extends AbstractDBObject implements Kontotyp
       return KONTOTYP_UNGUELTIG;
     }
   }
-}
 
-/*********************************************************************
- * $Log: KontotypImpl.java,v $
- * Revision 1.1  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- **********************************************************************/
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  @Override
+  public void delete() throws RemoteException, ApplicationException
+  {
+    super.delete();
+    Cache.clear(Kontotyp.class);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    Cache.clear(Kontotyp.class);
+  }
+}

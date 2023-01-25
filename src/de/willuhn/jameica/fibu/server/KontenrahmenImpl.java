@@ -145,71 +145,24 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
     return konten.hasNext() ? (Konto) konten.next() : null;
   }
 
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
+   */
+  @Override
+  public void delete() throws RemoteException, ApplicationException
+  {
+    super.delete();
+    Cache.clear(Kontenrahmen.class);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    Cache.clear(Kontenrahmen.class);
+  }
+
 }
-
-
-/*********************************************************************
- * $Log: KontenrahmenImpl.java,v $
- * Revision 1.22  2011/08/08 10:44:36  willuhn
- * @C compiler warnings
- *
- * Revision 1.21  2011-03-25 10:14:10  willuhn
- * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
- * @C BUGZILLA 958
- *
- * Revision 1.20  2011-03-21 11:17:27  willuhn
- * @N BUGZILLA 1004
- *
- * Revision 1.19  2009-07-03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.16  2007/11/05 01:04:49  willuhn
- * @N Beim Speichern testen, ob fuer den Mandanten schon ein gleichnamiger Kontenrahmen existiert
- * @N findByKontonummer
- *
- * Revision 1.15  2007/10/08 22:54:47  willuhn
- * @N Kopieren eines kompletten Kontenrahmen auf einen Mandanten
- *
- * Revision 1.14  2006/05/08 22:44:18  willuhn
- * @N Debugging
- *
- * Revision 1.13  2006/01/04 16:04:33  willuhn
- * @B gj/mandant handling (insb. Loeschen)
- *
- * Revision 1.12  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.11  2005/09/01 21:08:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.9  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.8  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/12/12 21:11:27  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.6  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.5  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.3  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
- * Revision 1.2  2003/11/24 16:26:16  willuhn
- * @N AbstractDBObject is now able to resolve foreign keys
- *
- * Revision 1.1  2003/11/24 15:18:21  willuhn
- * *** empty log message ***
- *
- *********************************************************************/

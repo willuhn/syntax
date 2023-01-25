@@ -34,6 +34,7 @@ import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.Extension;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
+import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.hbci.messaging.ObjectChangedMessage;
@@ -116,6 +117,77 @@ public class UmsatzListMenu implements Extension
           worker.run(null);
       }
     }));
+
+    menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Buchung in SynTAX öffnen..."), new Action() {
+      
+      public void handleAction(Object context) throws ApplicationException
+      {
+        if (context == null)
+          return;
+
+        if (!(context instanceof Umsatz))
+          return;
+
+        try
+        {
+          final Umsatz u = (Umsatz) context;
+          DBIterator list = Settings.getDBService().createList(Buchung.class);
+          list.addFilter("hb_umsatz_id=?",u.getID());
+          if (!list.hasNext())
+            return;
+          
+          new BuchungNeu().handleAction(list.next());
+        }
+        catch (ApplicationException ae)
+        {
+          throw ae;
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to open booking",e);
+        }
+      }
+    })
+    {
+      /**
+       * @see de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu.MyContextMenuItem#isEnabledFor(java.lang.Object)
+       */
+      @Override
+      public boolean isEnabledFor(Object o)
+      {
+        if (!super.isEnabledFor(o))
+          return false;
+        
+        if (o == null)
+          return false;
+
+        if (!(o instanceof Umsatz))
+          return false;
+
+        try
+        {
+          final Umsatz u = (Umsatz) o;
+          DBIterator list = Settings.getDBService().createList(Buchung.class);
+          list.addFilter("hb_umsatz_id=?",u.getID());
+          return list.hasNext();
+        }
+        catch (OperationCanceledException oce)
+        {
+          throw oce;
+        }
+        catch (Exception e)
+        {
+          Logger.error("unable to open booking",e);
+        }
+        
+        return false;
+      }
+    });
+  
   }
 
   /**

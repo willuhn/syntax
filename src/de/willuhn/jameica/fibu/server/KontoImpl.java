@@ -278,7 +278,12 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public Kontoart getKontoArt() throws RemoteException
   {
-    return (Kontoart) getAttribute("kontoart_id");
+    Integer i = (Integer) super.getAttribute("kontoart_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Kontoart.class,true);
+    return (Kontoart) cache.get(i);
   }
 
   /**
@@ -286,23 +291,32 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public Steuer getSteuer() throws RemoteException
   {
-    return (Steuer) getAttribute("steuer_id");
+    Integer i = (Integer) super.getAttribute("steuer_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Steuer.class,true);
+    return (Steuer) cache.get(i);
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.server.AbstractUserObjectImpl#getForeignObject(java.lang.String)
+   * @see de.willuhn.datasource.db.AbstractDBObject#delete()
    */
-  protected Class getForeignObject(String field) throws RemoteException
+  @Override
+  public void delete() throws RemoteException, ApplicationException
   {
-    if ("steuer_id".equals(field))
-      return Steuer.class;
-    if ("kontoart_id".equals(field))
-      return Kontoart.class;
-    if ("kontotyp_id".equals(field))
-      return Kontotyp.class;
-    if ("kontenrahmen_id".equals(field))
-      return Kontenrahmen.class;
-    return super.getForeignObject(field);
+    super.delete();
+    Cache.clear(Konto.class);
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    Cache.clear(Konto.class);
   }
 
   /**
@@ -410,7 +424,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
-    setAttribute("kontoart_id",art);
+    setAttribute("kontoart_id",art == null || art.getID() == null ? null : new Integer(art.getID()));
   }
 
   /**
@@ -418,7 +432,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setSteuer(Steuer steuer) throws RemoteException
   {
-    setAttribute("steuer_id",steuer);
+    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : new Integer(steuer.getID()));
   }
 
   /**
@@ -531,7 +545,12 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public Kontotyp getKontoTyp() throws RemoteException
   {
-    return (Kontotyp) getAttribute("kontotyp_id");
+    Integer i = (Integer) super.getAttribute("kontotyp_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Kontotyp.class,true);
+    return (Kontotyp) cache.get(i);
   }
 
   /**
@@ -539,7 +558,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setKontoTyp(Kontotyp typ) throws RemoteException
   {
-    setAttribute("kontotyp_id",typ);
+    setAttribute("kontotyp_id",typ == null || typ.getID() == null ? null : new Integer(typ.getID()));
   }
 
   /**
