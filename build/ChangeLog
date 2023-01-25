@@ -1,5 +1,6 @@
 HEAD 2.9 (nightly)
 
+  * NEW: Konten, Kontoarten, Kontotypen, Kontenrahmen und Steuern cachen
   * NEW: Funktion zum Tauschen von Soll- und Haben-Konto in einer Buchung - siehe https://homebanking-hilfe.de/forum/topic.php?t=25167#real162642
   * NEW: Kontextmenü von Hibiscus-Umsätzen um einen neuen Eintrag "Buchung in SynTAX öffnen..." ergänzt
   * BUG: Beim Ändern der Konten in einer Buchung den Saldo-Cache der vorherigen Konten ebenfalls aktualisieren

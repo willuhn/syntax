@@ -42,7 +42,12 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Konto getSollKonto() throws RemoteException
   {
-    return (Konto) getAttribute("sollkonto_id");
+    Integer i = (Integer) super.getAttribute("sollkonto_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Konto.class,true);
+    return (Konto) cache.get(i);
   }
 
   /**
@@ -50,7 +55,12 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Konto getHabenKonto() throws RemoteException
   {
-    return (Konto) getAttribute("habenkonto_id");
+    Integer i = (Integer) super.getAttribute("habenkonto_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Konto.class,true);
+    return (Konto) cache.get(i);
   }
 
   /**
@@ -90,7 +100,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setSollKonto(Konto k) throws RemoteException
   {
-    setAttribute("sollkonto_id",k);
+    setAttribute("sollkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
   }
 
   /**
@@ -98,7 +108,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setHabenKonto(Konto k) throws RemoteException
   {
-    setAttribute("habenkonto_id",k);
+    setAttribute("habenkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
   }
 
   /**
@@ -123,20 +133,6 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   public void setSteuer(double steuer) throws RemoteException
   {
     setAttribute("steuer", new Double(steuer));
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException
-  {
-    if ("sollkonto_id".equals(field))
-      return Konto.class;
-
-    if ("habenkonto_id".equals(field))
-      return Konto.class;
-
-    return null;
   }
 
   /**
@@ -172,37 +168,3 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
 
 }
-
-/*********************************************************************
- * $Log: AbstractTransferImpl.java,v $
- * Revision 1.9  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.8  2010-08-30 16:41:01  willuhn
- * @N Klartextbezeichnung bei Import/Export
- *
- * Revision 1.7  2010/06/03 14:26:16  willuhn
- * @N Extension zum Zuordnen von Hibiscus-Kategorien zu SynTAX-Buchungsvorlagen
- * @C Code-Cleanup
- *
- * Revision 1.6  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.5  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.3  2006/05/29 23:05:07  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.1  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- **********************************************************************/
