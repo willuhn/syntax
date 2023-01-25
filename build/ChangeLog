@@ -1,4 +1,6 @@
-HEAD 2.9 (nightly)
+HEAD 2.11 (nightly)
+
+2023-01-25 Version 2.10.1
 
   * NEW: Konten, Kontoarten, Kontotypen, Kontenrahmen und Steuern cachen
   * NEW: Funktion zum Tauschen von Soll- und Haben-Konto in einer Buchung - siehe https://homebanking-hilfe.de/forum/topic.php?t=25167#real162642
