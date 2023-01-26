@@ -299,6 +299,7 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     try
     {
       Logger.info("Lösche Mandant " + getAttribute(getPrimaryAttribute()));
+      Cache.clear(Mandant.class);
 
       transactionBegin();
       
@@ -438,102 +439,15 @@ public class MandantImpl extends AbstractDBObject implements Mandant
     list.addFilter("mandant_id = " + getID());
     return list;
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#store()
+   */
+  @Override
+  public void store() throws RemoteException, ApplicationException
+  {
+    super.store();
+    Cache.clear(Mandant.class);
+  }
+
 }
-
-
-/*********************************************************************
- * $Log: MandantImpl.java,v $
- * Revision 1.29  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.28  2011-03-25 10:14:10  willuhn
- * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
- * @C BUGZILLA 958
- *
- * Revision 1.27  2009-07-03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.26.2.1  2008/09/08 09:03:52  willuhn
- * @C aktiver Mandant/aktives Geschaeftsjahr kann nicht mehr geloescht werden
- *
- * Revision 1.26  2006/05/08 22:44:18  willuhn
- * @N Debugging
- *
- * Revision 1.25  2006/01/08 15:28:41  willuhn
- * @N Loeschen von Sonderabschreibungen
- *
- * Revision 1.24  2006/01/04 16:04:33  willuhn
- * @B gj/mandant handling (insb. Loeschen)
- *
- * Revision 1.23  2006/01/04 00:53:48  willuhn
- * @B bug 166 Ausserplanmaessige Abschreibungen
- *
- * Revision 1.22  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- * Revision 1.21  2005/10/05 17:52:33  willuhn
- * @N steuer behaviour
- *
- * Revision 1.20  2005/09/27 17:41:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2005/09/26 15:15:39  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.17  2005/08/25 21:58:58  willuhn
- * @N SKR04
- *
- * Revision 1.16  2005/08/16 17:39:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- * Revision 1.14  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.13  2005/08/09 23:53:34  willuhn
- * @N massive refactoring
- *
- * Revision 1.12  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.11  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/01/03 18:07:22  willuhn
- * @N Exception logging
- *
- * Revision 1.9  2003/12/12 21:11:27  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.8  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.7  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
- * Revision 1.6  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.4  2003/11/25 00:22:17  willuhn
- * @N added Finanzamt
- *
- * Revision 1.3  2003/11/24 23:02:11  willuhn
- * @N added settings
- *
- * Revision 1.2  2003/11/24 16:26:16  willuhn
- * @N AbstractDBObject is now able to resolve foreign keys
- *
- * Revision 1.1  2003/11/24 15:18:21  willuhn
- * *** empty log message ***
- *
- *********************************************************************/

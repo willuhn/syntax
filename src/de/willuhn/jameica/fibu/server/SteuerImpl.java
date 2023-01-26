@@ -90,16 +90,6 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.server.AbstractUserObjectImpl#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException
-  {
-    if ("steuerkonto_id".equals(field))
-      return Konto.class;
-    return super.getForeignObject(field);
-  }
-
-  /**
    * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
@@ -149,7 +139,12 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   public Konto getSteuerKonto() throws RemoteException
   {
-    return (Konto) getAttribute("steuerkonto_id");
+    Integer i = (Integer) super.getAttribute("steuerkonto_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Konto.class,true);
+    return (Konto) cache.get(i);
   }
 
   /**
@@ -157,7 +152,7 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   public void setSteuerKonto(Konto k) throws RemoteException
   {
-    setAttribute("steuerkonto_id",k);
+    setAttribute("steuerkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
   }
 
   /**

@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: Weiteres Caching
+
 2023-01-25 Version 2.10.1
 
   * NEW: Konten, Kontoarten, Kontotypen, Kontenrahmen und Steuern cachen
