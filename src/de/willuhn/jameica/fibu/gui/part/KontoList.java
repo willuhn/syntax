@@ -12,6 +12,7 @@ package de.willuhn.jameica.fibu.gui.part;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -27,6 +28,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.util.KontoUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.extension.ExtensionRegistry;
@@ -230,32 +232,41 @@ public class KontoList extends TablePart implements Extendable
     String name = null;
     String nr   = null;
 
-    for (Konto k:this.list)
+    try
     {
-      try
-      {
-        // BUGZILLA 128
-        if (checkSaldo && k.getNumBuchungen(Settings.getActiveGeschaeftsjahr(),null,null) == 0)
-          continue;
+      final Set<String> set = checkSaldo ? KontoUtil.getKontenMitBuchungen(Settings.getActiveGeschaeftsjahr()) : null;
 
-        // Was zum Filtern da?
-        if (text == null || text.length() == 0)
+      for (Konto k:this.list)
+      {
+        try
         {
-          // ne
-          this.addItem(k);
-          continue;
-        }
+          // BUGZILLA 128
+          if (checkSaldo && set != null && !set.contains(k.getID()))
+            continue;
 
-        name = k.getName();
-        nr   = k.getKontonummer();
-        
-        if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
-          this.addItem(k);
+          // Was zum Filtern da?
+          if (text == null || text.length() == 0)
+          {
+            // ne
+            this.addItem(k);
+            continue;
+          }
+
+          name = k.getName();
+          nr   = k.getKontonummer();
+          
+          if (name.toLowerCase().indexOf(text) != -1 || nr.indexOf(text) != -1)
+            this.addItem(k);
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to load account",re);
+        }
       }
-      catch (RemoteException re)
-      {
-        Logger.error("unable to load konto",re);
-      }
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to load accounts",re);
     }
   }
 }

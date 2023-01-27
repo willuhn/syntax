@@ -385,7 +385,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       if (kontonummer == null || "".equals(kontonummer))
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine Kontonummer ein."));
       
-      Kontoart ka = (Kontoart) getAttribute("kontoart_id");
+      Kontoart ka = this.getKontoArt();
       if (ka == null)
         throw new ApplicationException(i18n.tr("Bitte wählen Sie eine Kontoart aus."));
 

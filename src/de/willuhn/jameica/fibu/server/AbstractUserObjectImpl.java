@@ -26,7 +26,7 @@ import de.willuhn.util.I18N;
  */
 public abstract class AbstractUserObjectImpl extends AbstractDBObject implements UserObject
 {
-  private I18N i18n = null;
+  private transient I18N i18n = null;
   
   /**
    * Erzeugt ein neues User-Objekt.
@@ -36,16 +36,6 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   {
     super();
     this.i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
-  }
-
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#getForeignObject(java.lang.String)
-   */
-  protected Class getForeignObject(String field) throws RemoteException
-  {
-    if ("mandant_id".equals(field))
-      return Mandant.class;
-    return null;
   }
 
   /**
@@ -110,7 +100,12 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
    */
   public Mandant getMandant() throws RemoteException
   {
-    return (Mandant) getAttribute("mandant_id");
+    Integer i = (Integer) super.getAttribute("mandant_id");
+    if (i == null)
+      return null;
+   
+    Cache cache = Cache.get(Mandant.class,true);
+    return (Mandant) cache.get(i);
   }
 
   /**
@@ -120,37 +115,6 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   {
     if (!this.isNewObject() && !this.canChange())
       throw new RemoteException("Datensatz gehört zum initialen Datenbestand und darf daher nicht geändert werden.");
-    setAttribute("mandant_id",mandant);
+    setAttribute("mandant_id",mandant == null || mandant.getID() == null ? null : new Integer(mandant.getID()));
   }
 }
-
-/*********************************************************************
- * $Log: AbstractUserObjectImpl.java,v $
- * Revision 1.8  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.7  2011-03-25 10:14:10  willuhn
- * @N Loeschen von Mandanten und Beruecksichtigen der zugeordneten Konten und Kontenrahmen
- * @C BUGZILLA 958
- *
- * Revision 1.6  2010-06-01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.5  2009/09/03 14:31:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.2  2006/12/27 14:42:23  willuhn
- * @N Update fuer MwSt.-Erhoehung
- *
- * Revision 1.1  2006/01/02 15:18:29  willuhn
- * @N Buchungs-Vorlagen
- *
- **********************************************************************/
