@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * BUG: In der Buchungsliste wurden nicht mehr die Kontonummern angezeigt sondern die Konto-IDs
+
 2023-01-27 Version 2.10.2
 
   * BUG: Konten liessen sich nicht mehr speichern
