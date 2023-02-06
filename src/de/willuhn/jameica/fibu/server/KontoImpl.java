@@ -459,6 +459,13 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       
       return new Double(getSaldo(jahr));
     }
+    
+    if ("kontoArt".equals(arg0))
+      return this.getKontoArt();
+
+    if ("steuer".equals(arg0))
+      return this.getSteuer();
+    
     return super.getAttribute(arg0);
   }
 
