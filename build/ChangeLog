@@ -1,3 +1,7 @@
+2023-02-06 Version 2.10.4
+
+  * BUG: In der Kontoliste wurde die Buchungsart und die Steuer nicht mehr angezeigt
+
 2023-02-06 Version 2.10.3
 
   * BUG: In der Buchungsliste wurden nicht mehr die Kontonummern angezeigt sondern die Konto-IDs

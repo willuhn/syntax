@@ -95,8 +95,8 @@ public class KontoList extends TablePart implements Extendable
 
     addColumn(i18n.tr("Kontonummer"),"kontonummer");
     addColumn(i18n.tr("Name"),"name");
-    addColumn(i18n.tr("Kontoart"),"kontoart_id");
-    addColumn(i18n.tr("Steuer"),"steuer_id");
+    addColumn(i18n.tr("Kontoart"),"kontoArt");
+    addColumn(i18n.tr("Steuer"),"steuer");
     addColumn(i18n.tr("Saldo"),"saldo", new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(),Settings.DECIMALFORMAT));
     setContextMenu(new KontoListMenu(mandant));
     setMulti(true);
