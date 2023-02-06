@@ -59,7 +59,7 @@ public class BuchungstemplateList extends TablePart
     super(list, action);
     addColumn(i18n.tr("Bezeichnung"),"name");
     addColumn(i18n.tr("Buchungstext"),"buchungstext");
-    addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new Formatter() {
+    addColumn(i18n.tr("Soll-Konto"),"sollKonto", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof Konto))
@@ -76,7 +76,7 @@ public class BuchungstemplateList extends TablePart
         }
       }
     });
-    addColumn(i18n.tr("Haben-Konto"),"habenkonto_id", new Formatter() {
+    addColumn(i18n.tr("Haben-Konto"),"habenKonto", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof Konto))
