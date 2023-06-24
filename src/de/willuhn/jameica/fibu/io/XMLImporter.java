@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2023 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -26,6 +26,7 @@ import de.willuhn.datasource.serialize.XmlReader;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.OperationCanceledException;
 import de.willuhn.logging.Logger;
@@ -147,6 +148,15 @@ public class XMLImporter implements Importer
       }
     }
   }
+  
+  /**
+   * Wird vor dem Speichern aufgerufen und kann von abgeleiteten Klassen überschrieben werden.
+   * @param o das zu speichernde Objekt.
+   * @throws Exception
+   */
+  protected void prePersist(DBObject o) throws Exception
+  {
+  }
 
   /**
    * @see de.willuhn.jameica.fibu.io.IO#getName()
@@ -163,7 +173,11 @@ public class XMLImporter implements Importer
   {
     if (!GenericObject.class.isAssignableFrom(objectType))
       return null; // Import fuer alles moeglich, was von GenericObject abgeleitet ist
-    
+
+    // Sonderbehandlung für Buchungen
+    if (Buchung.class.isAssignableFrom(objectType))
+      return null;
+
     IOFormat f = new IOFormat() {
       public String getName()
       {
@@ -181,24 +195,3 @@ public class XMLImporter implements Importer
     return new IOFormat[] { f };
   }
 }
-
-/*******************************************************************************
- * $Log: XMLImporter.java,v $
- * Revision 1.5  2012/03/28 22:28:16  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.4  2011-05-12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.3  2010-08-30 16:41:01  willuhn
- * @N Klartextbezeichnung bei Import/Export
- *
- * Revision 1.2  2010/08/27 11:21:31  willuhn
- * @C Java-Version auf 1.6 geaendert - wegen Hibiscus
- *
- * Revision 1.1  2010/08/27 11:19:40  willuhn
- * @N Import-/Export-Framework incl. XML-Format aus Hibiscus portiert
- *
- ******************************************************************************/
