@@ -94,6 +94,7 @@ public class XMLImporter implements Importer
 
         try
         {
+          this.prePersist(object);
           object.store();
           created++;
           try
