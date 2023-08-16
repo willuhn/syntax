@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * CHG: Umstellung von MySQL auf MariaDB
   * NEW: Beim Import von Buchungen aus XML-Dateien automatisch die Buchungsnummern generieren (nur für die Hauptbuchungen)
 
 2023-02-06 Version 2.10.4
