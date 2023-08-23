@@ -207,7 +207,8 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcUrl() throws RemoteException
   {
-    return "jdbc:mariadb://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
+    final String proto = Settings.SETTINGS.getString("database.support.mysqltype","mariadb");
+    return "jdbc:" + proto + "://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
   }
 
   /**
