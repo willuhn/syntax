@@ -58,8 +58,8 @@ import de.willuhn.util.I18N;
  */
 public class BuchungControl extends AbstractControl
 {
-	
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
 
   // Fachobjekte
 	private Buchung buchung 		= null;
@@ -79,15 +79,15 @@ public class BuchungControl extends AbstractControl
   private CheckboxInput anlageVermoegen = null;
   private Input anlagevermoegenLink     = null;
   
-  private I18N i18n;
-
+  private AbstractView view = null;
+  
   /**
    * @param view
    */
   public BuchungControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    this.view = view;
   }
 
 	/**
@@ -543,6 +543,9 @@ public class BuchungControl extends AbstractControl
       // und jetzt speichern wir.
 			getBuchung().store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchung Nr. {0} gespeichert.",Integer.toString(getBuchung().getBelegnummer())),StatusBarMessage.TYPE_SUCCESS));
+
+      // Damit wird die Attachment-Referenz nach dem Neu-Anlegen der Buchung aktualisiert
+      this.view.setCurrentObject(getBuchung());
 
       // BUGZILLA 245
       
