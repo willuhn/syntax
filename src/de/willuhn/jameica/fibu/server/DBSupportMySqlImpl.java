@@ -97,7 +97,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
       }
       
       // Wir schauen mal, ob vielleicht schon Tabellen existieren
-      rs = conn.getMetaData().getTables(null,null,null,null);
+      rs = conn.getMetaData().getTables(dbname,null,null,null);
       if (rs.next())
       {
         Logger.warn("database seems to exist, skip database creation");

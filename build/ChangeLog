@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: MySQL/MariaDB: Erkennung, ob Datenbank bereits vorhanden ist, schlug fehl
   * BUG: Wenn Attachments direkt einer neu angelegten Buchung zugeordnet wurden, landeten die im falschen Kontext. Dennoch muss erst die Buchung gespeichert werden
   * CHG: Umstellung von MySQL auf MariaDB
   * NEW: Beim Import von Buchungen aus XML-Dateien automatisch die Buchungsnummern generieren (nur für die Hauptbuchungen)
