@@ -472,7 +472,7 @@ public class BuchungList extends TablePart implements Extendable
 
   private class KL extends KeyAdapter
   {
-    private Listener forward = new DelayedListener(new Listener()
+    private Listener forward = new DelayedListener(700,new Listener()
     {
       /**
        * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
