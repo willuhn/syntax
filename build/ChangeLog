@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * NEW: Neue Option "Nur Konten mit Saldo ungleich 0 anzeigen" in der Kontoliste
+  * NEW: Sortierung der Konten anpassbar
   * BUG: MySQL/MariaDB: Erkennung, ob Datenbank bereits vorhanden ist, schlug fehl
   * BUG: Wenn Attachments direkt einer neu angelegten Buchung zugeordnet wurden, landeten die im falschen Kontext. Dennoch muss erst die Buchung gespeichert werden
   * CHG: Umstellung von MySQL auf MariaDB
