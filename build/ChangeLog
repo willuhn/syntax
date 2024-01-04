@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * NEW: Effizienteres Laden der Buchungen - für Ermittlung der Bruttobeträge nicht mehr für jede Hauptbuchung die Hilfsbuchungen einzeln ermitteln
   * CHG: Wartezeit bei Eingabe eines Suchbegriffs in Buchungsliste von 300 auf 700ms erhöht. "Neue Buchung" nicht mehr als Default-Button aktiv
   * NEW: Neue Option "Nur Konten mit Saldo ungleich 0 anzeigen" in der Kontoliste
   * NEW: Sortierung der Konten anpassbar

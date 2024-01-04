@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -36,6 +37,7 @@ import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.util.BuchungUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -107,12 +109,16 @@ public class BuchungList extends TablePart implements Extendable
   {
     super(buchungen,action);
     this.buchungen = buchungen;
+    
+    final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
+    final CurrencyFormatter cf = new CurrencyFormatter(gj.getMandant().getWaehrung(), Settings.DECIMALFORMAT);
+    final Map<String,Double> sums = BuchungUtil.getNebenbuchungSummen(gj,null,null);
 
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),"bruttoBetrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
-    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
+    addColumn(i18n.tr("Brutto-Betrag"),null);
+    addColumn(i18n.tr("Netto-Betrag"),"betrag",cf);
     addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenKonto", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollKonto", new Formatter()
@@ -150,6 +156,21 @@ public class BuchungList extends TablePart implements Extendable
         BaseBuchung b = (BaseBuchung) item.getData();
         if (b == null)
           return;
+        
+        try
+        {
+          double result = b.getBetrag();
+          final Double add = sums.get(b.getID());
+          if (add != null)
+            result += add.doubleValue();
+          
+          item.setText(3,cf.format(result));
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to calculate gross value",re);
+        }
+
         try
         {
           if (b.isGeprueft())
