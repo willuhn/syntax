@@ -479,4 +479,13 @@ public class Settings
     SETTINGS.setAttribute("gj.close.use-existing",b);
   }
   
+  /**
+   * Liefert den SQL-String für die Sortierung der Konten.
+   * @return SQL-String für die Sortierung der Konten.
+   */
+  public static String getAccountOrder()
+  {
+    return SETTINGS.getString("accounts.order-by","order by kontonummer");
+  }
+  
 }

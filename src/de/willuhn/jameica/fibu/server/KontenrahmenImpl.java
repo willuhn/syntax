@@ -28,7 +28,6 @@ import de.willuhn.util.I18N;
  */
 public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenrahmen
 {
-
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
   /**
@@ -123,7 +122,7 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
   {
     DBIterator list = getService().createList(Konto.class);
     list.addFilter("(kontenrahmen_id = " + this.getID() + ")");
-    list.setOrder("order by kontonummer");
+    list.setOrder(Settings.getAccountOrder());
     return list;
   }
 
