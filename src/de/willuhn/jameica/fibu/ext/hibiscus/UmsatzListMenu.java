@@ -320,6 +320,8 @@ public class UmsatzListMenu implements Extension
     
     if (text != null)
     {
+      text = buchung.getText() + " " + text;
+      
       // Noch abschneiden, falls er zu lang ist
       if (text.length() > 255)
         text = text.substring(0,255);
