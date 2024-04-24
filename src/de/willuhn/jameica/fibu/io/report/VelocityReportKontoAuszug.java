@@ -82,9 +82,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     {
       Vector buchungen = new Vector();
 
-      DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate);
-      //Split-Hauptbuchungen rausfiltern
-      list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
+      DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate,true);
       while (list.hasNext()) {
     	  Buchung b = (Buchung)list.next();
     	   buchungen.add(b);

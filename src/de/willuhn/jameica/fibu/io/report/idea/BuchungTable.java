@@ -31,7 +31,7 @@ public class BuchungTable implements Table
    */
   public List<List<String>> getLines(Geschaeftsjahr jahr) throws Exception
   {
-    DBIterator list = jahr.getHauptBuchungen();
+    DBIterator list = jahr.getHauptBuchungen(false);
     list.setOrder("order by belegnummer,id");
 
     List<List<String>> result = new ArrayList<List<String>>();

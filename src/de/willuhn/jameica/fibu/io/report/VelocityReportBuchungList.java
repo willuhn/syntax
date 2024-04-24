@@ -34,7 +34,7 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
   protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
-    DBIterator list = jahr.getHauptBuchungen();
+    DBIterator list = jahr.getHauptBuchungen(true);
 
     // Filter Start- und End-Datum
     Date start       = data.getStartDatum();
@@ -56,7 +56,6 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
     
     list.setOrder("order by datum");
     //Split-Hauptbuchungen rausfiltern
-    list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
     List<Buchung> buchungen = new LinkedList<Buchung>();
     while (list.hasNext())
     {

@@ -242,7 +242,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
 
       // Das Hilfsbuchungen nicht ohne Hauptbuchungen existieren koennen, brauchen
       // wir nur schauen, ob Hauptbuchungen existieren.
-      GenericIterator list = getHauptBuchungen();
+      GenericIterator list = getHauptBuchungen(false);
 
       if (list.size() > 0)
       {
@@ -286,16 +286,16 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   /**
    * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen()
    */
-  public DBIterator getHauptBuchungen() throws RemoteException
+  public DBIterator getHauptBuchungen(Boolean noSplitHauptbuchungen) throws RemoteException
   {
-    return this.getHauptBuchungen(null,null);
+    return this.getHauptBuchungen(null,null,noSplitHauptbuchungen);
   }
   
   /**
    * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(java.util.Date, java.util.Date)
    */
   @Override
-  public DBIterator getHauptBuchungen(Date von, Date bis) throws RemoteException
+  public DBIterator getHauptBuchungen(Date von, Date bis, Boolean noSplitHauptbuchungen) throws RemoteException
   {
     if (von != null && !this.check(von))
       throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(von)));
@@ -318,6 +318,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     if (end != null)
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     list.addFilter("geschaeftsjahr_id = " + this.getID());
+    //Split-Hauptbuchungen rausfiltern
+    if(noSplitHauptbuchungen)
+    	list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
     list.setOrder("order by datum,belegnummer");
     return list;
   }
@@ -355,7 +358,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       }
       
       Logger.info("Lösche Buchungen");
-      GenericIterator buchungen = getHauptBuchungen();
+      GenericIterator buchungen = getHauptBuchungen(false);
       //Erstmal die SplitBuchungen löschen
       while (buchungen.hasNext()) {
     	  Buchung b = (Buchung) buchungen.next();
@@ -363,7 +366,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     		  b.delete();
       }
       //Jetzt die anderen buchungen inkl. der (ehemaligen) SplitHauptbuchungen
-      buchungen = getHauptBuchungen();
+      buchungen = getHauptBuchungen(false);
       while (buchungen.hasNext())
       {
         // Wir muessen nur die Haupt-Buchungen loeschen.

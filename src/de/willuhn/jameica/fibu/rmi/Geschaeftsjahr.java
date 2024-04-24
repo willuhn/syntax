@@ -89,19 +89,21 @@ public interface Geschaeftsjahr extends DBObject
   
   /**
    * Liefert die Haupt-Buchungen des Geschaeftsjahres.
+   * @param noSplitHauptbuchungen. true wenn SplitHauptbuhungen weggelassen werden sollen
    * @return Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen() throws RemoteException;
+  public DBIterator getHauptBuchungen(Boolean noSplitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert die Haupt-Buchungen des Geschaeftsjahres.
    * @param von Start-Datum. Kann auch weggelassen werden.
    * @param bis End-Datum. Kann auch weggelassen werden.
+   * @param noSplitHauptbuchungen. true wenn SplitHauptbuhungen weggelassen werden sollen
    * @return Buchungen.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen(Date von, Date bis) throws RemoteException;
+  public DBIterator getHauptBuchungen(Date von, Date bis, Boolean noSplitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert die Anfangsbestaende.

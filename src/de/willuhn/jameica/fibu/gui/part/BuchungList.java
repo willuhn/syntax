@@ -225,11 +225,12 @@ public class BuchungList extends TablePart implements Extendable
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
-      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr, von, bis);
+      DBIterator hauptbuchungen;
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
         DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr, von, bis);
+        hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis,true);
         if (hauptbuchungen.size() == 0)
           return hilfsbuchungen;
         
@@ -239,17 +240,16 @@ public class BuchungList extends TablePart implements Extendable
         // ggf. um die Hauptbuchungen ergaenzt werden.
         List l = new ArrayList();
         while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
-        hauptbuchungen.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
         while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
         
         return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
-      hauptbuchungen.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
+      hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis,true);
       return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getHauptBuchungen(von, bis);
+    DBIterator list = jahr.getHauptBuchungen(von, bis,false);
     list.addFilter("split_id is NULL");
     list.setOrder("order by belegnummer desc");
     return list;
