@@ -226,14 +226,13 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     int kontoArt = getKontoArt().getKontoArt();
     Kontotyp typ = getKontoTyp();
+    //Split-Hauptbuchungen rausfiltern
+    buchungen.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
     
     // Erst die Hauptbuchungen
     while (buchungen.hasNext())
     {
       Transfer t = (Transfer) buchungen.next();
-      //Split-Hauptbuchungen ueberspringen
-      if(((Buchung)t).getSplitBuchungen().hasNext())
-    	  continue;
       if (t.getSollKonto().equals(this))
         soll += t.getBetrag();
       else

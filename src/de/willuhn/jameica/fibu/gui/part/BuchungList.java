@@ -115,6 +115,7 @@ public class BuchungList extends TablePart implements Extendable
     final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
     final CurrencyFormatter cf = new CurrencyFormatter(gj.getMandant().getWaehrung(), Settings.DECIMALFORMAT);
     final Map<String,Double> sums = BuchungUtil.getNebenbuchungSummen(gj,null,null);
+    final Map<String,Boolean> splits = BuchungUtil.isSplit(gj,null,null);
 
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
@@ -177,7 +178,7 @@ public class BuchungList extends TablePart implements Extendable
         {
           if(b instanceof Buchung && ((Buchung)b).getSplitHauptBuchung() != null)
         	  item.setFont(Font.ITALIC.getSWTFont());
-          else if (b instanceof Buchung && ((Buchung)b).getSplitBuchungen().hasNext())
+          else if (b instanceof Buchung && splits.get(b.getID()) != null)
           	  item.setFont(Font.BOLD.getSWTFont());
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());
