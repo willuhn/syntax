@@ -16,15 +16,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.BaseBuchung;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.system.Application;
@@ -120,29 +119,7 @@ public class BuchungUtil
     return result;
   }
 
-  public static Map<String, Boolean> isSplit(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException{
-	  /*if (jahr == null)
-	      throw new RemoteException(i18n.tr("Kein Geschäftsjahr angegeben"));
-
-	    final Map<Integer,Boolean> result = new HashMap<>();
-
-	    DBIterator hauptbuchungen = jahr.getHauptBuchungen(von, bis);
-	    while (hauptbuchungen.hasNext()) {
-	    	Buchung b = (Buchung)hauptbuchungen.next();
-	    	Object o = b.getAttribute("split_id");
-	    	Integer i = (Integer)o;
-	    	//final Integer id = (Integer)(((Buchung)hauptbuchungen.next()).getAttribute("split_id"));
-	    	if(o == null)
-	    		continue;
-    		// Checken, ob wir schon einen Betrag haben
-	    	//final String s = (String)h;
-	    	//BaseBuchung bb = (BaseBuchung)o;
-            final Boolean split = result.get(i);
-            if (split == null)
-            	result.put(i,true);
-	    }
-	    return result;*/
-	    
+  public static Set<String> isSplit(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException{
 	    if (jahr == null)
 	        throw new RemoteException(i18n.tr("Kein Geschäftsjahr angegeben"));
 
@@ -160,7 +137,7 @@ public class BuchungUtil
 	      if (bis != null)
 	        end = DateUtil.endOfDay(bis);
 
-	      final Map<String,Boolean> result = new HashMap<>();
+	      final Set<String> result = new HashSet();
 
 	      final List params = new ArrayList();
 	      params.add(jahr.getID());
@@ -168,8 +145,8 @@ public class BuchungUtil
 	      try
 	      {
 	        DBService service = (DBService) Application.getServiceFactory().lookup(Fibu.class,"database");
-
-	        String sql = "SELECT id,(SELECT count(id) FROM buchung WHERE split_id = b.id) FROM buchung b WHERE geschaeftsjahr_id = ?";
+	        
+	        String sql = "SELECT split_id FROM buchung WHERE split_id IS NOT NULL AND geschaeftsjahr_id = ?";
 	        
 	        if (start != null)
 	        {
@@ -181,8 +158,6 @@ public class BuchungUtil
 	          sql += " AND " + service.getSQLTimestamp("datum") + " <= ?";
 	          params.add(end.getTime());
 	        }
-	        
-	        sql += " ORDER BY datum,belegnummer";
 
 	        ResultSetExtractor rs = new ResultSetExtractor()
 	        {
@@ -191,13 +166,9 @@ public class BuchungUtil
 	            while (rs.next())
 	            {
 	              final String id = rs.getString(1);
-	              boolean value = rs.getBoolean(2);
-	              if(!value)
-	            	  continue;
 	              // Checken, ob wir schon einen Eintrag haben
-	              final Boolean split = result.get(id);
-	              if (split == null)
-	              	result.put(id,true);
+	              if (!result.contains(id))
+	              	result.add(id);
 	            }
 	            return null;
 	          }
