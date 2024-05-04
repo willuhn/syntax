@@ -41,7 +41,7 @@ public class BuchungSplit extends AbstractView
 	    group.addLabelPair(i18n.tr("Datum"),           control.getDatum());
 	    group.addLabelPair(i18n.tr("Text"),            control.getText());
 	    group.addLabelPair(i18n.tr("Beleg-Nr."),       control.getBelegnummer());
-	    group.addLabelPair(i18n.tr("Ursprünglicher Gesamtbetrag"),           control.getKommentar());
+	    group.addLabelPair(i18n.tr("Ursprünglicher Gesamtbetrag"),           control.getBetrag());
 	    group.addSeparator();
 
         group.addLabelPair(i18n.tr("Summe Splitbuchungen"), 		control.getSumme());

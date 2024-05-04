@@ -28,7 +28,8 @@ public class BuchungSplitNeu implements Action
   {
 	Buchung buchung = null;
 	Buchung hauptBuchung = null;
-    if (context != null)
+	//Hilfsbuchungen können nicht gesplittet werden
+    if (context != null && !(context instanceof HilfsBuchung))
     {
     	try
         {
@@ -38,8 +39,6 @@ public class BuchungSplitNeu implements Action
 	    	  else
 	    		  hauptBuchung = (Buchung) context;
 	      }
-	      else if (context instanceof HilfsBuchung)
-	    	  hauptBuchung = ((HilfsBuchung)context).getHauptBuchung();
         }
         catch (RemoteException e)
         {
@@ -69,9 +68,11 @@ public class BuchungSplitNeu implements Action
 	        	Buchung b = (Buchung) i.next();
 		       betrag +=  b.getBruttoBetrag();
 	        }
-	        double betrag_alt = Double.parseDouble("0"+hauptBuchung.getKommentar());
-	        if(betrag_alt == 0)
+	        double betrag_alt = 0;
+	        //Hier müssen wir bei neuen Splitbuchungen den Bruttobetrag nehmen, bei vorhanden den Netto Betrag da sonst die Splitbuchungen mit reingerechnet werden
+	        if(!hauptBuchung.getSplitBuchungen().hasNext())
 	        	betrag_alt = hauptBuchung.getBruttoBetrag();
+	        else betrag_alt = hauptBuchung.getBetrag();
 	        buchung.setBruttoBetrag(betrag_alt-betrag);
 	        
 	        //Buchung als Splitbuchung setzen

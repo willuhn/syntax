@@ -16,6 +16,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DateInput;
+import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -40,7 +41,7 @@ public class BuchungSplitControl extends AbstractControl
 
 		// Eingabe-Felder
 		private Input	text					   = null;
-		private Input kommentar        = null;
+		private Input betrag        = null;
 		private Input belegnummer		   = null;
 
 	  private LabelInput summe				    = null;
@@ -98,15 +99,14 @@ public class BuchungSplitControl extends AbstractControl
 	   * @return Eingabe-Feld.
 	   * @throws RemoteException
 	   */
-	  public Input getKommentar() throws RemoteException
+	  public Input getBetrag() throws RemoteException
 	  {
-	    if (kommentar != null)
-	      return kommentar;
-	    
-	    kommentar = new TextInput(getBuchung().getKommentar(),1000);
-	    kommentar.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
-	    kommentar.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
-	    return kommentar;
+	    if (betrag != null)
+	      return betrag;
+	    betrag = new DecimalInput(getBuchung().getBetrag(), Settings.DECIMALFORMAT);
+	    betrag.setComment(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung());
+	    betrag.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
+	    return betrag;
 	  }
 	  
 	  /**
@@ -220,7 +220,7 @@ public class BuchungSplitControl extends AbstractControl
 	    try {
 	      //Einige Werte anpassen
 	      getBuchung().setText((String)getText().getValue());
-	      getBuchung().setKommentar(getKommentar().getValue().toString());
+	      getBuchung().setBetrag(((Double)getBetrag().getValue()).doubleValue());
 	      
 	      // und jetzt speichern wir.
 		  getBuchung().store();

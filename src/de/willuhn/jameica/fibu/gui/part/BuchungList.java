@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -116,7 +114,7 @@ public class BuchungList extends TablePart implements Extendable
     final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
     final CurrencyFormatter cf = new CurrencyFormatter(gj.getMandant().getWaehrung(), Settings.DECIMALFORMAT);
     final Map<String,Double> sums = BuchungUtil.getNebenbuchungSummen(gj,null,null);
-    final Set<String> splits = BuchungUtil.isSplit(gj,null,null);
+    final Map<String,Double[]> splitSums = BuchungUtil.getSplitbuchungenSummen(gj,null,null,sums);
 
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
@@ -164,11 +162,17 @@ public class BuchungList extends TablePart implements Extendable
         try
         {
           double result = b.getBetrag();
-          final Double add = sums.get(b.getID());
-          if (add != null)
-            result += add.doubleValue();
-          
-          item.setText(3,cf.format(result));
+          final Double[] split = splitSums.get(b.getID());
+          if (split != null) {
+              item.setText(4,cf.format(split[0].doubleValue()));
+              item.setText(3,cf.format(split[1].doubleValue()));
+          }
+          else {
+	          final Double add = sums.get(b.getID());
+	          if (add != null)
+	            result += add.doubleValue();
+	          item.setText(3,cf.format(result));
+          }
         }
         catch (RemoteException re)
         {
@@ -177,9 +181,15 @@ public class BuchungList extends TablePart implements Extendable
 
         try
         {
+          //Bei Splitbuchungen keine Konten anzeigen, da die teilbuchungen andere Konten haben können
+          if(splitSums.get(b.getID()) != null) {
+              item.setText(5,cf.format(null));
+              item.setText(6,cf.format(null));
+              item.setText(7,cf.format(null));
+          }
           if(b instanceof Buchung && ((Buchung)b).getSplitHauptBuchung() != null)
         	  item.setFont(Font.ITALIC.getSWTFont());
-          else if (b instanceof Buchung && splits.contains(b.getID()))
+          else if (b instanceof Buchung && splitSums.get(b.getID()) != null)
           	  item.setFont(Font.BOLD.getSWTFont());
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());

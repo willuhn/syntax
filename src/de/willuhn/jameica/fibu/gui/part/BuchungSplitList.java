@@ -63,9 +63,9 @@ public class BuchungSplitList extends TablePart{
    addColumn(i18n.tr("Brutto-Betrag"),"bruttoBetrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
    addColumn(i18n.tr("Steuer"),"steuer");
-   addColumn(i18n.tr("Soll-Konto"),"sollkonto_id", new KontoFormatter());
-   addColumn(i18n.tr("Haben-Konto"),"habenkonto_id", new KontoFormatter());
-   addColumn(i18n.tr("Art"),"sollkonto_id", new Formatter()
+   addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());
+   addColumn(i18n.tr("Haben-Konto"),"habenKonto", new KontoFormatter());
+   addColumn(i18n.tr("Art"),"sollKonto", new Formatter()
    {
      public String format(Object o)
      {

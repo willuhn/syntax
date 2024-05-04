@@ -100,9 +100,13 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       BuchungsEngine engine = (BuchungsEngine) Application.getServiceFactory().lookup(Fibu.class,"engine");
       HilfsBuchung[] hbs = engine.buche(this);
       
-      double hauptBrutto = 0;
-      if(getSplitHauptBuchung() != null)
-    	  	hauptBrutto = getSplitHauptBuchung().getBruttoBetrag();
+      Buchung hauptbuchung = getSplitHauptBuchung();
+      //Wenn vorhanden, die SplitHauptbuchung speichern um die Steuer/Hilfsbuchungen zu entfernen
+      if(hauptbuchung != null && hauptbuchung.getSteuer() > 0.01d) {
+          hauptbuchung.setBetrag(hauptbuchung.getBruttoBetrag());
+          hauptbuchung.setSteuer(0);
+          hauptbuchung.store();
+      }
       
       super.store();
 
@@ -113,22 +117,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
           hbs[i].setHauptBuchung(this); // das koennen wir erst nach dem Speichern der Hauptbuchung machen.
           hbs[i].store();
         }
-      }
-      //Wenn vorhanden, die SplitHauptbuchung speichern
-      if(getSplitHauptBuchung() != null) {
-    	  //Betrag der Hauptbuchung neu berechnen
-    	  double betrag = 0d;
-    	  Buchung hauptbuchung = getSplitHauptBuchung();
-    	  DBIterator<Buchung> split = hauptbuchung.getSplitBuchungen();
-    	  
-    	  if(Double.parseDouble("0"+hauptbuchung.getKommentar()) == 0)
-    		  hauptbuchung.setKommentar(""+hauptBrutto);
-    		  
-    	  while(split.hasNext())betrag += split.next().getBetrag();
-    	  hauptbuchung.setBetrag(betrag);
-    	  hauptbuchung.setBruttoBetrag(Double.NaN);
-    	  hauptbuchung.setSteuer(0);
-    	  hauptbuchung.store();
       }
       transactionCommit();
       
@@ -270,24 +258,6 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       }
 
       super.delete();
-      
-    //Wenn vorhanden, die SplitHauptbuchung speichern
-      if(getSplitHauptBuchung() != null) {
-    	  //Betrag der Hauptbuchung neu berechnen
-    	  double betrag = 0d;
-    	  Buchung hauptbuchung = getSplitHauptBuchung();
-    	  DBIterator<Buchung> split = hauptbuchung.getSplitBuchungen();
-    	  
-    	  if(Double.parseDouble("0"+hauptbuchung.getKommentar()) == 0)
-    		  hauptbuchung.setKommentar(""+hauptbuchung.getBruttoBetrag());
-    		  
-    	  while(split.hasNext()) {
-    		  betrag += split.next().getBetrag();
-    	  }
-    	  hauptbuchung.setBetrag(betrag);
-    	  hauptbuchung.setBruttoBetrag(Double.NaN);
-    	  hauptbuchung.store();
-      }
       transactionCommit();
     }
     catch (RemoteException e)
