@@ -82,7 +82,7 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     {
       Vector buchungen = new Vector();
 
-      DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate,true);
+      DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate);
       while (list.hasNext()) {
     	  Buchung b = (Buchung)list.next();
     	   buchungen.add(b);

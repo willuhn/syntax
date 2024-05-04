@@ -139,7 +139,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
       Date start          = data.getStartDatum();
       Date end            = data.getEndDatum();
 
-      DBIterator buchungen = konto.getHauptBuchungen(jahr,start,end,true);
+      DBIterator buchungen = konto.getHauptBuchungen(jahr,start,end);
       while (buchungen.hasNext())
       {
         Buchung b        = (Buchung) buchungen.next();

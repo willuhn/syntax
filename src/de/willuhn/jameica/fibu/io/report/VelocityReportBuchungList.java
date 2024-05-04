@@ -34,7 +34,7 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
   protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
-    DBIterator list = jahr.getHauptBuchungen(true);
+    DBIterator list = jahr.getHauptBuchungen();
 
     // Filter Start- und End-Datum
     Date start       = data.getStartDatum();

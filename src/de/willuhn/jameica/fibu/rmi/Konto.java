@@ -164,24 +164,44 @@ public interface Konto extends UserObject
   /**
    * Liefert eine Liste der Haupt-Buchungen auf dem Konto.
    * @param jahr das Geschaeftsjahr.
-   * @param noSplitHauptbuchungen. true wenn SplitHauptbuhungen weggelassen werden sollen
    * @return Liste der Buchungen.
    * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Boolean noSplitHauptbuchungen) throws RemoteException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr) throws RemoteException;
+  
+  /**
+   * Liefert eine Liste der Haupt-Buchungen auf dem Konto.
+   * @param jahr das Geschaeftsjahr.
+   * @param SplitHauptbuchungen. true wenn SplitHauptbuhungen mit geholt werden sollen
+   * @return Liste der Buchungen.
+   * Die Objekte sind vom Typ <code>Buchung</code>.
+   * @throws RemoteException
+   */
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Boolean SplitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert eine Liste der Haupt-Buchungen auf dem Konto begrenzt auf einen Zeitraum.
    * @param jahr das Geschaeftsjahr.
    * @param von Start-Datum. Kann auch weggelassen werden.
    * @param bis End-Datum. Kann auch weggelassen werden.
-   * @param noSplitHauptbuchungen. true wenn SplitHauptbuhungen weggelassen werden sollen
    * @return Liste der Haupt-Buchungen.
    * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Boolean noSplitHauptbuchungen) throws RemoteException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
+  
+  /**
+   * Liefert eine Liste der Haupt-Buchungen auf dem Konto begrenzt auf einen Zeitraum.
+   * @param jahr das Geschaeftsjahr.
+   * @param von Start-Datum. Kann auch weggelassen werden.
+   * @param bis End-Datum. Kann auch weggelassen werden.
+   * @param SplitHauptbuchungen. true wenn SplitHauptbuhungen mit geholt werden sollen
+   * @return Liste der Haupt-Buchungen.
+   * Die Objekte sind vom Typ <code>Buchung</code>.
+   * @throws RemoteException
+   */
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Boolean SplitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert eine Liste aller Hilfsbuchungen auf dem Konto.

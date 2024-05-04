@@ -241,7 +241,7 @@ public class BuchungList extends TablePart implements Extendable
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
         DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr, von, bis);
-        hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis,true);
+        hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
         if (hauptbuchungen.size() == 0)
           return hilfsbuchungen;
         
@@ -255,12 +255,12 @@ public class BuchungList extends TablePart implements Extendable
         
         return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
-      hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis,true);
+      hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
       return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getHauptBuchungen(von, bis,false);
+    DBIterator list = jahr.getHauptBuchungen(von, bis,true);
     list.addFilter("split_id is NULL");
     list.setOrder("order by belegnummer desc");
     return list;

@@ -161,7 +161,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
 
     // Wir setzen noch die Uhrzeit auf das Ende des Tages, um sicherzustellen,
     // dass die Buchungen des Tages dabei sind
-    return getUmsatz(getHauptBuchungen(jahr,jahr.getBeginn(),DateUtil.endOfDay(date),true),
+    return getUmsatz(getHauptBuchungen(jahr,jahr.getBeginn(),DateUtil.endOfDay(date)),
                      getHilfsBuchungen(jahr,jahr.getBeginn(),DateUtil.endOfDay(date)));
   }
 
@@ -258,7 +258,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public double getUmsatz(Geschaeftsjahr jahr) throws RemoteException
   {
-    return getUmsatz(getHauptBuchungen(jahr, true), getHilfsBuchungen(jahr));
+    return getUmsatz(getHauptBuchungen(jahr), getHilfsBuchungen(jahr));
   }
 
   /**
@@ -267,7 +267,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   public double getUmsatz(Geschaeftsjahr jahr, Date von, Date bis)
       throws RemoteException
   {
-    return getUmsatz(getHauptBuchungen(jahr, von, bis, true),
+    return getUmsatz(getHauptBuchungen(jahr, von, bis),
         getHilfsBuchungen(jahr, von, bis));
   }
 
@@ -472,9 +472,17 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Boolean noSplitHauptbuchungen) throws RemoteException
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr) throws RemoteException
   {
-    return getBuchungen(jahr, null, null, Buchung.class, noSplitHauptbuchungen);
+    return getBuchungen(jahr, null, null, Buchung.class, false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr,Boolean)
+   */
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Boolean SplitHauptbuchungen) throws RemoteException
+  {
+    return getBuchungen(jahr, null, null, Buchung.class, SplitHauptbuchungen);
   }
   
   /**
@@ -488,9 +496,17 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   /**
    * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date)
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Boolean noSplitHauptbuchungen) throws RemoteException
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException
   {
-    return getBuchungen(jahr, von, bis, Buchung.class, noSplitHauptbuchungen);
+    return getBuchungen(jahr, von, bis, Buchung.class, false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Konto#getHauptBuchungen(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr, java.util.Date, java.util.Date, Boolean)
+   */
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Boolean SplitHauptbuchungen) throws RemoteException
+  {
+    return getBuchungen(jahr, von, bis, Buchung.class, SplitHauptbuchungen);
   }
   
   /**
@@ -500,17 +516,18 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
   {
     return getBuchungen(jahr, von, bis, HilfsBuchung.class, false);
   }
-
+  
   /**
    * Interne Hilfs-Funktion zum Laden der entsprechenden Buchungen.
    * @param jahr das Jahr.
    * @param von Start-Datum.
    * @param bis End-Datum.
    * @param type Art der Buchungen.
+   * @param SplitHauptbuchungen wenn true werden auch SplitHauptbuchungen geholt
    * @return Liste der Buchungen.
    * @throws RemoteException
    */
-  private DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Class type, Boolean noSplitHauptbuchungen) throws RemoteException
+  private DBIterator getBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Class type, Boolean SplitHauptbuchungen) throws RemoteException
   {
     
     if (von != null && !jahr.check(von))
@@ -537,7 +554,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     if (end != null)
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     //Split-Hauptbuchungen rausfiltern
-    if(noSplitHauptbuchungen)
+    if(!SplitHauptbuchungen)
     	list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
     list.setOrder("order by datum,belegnummer");
 
