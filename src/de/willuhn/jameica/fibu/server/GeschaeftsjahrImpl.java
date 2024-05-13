@@ -32,7 +32,6 @@ import de.willuhn.jameica.fibu.rmi.Betriebsergebnis;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
-import de.willuhn.jameica.fibu.rmi.HilfsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.util.GeschaeftsjahrUtil;
@@ -293,11 +292,11 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   }
   
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(Boolean)
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(boolean)
    */
-  public DBIterator getHauptBuchungen(Boolean SplitHauptbuchungen) throws RemoteException
+  public DBIterator getHauptBuchungen(boolean splitHauptbuchungen) throws RemoteException
   {
-    return this.getHauptBuchungen(null,null,SplitHauptbuchungen);
+    return this.getHauptBuchungen(null,null,splitHauptbuchungen);
   }
   
   /**
@@ -308,11 +307,12 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
   {
 	  return this.getHauptBuchungen(von,bis,false);
   }
+  
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(java.util.Date, java.util.Date, Boolean)
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(java.util.Date, java.util.Date, boolean)
    */
   @Override
-  public DBIterator getHauptBuchungen(Date von, Date bis, Boolean SplitHauptbuchungen) throws RemoteException
+  public DBIterator getHauptBuchungen(Date von, Date bis, boolean splitHauptbuchungen) throws RemoteException
   {
     if (von != null && !this.check(von))
       throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(von)));
@@ -336,7 +336,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     list.addFilter("geschaeftsjahr_id = " + this.getID());
     //Split-Hauptbuchungen rausfiltern
-    if(!SplitHauptbuchungen)
+    if(!splitHauptbuchungen)
     	list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
     list.setOrder("order by datum,belegnummer");
     return list;
