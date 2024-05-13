@@ -58,7 +58,7 @@ public class BuchungSearchProvider implements SearchProvider
     if (this.jahr == null)
       return null; // Kein Geschaeftsjahr aktiv
     
-    DBIterator list = this.jahr.getHauptBuchungen();
+    DBIterator list = this.jahr.getHauptBuchungen(true);
     list.setOrder("order by belegnummer desc");
     list.addFilter("LOWER(buchungstext) LIKE ?","%" + search.toLowerCase() + "%");
 

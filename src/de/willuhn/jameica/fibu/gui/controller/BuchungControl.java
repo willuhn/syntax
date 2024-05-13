@@ -81,6 +81,8 @@ public class BuchungControl extends AbstractControl
   
   private AbstractView view = null;
   
+  private Input splitbuchung     = null;
+
   /**
    * @param view
    */
@@ -331,6 +333,18 @@ public class BuchungControl extends AbstractControl
     return this.anlagevermoegenLink;
   }
   
+  /**
+   * Liefert ein Label ob es eine Splitbuchung ist
+   * @return Label mit Splitbuchung.
+   */
+  public Input getSplitbuchung()
+  {
+    if (this.splitbuchung != null)
+      return this.splitbuchung;
+    
+    this.splitbuchung = new LabelInput("");
+    return this.splitbuchung;
+  }
   /**
    * Hilfsklasse.
    */

@@ -49,6 +49,14 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       return this.brutto;
     
     double betrag = super.getBetrag();
+    //Die Betraege der Splitbuchungen hinzurechnen
+    DBIterator split = getSplitBuchungen();
+    if(split.hasNext())betrag = 0d;
+    while (split.hasNext())
+    {
+      Buchung s = (Buchung) split.next();
+      betrag += s.getBruttoBetrag();
+    }
     // jetzt muessen wir aber noch die Betraege der Hilfs-Buchungen drauf rechnen
     DBIterator hbs = getHilfsBuchungen();
     while (hbs.hasNext())
@@ -59,6 +67,16 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
     return betrag;
   }
 
+  /**
+  * @see de.willuhn.jameica.fibu.server.AbstractBaseBuchungImpl#getForeignObject(java.lang.String)
+  */
+ protected Class getForeignObject(String field) throws RemoteException
+ {
+   if ("split_id".equals(field))
+     return Buchung.class;
+   return super.getForeignObject(field);
+ }
+  
   /**
    * @see de.willuhn.jameica.fibu.rmi.Buchung#setBruttoBetrag(double)
    */
@@ -81,7 +99,15 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
 
       BuchungsEngine engine = (BuchungsEngine) Application.getServiceFactory().lookup(Fibu.class,"engine");
       HilfsBuchung[] hbs = engine.buche(this);
-
+      
+      Buchung hauptbuchung = getSplitHauptBuchung();
+      //Wenn vorhanden, die SplitHauptbuchung speichern um die Steuer/Hilfsbuchungen zu entfernen
+      if(hauptbuchung != null && hauptbuchung.getSteuer() > 0.01d) {
+          hauptbuchung.setBetrag(hauptbuchung.getBruttoBetrag());
+          hauptbuchung.setSteuer(0);
+          hauptbuchung.store();
+      }
+      
       super.store();
 
       if (hbs != null)
@@ -125,12 +151,30 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
   }
 
   /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getSplitHauptBuchung()
+   */
+  public Buchung getSplitHauptBuchung() throws RemoteException
+  {
+    return (Buchung) getAttribute("split_id");
+  }
+ 
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Buchung#getHilfsBuchungen()
    */
   public DBIterator getHilfsBuchungen() throws RemoteException
   {
     DBIterator i = Settings.getDBService().createList(HilfsBuchung.class);
     i.addFilter("buchung_id = " + this.getID());
+    return i;
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#getSplitBuchungen()
+   */
+  public DBIterator getSplitBuchungen() throws RemoteException
+  {
+    DBIterator i = Settings.getDBService().createList(Buchung.class);
+    i.addFilter("split_id = " + this.getID());
     return i;
   }
 
@@ -144,6 +188,13 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
     return super.getAttribute(arg0);
   }
 
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setSplitBuchung()
+   */
+  public void setSplitBuchung(String id) throws RemoteException{
+	    setAttribute("split_id",id);
+	  }
+  
   /**
    * @see de.willuhn.datasource.db.AbstractDBObject#setAttribute(java.lang.String, java.lang.Object)
    */
@@ -187,6 +238,13 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       while (i.hasNext())
       {
         HilfsBuchung b = (HilfsBuchung) i.next();
+        b.delete();
+      }
+      
+      i = getSplitBuchungen();
+      while (i.hasNext())
+      {
+        Buchung b = (Buchung) i.next();
         b.delete();
       }
       

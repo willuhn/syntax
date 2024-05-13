@@ -10,6 +10,7 @@
 
 package de.willuhn.jameica.fibu.gui.action;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
@@ -71,6 +72,14 @@ public class BuchungMarkChecked implements Action
           b[i].setGeprueft(this.state);
           b[i].store();
           Application.getMessagingFactory().sendMessage(new ObjectChangedMessage(b[i]));
+          
+          //ggf. Enthaltene Splitbuchungen synchronisieren
+          DBIterator<Buchung> split = b[i].getSplitBuchungen();
+          while(split.hasNext()){
+        	  Buchung s = split.next();
+        	  s.setGeprueft(this.state);
+        	  s.store();
+          }
           
           // Wenn Hibiscus installiert ist und die Buchung aus einem Hibiscus-Umsatz erzeugt wurde, synchronisieren wir
           // den Geprueft-Status zurueck nach Hibiscus

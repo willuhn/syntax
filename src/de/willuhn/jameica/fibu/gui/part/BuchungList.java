@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -34,6 +33,7 @@ import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
@@ -54,6 +54,7 @@ import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
 import de.willuhn.jameica.gui.util.SimpleContainer;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -113,6 +114,7 @@ public class BuchungList extends TablePart implements Extendable
     final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
     final CurrencyFormatter cf = new CurrencyFormatter(gj.getMandant().getWaehrung(), Settings.DECIMALFORMAT);
     final Map<String,Double> sums = BuchungUtil.getNebenbuchungSummen(gj,null,null);
+    final Map<String,Double[]> splitSums = BuchungUtil.getSplitbuchungenSummen(gj,null,null,sums);
 
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
@@ -160,11 +162,17 @@ public class BuchungList extends TablePart implements Extendable
         try
         {
           double result = b.getBetrag();
-          final Double add = sums.get(b.getID());
-          if (add != null)
-            result += add.doubleValue();
-          
-          item.setText(3,cf.format(result));
+          final Double[] split = splitSums.get(b.getID());
+          if (split != null) {
+              item.setText(4,cf.format(split[0].doubleValue()));
+              item.setText(3,cf.format(split[1].doubleValue()));
+          }
+          else {
+	          final Double add = sums.get(b.getID());
+	          if (add != null)
+	            result += add.doubleValue();
+	          item.setText(3,cf.format(result));
+          }
         }
         catch (RemoteException re)
         {
@@ -173,6 +181,16 @@ public class BuchungList extends TablePart implements Extendable
 
         try
         {
+          //Bei Splitbuchungen keine Konten anzeigen, da die teilbuchungen andere Konten haben können
+          if(splitSums.get(b.getID()) != null) {
+              item.setText(5,cf.format(null));
+              item.setText(6,cf.format(null));
+              item.setText(7,cf.format(null));
+          }
+          if(b instanceof Buchung && ((Buchung)b).getSplitHauptBuchung() != null)
+        	  item.setFont(Font.ITALIC.getSWTFont());
+          else if (b instanceof Buchung && splitSums.get(b.getID()) != null)
+          	  item.setFont(Font.BOLD.getSWTFont());
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
@@ -218,11 +236,12 @@ public class BuchungList extends TablePart implements Extendable
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
-      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr, von, bis);
+      DBIterator hauptbuchungen;
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
         DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr, von, bis);
+        hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
         if (hauptbuchungen.size() == 0)
           return hilfsbuchungen;
         
@@ -233,13 +252,16 @@ public class BuchungList extends TablePart implements Extendable
         List l = new ArrayList();
         while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
         while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
+        
         return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
+      hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
       return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getHauptBuchungen(von, bis);
+    DBIterator list = jahr.getHauptBuchungen(von, bis,true);
+    list.addFilter("split_id is NULL");
     list.setOrder("order by belegnummer desc");
     return list;
   }
