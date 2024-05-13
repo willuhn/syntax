@@ -42,11 +42,11 @@ public class BuchungListMenu extends ContextMenu
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new SingleItem(i18n.tr("Öffnen"), new BuchungNeu(),"document-open.png"));
     this.addItem(new GJContextMenuItem(i18n.tr("Neue Buchung..."), new BNeu(),"list-add.png"));
-    this.addItem(new SingleItem(i18n.tr("Buchung spliten..."), new BuchungSplitNeu(),"edit-copy.png"));
     this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new BuchungDelete(),"user-trash-full.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new SingleItem(i18n.tr("Duplizieren..."), new BuchungDuplicate(),"edit-copy.png"));
     this.addItem(new SingleItem(i18n.tr("Storno-Buchung erstellen..."), new BuchungReversal(),"view-refresh.png"));
+    this.addItem(new SingleItem(i18n.tr("Buchung aufteilen (Split)..."), new BuchungSplitNeu(),"emblem-documents.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungMarkChecked(true),false,"emblem-default.png"));
     this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungMarkChecked(false),true,"edit-undo.png"));
