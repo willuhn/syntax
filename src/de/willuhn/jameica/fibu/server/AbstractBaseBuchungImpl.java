@@ -68,6 +68,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
     if ("sollKonto".equals(arg0))
       return this.getSollKonto();
     
+    if ("steuer".equals(arg0))
+        return this.getSteuer();
+    
     return super.getAttribute(arg0);
   }
 
@@ -184,8 +187,8 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
       if (soll.equals(haben))
         throw new ApplicationException(i18n.tr("Soll- und Haben-Konto dürfen nicht identisch sein."));
         
-      double steuer_satz = getSteuer_satz();
-      if (steuer_satz > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
+      double steuerSatz = getSteuerSatz();
+      if (steuerSatz > 0.0d && soll.getSteuer() != null && haben.getSteuer() != null)
         throw new ApplicationException(i18n.tr("Es wurde ein Steuersatz eingegeben, obwohl keine zu versteuernden Konten ausgewählt wurden"));
       
       Steuer steuer = getSteuer();

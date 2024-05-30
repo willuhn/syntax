@@ -525,13 +525,13 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Betraege
       Math math = new Math();
-      double steuer_satz = 0d;
+      double steuerSatz = 0d;
       if(getSteuer().getValue() != null)
-    	  steuer_satz = ((Steuer)getSteuer().getValue()).getSatz();
+    	  steuerSatz = ((Steuer)getSteuer().getValue()).getSatz();
       double brutto = ((Double)getBetrag().getValue()).doubleValue();
-      double netto  = math.netto(brutto,steuer_satz);
+      double netto  = math.netto(brutto,steuerSatz);
       
-      if (Double.isNaN(steuer_satz))
+      if (Double.isNaN(steuerSatz))
         throw new ApplicationException(i18n.tr("Steuersatz ungültig."));
       if (Double.isNaN(brutto))
         throw new ApplicationException(i18n.tr("Betrag ungültig."));

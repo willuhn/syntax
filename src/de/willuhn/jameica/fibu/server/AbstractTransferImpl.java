@@ -85,9 +85,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuer_satz()
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuerSatz()
    */
-  public double getSteuer_satz() throws RemoteException
+  public double getSteuerSatz() throws RemoteException
   {
 	Steuer s = getSteuer();
     if (s != null)
@@ -101,7 +101,15 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Steuer getSteuer() throws RemoteException
   {
-   return (Steuer) getAttribute("steuer_id");
+   Object o =  super.getAttribute("steuer_id");
+   if(o instanceof Steuer)
+	   return (Steuer)o;
+   Integer i = (Integer)o;
+   if (i == null)
+     return null;
+  
+   Cache cache = Cache.get(Steuer.class,true);
+   return (Steuer) cache.get(i);
   }
 
   /**
@@ -139,9 +147,9 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   /**
    * @see de.willuhn.jameica.fibu.rmi.Transfer#setSteuer(double)
    */
-  public void setSteuer(Steuer steuer) throws RemoteException
+  public void setSteuer(Steuer s) throws RemoteException
   {
-    setAttribute("steuer_id", steuer);
+    setAttribute("steuer_id",s == null || s.getID() == null ? null : new Integer(s.getID()));
   }
 
   /**

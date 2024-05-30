@@ -423,7 +423,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     if (sSteuer == null && hSteuer == null)
       return null; // Keine Steuerkonten vorhanden
     
-    double steuer = buchung.getSteuer_satz();
+    double steuer = buchung.getSteuerSatz();
     
     if (steuer < 0.01d)
       return null; // keine Steuer zu buchen

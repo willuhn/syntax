@@ -58,7 +58,7 @@ public class BuchungTable implements Table
   {
     Konto ks      = b.getSollKonto();
     Konto kh      = b.getHabenKonto();
-    double steuer = b.getSteuer_satz();
+    double steuer = b.getSteuerSatz();
 
     List<String> line = new ArrayList<String>();
     line.add(b.getID());
@@ -68,7 +68,7 @@ public class BuchungTable implements Table
     line.add(b.getText());
     line.add(Integer.toString(b.getBelegnummer()));
     line.add(Settings.DECIMALFORMAT.format(b.getBetrag()));
-    line.add(steuer == 0d ? "" : Settings.DECIMALFORMAT.format(b.getSteuer_satz()));
+    line.add(steuer == 0d ? "" : Settings.DECIMALFORMAT.format(b.getSteuerSatz()));
     return line;
   }
 

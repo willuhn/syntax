@@ -37,7 +37,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
     
     Map<String,Position> positions = new HashMap<String,Position>();
     
-    DBIterator buchungen = jahr.getHauptBuchungen();
+    DBIterator buchungen = jahr.getHauptBuchungen(data.getStartDatum(),data.getEndDatum());
     while (buchungen.hasNext())
     {
       Buchung b = (Buchung) buchungen.next();

@@ -53,7 +53,7 @@ public interface Transfer extends DBObject
    * @return Steuersatz der Buchung.
    * @throws RemoteException
    */
-  public double getSteuer_satz() throws RemoteException;
+  public double getSteuerSatz() throws RemoteException;
 
   /**
   * Liefert die Steuer der Buchung.
