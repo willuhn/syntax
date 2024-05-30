@@ -74,7 +74,7 @@ public class BuchungListMenu extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-      if (o instanceof Buchung[])
+      if (o == null || o instanceof Buchung[])
         return false;
       return super.isEnabledFor(o);
     }
