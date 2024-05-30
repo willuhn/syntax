@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -54,8 +55,8 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
-import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.gui.util.Font;
+import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
 import de.willuhn.jameica.system.Application;
@@ -98,7 +99,7 @@ public class BuchungList extends TablePart implements Extendable
    */
   public BuchungList(Konto konto, Action action) throws RemoteException
   {
-    this(init(konto,getConfiguredFrom(konto),getConfiguredTo(konto),settings.getBoolean("nurUngeprueft",false)), action);
+    this(init(konto,getConfiguredFrom(konto),getConfiguredTo(konto),settings.getBoolean("buchungen.geprueft",true)), action);
     this.konto = konto;
   }
   
@@ -220,6 +221,7 @@ public class BuchungList extends TablePart implements Extendable
    * @param konto Optional.
    * @param von Startdatum. Optional.
    * @param bis Enddatum. Optional.
+   * @param geprueft true, wenn auch die geprueften Buchungen angezeigt werden sollen.
    * @return Liste der Buchungen
    * @throws RemoteException
    */
@@ -530,14 +532,14 @@ public class BuchungList extends TablePart implements Extendable
     if (this.nurUngeprueft != null)
       return this.nurUngeprueft;
     
-    this.nurUngeprueft = new CheckboxInput(settings.getBoolean("nurUngeprueft", false));
+    this.nurUngeprueft = new CheckboxInput(settings.getBoolean("buchungen.geprueft", false));
     this.nurUngeprueft.setName(i18n.tr("Nur ungeprüfte Buchungen"));
     this.nurUngeprueft.addListener(new Listener() {
       
       @Override
       public void handleEvent(Event event)
       {
-        settings.setAttribute("nurUngeprueft",(Boolean)nurUngeprueft.getValue());
+        settings.setAttribute("buchungen.geprueft",(Boolean)nurUngeprueft.getValue());
         update(true);
       }
     });
