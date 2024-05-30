@@ -337,7 +337,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     list.addFilter("geschaeftsjahr_id = " + this.getID());
     //Split-Hauptbuchungen rausfiltern
     if(!splitHauptbuchungen)
-    	list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
+    	list.addFilter("id NOT IN (SELECT split_id FROM buchung WHERE split_id IS NOT NULL)");
     list.setOrder("order by datum,belegnummer");
     return list;
   }
