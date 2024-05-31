@@ -296,7 +296,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
         throw new ApplicationException(i18n.tr("Bitte geben Sie ein Anschaffungsdatum an"));
       if (getAnschaffungskosten() <= 0.0d)
         throw new ApplicationException(i18n.tr("Bitte geben Sie einen gültigen Betrag für die Anschaffungskosten an"));
-      if (getNutzungsdauer() <= 0)
+      if (getNutzungsdauer() < 0)
         throw new ApplicationException(i18n.tr("Bitte geben Sie eine gültige Nutzunsdauer (in Jahren) zur Abschreibung an"));
       if (getNutzungsdauer() > 99)
         throw new ApplicationException(i18n.tr("Nutzunsdauer zu gross (max. 99 Jahre)"));

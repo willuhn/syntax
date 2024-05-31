@@ -555,7 +555,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     //Split-Hauptbuchungen rausfiltern
     if(!SplitHauptbuchungen)
-    	list.addFilter("NOT EXISTS(SELECT 1 FROM buchung b WHERE b.split_id = buchung.id)");
+    	list.addFilter("id NOT IN (SELECT split_id FROM buchung WHERE split_id IS NOT NULL)");
     list.setOrder("order by datum,belegnummer");
 
     return list;

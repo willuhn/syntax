@@ -105,7 +105,13 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
             while (list.hasNext())
             {
               Anlagevermoegen av = (Anlagevermoegen) list.next();
-
+              
+              if (av.getNutzungsdauer() == 0)
+              {
+                monitor.log(i18n.tr("  Überspringe {0} - Nutzungsdauer 0 Jahre",av.getName()));
+                continue;
+              }
+              
               AbschreibungsBuchung buchung = schreibeAb(monitor,av,jahr);
 
               if (buchung == null)

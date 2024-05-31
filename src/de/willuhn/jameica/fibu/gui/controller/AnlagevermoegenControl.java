@@ -225,9 +225,10 @@ public class AnlagevermoegenControl extends AbstractControl
     if (this.laufzeit != null)
       return this.laufzeit;
     int n = getAnlagevermoegen().getNutzungsdauer();
-    this.laufzeit = new IntegerInput(n == 0 ? 1 : n);
+    this.laufzeit = new IntegerInput(n);
     this.laufzeit.setEnabled(getAnlagevermoegen().canChange());
     this.laufzeit.setMandatory(true);
+    this.laufzeit.setComment(i18n.tr("\"0\", wenn keine Abschreibung stattfinden soll"));
     return this.laufzeit;
   }
   
