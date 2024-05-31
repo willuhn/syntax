@@ -35,6 +35,7 @@ import de.willuhn.util.MultipleClassLoader;
 public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implements DBService
 {
   private Geschaeftsjahr jahr = null;
+  private boolean doUpdates = true;
   
   /**
    * ct.
@@ -42,12 +43,24 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public DBServiceImpl() throws RemoteException
   {
+    this(true);
+  }
+
+  /**
+   * ct.
+   * Interner Konstruktor für die Updates.
+   * @param doUpdates true, wenn die Updates ausgeführt werden sollen.
+   * @throws RemoteException
+   */
+  DBServiceImpl(boolean doUpdates) throws RemoteException
+  {
     super();
+    this.doUpdates = doUpdates;
     MultipleClassLoader cl = Application.getPluginLoader().getManifest(Fibu.class).getClassLoader();
     this.setClassloader(cl);
     this.setClassFinder(cl.getClassFinder());
   }
-  
+
   /**
    * @see de.willuhn.jameica.fibu.rmi.DBService#setActiveGeschaeftsjahr(de.willuhn.jameica.fibu.rmi.Geschaeftsjahr)
    */
@@ -91,40 +104,46 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Init Database
-    Logger.info("init database");
-    Connection conn = null;
-    try
+    //
+    if (this.doUpdates)
     {
-      Class.forName(this.getJdbcDriver());
-      conn = DriverManager.getConnection(this.getJdbcUrl(),this.getJdbcUsername(),this.getJdbcPassword());
+      // Init Database
+      Logger.info("init database");
+      Connection conn = null;
+      try
+      {
+        Class.forName(this.getJdbcDriver());
+        conn = DriverManager.getConnection(this.getJdbcUrl(),this.getJdbcUsername(),this.getJdbcPassword());
 
-      Logger.info("init update provider");
-      UpdateProvider provider = new UpdateProvider(conn);
-      Updater updater = new Updater(provider,DBSupport.ENCODING_SQL);
-      updater.execute("^" + Settings.getDBSupport().getID() + "-.*");
-      Logger.info("updates finished");
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException(e.getMessage(),e);
-    }
-    finally
-    {
-      if (conn != null) {
-        try {
-          conn.close();
-        }
-        catch (Exception e)
-        {
-          Logger.error("error while closing connection",e);
+        Logger.info("init update provider");
+        UpdateProvider provider = new UpdateProvider(conn);
+        Updater updater = new Updater(provider,DBSupport.ENCODING_SQL);
+        updater.execute("^" + Settings.getDBSupport().getID() + ".*");
+        Logger.info("updates finished");
+      }
+      catch (RemoteException re)
+      {
+        throw re;
+      }
+      catch (Exception e)
+      {
+        throw new RemoteException(e.getMessage(),e);
+      }
+      finally
+      {
+        if (conn != null) {
+          try {
+            conn.close();
+          }
+          catch (Exception e)
+          {
+            Logger.error("error while closing connection",e);
+          }
         }
       }
     }
+    //
+    ////////////////////////////////////////////////////////////////////////////
     
     super.start();
   }
@@ -243,35 +262,4 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
     }
     super.checkConnection(conn);
   }
-  
-
 }
-
-
-/*********************************************************************
- * $Log: DBServiceImpl.java,v $
- * Revision 1.28  2012/03/28 22:28:16  willuhn
- * @N Einfuehrung eines neuen Interfaces "Plugin", welches von "AbstractPlugin" implementiert wird. Es dient dazu, kuenftig auch Jameica-Plugins zu unterstuetzen, die selbst gar keinen eigenen Java-Code mitbringen sondern nur ein Manifest ("plugin.xml") und z.Bsp. Jars oder JS-Dateien. Plugin-Autoren muessen lediglich darauf achten, dass die Jameica-Funktionen, die bisher ein Object vom Typ "AbstractPlugin" zuruecklieferten, jetzt eines vom Typ "Plugin" liefern.
- * @C "getClassloader()" verschoben von "plugin.getRessources().getClassloader()" zu "manifest.getClassloader()" - der Zugriffsweg ist kuerzer. Die alte Variante existiert weiterhin, ist jedoch als deprecated markiert.
- *
- * Revision 1.27  2011-07-25 10:03:18  willuhn
- * *** empty log message ***
- *
- * Revision 1.26  2011-07-25 10:01:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.25  2011-03-07 09:07:37  willuhn
- * @N Datenbank-Verbindung checken, bevor sie verwendet wird (aus Hibiscus uebernommen). Siehe Mail von Simon vom 05.03.2011
- *
- * Revision 1.24  2010-11-12 12:58:41  willuhn
- * @B Falscher Classloader
- *
- * Revision 1.23  2010-06-02 15:47:42  willuhn
- * @N Separierte SQL-Scripts fuer McKoi und MySQL - dann brauchen wir nicht dauernd eine extra Update-Klasse sondern koennen Plain-SQL-Scripts nehmen
- *
- * Revision 1.22  2010/06/01 17:42:03  willuhn
- * @N Neues Update-Verfahren via UpdateProvider
- *
- * Revision 1.21  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- **********************************************************************/
