@@ -11,6 +11,7 @@
 package de.willuhn.jameica.fibu.server;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -42,6 +43,7 @@ public abstract class AbstractUpdate implements Update
       // verfügbar ist (wir sind ja gerade in deren Initialisierung)
       db = new DBServiceImpl(false);
       db.start();
+      Settings.setDBService(db);
       return f.execute(db);
     }
     catch (ApplicationException ae)
@@ -55,6 +57,7 @@ public abstract class AbstractUpdate implements Update
     }
     finally
     {
+      Settings.setDBService(null);
       if (db != null)
       {
         try

@@ -270,6 +270,16 @@ public class Settings
     }
     return db;
   }
+  
+  /**
+   * Legt den DB-Service fest - nötig für die Java-basierten Datenbank-Updates.
+   * @param s der Service.
+   */
+  public static void setDBService(DBService s)
+  {
+    db = s;
+  }
+  
 
   /**
 	 * Liefert den Datenbank-Service.
