@@ -136,6 +136,20 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
   }
 
   /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("habenKonto".equals(arg0))
+      return this.getHabenKonto();
+    
+    if ("sollKonto".equals(arg0))
+      return this.getSollKonto();
+    
+    return super.getAttribute(arg0);
+  }
+  
+  /**
    * @see de.willuhn.datasource.rmi.Changeable#store()
    */
   public void store() throws RemoteException, ApplicationException

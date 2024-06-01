@@ -58,8 +58,9 @@ public class KontenrahmenUtil
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen als Vorlage aus"));
     
     // Wenn kein Mandant angegeben ist, muessen wir das Aendern des Systemkontenrahmens kurzzeitig freigeben
+    //Auch wenn ein Mandant angegeben ist, da die Konten im neuen Kontenrahemn als Systemkonten gespeichert werden
     boolean sysdataWritable = Settings.getSystemDataWritable();
-    if (mandant == null && !sysdataWritable)
+    if (!sysdataWritable)
     {
       Logger.info("activating change support for system data");
       Settings.setSystemDataWritable(true);
