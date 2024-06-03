@@ -43,7 +43,11 @@ public class mysqlUpdate0011 extends AbstractUpdate
     	db.executeUpdate("ALTER TABLE buchung ADD steuer_id INT(10) NULL", null);
     	db.executeUpdate("ALTER TABLE buchung ADD CONSTRAINT fk_buchung_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id)", null);
     	
-    	db.executeUpdate("ALTER TABLE buchungstemplate add steuer_id INT(10) NULL DEFAULT NULL", null);
+    	//Um die alten Steuersätze holen zu können kopieren wir die Spalte vorläufig (einen Umbenenn befehl der bei McKoi funktioniert habe ich nicht gefunden)
+    	db.executeUpdate("ALTER TABLE buchung ADD steuer_alt double NULL", null);
+    	db.executeUpdate("UPDATE buchung SET steuer_alt = steuer", null);
+    	
+    	db.executeUpdate("ALTER TABLE buchungstemplate add steuer_id INT(10) NULL", null);
     	db.executeUpdate("ALTER TABLE buchungstemplate add CONSTRAINT fk_buchungstemplate_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id)", null);
     	
         final Math math = new Math();
@@ -87,7 +91,7 @@ public class mysqlUpdate0011 extends AbstractUpdate
 		            if (steuer == null)
 		              continue;
 		            
-			        final double steuerSatz = (Double)b.getAttribute("steuer");
+			        final double steuerSatz = (Double)b.getAttribute("steuer_alt");
 			        
 			        if(steuerSatz < 0.1d)
 			        	continue;
@@ -95,8 +99,11 @@ public class mysqlUpdate0011 extends AbstractUpdate
 			        if (math.abs(steuerSatz - steuer.getSatz()) < 0.01)
 		            {
 		              // Wir können die Steuer direkt in der Buchung speichern
-		              b.setSteuer(steuer);
-		              b.store();
+			          //Da die Buchungsengine nicht gestartet ist, fürhen wir hier SQL direkt durch
+		              db.executeUpdate("UPDATE buchung set steuer_id = ? WHERE id = ?", new Object[] {new Integer(steuer.getID()),new Integer(b.getID())});
+		              
+		              //b.setSteuer(steuer);
+		              //b.store();
 		              Logger.debug("Speichere Steuersatz " + steuerSatz + " in Buchung " + b.getBelegnummer());
 		            }
 		            else
@@ -123,9 +130,10 @@ public class mysqlUpdate0011 extends AbstractUpdate
 		                  steuerMap.put(key,sNew);
 		                  Logger.info("Steuersatz " + steuerSatz + " neu angelegt für Buchung " + b.getBelegnummer());
 		                }
-		                
-		                b.setSteuer(sNew);
-		                b.store();
+		                //Da die Buchungsengine nicht gestartet ist, fürhen wir hier SQL direkt durch
+		                db.executeUpdate("UPDATE buchung set steuer_id = ? WHERE id = ?", new Object[] {new Integer(sNew.getID()),new Integer(b.getID())});
+		                //b.setSteuer(sNew);
+		                //b.store();
 		                Logger.debug("Speichere neuen Steuersatz " + steuerSatz + " in Buchung " + b.getBelegnummer());
 		             }
 			      }
@@ -154,6 +162,7 @@ public class mysqlUpdate0011 extends AbstractUpdate
 		        if (math.abs(steuerSatz - steuer.getSatz()) < 0.01)
 	            {
 	              // Wir können die Steuer direkt in der Buchung speichern
+		          
 	              b.setSteuer(steuer);
 	              b.store();
 	              Logger.debug("Speichere Steuersatz " + steuerSatz + " in Buchungstemplate " + b.getName());
