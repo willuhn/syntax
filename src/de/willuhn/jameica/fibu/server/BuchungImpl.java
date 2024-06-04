@@ -102,7 +102,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       
       Buchung hauptbuchung = getSplitHauptBuchung();
       //Wenn vorhanden, die SplitHauptbuchung speichern um die Steuer/Hilfsbuchungen zu entfernen
-      if(hauptbuchung != null && hauptbuchung.getSteuer() > 0.01d) {
+      if(hauptbuchung != null && hauptbuchung.getSteuer() >= 0.01d) {
           hauptbuchung.setBetrag(hauptbuchung.getBruttoBetrag());
           hauptbuchung.setSteuer(0);
           hauptbuchung.store();
