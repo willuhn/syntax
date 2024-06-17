@@ -35,7 +35,8 @@ import de.willuhn.util.MultipleClassLoader;
 public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implements DBService
 {
   private Geschaeftsjahr jahr = null;
-  private boolean doUpdates = true;
+  private boolean doUpdates = false;
+  private DBSupport driver = null;
   
   /**
    * ct.
@@ -54,11 +55,25 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   DBServiceImpl(boolean doUpdates) throws RemoteException
   {
-    super();
+    this(Settings.getDBSupport());
     this.doUpdates = doUpdates;
+  }
+  
+  /**
+   * ct.
+   * Konstruktor mit expliziter Angabe des Treibers.
+   * @param dbSupport der zu verwendende Treiber.
+   * @throws RemoteException
+   */
+  public DBServiceImpl(DBSupport dbSupport) throws RemoteException
+  {
+    super();
     MultipleClassLoader cl = Application.getPluginLoader().getManifest(Fibu.class).getClassLoader();
     this.setClassloader(cl);
     this.setClassFinder(cl.getClassFinder());
+//    if (dbSupport == null)
+//      throw new RemoteException("no driver given");
+    this.driver = dbSupport;
   }
 
   /**
@@ -82,7 +97,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public String getSQLTimestamp(String content) throws RemoteException
   {
-    return Settings.getDBSupport().getSQLTimestamp(content);
+    return this.driver.getSQLTimestamp(content);
   }
   
   /**
@@ -91,10 +106,14 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   public synchronized void start() throws RemoteException
   {
-    if (Settings.getDBSupport() == null)
+    if (this.driver == null)
     {
-      Logger.info("first start: skipping db service");
-      return;
+      this.driver = Settings.getDBSupport();
+      if(this.driver == null)
+      {
+	      Logger.info("first start: skipping db service");
+	      return;
+      }
     }
 
     if (this.isStarted())
@@ -153,7 +172,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   protected String getJdbcDriver() throws RemoteException
   {
-    return Settings.getDBSupport().getJdbcDriver();
+    return this.driver.getJdbcDriver();
   }
   
   /**
@@ -161,7 +180,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   protected String getJdbcPassword() throws RemoteException
   {
-    return Settings.getDBSupport().getPassword();
+    return this.driver.getPassword();
   }
   
   /**
@@ -169,7 +188,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   protected String getJdbcUrl() throws RemoteException
   {
-    return Settings.getDBSupport().getJdbcUrl();
+    return this.driver.getJdbcUrl();
   }
   
   /**
@@ -177,7 +196,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   protected String getJdbcUsername() throws RemoteException
   {
-    return Settings.getDBSupport().getUsername();
+    return this.driver.getUsername();
   }
 
   /**
@@ -185,7 +204,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
    */
   protected int getTransactionIsolationLevel() throws RemoteException
   {
-    return Settings.getDBSupport().getTransactionIsolationLevel();
+    return this.driver.getTransactionIsolationLevel();
   }
 
   /**
@@ -254,7 +273,7 @@ public class DBServiceImpl extends de.willuhn.datasource.db.DBServiceImpl implem
   {
     try
     {
-      Settings.getDBSupport().checkConnection(conn);
+    	this.driver.checkConnection(conn);
     }
     catch (RemoteException re)
     {

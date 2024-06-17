@@ -102,7 +102,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       
       Buchung hauptbuchung = getSplitHauptBuchung();
       //Wenn vorhanden, die SplitHauptbuchung speichern um die Steuer/Hilfsbuchungen zu entfernen
-      if(hauptbuchung != null && hauptbuchung.getSteuerSatz() > 0.01d) {
+      if(hauptbuchung != null && hauptbuchung.getSteuer() >= 0.01d) {
           hauptbuchung.setBetrag(hauptbuchung.getBruttoBetrag());
           hauptbuchung.setSteuer(null);
           hauptbuchung.store();
@@ -307,7 +307,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
     catch (RemoteException e)
     {
       Logger.error("error while checking buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
+      throw new ApplicationException(i18n.tr("Fehler bei der PrÃ¼fung der Buchung."),e);
     }
   }
 

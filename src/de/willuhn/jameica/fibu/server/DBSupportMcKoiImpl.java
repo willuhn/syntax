@@ -168,7 +168,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getName() throws RemoteException
   {
-    return i18n.tr("Integrierte Datenbank (McKoi)");
+    return i18n.tr("Integrierte Datenbank (McKoi) - Veraltet");
   }
 
   /**
@@ -220,7 +220,7 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   int getOrder()
   {
-    return 1;
+    return 100;
   }
 
   /**
