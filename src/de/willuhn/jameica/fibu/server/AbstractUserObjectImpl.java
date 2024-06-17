@@ -117,4 +117,16 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
       throw new RemoteException("Datensatz gehört zum initialen Datenbestand und darf daher nicht geändert werden.");
     setAttribute("mandant_id",mandant == null || mandant.getID() == null ? null : new Integer(mandant.getID()));
   }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  @Override
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("mandant".equals(arg0))
+      return this.getMandant();
+    
+    return super.getAttribute(arg0);
+  }
 }
