@@ -105,7 +105,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
       if(hauptbuchung != null && hauptbuchung.getSteuerSatz() >= 0.01d)
       {
           hauptbuchung.setBetrag(hauptbuchung.getBruttoBetrag());
-          hauptbuchung.setSteuer(null);
+          hauptbuchung.setSteuer(0);
           hauptbuchung.store();
       }
       
@@ -308,7 +308,7 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
     catch (RemoteException e)
     {
       Logger.error("error while checking buchung",e);
-      throw new ApplicationException(i18n.tr("Fehler bei der PrÃ¼fung der Buchung."),e);
+      throw new ApplicationException(i18n.tr("Fehler bei der Prüfung der Buchung."),e);
     }
   }
 

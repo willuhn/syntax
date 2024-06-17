@@ -20,7 +20,7 @@
       <td style="text-align:right">$!{decimalformat.format(${netto})}&nbsp;${eur}</td>
       $math.add("haben",${netto})
     #end
-    <td style="text-align:right; white-space: nowrap;">$!{decimalformat.format($buchung.Steuer_satz)} %</td>
+    <td style="text-align:right; white-space: nowrap;">$!{decimalformat.format($buchung.Steuer)} %</td>
     <td>$!{gegen.Kontonummer}</td>
   </tr>
 #end

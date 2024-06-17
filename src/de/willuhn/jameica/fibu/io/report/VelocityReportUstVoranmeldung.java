@@ -19,8 +19,8 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 
 /**
@@ -37,12 +37,12 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
     
     Map<String,Position> positions = new HashMap<String,Position>();
     
-    DBIterator buchungen = jahr.getHauptBuchungen(data.getStartDatum(),data.getEndDatum());
-    while (buchungen.hasNext())
+    DBIterator konten = jahr.getKontenrahmen().getKonten();
+    while (konten.hasNext())
     {
-      Buchung b = (Buchung) buchungen.next();
+      Konto kt = (Konto) konten.next();
       
-      Steuer st = b.getSteuer();
+      Steuer st = kt.getSteuer();
       if (st == null)
         continue;
 
@@ -55,7 +55,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
           pos = new Position();
           positions.put(bemessung,pos);
         }
-        pos.add(data,b,false);
+        pos.add(data,kt,false);
       }
       
       String steuer = st.getUstNrSteuer();
@@ -67,7 +67,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
           pos = new Position();
           positions.put(steuer,pos);
         }
-        pos.add(data,b,true);
+        pos.add(data,kt,true);
       }
 
     }
@@ -123,9 +123,9 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
      * @param steuer true, wenn es sich um das Steuerkennzeichen handelt.
      * @throws RemoteException
      */
-    private void add(ReportData data, Buchung b, boolean steuer) throws RemoteException
+    private void add(ReportData data, Konto konto, boolean steuer) throws RemoteException
     {
-      Steuer st = b.getSteuer();
+      Steuer st = konto.getSteuer();
       if (st != null && !steuer)
       {
         double s = st.getSatz();
@@ -134,9 +134,18 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
         else if (this.satz != s) // wir haben offensichtlich unterschiedliche Steuersaetze
           this.satz = -1;
       }
-        boolean soll     = st.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE;
-        boolean aufwand  = b.getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND;
-        
+
+      Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+      Date start          = data.getStartDatum();
+      Date end            = data.getEndDatum();
+
+      DBIterator buchungen = konto.getHauptBuchungen(jahr,start,end);
+      while (buchungen.hasNext())
+      {
+        Buchung b        = (Buchung) buchungen.next();
+        boolean soll     = b.getSollKonto().equals(konto);
+        boolean aufwand  = konto.getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND;
+
         // Wir runden auf 2 Stellen hinterm Komma. Sonst stimmt ggf. die Summe der Einzelwerte nicht
         // mit der Summe ueberein.
         double betrag = math.round(b.getBetrag());
@@ -155,6 +164,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
           else
             this.steuer -= steuerBetrag;
         }
+      }
     }
     
     /**

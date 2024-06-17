@@ -429,7 +429,7 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     if (sSteuer == null && hSteuer == null)
       return null; // Keine Steuerkonten vorhanden
     
-    double steuer = buchung.getSteuerSatz();
+    double steuer = buchung.getSteuer();
     
     if (steuer < 0.01d)
       return null; // keine Steuer zu buchen
@@ -446,8 +446,8 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag);                                        // Steuer-Betrag
     hb.setDatum(buchung.getDatum());                              // Datum
-    hb.setSollKonto(sSteuer != null ? buchung.getSteuer().getSteuerKonto() : sKonto);   // Das Steuer-Konto
-    hb.setHabenKonto(hSteuer != null ? buchung.getSteuer().getSteuerKonto() : hKonto);  // Haben-Konto
+    hb.setSollKonto(sSteuer != null ? sSteuer.getSteuerKonto() : sKonto);   // Das Steuer-Konto
+    hb.setHabenKonto(hSteuer != null ? hSteuer.getSteuerKonto() : hKonto);  // Haben-Konto
     hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
     hb.setText(buchung.getText());                                // Text identisch mit Haupt-Buchung
      

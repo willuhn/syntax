@@ -53,15 +53,8 @@ public interface Transfer extends DBObject
    * @return Steuersatz der Buchung.
    * @throws RemoteException
    */
-  public double getSteuerSatz() throws RemoteException;
+  public double getSteuer() throws RemoteException;
 
-  /**
-  * Liefert die Steuer der Buchung.
-  * @return Steuer Obj
-  * @throws RemoteException
-  */
- public Steuer getSteuer() throws RemoteException;
-  
   /**
    * Setzt das Haben-Konto zu dieser Buchung.
    * @param k Haben-Konto der Buchung.
@@ -91,11 +84,11 @@ public interface Transfer extends DBObject
   public void setBetrag(double betrag) throws RemoteException;
 
   /**
-   * Setzt die Steuer Buchung.
-   * @param steuer Steuer der Buchung.
+   * Setzt den Steuersatz der Buchung.
+   * @param steuer Steuersatz der Buchung.
    * @throws RemoteException
    */
-  public void setSteuer(Steuer steuer) throws RemoteException;
+  public void setSteuer(double steuer) throws RemoteException;
 
   /**
    * Liefert true, wenn die Buchung geprueft wurde.
