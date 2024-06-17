@@ -30,34 +30,14 @@ import de.willuhn.util.I18N;
 import de.willuhn.util.ProgressMonitor;
 
 /**
- * Task zum Migrieren der Datenbank.
+ * Abstrakte Basis-Klasse für das Migrieren einer Datenbank.
  */
-public class DatabaseMigrationTask implements BackgroundTask
+public abstract class AbstractDatabaseMigrationTask implements BackgroundTask
 {
-  protected I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  protected final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
   private boolean cancel = false;
-  protected DBService source = null;
-  protected DBService target = null;
 
-  /**
-   * Legt die Datenquelle fest.
-   * @param source Datenquelle.
-   */
-  public void setSource(DBService source)
-  {
-    this.source = source;
-  }
-  
-  /**
-   * Legt das Datenziel fest.
-   * @param target Datenziel.
-   */
-  public void setTarget(DBService target)
-  {
-    this.target = target;
-  }
-  
   /**
    * @see de.willuhn.jameica.system.BackgroundTask#interrupt()
    */
@@ -75,9 +55,13 @@ public class DatabaseMigrationTask implements BackgroundTask
   }
 
   /**
-   * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
+   * Führt das eigentliche Kopieren durch.
+   * @param source die Datenquelle.
+   * @param target das Datenziel.
+   * @param monitor der Monitor.
+   * @throws ApplicationException
    */
-  public void run(ProgressMonitor monitor) throws ApplicationException
+  protected void copy(DBService source, DBService target, ProgressMonitor monitor) throws ApplicationException
   {
 	// Wir muessen wir das Aendern des Systemkontenrahmens kurzzeitig freigeben
 	  boolean sysdataWritable = Settings.getSystemDataWritable();
@@ -92,26 +76,38 @@ public class DatabaseMigrationTask implements BackgroundTask
   	  Logger.info("deactivating foreign_key_checks");
   	  target.executeUpdate("SET foreign_key_checks = 0", null);
   	  
+  	  int failCount = 0;
+  	  
       monitor.setPercentComplete(0);
       monitor.log(i18n.tr("Starte Datenmigration"));
       Logger.info("################################################");
       Logger.info("starting data migration");
-      copy(Kontotyp.class,monitor);
-      copy(Kontoart.class,monitor);
-      copy(Finanzamt.class,monitor);
-      copy(Mandant.class,monitor);
-      copy(Kontenrahmen.class,monitor);
-      copy(Geschaeftsjahr.class,monitor);
-      copy(Konto.class,monitor);
-      copy(Steuer.class,monitor);
-      copy(Buchungstemplate.class,monitor);
-      copy(Buchung.class,monitor);
-      copy(Anlagevermoegen.class,monitor);
-      copy(Anfangsbestand.class,monitor);
-      copy(Abschreibung.class,monitor);
+      failCount += copy(source,target,monitor,Kontotyp.class);
+      failCount += copy(source,target,monitor,Kontoart.class);
+      failCount += copy(source,target,monitor,Finanzamt.class);
+      failCount += copy(source,target,monitor,Mandant.class);
+      failCount += copy(source,target,monitor,Kontenrahmen.class);
+      failCount += copy(source,target,monitor,Geschaeftsjahr.class);
+      failCount += copy(source,target,monitor,Konto.class);
+      failCount += copy(source,target,monitor,Steuer.class);
+      failCount += copy(source,target,monitor,Buchungstemplate.class);
+      failCount += copy(source,target,monitor,Buchung.class);
+      failCount += copy(source,target,monitor,Anlagevermoegen.class);
+      failCount += copy(source,target,monitor,Anfangsbestand.class);
+      failCount += copy(source,target,monitor,Abschreibung.class);
+      Logger.info("finished data migration");
+      Logger.info("################################################");
  
-      monitor.setStatus(ProgressMonitor.STATUS_DONE);
-      monitor.setStatusText(i18n.tr("Fertig"));
+      if(failCount > 0)
+      {
+        monitor.setStatus(ProgressMonitor.STATUS_ERROR);
+        monitor.setStatusText(i18n.tr("Abgeschlossen. {0} Datensätze konnten nicht kopiert werden"));
+      }
+      else
+      {
+        monitor.setStatus(ProgressMonitor.STATUS_DONE);
+        monitor.setStatusText(i18n.tr("Fertig"));
+      }
     }
     catch (ApplicationException ae)
     {
@@ -128,6 +124,7 @@ public class DatabaseMigrationTask implements BackgroundTask
     finally
     {
       monitor.setPercentComplete(100);
+      
       // Wieder zurueck aendern, wenns vorher nicht erlaubt war
       if (!sysdataWritable)
       {
@@ -135,36 +132,34 @@ public class DatabaseMigrationTask implements BackgroundTask
         Settings.setSystemDataWritable(false);
       }
       Logger.info("re-activating foreign_key_checks");
-  	  try {
-		target.executeUpdate("SET foreign_key_checks = 1", null);
-	  } catch (RemoteException e) {
-		 Logger.error("error while re-activating foreign_key_checks");
-	  }
+
+      try
+  	  {
+		    target.executeUpdate("SET foreign_key_checks = 1", null);
+	    }
+  	  catch (RemoteException e)
+  	  {
+		    Logger.error("error while re-activating foreign_key_checks");
+	    }
     }
   }
   
   /**
-   * Kann von der abgeleiteten Klasse ueberschrieben werden, um Daten zu korrigieren.
-   * @param object das ggf noch zu korrigierende Objekt.
-   * @param monitor Monitor.
-   * @throws RemoteException
-   */
-  protected void fixObject(AbstractDBObject object, ProgressMonitor monitor) throws RemoteException
-  {
-  }
-  
-  /**
    * Kopiert eine einzelne Tabelle.
-   * @param type Objekttyp.
-   * @param monitor Monitor.
+   * @param source die Datenquelle.
+   * @param target das Datenziel.
+   * @param monitor der Monitor.
+   * @param type
    * @throws Exception
+   * @return Anzahl der Datensätze, die nicht kopiert werden konnten.
    */
-  protected void copy(Class type, ProgressMonitor monitor) throws Exception
+  private int copy(DBService source, DBService target, ProgressMonitor monitor, Class type) throws Exception
   {
-    monitor.setStatusText(i18n.tr("Kopiere " + type.getName()));
-    Logger.info("  copying " + type.getName());
+    monitor.setStatusText(i18n.tr("Kopiere {0}",type.getSimpleName()));
+    Logger.info("  copying " + type.getSimpleName());
 
     long count          = 0;
+    int failCount       = 0;
     DBIterator i        = source.createList(type);
     AbstractDBObject to = null;
 
@@ -181,17 +176,17 @@ public class DatabaseMigrationTask implements BackgroundTask
         to.overwrite(from);
         if (++count % 100 == 0)
         {
-          monitor.log(i18n.tr("  Kopierte Datensätze: {0}",""+count));
+          monitor.log(i18n.tr("  Kopierte Datensätze: {0}",Long.toString(count)));
           Logger.info("  copied records: " + count);
           monitor.addPercentComplete(1);
         }
         to.setID(id);
-        fixObject(to,monitor);
         to.insert();
         to.transactionCommit();
       }
       catch (Exception e)
       {
+        failCount++;
         Logger.error("unable to copy record " + type.getName() + ":" + id + ": " + BeanUtil.toString(from),e);
         if (to == null)
         {
@@ -212,5 +207,6 @@ public class DatabaseMigrationTask implements BackgroundTask
       }
     }
     monitor.addPercentComplete(5);
+    return failCount;
   }
 }

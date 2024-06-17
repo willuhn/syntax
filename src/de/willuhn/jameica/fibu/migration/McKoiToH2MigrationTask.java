@@ -4,22 +4,23 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.DBService;
 import de.willuhn.jameica.fibu.server.DBServiceImpl;
 import de.willuhn.jameica.fibu.server.DBSupportH2Impl;
+import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.internal.action.FileClose;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.ProgressMonitor;
 
-
 /**
- * Migration von McKoi nach H2.
+ * Task zum Migrieren der McKoi-Datenbank in die H2-Datenbank.
  */
-public class McKoiToH2MigrationTask extends DatabaseMigrationTask
+public class McKoiToH2MigrationTask extends AbstractDatabaseMigrationTask
 {
   /**
-   * @see de.willuhn.jameica.hbci.migration.DatabaseMigrationTask#run(de.willuhn.util.ProgressMonitor)
+   * @see de.willuhn.jameica.system.BackgroundTask#run(de.willuhn.util.ProgressMonitor)
    */
   public void run(ProgressMonitor monitor) throws ApplicationException
   {
@@ -29,11 +30,19 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
     
     try
     {
-      setSource(Settings.getDBService());
+      final DBService source = Settings.getDBService();
       
-      H2DBServiceImpl target = new H2DBServiceImpl(monitor);
+      final DBService target = new H2DBServiceImpl(monitor);
       target.start();
-      setTarget(target);
+
+      this.copy(source,target,monitor);
+
+      // Datum der Migration speichern
+      Settings.SETTINGS.setAttribute("migration.mckoi-to-h2",new Date().toString());
+
+      // Datenbank-Treiber umstellen
+      Settings.SETTINGS.setAttribute("database.support.class",DBSupportH2Impl.class.getName());
+    
     }
     catch (RemoteException re)
     {
@@ -41,27 +50,26 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
       monitor.setStatus(ProgressMonitor.STATUS_ERROR);
       throw new ApplicationException(re);
     }
-    super.run(monitor);
-
-    // Datum der Migration speichern
-    Settings.SETTINGS.setAttribute("migration.mckoi-to-h2",new Date().toString());
-
-    // Datenbank-Treiber umstellen
-    Settings.SETTINGS.setAttribute("database.support.class",DBSupportH2Impl.class.getName());
     
-    // User ueber Neustart benachrichtigen
-    String text = i18n.tr("Datenmigration erfolgreich beendet.\nSyntax wird nun beendet. Starten Sie die Anwendung anschlieﬂend bitte neu.");
+    
+    // User ueber Neustart benachrichtigen, ihm aber die Chance geben, den Neustart abzubrechen,
+    // damit er die Logmeldungen kopieren kann
     try
     {
-      Application.getCallback().notifyUser(text);
+      if (Application.getCallback().askUser(i18n.tr("Datenmigration abgeschlossen. Anwendung wird jetzt beendet.")))
+      {
+        new FileClose().handleAction(null);
+      }
+      else
+      {
+        // Startseite neu laden, damit die Box verschwindet
+        GUI.startView(GUI.getCurrentView(),null);
+      }
     }
     catch (Exception e)
     {
       Logger.error("unable to notify user about restart",e);
     }
-    
-    // Syntax beenden
-    new FileClose().handleAction(null);
   }
 
   /**
@@ -71,11 +79,12 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
   {
     /**
      * ct.
+     * @param monitor
      * @throws RemoteException
      */
     public H2DBServiceImpl(ProgressMonitor monitor) throws RemoteException
     {
-    	super(new DBSupportH2Impl(true,monitor));
+      super(new DBSupportH2Impl(true,monitor));
       
       // Der Konstruktor von DBSupportH2Impl hat bereits Gross-Schreibung
       // fuer DBService aktiviert - nochmal fuer die Migration
@@ -86,5 +95,5 @@ public class McKoiToH2MigrationTask extends DatabaseMigrationTask
       System.setProperty(H2DBServiceImpl.class.getName() + ".uppercase","true");    
     }
   }
-}
 
+}
