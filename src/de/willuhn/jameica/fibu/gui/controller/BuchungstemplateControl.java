@@ -10,16 +10,20 @@
 package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -29,6 +33,7 @@ import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.DecimalInput;
+import de.willuhn.jameica.gui.input.SelectInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -49,7 +54,7 @@ public class BuchungstemplateControl extends AbstractControl
   private Input bezeichnung             = null;
 	private Input	text					          = null;
 	private Input betrag				          = null;
-  private DecimalInput steuer				    = null;
+  private SelectInput steuer				    = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
   
@@ -103,7 +108,6 @@ public class BuchungstemplateControl extends AbstractControl
 	    this.buchung.setKontenrahmen(jahr.getKontenrahmen());
 		}
 		return this.buchung;
-		
 	}
 
   /**
@@ -194,20 +198,32 @@ public class BuchungstemplateControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DecimalInput getSteuer() throws RemoteException
+  public SelectInput getSteuer() throws RemoteException
 	{
 		if (this.steuer != null)
 			return this.steuer;
-
-		this.steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
-		this.steuer.setComment("%");
-		this.steuer.setName(i18n.tr("Steuersatz"));
+		DBIterator list = Settings.getDBService().createList(Steuer.class);
+		list.setOrder("ORDER BY satz,name");
+		  Kontenrahmen kr  = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+		  List<Steuer> found = new ArrayList<Steuer>();
+		  while (list.hasNext())
+		  {
+		    Steuer s = (Steuer) list.next();
+		    Konto k = s.getSteuerKonto();
+		    if (k == null)
+		      continue;
+		    if (BeanUtil.equals(k.getKontenrahmen(),kr))
+		      found.add(s);
+		  }
+		  this.steuer = new SelectInput(found,getBuchung().getSteuer());
+		  this.steuer.setPleaseChoose("<" + i18n.tr("Keine Steuer") + ">");
+		  
     SteuerListener sl = new SteuerListener();
     this.steuer.addListener(sl);
     sl.handleEvent(null);
 		return steuer;
 	}
-
+		
   /**
    * Speichert die Buchung.
    * @param startNew legt fest, ob danach sofort der Dialog zum Erfassen einer neuen Buchung geoeffnet werden soll.
@@ -216,15 +232,8 @@ public class BuchungstemplateControl extends AbstractControl
   {
     try {
       //////////////////////////////////////////////////////////////////////////
-      // Steuer checken
-      Double d = (Double) getSteuer().getValue();
-      getBuchung().setSteuer(d == null ? 0.0d : d.doubleValue());
-      //
-      //////////////////////////////////////////////////////////////////////////
-
-      //////////////////////////////////////////////////////////////////////////
       // Betrag checken
-      d = (Double) getBetrag().getValue();
+      Double d = (Double) getBetrag().getValue();
       getBuchung().setBetrag(d == null ? 0.0d : d.doubleValue());
       //
       //////////////////////////////////////////////////////////////////////////
@@ -233,6 +242,7 @@ public class BuchungstemplateControl extends AbstractControl
       getBuchung().setHabenKonto((Konto) getHabenKontoAuswahl().getValue());
       getBuchung().setText((String)getText().getValue());
       getBuchung().setName((String)getBezeichnung().getValue());
+      getBuchung().setSteuer((Steuer)getSteuer().getValue());
       
       // und jetzt speichern wir.
 			getBuchung().store();
@@ -267,10 +277,10 @@ public class BuchungstemplateControl extends AbstractControl
         if (!getSteuer().isEnabled())
           return;
         
-        Double d = (Double) getSteuer().getValue();
-        if (d == null)
+        Steuer s = (Steuer) getSteuer().getValue();
+        if (s == null)
           return;
-        double satz = d.doubleValue();
+        double satz = s.getSatz();
           
         if (satz == 0.0d)
           return;
@@ -344,6 +354,7 @@ public class BuchungstemplateControl extends AbstractControl
           if (s == null)
           {
             // keines der Konten hat einen Steuersatz
+        	  getSteuer().setValue(null);
             getSteuer().disable();
           }
           else
@@ -351,13 +362,13 @@ public class BuchungstemplateControl extends AbstractControl
             double satz = s.getSatz();
             if (satz == 0.0d)
             {
+            getSteuer().setValue(null);
               getSteuer().disable();
             }
             else
             {
               getSteuer().enable();
-              getSteuer().setValue(new Double(satz));
-              getSteuer().setComment(i18n.tr("% [{0}]",s.getName()));
+              getSteuer().setValue(s);
               GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
             }
           }

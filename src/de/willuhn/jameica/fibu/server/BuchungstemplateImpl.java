@@ -16,6 +16,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
@@ -148,6 +149,8 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
       return Mandant.class;
     if ("kontenrahmen_id".equals(field))
       return Kontenrahmen.class;
+    if ("steuer_id".equals(field))
+        return Steuer.class;
     
     return super.getForeignObject(field);
   }

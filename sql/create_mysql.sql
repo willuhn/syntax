@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS buchung (
   datum date NOT NULL,
   sollkonto_id int(10) NOT NULL,
   habenkonto_id int(10) NOT NULL,
+  steuer_id INT(10) NULL DEFAULT NULL,
   buchungstext varchar(255) NOT NULL,
   belegnummer int(10) NOT NULL,
   betrag double NOT NULL,
@@ -83,6 +84,7 @@ CREATE TABLE IF NOT EXISTS buchungstemplate (
   name varchar(255) NOT NULL,
   sollkonto_id int(10) NULL,
   habenkonto_id int(10) NULL,
+  steuer_id INT(10) NULL DEFAULT NULL,
   buchungstext varchar(255) NULL,
   mandant_id int(10) NULL,
   kontenrahmen_id int(10) NULL,
@@ -231,11 +233,13 @@ ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REF
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id);
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id);
 ALTER TABLE buchung add CONSTRAINT fk_buchung_buchung FOREIGN KEY (split_id) REFERENCES buchung (id);
+ALTER TABLE buchung add CONSTRAINT fk_buchung_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
+ALTER TABLE buchungstemplate add CONSTRAINT fk_buchungstemplate_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id);
 
