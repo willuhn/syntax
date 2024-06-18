@@ -421,33 +421,24 @@ public class BuchungsEngineImpl extends UnicastRemoteObject implements BuchungsE
     {
       throw new ApplicationException(i18n.tr("Haben- oder Soll-Konto fehlt."));
     }
-
-    // Der zu verwendende Steuersatz
-    Steuer sSteuer = sKonto.getSteuer();
-    Steuer hSteuer = hKonto.getSteuer();
-
-    if (sSteuer == null && hSteuer == null)
-      return null; // Keine Steuerkonten vorhanden
     
-    double steuer = buchung.getSteuer();
-    
-    if (steuer < 0.01d)
-      return null; // keine Steuer zu buchen
+    Steuer steuer = buchung.getSteuerObject();
+    if (steuer == null)
+        return null;
     
     if (new Math().round(java.lang.Math.abs(sBetrag)) < 0.01d) // Achtung, kann negativ sein. Daher Math.abs
       return null; // keine Steuer zu buchen
     
     if (buchung.getDatum() == null)
       buchung.setDatum(new Date());
-    
 
     // Hilfs-Buchung erstellen
     HilfsBuchung hb = (HilfsBuchung) Settings.getDBService().createObject(HilfsBuchung.class,null);
     hb.setBelegnummer(buchung.getBelegnummer());
     hb.setBetrag(sBetrag);                                        // Steuer-Betrag
     hb.setDatum(buchung.getDatum());                              // Datum
-    hb.setSollKonto(sSteuer != null ? sSteuer.getSteuerKonto() : sKonto);   // Das Steuer-Konto
-    hb.setHabenKonto(hSteuer != null ? hSteuer.getSteuerKonto() : hKonto);  // Haben-Konto
+    hb.setSollKonto(sKonto.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD || sKonto.getKontoArt().getKontoArt() == Kontoart.KONTOART_PRIVAT?sKonto:steuer.getSteuerKonto());   // Das Steuer-Konto
+    hb.setHabenKonto(hKonto.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD || hKonto.getKontoArt().getKontoArt() == Kontoart.KONTOART_PRIVAT?hKonto:steuer.getSteuerKonto());  // Haben-Konto
     hb.setGeschaeftsjahr(buchung.getGeschaeftsjahr());            // Geschaeftsjahr
     hb.setText(buchung.getText());                                // Text identisch mit Haupt-Buchung
      

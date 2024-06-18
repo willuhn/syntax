@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS buchung (
   belegnummer int(10) NOT NULL,
   betrag double NOT NULL,
   steuer double,
+  steuer_id int(10) NULL,
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
   split_id INT(10) NULL,
@@ -88,6 +89,7 @@ CREATE TABLE IF NOT EXISTS buchungstemplate (
   kontenrahmen_id int(10) NULL,
   betrag double NULL,
   steuer double NULL,
+  steuer_id int(10) NULL,
   hb_umsatztyp_id varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -231,11 +233,13 @@ ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REF
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id);
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id);
 ALTER TABLE buchung add CONSTRAINT fk_buchung_buchung FOREIGN KEY (split_id) REFERENCES buchung (id);
+ALTER TABLE buchung add CONSTRAINT fk_buchung_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
+ALTER TABLE buchungstemplate add CONSTRAINT fk_buchungstemplate_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id);
 
