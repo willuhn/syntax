@@ -251,8 +251,12 @@ public class UmsatzListMenu implements Extension
       }
     }
     
-    if (jahr == null)
-      jahr = Settings.getActiveGeschaeftsjahr();
+    if (jahr == null){
+        if(auto)
+            throw new ApplicationException(i18n.tr("Kein offenes Geschäftsjahr zum Mandanten im Zeitraum der Buchung"));
+        else
+            jahr = Settings.getActiveGeschaeftsjahr();
+    }
 
     final Buchung buchung = (Buchung) Settings.getDBService().createObject(Buchung.class,null);
     buchung.setGeschaeftsjahr(jahr);

@@ -66,7 +66,7 @@ public class BuchungUtil
     final Map<String,Double> result = new HashMap<>();
 
     final List params = new ArrayList();
-    params.add(jahr.getID());
+    params.add(new Integer(jahr.getID()));
     
     try
     {
@@ -77,12 +77,12 @@ public class BuchungUtil
       if (start != null)
       {
         sql += " AND " + service.getSQLTimestamp("datum") + " >= ?";
-        params.add(start.getTime());
+        params.add(new Double(start.getTime()));
       }
       if (end != null)
       {
         sql += " AND " + service.getSQLTimestamp("datum") + " <= ?";
-        params.add(end.getTime());
+        params.add(new Double(end.getTime()));
       }
       
       sql += " ORDER BY datum,belegnummer";
