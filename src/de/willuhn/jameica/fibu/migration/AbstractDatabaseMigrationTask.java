@@ -22,6 +22,7 @@ import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.jameica.fibu.rmi.Version;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.jameica.system.BackgroundTask;
 import de.willuhn.logging.Logger;
@@ -95,13 +96,14 @@ public abstract class AbstractDatabaseMigrationTask implements BackgroundTask
       failCount += copy(source,target,monitor,Anlagevermoegen.class);
       failCount += copy(source,target,monitor,Anfangsbestand.class);
       failCount += copy(source,target,monitor,Abschreibung.class);
+      failCount += copy(source,target,monitor,Version.class);
       Logger.info("finished data migration");
       Logger.info("################################################");
  
       if(failCount > 0)
       {
         monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-        monitor.setStatusText(i18n.tr("Abgeschlossen. {0} Datensätze konnten nicht kopiert werden"));
+        monitor.setStatusText(i18n.tr("Abgeschlossen. {0} Datensätze konnten nicht kopiert werden",Integer.toString(failCount)));
       }
       else
       {
