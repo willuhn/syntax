@@ -23,11 +23,7 @@ import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.action.KontenrahmenClone;
 import de.willuhn.jameica.fibu.gui.action.KontoListe;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
-import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.parts.CheckedSingleContextMenuItem;
 import de.willuhn.jameica.gui.parts.ContextMenu;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -58,22 +54,7 @@ public class KontenrahmenList extends TablePart
     this.setRememberOrder(true);
     this.setSummary(false);
     this.addColumn(i18n.tr("Bezeichnung"),"name");
-    this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant_id", new Formatter()
-    {
-        public String format(Object o)
-        {
-          try
-          {
-        	Mandant m = Settings.getDBService().createObject(Mandant.class, Integer.toString((Integer)o));
-            return m.getFirma();
-          }
-          catch (RemoteException e)
-          {
-            Logger.error("unable to detect mandant name",e);
-            return null;
-          }
-        }
-      });
+    this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant_id");
     
     ContextMenu menu = new ContextMenu();
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."),new KontenrahmenClone(),"edit-copy.png"));

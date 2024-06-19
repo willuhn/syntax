@@ -112,7 +112,7 @@ public class KontenrahmenUtil
         Konto k   = (Konto) service.createObject(Konto.class,null);
         k.overwrite(kt);
         k.setKontenrahmen(kr);
-        k.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
+        k.setMandant(kt.getMandant() != null ? mandant : null);
 
         // ggf. vorhandener Steuersatz
         Steuer st = kt.getSteuer();
@@ -125,7 +125,7 @@ public class KontenrahmenUtil
             // Haben wir noch nicht, also anlegen
             s = (Steuer) service.createObject(Steuer.class,null);
             s.overwrite(st);
-            s.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
+            s.setMandant(st.getMandant() != null ? mandant : null);
             s.store();
             steuerCache.put(st.getID(),s);
           }
