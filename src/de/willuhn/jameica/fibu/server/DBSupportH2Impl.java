@@ -79,7 +79,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl implements DBSupport
   @Override
   public String getID() throws RemoteException
   {
-    return "h2";
+    return "htwo";
   }
 
   /**
