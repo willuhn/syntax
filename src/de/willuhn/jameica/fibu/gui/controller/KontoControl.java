@@ -233,7 +233,15 @@ public class KontoControl extends AbstractControl
 			return steuer;
 
     DBIterator list = Settings.getDBService().createList(Steuer.class);
-	list.addFilter("mandant_id is null or mandant_id = "+konto.getMandant().getID());
+    
+    Object object = this.getCurrentObject();
+    Mandant m = null;
+	if (object instanceof Konto)
+	  m = Settings.getActiveGeschaeftsjahr().getMandant();
+	if (object instanceof Mandant)
+	  m = (Mandant) object;
+	if(m != null)
+	  list.addFilter("mandant_id is null or mandant_id = "+m.getID());
     Kontenrahmen kr = this.getKonto().getKontenrahmen();
     List<Steuer> found = new ArrayList<Steuer>();
     while (list.hasNext())

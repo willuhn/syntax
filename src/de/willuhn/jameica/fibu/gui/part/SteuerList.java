@@ -92,7 +92,7 @@ public class SteuerList extends TablePart
         }
       }
     });
-    setContextMenu(new SteuerListMenu());
+    setContextMenu(new SteuerListMenu(mandant));
     setRememberColWidths(true);
     setRememberOrder(true);
   }
