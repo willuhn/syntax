@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.gui.action.SteuerDelete;
 import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.ContextMenu;
@@ -31,11 +32,11 @@ public class SteuerListMenu extends ContextMenu
   /**
    * ct.
    */
-  public SteuerListMenu()
+  public SteuerListMenu(Mandant mandant)
   {
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     this.addItem(new EditItem(i18n.tr("Öffnen"), new SteuerNeu(),false,"document-open.png"));
-    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Steuersatz..."), new SNeu(),"list-add.png"));
+    this.addItem(new GJContextMenuItem(i18n.tr("Neuer Steuersatz..."), new SNeu(mandant),"list-add.png"));
     this.addItem(new EditItem(i18n.tr("Löschen..."), new SteuerDelete(),true,"user-trash-full.png"));
   }
   
@@ -44,12 +45,19 @@ public class SteuerListMenu extends ContextMenu
    */
   private static class SNeu extends SteuerNeu
   {
+	  private Mandant mandant = null;
+	    
+      private SNeu(Mandant mandant)
+      {
+        this.mandant = mandant;
+      }
+    
     /**
      * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
      */
     public void handleAction(Object context) throws ApplicationException
     {
-      super.handleAction(null);
+      super.handleAction(this.mandant);
     }
   }
   
