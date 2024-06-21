@@ -277,8 +277,8 @@ public class UmsatzListMenu implements Extension
       
       //Bei Storno-Buchungen drehen wir soll und haben um
       //Wenn beides vom typ Bankkonto ist (zb. bei Verbindlichkeitskonten) Konto mit name "Bank" als Bankkonto verwenden
-      if((u.getBetrag() > 0.1d && haben.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (soll.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || haben.getName().equals("Bank")))
-    		  || (u.getBetrag() < -0.1d && soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (haben.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || soll.getName().equals("Bank")))) {
+      if((u.getBetrag() >= 0.01d && haben.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (soll.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || haben.getName().equals("Bank")))
+    		  || (u.getBetrag() <= -0.01d && soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (haben.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || soll.getName().equals("Bank")))) {
     	soll = template.getHabenKonto();
     	haben = template.getSollKonto();
       }
