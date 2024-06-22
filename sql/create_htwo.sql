@@ -174,6 +174,16 @@ CREATE TABLE abschreibung (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE kontozuordnung (
+  id IDENTITY(1),
+  name varchar(255) NOT NULL,
+  mandant_id int(10) NOT NULL,
+  konto_id int(10) NOT NULL,
+  hb_konto_id int(10) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+);
+
 CREATE INDEX idx_kr_mandant           ON kontenrahmen(mandant_id);
 
 CREATE INDEX idx_steuer_steuerkonto   ON steuer(steuerkonto_id);
@@ -254,3 +264,7 @@ ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_self FOREIGN KEY (vorjahr_id) RE
 
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id) DEFERRABLE;
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id) DEFERRABLE;
+
+ALTER TABLE kontozuordnung ADD CONSTRAINT FK_kontozuordnung_konto FOREIGN KEY (konto_id) REFERENCES konto (id) DEFERRABLE;
+ALTER TABLE kontozuordnung ADD CONSTRAINT FK_kontozuordnung_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id) DEFERRABLE;
+
