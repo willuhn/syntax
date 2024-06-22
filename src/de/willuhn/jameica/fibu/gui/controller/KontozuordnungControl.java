@@ -2,17 +2,18 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
-import de.willuhn.jameica.fibu.rmi.Kontozuordnung;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Kontozuordnung;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
-import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.TextInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
@@ -21,15 +22,18 @@ import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
-public class KontozuordnungControl  extends AbstractControl
+/**
+ * Controller für die Zuordnung von Hibiscus-Konten zu SynTAX-Konten.
+ */
+public class KontozuordnungControl extends AbstractControl
 {
 	  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
 		private Kontozuordnung buchung 		= null;
 
-	  private Input bezeichnung             = null;
+	  private Input bezeichnung         = null;
 	  private KontoInput kontoAuswahl   = null;
-	  private de.willuhn.jameica.hbci.gui.input.KontoInput HbKontoAuswahl   = null;
+	  private de.willuhn.jameica.hbci.gui.input.KontoInput HbKontoAuswahl = null;
 	  
 	  /**
 	   * @param view
@@ -76,7 +80,7 @@ public class KontozuordnungControl  extends AbstractControl
 
 	    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 	    this.kontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getKonto());
-	    this.kontoAuswahl.setName(i18n.tr("Konto"));
+	    this.kontoAuswahl.setName(i18n.tr("SynTAX-Geldkonto"));
 	    return this.kontoAuswahl;
 	  }
 	  
@@ -90,8 +94,8 @@ public class KontozuordnungControl  extends AbstractControl
 			if (this.HbKontoAuswahl != null)
 				return this.HbKontoAuswahl;
 
-	    this.HbKontoAuswahl = new de.willuhn.jameica.hbci.gui.input.KontoInput((de.willuhn.jameica.hbci.rmi.Konto)getBuchung().getHbKonto(), null);
-	    this.HbKontoAuswahl.setName(i18n.tr("Konto"));
+	    this.HbKontoAuswahl = new de.willuhn.jameica.hbci.gui.input.KontoInput(getBuchung().getHbKonto(), null);
+	    this.HbKontoAuswahl.setName(i18n.tr("Hibiscus-Konto"));
 	    return this.HbKontoAuswahl;
 	  }
 
@@ -117,17 +121,25 @@ public class KontozuordnungControl  extends AbstractControl
 	   */
 	  public void handleStore(boolean startNew)
 	  {
-	    try {
-    	Konto k = (Konto) getKontoAuswahl().getValue();
-        if(k.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD && k.getKontoArt().getKontoArt() != Kontoart.KONTOART_PRIVAT) {
-        	GUI.getView().setErrorText(i18n.tr("Das Konto muss ein Geldkonto sein!"));
-	        return;
-        }
-	      getBuchung().setKonto((Konto) getKontoAuswahl().getValue());
-	      getBuchung().setName((String)getBezeichnung().getValue());
-	      getBuchung().setHbKonto((de.willuhn.jameica.hbci.rmi.Konto)getHbKontoAuswahl().getValue());
+	    try
+	    {
+        getBuchung().setName(StringUtils.trimToNull((String)getBezeichnung().getValue()));
+
+        Konto k = (Konto) getKontoAuswahl().getValue();
+    	  if (k == null)
+    	    throw new ApplicationException(i18n.tr("Bitte wählen Sie ein SynTAX-Geldkonto aus."));
+    	  
+        if(k.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD && k.getKontoArt().getKontoArt() != Kontoart.KONTOART_PRIVAT)
+          throw new ApplicationException(i18n.tr("Das Konto muss ein Geldkonto sein!"));
+
+        getBuchung().setKonto(k);
 	      
-	      // und jetzt speichern wir.
+	      final de.willuhn.jameica.hbci.rmi.Konto hk = (de.willuhn.jameica.hbci.rmi.Konto) this.getHbKontoAuswahl().getValue();
+        if (hk == null)
+          throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Hibiscus-Konto aus."));
+
+        getBuchung().setHbKonto(hk);
+	      
 				getBuchung().store();
 				Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontozuordnung gespeichert"),StatusBarMessage.TYPE_SUCCESS));
 	    }
@@ -137,8 +149,7 @@ public class KontozuordnungControl  extends AbstractControl
 	    }
 	    catch (Exception e)
 	    {
-	      if (!(e instanceof ApplicationException))
-				  Logger.error("unable to store kontozuordnung",e);
+	      Logger.error("unable to store kontozuordnung",e);
 	      Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Fehler beim Speichern der Kontozuordnung."),StatusBarMessage.TYPE_ERROR));
 	    }
 	    

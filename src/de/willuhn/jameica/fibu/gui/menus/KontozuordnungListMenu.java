@@ -1,11 +1,10 @@
 package de.willuhn.jameica.fibu.gui.menus;
 
 import de.willuhn.jameica.fibu.Fibu;
-import de.willuhn.jameica.fibu.gui.action.KontozuordnungNeu;
 import de.willuhn.jameica.fibu.gui.action.DBObjectDelete;
+import de.willuhn.jameica.fibu.gui.action.KontozuordnungNeu;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.parts.ContextMenu;
-import de.willuhn.jameica.gui.parts.ContextMenuItem;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
@@ -26,9 +25,6 @@ public class KontozuordnungListMenu extends ContextMenu
 	    this.addItem(new GJCheckedSingleContextMenuItem(i18n.tr("Öffnen"), new KontozuordnungNeu(),"document-open.png"));
 	    this.addItem(new GJContextMenuItem(i18n.tr("Neue Kontozuordnung..."), new BNeu(mandant),"list-add.png"));
 	    this.addItem(new GJCheckedContextMenuItem(i18n.tr("Löschen..."), new DBObjectDelete(),"user-trash-full.png"));
-	    this.addItem(ContextMenuItem.SEPARATOR);
-	    //this.addItem(new CheckedContextMenuItem(i18n.tr("Exportieren..."),new BuchungstemplateExport(),"document-save.png"));
-	    //this.addItem(new ContextMenuItem(i18n.tr("Importieren..."),new BuchungstemplateImport(),"document-open.png"));
 	  }
 	  
 	  /**

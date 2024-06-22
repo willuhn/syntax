@@ -9,6 +9,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
 import de.willuhn.jameica.gui.parts.Button;
 import de.willuhn.jameica.gui.parts.ButtonArea;
+import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.system.Application;
@@ -16,14 +17,14 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 /**
- * Erzeugt eine neue Buchung oder bearbeitet eine existierende.
+ * Ermöglicht die Zuordnung von Hibiscus-Konten zu SynTAX-Konten.
  * @author henken
  */
 public class KontozuordnungNeu extends AbstractView implements Extendable
 {
 	  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-	  private Container container             = null;
+	  private Container container           = null;
 	  private KontozuordnungControl control = null;
 
 	  /**
@@ -36,6 +37,7 @@ public class KontozuordnungNeu extends AbstractView implements Extendable
 	    this.control   = new KontozuordnungControl(this);
 	    
 	    this.container = new SimpleContainer(getParent());
+	    this.container.addText(i18n.tr("Bei der Übernahme von Umsatzbuchungen aus Hibiscus per Buchungsvorlage können hier für einzelne Hibiscus-Konten abweichende Geld-Konten in SynTAX zugeordnet werden. Das ermöglicht die Führung unterschiedlicher Bankkonten in SynTAX."),true,Color.COMMENT);
 	    this.container.addHeadline(i18n.tr("Eigenschaften"));
 	    this.container.addInput(control.getBezeichnung());
 	    this.container.addInput(control.getKontoAuswahl());
