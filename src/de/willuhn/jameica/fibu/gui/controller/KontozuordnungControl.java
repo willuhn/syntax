@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.input.KontoInput;
@@ -77,9 +78,10 @@ public class KontozuordnungControl extends AbstractControl
 		{
 			if (this.kontoAuswahl != null)
 				return this.kontoAuswahl;
-
 	    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
-	    this.kontoAuswahl = new KontoInput(jahr.getKontenrahmen().getKonten(), getBuchung().getKonto());
+	    DBIterator list = jahr.getKontenrahmen().getKonten();
+	    list.addFilter("(kontoart_id = " + Kontoart.KONTOART_GELD +" OR kontoart_id = " + Kontoart.KONTOART_PRIVAT+")");
+	    this.kontoAuswahl = new KontoInput(list, getBuchung().getKonto());
 	    this.kontoAuswahl.setName(i18n.tr("SynTAX-Geldkonto"));
 	    return this.kontoAuswahl;
 	  }
