@@ -21,12 +21,14 @@ import de.willuhn.jameica.fibu.gui.action.BuchungstemplateNeu;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrClose;
 import de.willuhn.jameica.fibu.gui.action.GeschaeftsjahrNeu;
 import de.willuhn.jameica.fibu.gui.action.KontoNeu;
+import de.willuhn.jameica.fibu.gui.action.KontozuordnungNeu;
 import de.willuhn.jameica.fibu.gui.action.MandantDelete;
 import de.willuhn.jameica.fibu.gui.action.SteuerNeu;
 import de.willuhn.jameica.fibu.gui.controller.MandantControl;
 import de.willuhn.jameica.fibu.gui.part.BuchungstemplateList;
 import de.willuhn.jameica.fibu.gui.part.GeschaeftsjahrList;
 import de.willuhn.jameica.fibu.gui.part.KontoList;
+import de.willuhn.jameica.fibu.gui.part.KontoZuordnungList;
 import de.willuhn.jameica.fibu.gui.part.SteuerList;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
@@ -154,11 +156,22 @@ public class MandantNeu extends AbstractView
     vorlagenList.setOrder("order by name");
     TablePart t4 = new BuchungstemplateList(mandant, vorlagenList, new BuchungstemplateNeu());
     t4.paint(vorlagen.getComposite());
+    
+    if (Application.getPluginLoader()
+        .getPlugin("de.willuhn.jameica.hbci.HBCI") != null)
+    {
+	    TabGroup kontenZuordnungen = new TabGroup(this.tabs,i18n.tr("Zuordnung Bankkonten"));
+	    DBIterator kontoZuordnungList = Settings.getDBService().createList(de.willuhn.jameica.fibu.rmi.Kontozuordnung.class);
+	    kontoZuordnungList.addFilter("mandant_id = " + mandant.getID());
+	    kontoZuordnungList.setOrder("order by name");
+	    TablePart t5 = new KontoZuordnungList(mandant, kontoZuordnungList, new KontozuordnungNeu());
+	    t5.paint(kontenZuordnungen.getComposite());
+    }
 
     if (activeTab != null)
       this.tabs.setSelection(activeTab);
   }
-
+  
   /**
    * @see de.willuhn.jameica.gui.AbstractView#unbind()
    */

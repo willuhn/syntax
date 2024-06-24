@@ -27,6 +27,7 @@ import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.gui.Action;
@@ -273,12 +274,53 @@ public class UmsatzListMenu implements Extension
       Konto haben = template.getHabenKonto();
       if (auto && haben == null)
         throw new ApplicationException(i18n.tr("Buchungsvorlage \"{0}\" enthält kein Haben-Konto",template.getName()));
+      
+      //Bei Storno-Buchungen drehen wir soll und haben um
+      //Wenn beides vom typ Bankkonto ist (zb. bei Verbindlichkeitskonten) Konto mit name "Bank" als Bankkonto verwenden
+      if((u.getBetrag() >= 0.01d && haben.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (soll.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || haben.getName().equals("Bank")))
+    		  || (u.getBetrag() <= -0.01d && soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (haben.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || soll.getName().equals("Bank")))) {
+    	soll = template.getHabenKonto();
+    	haben = template.getSollKonto();
+      }
+      
+      //Bankkonten durch die richtigen Konten ersetzen
+      if(soll.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (haben.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || soll.getName().compareTo("Bank") == 0))
+      {
+    	  de.willuhn.jameica.fibu.rmi.Kontozuordnung zuordnung = null;
+   	      // Vorlage suchen
+   	      DBIterator i = Settings.getDBService().createList(de.willuhn.jameica.fibu.rmi.Kontozuordnung.class);
+   	      i.addFilter("hb_konto_id = ?",u.getKonto().getID());
+   	      i.addFilter("mandant_id = ?",template.getMandant().getID());
+   	      if (i.hasNext())
+   	      {
+   	    	zuordnung = (de.willuhn.jameica.fibu.rmi.Kontozuordnung) i.next();
+   	    	buchung.setSollKonto(zuordnung.getKonto());
+   	      }
+   	      
+      }
+     
+      if(haben.getKontoArt().getKontoArt() == Kontoart.KONTOART_GELD && (soll.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD || haben.getName().compareTo("Bank") == 0))
+      {
+    	  de.willuhn.jameica.fibu.rmi.Kontozuordnung zuordnung = null;
+   	      // Vorlage suchen
+   	      DBIterator i = Settings.getDBService().createList(de.willuhn.jameica.fibu.rmi.Kontozuordnung.class);
+   	      i.addFilter("hb_konto_id = ?",u.getKonto().getID());
+   	      i.addFilter("mandant_id = ?",template.getMandant().getID());
+   	      if (i.hasNext())
+   	      {
+   	    	zuordnung = (de.willuhn.jameica.fibu.rmi.Kontozuordnung) i.next();
+   	    	buchung.setHabenKonto(zuordnung.getKonto());
+   	      }
+   	      
+      }
 
       buchung.setBruttoBetrag(template.getBetrag());
       buchung.setBetrag(new Math().netto(template.getBetrag(),template.getSteuer()));
       buchung.setDatum(new Date());
-      buchung.setSollKonto(soll);
-      buchung.setHabenKonto(haben);
+      if(buchung.getSollKonto() == null)
+    	  buchung.setSollKonto(soll);
+      if(buchung.getHabenKonto() == null)
+    	  buchung.setHabenKonto(haben);
       buchung.setSteuer(template.getSteuer());
       buchung.setSteuerObject(template.getSteuerObject());
       buchung.setText(StringUtils.trimToEmpty(template.getText()));
