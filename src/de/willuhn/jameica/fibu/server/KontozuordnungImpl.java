@@ -122,8 +122,8 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
       if (this.getHbKonto() != null)
       {
         DBIterator list = this.getService().createList(Kontozuordnung.class);
-        list.addFilter("hb_konto_id = ?", this.getHbKonto().getID());
-        list.addFilter("mandant_id = ?", this.getMandant().getID());
+        list.addFilter("hb_konto_id = " + this.getHbKonto().getID());
+        list.addFilter("mandant_id = " + this.getMandant().getID());
         if (!this.isNewObject())
           list.addFilter("id != " + this.getID()); // Natuerlich duerfen wir uns selbst nicht finden ;)
         if (list.hasNext())

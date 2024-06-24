@@ -20,6 +20,7 @@ import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Kontozuordnung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Version;
@@ -97,6 +98,7 @@ public abstract class AbstractDatabaseMigrationTask implements BackgroundTask
       failCount += copy(source,target,monitor,Anfangsbestand.class);
       failCount += copy(source,target,monitor,Abschreibung.class);
       failCount += copy(source,target,monitor,Version.class);
+      failCount += copy(source,target,monitor,Kontozuordnung.class);
       Logger.info("finished data migration");
       Logger.info("################################################");
  
