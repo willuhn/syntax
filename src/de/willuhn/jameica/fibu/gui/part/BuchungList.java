@@ -124,6 +124,7 @@ public class BuchungList extends TablePart implements Extendable
     addColumn(i18n.tr("Text"),"buchungstext");
     addColumn(i18n.tr("Brutto-Betrag"),null);
     addColumn(i18n.tr("Netto-Betrag"),"betrag",cf);
+    addColumn(i18n.tr("Steuer"),"steuer");
     addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenKonto", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollKonto", new Formatter()

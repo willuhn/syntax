@@ -322,6 +322,7 @@ public class UmsatzListMenu implements Extension
       if(buchung.getHabenKonto() == null)
     	  buchung.setHabenKonto(haben);
       buchung.setSteuer(template.getSteuer());
+      buchung.setSteuerObject(template.getSteuerObject());
       buchung.setText(StringUtils.trimToEmpty(template.getText()));
     }
 
