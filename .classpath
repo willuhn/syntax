@@ -4,8 +4,9 @@
 	<classpathentry kind="src" output="test-bin" path="test"/>
 	<classpathentry kind="src" output="updates" path="updates"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hibiscus"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jameica"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jameica"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hibiscus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openjverein"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -54,6 +54,8 @@
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListPart"   extends="de.willuhn.jameica.hbci.gui.parts.UmsatzList" requires="hibiscus" />
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.UmsatzListMenu"   extends="de.willuhn.jameica.hbci.gui.menus.UmsatzList" requires="hibiscus"/>
     <extension class="de.willuhn.jameica.fibu.ext.hibiscus.Buchungstemplate" extends="de.willuhn.jameica.fibu.gui.views.BuchungstemplateNeu" requires="hibiscus"/>
+    <!-- JVerein-Extensions -->
+    <extension class="de.willuhn.jameica.fibu.ext.jverein.BuchungMenu"   extends="de.jost_net.JVerein.gui.menu.BuchungMenu" requires="jverein"/>
   </extensions>
 
 </plugin>
