@@ -106,9 +106,6 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Steuer getSteuerObject() throws RemoteException
   {
-	if(isNewObject())
-	  return null;
-	
 	//wenn eine steuer_id angegeben ist, diese verwenden
 	Object o = super.getAttribute("steuer_id");
 	if (o != null)
@@ -204,7 +201,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setSteuerObject(Steuer steuer) throws RemoteException
   {
-    setAttribute("steuer_id", steuer.getID());
+    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : new Integer(steuer.getID()));
   }
   
   /**
