@@ -740,7 +740,10 @@ public class BuchungControl extends AbstractControl
           // BUGZILLA 1828 - Sicherstellen, dass kein Steuersatz mehr drin steht, wenn das Feld Steuer deaktiviert wurde.
           getSteuer().setValue(s);
           new SteuerListener().handleEvent(null);
-          GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(s.getSatz())));
+          double satz = 0;
+          if(s != null)
+        	  satz = s.getSatz();
+          GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
         }
         catch (Exception e)
         {
