@@ -113,7 +113,10 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 		Cache cache = Cache.get(Steuer.class,true);
 		return (Steuer) cache.get(o);
 	}
-	  
+	
+	if(getSollKonto() == null || getHabenKonto() == null)
+		return null;
+	
 	//Das zu verwendende Steruersammelkonto anhand des Steuersatzes ermitteln
     Steuer sSteuer = getSollKonto().getSteuer();
     Steuer hSteuer = getHabenKonto().getSteuer();

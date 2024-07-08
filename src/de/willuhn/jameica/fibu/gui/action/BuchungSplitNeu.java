@@ -58,6 +58,7 @@ public class BuchungSplitNeu implements Action
 	        buchung.setHabenKonto(hauptBuchung.getHabenKonto());
 	        buchung.setSollKonto(hauptBuchung.getSollKonto());
 	        buchung.setSteuer(hauptBuchung.getSteuer());
+	        buchung.setSteuerObject(hauptBuchung.getSteuerObject());
 	        buchung.setGeprueft(hauptBuchung.isGeprueft());
 	        
 	        //Betrag aller bisherigen SplitBuchungen berechnen, daraus den Restbetrag errechnen
