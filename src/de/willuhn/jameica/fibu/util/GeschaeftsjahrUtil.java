@@ -47,7 +47,7 @@ public class GeschaeftsjahrUtil
    * @param end End-Datum.
    * @return die Anzahl der Monate.
    */
-  public static int getMonths(final Date from, final Date end)
+  public static int getMonths(Date from, Date end)
   {
     if (from == null || end == null)
       return 0;
@@ -55,8 +55,13 @@ public class GeschaeftsjahrUtil
     int count = 0;
     final Calendar cal = Calendar.getInstance();
     cal.setTime(from);
+    
+    boolean ultimo = cal.get(Calendar.DATE) == cal.getActualMaximum(Calendar.DATE);
     while (count < 1000) // Groessere Zeitraeume waren Unsinn.
     {
+      if (ultimo)
+        cal.set(Calendar.DATE,cal.getActualMaximum(Calendar.DATE));
+      
       Date test = cal.getTime();
       if (test.after(end))
         return count;

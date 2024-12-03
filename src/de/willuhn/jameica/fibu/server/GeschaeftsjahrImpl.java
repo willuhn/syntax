@@ -496,22 +496,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public int getMonate() throws RemoteException
   {
-    Date start = getBeginn();
-    Date end   = getEnde();
-    
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(start);
-    int count = 0;
-    while (true)
-    {
-      if (++count > 13)
-        break;
-      cal.add(Calendar.MONTH,1);
-      Date test = cal.getTime();
-      if (test.after(end))
-        break;
-    }
-    return count;
+    return GeschaeftsjahrUtil.getMonths(this.getBeginn(),this.getEnde());
   }
 
   /**
