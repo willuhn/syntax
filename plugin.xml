@@ -47,6 +47,7 @@
   
   <messaging>
     <consumer queue="hibiscus.umsatz.markchecked" class="de.willuhn.jameica.fibu.messaging.HibiscusUmsatzMarkCheckedMessageConsumer" />
+    <consumer queue="syntax.buchung.import" class="de.willuhn.jameica.fibu.messaging.BuchungImportMessageConsumer" />
   </messaging>
   
   <extensions>
