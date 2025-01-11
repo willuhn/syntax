@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +115,8 @@ public class BuchungImportMessageConsumer implements MessageConsumer
 
     private List<Map<String, Object>> list = null;
 
+    private Map<String, String>       idMap  = new HashMap<>();
+
     /**
      * ct.
      * @param data die Liste der Buchungen.
@@ -174,6 +177,13 @@ public class BuchungImportMessageConsumer implements MessageConsumer
             buchung = createBuchung(map);
             buchung.store();
 
+            // Map mit den gesendeten und neuen ids erstellen um Splitbuchungen erzeugen
+            // zukönnen
+            if (map.get("id") != null)
+            {
+              idMap.put((String) map.get("id"), buchung.getID());
+            }
+            
             created++;
           }
           catch (ApplicationException ae)
@@ -302,6 +312,14 @@ public class BuchungImportMessageConsumer implements MessageConsumer
       // Netto und Brutto setzen
       buchung.setBruttoBetrag(d);
       buchung.setBetrag(new Math().netto(d, satz));
+
+      // Setzt die SplitId wenn wir sie finden. Der Exporter muss darauf achten,
+      // dass die Hauptbuchungen vor den Splitbuchungen gesendet werden
+      final Long splitId = (Long) map.get("splitid");
+      if (splitId != null)
+      {
+        buchung.setSplitBuchung(idMap.get(splitId.toString()));
+      }
 
       return buchung;
     }
