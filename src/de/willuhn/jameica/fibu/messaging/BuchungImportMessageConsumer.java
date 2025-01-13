@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +115,8 @@ public class BuchungImportMessageConsumer implements MessageConsumer
 
     private List<Map<String, Object>> list = null;
 
+    private Map<String, String>       idMap  = new HashMap<>();
+
     /**
      * ct.
      * @param data die Liste der Buchungen.
@@ -174,6 +177,13 @@ public class BuchungImportMessageConsumer implements MessageConsumer
             buchung = createBuchung(map);
             buchung.store();
 
+            // Map mit den gesendeten und neuen ids erstellen um Splitbuchungen erzeugen
+            // zukönnen
+            if (map.get("id") != null)
+            {
+              idMap.put((String) map.get("id"), buchung.getID());
+            }
+            
             created++;
           }
           catch (ApplicationException ae)
@@ -259,15 +269,17 @@ public class BuchungImportMessageConsumer implements MessageConsumer
       if (betrag == null)
         throw new ApplicationException(i18n.tr("Kein Betrag angegeben"));
       
-      final double d = betrag.setScale(2, RoundingMode.HALF_UP).doubleValue();
+      double d = betrag.setScale(2, RoundingMode.HALF_UP).doubleValue();
       final int k1Art = k1.getKontoArt().getKontoArt();
       
       if (autodetect)
       {
         // automatisch ermitteln
-        final boolean k1haben = (k1Art == Kontoart.KONTOART_ERLOES && d >= 0.01d);
+        final boolean k1haben = d >= 0.01d;
         buchung.setSollKonto(k1haben ? k2 : k1);
         buchung.setHabenKonto(k1haben ? k1 : k2);
+        if (d <= 0.01d)
+          d = -d;
       }
       else
       {
@@ -276,15 +288,38 @@ public class BuchungImportMessageConsumer implements MessageConsumer
         buchung.setHabenKonto(k2);
       }
       
-      // Steuer nehmen wir von dem Konto, welches als Erlös- oder Aufwandskonto definiert ist
-      final Steuer s = (k1Art == Kontoart.KONTOART_ERLOES || k1Art == Kontoart.KONTOART_AUFWAND) ? k1.getSteuer() : k2.getSteuer();
-      final double satz = (s != null ? s.getSatz() : 0.0d);
+      final Steuer s;
+      final double satz;
+      // Wenn vorhanden mitgelieferte Steuer verwenden
+      if (map.get("steuer") != null)
+      {
+        satz = NumberUtil.parse(map.get("steuer")).doubleValue();
+        buchung.setSteuer(satz);
+        s = buchung.getSteuerObject();
+        if (s == null)
+          throw new ApplicationException(i18n.tr("Steuersatz " + satz + " nicht gefunden"));
+      }
+      else
+      {
+        // Steuer nehmen wir von dem Konto, welches als Erlös- oder Aufwandskonto definiert ist
+        s = (k1Art == Kontoart.KONTOART_ERLOES || k1Art == Kontoart.KONTOART_AUFWAND) ? k1.getSteuer() : k2.getSteuer();
+        satz = (s != null ? s.getSatz() : 0.0d);
+      }
+
       buchung.setSteuerObject(s);
       buchung.setSteuer(satz);
 
       // Netto und Brutto setzen
       buchung.setBruttoBetrag(d);
       buchung.setBetrag(new Math().netto(d, satz));
+
+      // Setzt die SplitId wenn wir sie finden. Der Exporter muss darauf achten,
+      // dass die Hauptbuchungen vor den Splitbuchungen gesendet werden
+      final Long splitId = (Long) map.get("splitid");
+      if (splitId != null)
+      {
+        buchung.setSplitBuchung(idMap.get(splitId.toString()));
+      }
 
       return buchung;
     }
