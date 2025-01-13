@@ -115,7 +115,7 @@ public class BuchungImportMessageConsumer implements MessageConsumer
 
     private List<Map<String, Object>> list = null;
 
-    private Map<String, String>       idMap  = new HashMap<>();
+    private Map<String, String> idMap  = new HashMap<>();
 
     /**
      * ct.
@@ -275,11 +275,10 @@ public class BuchungImportMessageConsumer implements MessageConsumer
       if (autodetect)
       {
         // automatisch ermitteln
-        final boolean k1haben = d >= 0.01d;
+        final boolean k1haben = (d >= 0.01d);
         buchung.setSollKonto(k1haben ? k2 : k1);
         buchung.setHabenKonto(k1haben ? k1 : k2);
-        if (d <= 0.01d)
-          d = -d;
+        d = java.lang.Math.abs(d);
       }
       else
       {
@@ -289,15 +288,16 @@ public class BuchungImportMessageConsumer implements MessageConsumer
       }
       
       final Steuer s;
-      final double satz;
+      final BigDecimal sd = NumberUtil.parse(map.get("steuer"));
+      
+      double satz = sd != null ? sd.doubleValue() : 0.0d;
+      
       // Wenn vorhanden mitgelieferte Steuer verwenden
-      if (map.get("steuer") != null)
+      if (sd != null)
       {
-        satz = NumberUtil.parse(map.get("steuer")).doubleValue();
-        buchung.setSteuer(satz);
         s = buchung.getSteuerObject();
         if (s == null)
-          throw new ApplicationException(i18n.tr("Steuersatz " + satz + " nicht gefunden"));
+          throw new ApplicationException(i18n.tr("Steuersatz {0} nicht gefunden",sd.toString()));
       }
       else
       {
@@ -306,8 +306,8 @@ public class BuchungImportMessageConsumer implements MessageConsumer
         satz = (s != null ? s.getSatz() : 0.0d);
       }
 
-      buchung.setSteuerObject(s);
       buchung.setSteuer(satz);
+      buchung.setSteuerObject(s);
 
       // Netto und Brutto setzen
       buchung.setBruttoBetrag(d);
