@@ -113,7 +113,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       saldo = a.getBetrag();
 
     saldo += getUmsatz(jahr);
-    SaldenCache.put(jahr,this.getKontonummer(),new Double(saldo));
+    SaldenCache.put(jahr,this.getKontonummer(),Double.valueOf(saldo));
     return saldo;
   }
   
@@ -414,7 +414,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setKontenrahmen(Kontenrahmen k) throws RemoteException
   {
-    setAttribute("kontenrahmen_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
+    setAttribute("kontenrahmen_id",k == null || k.getID() == null ? null : Integer.valueOf(k.getID()));
   }
 
   /**
@@ -430,7 +430,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setKontoArt(Kontoart art) throws RemoteException
   {
-    setAttribute("kontoart_id",art == null || art.getID() == null ? null : new Integer(art.getID()));
+    setAttribute("kontoart_id",art == null || art.getID() == null ? null : Integer.valueOf(art.getID()));
   }
 
   /**
@@ -438,7 +438,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setSteuer(Steuer steuer) throws RemoteException
   {
-    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : new Integer(steuer.getID()));
+    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : Integer.valueOf(steuer.getID()));
   }
 
   /**
@@ -451,13 +451,13 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
     {
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
       if (jahr == null)
-        return new Double(0.0d);
+        return Double.valueOf(0.0d);
       
       // Checken, ob das ueberhaupt der selbe Kontenrahmen ist
       if (!BeanUtil.equals(this.getKontenrahmen(),jahr.getKontenrahmen()))
-        return new Double(0.0d);
+        return Double.valueOf(0.0d);
       
-      return new Double(getSaldo(jahr));
+      return Double.valueOf(getSaldo(jahr));
     }
     
     if ("kontoArt".equals(arg0))
@@ -591,7 +591,7 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   public void setKontoTyp(Kontotyp typ) throws RemoteException
   {
-    setAttribute("kontotyp_id",typ == null || typ.getID() == null ? null : new Integer(typ.getID()));
+    setAttribute("kontotyp_id",typ == null || typ.getID() == null ? null : Integer.valueOf(typ.getID()));
   }
 
   /**
@@ -628,13 +628,13 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
       public Object extract(ResultSet rs) throws RemoteException, SQLException
       {
         if (!rs.next())
-          return new Integer(0);
-        return new Integer(rs.getInt(1));
+          return Integer.valueOf(0);
+        return Integer.valueOf(rs.getInt(1));
       }
     };
 
-    Integer id = new Integer(this.getID());
-    Integer i = (Integer) db.execute(sql, new Object[] {new Integer(jahr.getID()),id,id},rs);
+    Integer id = Integer.valueOf(this.getID());
+    Integer i = (Integer) db.execute(sql, new Object[] {Integer.valueOf(jahr.getID()),id,id},rs);
     return i == null ? 0 : i.intValue();
   }
 }

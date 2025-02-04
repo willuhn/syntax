@@ -76,7 +76,7 @@ public class AbschreibungList extends TablePart
         try
         {
           AbschreibungsBuchung b = (AbschreibungsBuchung) o;
-          return super.format(new Double(b.getBetrag()));
+          return super.format(Double.valueOf(b.getBetrag()));
         }
         catch (RemoteException e)
         {
@@ -110,33 +110,3 @@ public class AbschreibungList extends TablePart
   }
 
 }
-
-
-/*********************************************************************
- * $Log: AbschreibungList.java,v $
- * Revision 1.7  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.6  2006/05/29 13:02:30  willuhn
- * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.5  2005/10/06 15:15:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2005/09/26 23:52:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/09/25 22:18:22  willuhn
- * @B bug 122
- *
- * Revision 1.2  2005/08/29 15:20:51  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- **********************************************************************/

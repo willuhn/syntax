@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -66,7 +67,7 @@ public class BuchungUtil
     final Map<String,Double> result = new HashMap<>();
 
     final List params = new ArrayList();
-    params.add(new Integer(jahr.getID()));
+    params.add(Integer.valueOf(jahr.getID()));
     
     try
     {
@@ -77,12 +78,12 @@ public class BuchungUtil
       if (start != null)
       {
         sql += " AND " + service.getSQLTimestamp("datum") + " >= ?";
-        params.add(new Double(start.getTime()));
+        params.add(Double.valueOf(start.getTime()));
       }
       if (end != null)
       {
         sql += " AND " + service.getSQLTimestamp("datum") + " <= ?";
-        params.add(new Double(end.getTime()));
+        params.add(Double.valueOf(end.getTime()));
       }
       
       sql += " ORDER BY datum,belegnummer";

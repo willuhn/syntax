@@ -97,7 +97,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public void setAnschaffungskosten(double kosten) throws RemoteException
   {
-    setAttribute("anschaffungskosten",new Double(kosten));
+    setAttribute("anschaffungskosten",Double.valueOf(kosten));
   }
 
   /**
@@ -146,7 +146,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public void setNutzungsdauer(int dauer) throws RemoteException
   {
-    setAttribute("nutzungsdauer",new Integer(dauer));
+    setAttribute("nutzungsdauer",Integer.valueOf(dauer));
   }
 
   /**
@@ -157,7 +157,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     GenericIterator abschreibungen = getAbschreibungen(jahr);
 
     // Falls ein Restwert existiert, nehmen wir den als Ausgangsbasis
-    Double r = (Double) super.getAttribute("restwert");
+    Number r = (Number) super.getAttribute("restwert");
     
     double restwert = r != null ? r.doubleValue() : getAnschaffungskosten();
     while (abschreibungen.hasNext())
@@ -375,7 +375,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
     if ("restwert".equals(arg0))
     {
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();
-      return new Double(getRestwert(jahr));
+      return Double.valueOf(getRestwert(jahr));
     }
     return super.getAttribute(arg0);
   }
@@ -448,7 +448,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
   public void setRestwert(double restwert) throws RemoteException
   {
     if (canChange())
-      setAttribute("restwert", new Double(restwert));
+      setAttribute("restwert", Double.valueOf(restwert));
   }
 
   /**
@@ -498,80 +498,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public void setStatus(int status) throws RemoteException
   {
-    this.setAttribute("status",new Integer(status));
+    this.setAttribute("status",Integer.valueOf(status));
   }
 
 }
-
-
-/*********************************************************************
- * $Log: AnlagevermoegenImpl.java,v $
- * Revision 1.21  2012/01/27 23:14:55  willuhn
- * cleanup
- *
- * Revision 1.20  2010/12/20 12:58:22  willuhn
- * @N BUGZILLA 958
- *
- * Revision 1.19  2010-09-20 10:27:36  willuhn
- * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
- *
- * Revision 1.18  2006-05-29 13:02:30  willuhn
- * @N Behandlung von Sonderabschreibungen
- *
- * Revision 1.17  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.16  2006/01/08 15:28:41  willuhn
- * @N Loeschen von Sonderabschreibungen
- *
- * Revision 1.15  2006/01/04 17:59:11  willuhn
- * @B bug 171
- *
- * Revision 1.14  2006/01/04 16:04:33  willuhn
- * @B gj/mandant handling (insb. Loeschen)
- *
- * Revision 1.13  2006/01/03 23:58:35  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.12  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.11  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.10  2005/10/06 15:15:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/09/27 17:41:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2005/09/26 23:51:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/09/05 13:14:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2005/09/01 23:28:15  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.4  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.2  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.1  2005/08/29 00:20:29  willuhn
- * @N anlagevermoegen
- *
- **********************************************************************/

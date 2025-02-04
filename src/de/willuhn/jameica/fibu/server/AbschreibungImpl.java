@@ -208,14 +208,6 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
    */
   public void setSonderabschreibung(boolean b) throws RemoteException
   {
-    setAttribute("sonderabschreibung",b ? new Integer(1) : null);
+    setAttribute("sonderabschreibung",b ? Integer.valueOf(1) : null);
   }
 }
-
-
-/*********************************************************************
- * $Log: AbschreibungImpl.java,v $
- * Revision 1.11  2010/09/07 10:07:57  willuhn
- * @N Test-Commit
- *
- **********************************************************************/

@@ -159,7 +159,7 @@ public class BuchungControl extends AbstractControl
             
             Double betrag = (Double) getBetrag().getValue();
             if (betrag == null || betrag.doubleValue() == 0.0d)
-              getBetrag().setValue(new Double(t.getBetrag()));
+              getBetrag().setValue(Double.valueOf(t.getBetrag()));
             
             getSteuer().setValue(t.getSteuerObject());
             
@@ -652,8 +652,7 @@ public class BuchungControl extends AbstractControl
           Steuer s = (Steuer) getSteuer().getValue();
           if (s != null)
           {
-        	Double d = (Double)s.getSatz();
-            double satz = d.doubleValue();
+            double satz = s.getSatz();
             
             Math math = new Math();
             netto  = math.netto(brutto,satz);

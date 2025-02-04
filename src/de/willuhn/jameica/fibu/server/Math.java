@@ -101,9 +101,9 @@ public class Math
   {
     Double d = (Double) this.table.get(name);
     if (d == null)
-      d = new Double(0d);
+      d = Double.valueOf(0d);
 
-    d = new Double(d.doubleValue() + value);
+    d = Double.valueOf(d.doubleValue() + value);
     this.table.put(target,d);
   }
 
@@ -137,9 +137,9 @@ public class Math
   {
     Double d = (Double) this.table.get(name);
     if (d == null)
-      d = new Double(0d);
+      d = Double.valueOf(0d);
 
-    d = new Double(d.doubleValue() - value);
+    d = Double.valueOf(d.doubleValue() - value);
     this.table.put(target,d);
   }
 
@@ -170,69 +170,3 @@ public class Math
     this.table.remove(name);
   }
 }
-
-/*********************************************************************
- * $Log: Math.java,v $
- * Revision 1.19  2010/10/31 22:08:09  willuhn
- * @B Bei negativen Beitraegen muss in die andere Richtung gerundet werden
- *
- * Revision 1.18  2010-10-23 11:38:18  willuhn
- * @B Bei Minus-Betraegen und 0% Steuer wurde 1ct Steuer berechnet - siehe Mail von Matthias vom 22.10.
- *
- * Revision 1.17  2010-10-22 10:22:06  willuhn
- * @B Falsche Klammerung. Wie daemlich kann man eigentlich sein ;)
- *
- * Revision 1.16  2010-10-13 21:46:14  willuhn
- * @B Scheiss BigDecimal. Wahrscheinlich bin ich zu doof, das korrekt zu verwenden. Mit meiner haendischen Berechnung via doubles habe ich jetzt alle Betraege in Centschritten von 1,00 - 10.000,00 durchgerechnet (brutto, netto, steuer). Keine Differenzen mehr gefunden
- *
- * Revision 1.15  2010-08-02 22:42:03  willuhn
- * @N BUGZILLA 891 - Betraege in der Datenbank nur noch gerundet speichern
- *
- * Revision 1.14  2010/06/08 16:08:12  willuhn
- * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
- *
- * Revision 1.13  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.12.2.1  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
- *
- * Revision 1.12  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.11  2005/10/06 15:15:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2005/10/06 13:19:22  willuhn
- * @B bug 133
- *
- * Revision 1.9  2005/10/03 21:55:24  willuhn
- * @B bug 128, 129
- *
- * Revision 1.8  2005/08/24 23:02:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2005/08/22 23:13:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.5  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.4  2005/08/12 16:43:08  willuhn
- * @B DecimalInput
- *
- * Revision 1.3  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.2  2003/12/19 01:43:43  willuhn
- * @C small fixes
- *
- * Revision 1.1  2003/12/16 02:27:33  willuhn
- * @N BuchungsEngine
- *
- **********************************************************************/

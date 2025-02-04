@@ -108,7 +108,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public void setGeschaeftsjahr(Geschaeftsjahr jahr) throws RemoteException
   {
-    setAttribute("geschaeftsjahr_id",jahr == null || jahr.getID() == null ? null : new Integer(jahr.getID()));
+    setAttribute("geschaeftsjahr_id",jahr == null || jahr.getID() == null ? null : Integer.valueOf(jahr.getID()));
   }
 
   /**
@@ -116,7 +116,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public void setBelegnummer(int belegnummer) throws RemoteException
   {
-    setAttribute("belegnummer",new Integer(belegnummer));
+    setAttribute("belegnummer",Integer.valueOf(belegnummer));
   }
 
   /**
@@ -135,7 +135,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
       {
         if (rs.next())
           return rs.getObject(1);
-        return new Integer(1);
+        return Integer.valueOf(1);
       }
     
     });

@@ -114,7 +114,7 @@ public class BuchungSearchProvider implements SearchProvider
                                                                            Settings.DATEFORMAT.format(datum),
                                                                            soll.getKontonummer(),
                                                                            haben.getKontonummer(),
-                                                                           new CurrencyFormatter(jahr.getMandant().getWaehrung(),Settings.DECIMALFORMAT).format(new Double(betrag)),
+                                                                           new CurrencyFormatter(jahr.getMandant().getWaehrung(),Settings.DECIMALFORMAT).format(Double.valueOf(betrag)),
                                                                            text});
       }
       catch (RemoteException re)
@@ -126,24 +126,3 @@ public class BuchungSearchProvider implements SearchProvider
     
   }
 }
-
-
-/*********************************************************************
- * $Log: BuchungSearchProvider.java,v $
- * Revision 1.4  2011/08/08 10:44:35  willuhn
- * @C compiler warnings
- *
- * Revision 1.3  2010-06-01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.2  2009/07/03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.1  2008/09/04 10:02:13  willuhn
- * @N Suchprovider
- *
- **********************************************************************/

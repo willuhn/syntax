@@ -115,7 +115,7 @@ public abstract class AbstractUserObjectImpl extends AbstractDBObject implements
   {
     if (!this.isNewObject() && !this.canChange())
       throw new RemoteException("Datensatz gehört zum initialen Datenbestand und darf daher nicht geändert werden.");
-    setAttribute("mandant_id",mandant == null || mandant.getID() == null ? null : new Integer(mandant.getID()));
+    setAttribute("mandant_id",mandant == null || mandant.getID() == null ? null : Integer.valueOf(mandant.getID()));
   }
   
   /**

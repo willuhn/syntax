@@ -141,7 +141,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     
     //Steuersatz nicht der des Kontos, wir suchen das richtige Steuerobjekt
     DBIterator<Steuer> list = Settings.getDBService().createList(Steuer.class);
-    list.addFilter("satz = ?",new Double(getSteuer()));
+    list.addFilter("satz = ?",Double.valueOf(getSteuer()));
     Kontenrahmen kr = getSollKonto().getKontenrahmen();
     while(list.hasNext())
     {
@@ -163,7 +163,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setSollKonto(Konto k) throws RemoteException
   {
-    setAttribute("sollkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
+    setAttribute("sollkonto_id",k == null || k.getID() == null ? null : Integer.valueOf(k.getID()));
   }
 
   /**
@@ -171,7 +171,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setHabenKonto(Konto k) throws RemoteException
   {
-    setAttribute("habenkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
+    setAttribute("habenkonto_id",k == null || k.getID() == null ? null : Integer.valueOf(k.getID()));
   }
 
   /**
@@ -187,7 +187,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setBetrag(double betrag) throws RemoteException
   {
-    setAttribute("betrag", new Double(betrag));
+    setAttribute("betrag", Double.valueOf(betrag));
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setSteuer(double steuer) throws RemoteException
   {
-    setAttribute("steuer", new Double(steuer));
+    setAttribute("steuer", Double.valueOf(steuer));
   }
 
 
@@ -204,7 +204,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setSteuerObject(Steuer steuer) throws RemoteException
   {
-    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : new Integer(steuer.getID()));
+    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : Integer.valueOf(steuer.getID()));
   }
   
   /**
@@ -249,7 +249,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public void setGeprueft(boolean b) throws RemoteException
   {
-    setAttribute("geprueft",new Integer(b ? 1 : 0));
+    setAttribute("geprueft",Integer.valueOf(b ? 1 : 0));
   }
 
 

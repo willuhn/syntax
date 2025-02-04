@@ -86,7 +86,7 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   public void setSatz(double satz) throws RemoteException
   {
-    setAttribute("satz", new Double(satz));
+    setAttribute("satz", Double.valueOf(satz));
   }
 
   /**
@@ -163,7 +163,7 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   public void setSteuerKonto(Konto k) throws RemoteException
   {
-    setAttribute("steuerkonto_id",k == null || k.getID() == null ? null : new Integer(k.getID()));
+    setAttribute("steuerkonto_id",k == null || k.getID() == null ? null : Integer.valueOf(k.getID()));
   }
 
   /**

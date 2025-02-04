@@ -8,14 +8,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 
 import de.willuhn.datasource.GenericIterator;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.BuchungSplitListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
-import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Buchung;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
@@ -31,7 +30,11 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
-public class BuchungSplitList extends TablePart{
+/**
+ * Liste der Split-Buchungen.
+ */
+public class BuchungSplitList extends TablePart
+{
 
  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   
@@ -39,12 +42,13 @@ public class BuchungSplitList extends TablePart{
  
  /**
  * Buchungs Liste für Splitbuchungn
+ * @param hauptbuchung die Hauptbuchung.
  * @param action
  * @throws RemoteException
  */
  public BuchungSplitList(Buchung hauptbuchung,Action action) throws RemoteException
  {
-  this((DBIterator)hauptbuchung.getSplitBuchungen(),action);
+  this(hauptbuchung.getSplitBuchungen(),action);
   }
  
 /**

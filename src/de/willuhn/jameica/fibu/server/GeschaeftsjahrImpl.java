@@ -488,7 +488,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public void setClosed(boolean b) throws RemoteException
   {
-    setAttribute("closed", new Integer(b ? 1 : 0));
+    setAttribute("closed", Integer.valueOf(b ? 1 : 0));
   }
 
   /**
