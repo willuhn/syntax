@@ -82,7 +82,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
     if (d == null)
       return 0;
 
@@ -94,7 +94,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public double getSteuer() throws RemoteException
   {
-    Double d = (Double) getAttribute("steuer");
+    Number d = (Number) getAttribute("steuer");
     if (d != null)
       return d.doubleValue();
 

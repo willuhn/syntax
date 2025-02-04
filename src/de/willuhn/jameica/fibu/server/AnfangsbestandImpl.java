@@ -169,7 +169,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
     return d == null ? 0.0d : d.doubleValue();
   }
 

@@ -66,7 +66,7 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   public double getSatz() throws RemoteException
   {
-    Double d = (Double) getAttribute("satz");
+    Number d = (Number) getAttribute("satz");
     if (d != null)
       return d.doubleValue();
 

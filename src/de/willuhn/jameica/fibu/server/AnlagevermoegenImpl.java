@@ -88,7 +88,7 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   public double getAnschaffungskosten() throws RemoteException
   {
-    Double d = (Double) getAttribute("anschaffungskosten");
+    Number d = (Number) getAttribute("anschaffungskosten");
     return d == null ? 0.0d : d.doubleValue();
   }
 
