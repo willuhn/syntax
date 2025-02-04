@@ -55,11 +55,12 @@ public class VelocityReportBuchungList extends AbstractVelocityReport
     Konto endKonto   = data.getEndKonto();
     
     list.setOrder("order by datum");
+    //Split-Hauptbuchungen rausfiltern
     List<Buchung> buchungen = new LinkedList<Buchung>();
     while (list.hasNext())
     {
       Buchung b = (Buchung) list.next();
-
+      
       // Keine Begrenzung angegeben
       if (startKonto == null && endKonto == null)
       {

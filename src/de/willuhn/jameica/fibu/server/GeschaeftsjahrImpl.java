@@ -288,7 +288,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public DBIterator getHauptBuchungen() throws RemoteException
   {
-    return this.getHauptBuchungen(null,null);
+    return this.getHauptBuchungen(null,null,false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(boolean)
+   */
+  public DBIterator getHauptBuchungen(boolean splitHauptbuchungen) throws RemoteException
+  {
+    return this.getHauptBuchungen(null,null,splitHauptbuchungen);
   }
   
   /**
@@ -296,6 +304,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   @Override
   public DBIterator getHauptBuchungen(Date von, Date bis) throws RemoteException
+  {
+	  return this.getHauptBuchungen(von,bis,false);
+  }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Geschaeftsjahr#getHauptBuchungen(java.util.Date, java.util.Date, boolean)
+   */
+  @Override
+  public DBIterator getHauptBuchungen(Date von, Date bis, boolean splitHauptbuchungen) throws RemoteException
   {
     if (von != null && !this.check(von))
       throw new RemoteException(i18n.tr("Das Start-Datum {0} befindet sich ausserhalb des angegebenen Geschäftsjahres", Settings.DATEFORMAT.format(von)));
@@ -318,6 +335,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
     if (end != null)
       list.addFilter(db.getSQLTimestamp("datum") + " <=" + end.getTime());
     list.addFilter("geschaeftsjahr_id = " + this.getID());
+    //Split-Hauptbuchungen rausfiltern
+    if(!splitHauptbuchungen)
+    	list.addFilter("id NOT IN (SELECT split_id FROM buchung WHERE split_id IS NOT NULL)");
     list.setOrder("order by datum,belegnummer");
     return list;
   }
@@ -355,7 +375,15 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
       }
       
       Logger.info("Lösche Buchungen");
-      GenericIterator buchungen = getHauptBuchungen();
+      GenericIterator buchungen = getHauptBuchungen(true);
+      //Erstmal die SplitBuchungen löschen
+      while (buchungen.hasNext()) {
+    	  Buchung b = (Buchung) buchungen.next();
+    	  if(b.getSplitHauptBuchung() != null)
+    		  b.delete();
+      }
+      //Jetzt die anderen buchungen inkl. der (ehemaligen) SplitHauptbuchungen
+      buchungen = getHauptBuchungen(true);
       while (buchungen.hasNext())
       {
         // Wir muessen nur die Haupt-Buchungen loeschen.
@@ -468,22 +496,7 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   public int getMonate() throws RemoteException
   {
-    Date start = getBeginn();
-    Date end   = getEnde();
-    
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(start);
-    int count = 0;
-    while (true)
-    {
-      if (++count > 13)
-        break;
-      cal.add(Calendar.MONTH,1);
-      Date test = cal.getTime();
-      if (test.after(end))
-        break;
-    }
-    return count;
+    return GeschaeftsjahrUtil.getMonths(this.getBeginn(),this.getEnde());
   }
 
   /**

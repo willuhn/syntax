@@ -21,6 +21,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 
 /**
@@ -82,8 +83,10 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
       Vector buchungen = new Vector();
 
       DBIterator list = k.getHauptBuchungen(jahr,startDate,endDate);
-      while (list.hasNext())
-        buchungen.add(list.next());
+      while (list.hasNext()) {
+    	  Buchung b = (Buchung)list.next();
+    	   buchungen.add(b);
+      }
 
       Kontoart ka = k.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)

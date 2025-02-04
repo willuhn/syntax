@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -33,9 +34,11 @@ import de.willuhn.jameica.fibu.gui.menus.BuchungListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectChangedMessage;
 import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.util.BuchungUtil;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.extension.Extendable;
@@ -44,6 +47,7 @@ import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.formatter.TableFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.TextInput;
@@ -51,6 +55,7 @@ import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
 import de.willuhn.jameica.gui.util.DelayedListener;
+import de.willuhn.jameica.gui.util.Font;
 import de.willuhn.jameica.gui.util.SimpleContainer;
 import de.willuhn.jameica.messaging.Message;
 import de.willuhn.jameica.messaging.MessageConsumer;
@@ -71,6 +76,7 @@ public class BuchungList extends TablePart implements Extendable
   private TextInput search          = null;
   private DateInput from            = null;
   private DateInput to              = null;
+  private CheckboxInput nurUngeprueft	= null;
 
   private MessageConsumer mcChanged    = new ChangedMessageConsumer();
   private MessageConsumer mcImported   = new ImportedMessageConsumer();
@@ -93,7 +99,7 @@ public class BuchungList extends TablePart implements Extendable
    */
   public BuchungList(Konto konto, Action action) throws RemoteException
   {
-    this(init(konto,getConfiguredFrom(konto),getConfiguredTo(konto)), action);
+    this(init(konto,getConfiguredFrom(konto),getConfiguredTo(konto),settings.getBoolean("buchungen.geprueft",true)), action);
     this.konto = konto;
   }
   
@@ -107,12 +113,18 @@ public class BuchungList extends TablePart implements Extendable
   {
     super(buchungen,action);
     this.buchungen = buchungen;
+    
+    final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
+    final CurrencyFormatter cf = new CurrencyFormatter(gj.getMandant().getWaehrung(), Settings.DECIMALFORMAT);
+    final Map<String,Double> sums = BuchungUtil.getNebenbuchungSummen(gj,null,null);
+    final Map<String,Double[]> splitSums = BuchungUtil.getSplitbuchungenSummen(gj,null,null,sums);
 
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),"bruttoBetrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
-    addColumn(i18n.tr("Netto-Betrag"),"betrag",new CurrencyFormatter(Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung(), Settings.DECIMALFORMAT));
+    addColumn(i18n.tr("Brutto-Betrag"),null);
+    addColumn(i18n.tr("Netto-Betrag"),"betrag",cf);
+    addColumn(i18n.tr("Steuer"),"steuer");
     addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenKonto", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollKonto", new Formatter()
@@ -150,8 +162,39 @@ public class BuchungList extends TablePart implements Extendable
         BaseBuchung b = (BaseBuchung) item.getData();
         if (b == null)
           return;
+        
         try
         {
+          double result = b.getBetrag();
+          final Double[] split = splitSums.get(b.getID());
+          if (split != null) {
+              item.setText(4,cf.format(split[0].doubleValue()));
+              item.setText(3,cf.format(split[1].doubleValue()));
+          }
+          else {
+	          final Double add = sums.get(b.getID());
+	          if (add != null)
+	            result += add.doubleValue();
+	          item.setText(3,cf.format(result));
+          }
+        }
+        catch (RemoteException re)
+        {
+          Logger.error("unable to calculate gross value",re);
+        }
+
+        try
+        {
+          //Bei Splitbuchungen keine Konten anzeigen, da die teilbuchungen andere Konten haben können
+          if(splitSums.get(b.getID()) != null) {
+              item.setText(5,cf.format(null));
+              item.setText(6,cf.format(null));
+              item.setText(7,cf.format(null));
+          }
+          if(b instanceof Buchung && ((Buchung)b).getSplitHauptBuchung() != null)
+        	  item.setFont(Font.ITALIC.getSWTFont());
+          else if (b instanceof Buchung && splitSums.get(b.getID()) != null)
+          	  item.setFont(Font.BOLD.getSWTFont());
           if (b.isGeprueft())
             item.setForeground(Color.SUCCESS.getSWTColor());
           else
@@ -179,10 +222,11 @@ public class BuchungList extends TablePart implements Extendable
    * @param konto Optional.
    * @param von Startdatum. Optional.
    * @param bis Enddatum. Optional.
+   * @param geprueft true, wenn auch die geprueften Buchungen angezeigt werden sollen.
    * @return Liste der Buchungen
    * @throws RemoteException
    */
-  private static GenericIterator init(Konto konto, Date von, Date bis) throws RemoteException
+  private static GenericIterator init(Konto konto, Date von, Date bis, boolean geprueft) throws RemoteException
   {
     Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
     
@@ -197,11 +241,12 @@ public class BuchungList extends TablePart implements Extendable
     // Wenn ein Konto angegeben ist, dann nur dessen Buchungen
     if (konto != null)
     {
-      DBIterator hauptbuchungen = konto.getHauptBuchungen(jahr, von, bis);
+      DBIterator hauptbuchungen;
       Kontoart ka = konto.getKontoArt();
       if (ka != null && ka.getKontoArt() == Kontoart.KONTOART_STEUER)
       {
         DBIterator hilfsbuchungen = konto.getHilfsBuchungen(jahr, von, bis);
+        hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
         if (hauptbuchungen.size() == 0)
           return hilfsbuchungen;
         
@@ -212,14 +257,19 @@ public class BuchungList extends TablePart implements Extendable
         List l = new ArrayList();
         while (hilfsbuchungen.hasNext()) l.add(hilfsbuchungen.next());
         while (hauptbuchungen.hasNext()) l.add(hauptbuchungen.next());
+        
         return PseudoIterator.fromArray((BaseBuchung[])l.toArray(new BaseBuchung[l.size()]));
       }
+      hauptbuchungen= konto.getHauptBuchungen(jahr, von, bis);
       return hauptbuchungen;
     }
     
     // Sonst die des aktuellen Geschaeftsjahres
-    DBIterator list = jahr.getHauptBuchungen(von, bis);
+    DBIterator list = jahr.getHauptBuchungen(von, bis,true);
+    list.addFilter("split_id is NULL");
     list.setOrder("order by belegnummer desc");
+    if(konto == null && geprueft)
+    	list.addFilter("(geprueft is NULL or geprueft = 0)");
     return list;
   }
   
@@ -244,13 +294,14 @@ public class BuchungList extends TablePart implements Extendable
           String text = (String) getSearch().getValue();
           Date start = (Date) getFrom().getValue();
           Date end   = (Date) getTo().getValue();
+          boolean geprueft= (boolean)getNurUngeprueft().getValue();
 
           boolean empty = text == null || text.length() == 0;
           if (!empty) text = text.toLowerCase();
 
           // Daten neu laden?
           if (reload)
-            buchungen = init(konto,start,end);
+            buchungen = init(konto,start,end,geprueft);
           
           buchungen.begin();
           while (buchungen.hasNext())
@@ -302,6 +353,9 @@ public class BuchungList extends TablePart implements Extendable
     MultiInput m = new MultiInput(this.getFrom(),this.getTo());
     m.setName(i18n.tr("Zeitraum von"));
     group.addInput(m);
+    
+    if (this.konto == null)
+    	group.addInput(this.getNurUngeprueft());
 
     super.paint(parent);
     Application.getMessagingFactory().registerMessageConsumer(this.mcChanged);
@@ -469,10 +523,33 @@ public class BuchungList extends TablePart implements Extendable
     }
     return null;
   }
+  
+  /**
+   * Liefert ein Auswahlfeld fuer nur-Ungeprüft Checkbos.
+   * @return ein Auswahlfeld fuer nur-Ungeprüft Checkbos.
+   */
+  private CheckboxInput getNurUngeprueft()
+  {
+    if (this.nurUngeprueft != null)
+      return this.nurUngeprueft;
+    
+    this.nurUngeprueft = new CheckboxInput(settings.getBoolean("buchungen.geprueft", false));
+    this.nurUngeprueft.setName(i18n.tr("Nur ungeprüfte Buchungen"));
+    this.nurUngeprueft.addListener(new Listener() {
+      
+      @Override
+      public void handleEvent(Event event)
+      {
+        settings.setAttribute("buchungen.geprueft",(Boolean)nurUngeprueft.getValue());
+        update(true);
+      }
+    });
+    return this.nurUngeprueft;
+  }
 
   private class KL extends KeyAdapter
   {
-    private Listener forward = new DelayedListener(new Listener()
+    private Listener forward = new DelayedListener(700,new Listener()
     {
       /**
        * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -566,8 +643,9 @@ public class BuchungList extends TablePart implements Extendable
               return; // Objekt war nicht in der Tabelle
 
             // Aktualisieren, in dem wir es neu an der gleichen Position eintragen
-           addItem(buchung,index);
-
+            //nur wenn die Buchung nicht gerade als geprüft markiert wurde und geprüfte nicht angezeigt werden sollen
+            if(!((BaseBuchung)buchung).isGeprueft() || getNurUngeprueft().getValue() == Boolean.FALSE)
+           		addItem(buchung,index);
            // Wir markieren es noch in der Tabelle
            select(buchung);
           }

@@ -1,0 +1,11 @@
+<form>
+	<p>
+		<span color="header" font="header">Anlagevermögen</span>
+	</p>
+
+  <p>
+    <b>Hinweis: </b> Geben Sie bei "Nutzungsdauer in Jahren" den Wert "0" ein, wenn keine automatische Abschreibung
+    beim Jahresabschluss stattfinden soll (z.B. bei Immobilien). Außerplanmäßige Abschreibungen sind dennoch möglich.
+  </p>
+  
+</form>

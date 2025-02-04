@@ -18,6 +18,7 @@ import de.willuhn.jameica.fibu.gui.input.KontoInput;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.gui.AbstractControl;
 import de.willuhn.jameica.gui.AbstractView;
@@ -67,13 +68,22 @@ public class SteuerControl extends AbstractControl
 	{
 		if (steuer != null)
 			return steuer;
-			
-		steuer = (Steuer) getCurrentObject();
-		if (steuer != null)
+		
+		Mandant m = Settings.getActiveGeschaeftsjahr().getMandant();
+		
+		Object o = getCurrentObject();
+		if(o instanceof Steuer)
+		{
+			steuer = (Steuer)o;
 			return steuer;
+		}
+		else if(o instanceof Mandant)
+		{
+			m = (Mandant)o;
+		}
 
 		steuer = (Steuer) Settings.getDBService().createObject(Steuer.class,null);
-    steuer.setMandant(Settings.getActiveGeschaeftsjahr().getMandant());
+        steuer.setMandant(m);
 		return steuer;
 	}
 

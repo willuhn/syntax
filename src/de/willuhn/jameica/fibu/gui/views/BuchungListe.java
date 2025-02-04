@@ -43,7 +43,7 @@ public class BuchungListe extends AbstractView
     
     ButtonArea buttons = new ButtonArea();
     
-    Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,true,"list-add.png");
+    Button create = new Button(i18n.tr("Neue Buchung"), new BuchungNeu(),null,false,"list-add.png");
     create.setEnabled(!Settings.getActiveGeschaeftsjahr().isClosed());
     buttons.addButton(create);
     

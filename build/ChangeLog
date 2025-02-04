@@ -1,3 +1,17 @@
+2025-02-04 Version 2.10.5
+
+  * NEW: Passenden MariaDB/MySQL-Treiber automatisch ermitteln
+  * BUG: Berechnung der Anzahl von Monaten im Geschäftsjahr falsch, wenn Startdatum Ultimo ist
+  * NEW: Unterstützung von Split-Buchungen - siehe https://github.com/willuhn/syntax/pull/5
+  * NEW: Effizienteres Laden der Buchungen - für Ermittlung der Bruttobeträge nicht mehr für jede Hauptbuchung die Hilfsbuchungen einzeln ermitteln
+  * CHG: Wartezeit bei Eingabe eines Suchbegriffs in Buchungsliste von 300 auf 700ms erhöht. "Neue Buchung" nicht mehr als Default-Button aktiv
+  * NEW: Neue Option "Nur Konten mit Saldo ungleich 0 anzeigen" in der Kontoliste
+  * NEW: Sortierung der Konten anpassbar
+  * BUG: MySQL/MariaDB: Erkennung, ob Datenbank bereits vorhanden ist, schlug fehl
+  * BUG: Wenn Attachments direkt einer neu angelegten Buchung zugeordnet wurden, landeten die im falschen Kontext. Dennoch muss erst die Buchung gespeichert werden
+  * CHG: Umstellung von MySQL auf MariaDB
+  * NEW: Beim Import von Buchungen aus XML-Dateien automatisch die Buchungsnummern generieren (nur für die Hauptbuchungen)
+
 2023-02-06 Version 2.10.4
 
   * BUG: In der Kontoliste wurde die Buchungsart und die Steuer nicht mehr angezeigt

@@ -11,8 +11,10 @@ package de.willuhn.jameica.fibu.gui.controller;
 
 import java.rmi.RemoteException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -21,6 +23,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
@@ -30,6 +33,7 @@ import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.jameica.fibu.rmi.Steuer;
@@ -58,8 +62,8 @@ import de.willuhn.util.I18N;
  */
 public class BuchungControl extends AbstractControl
 {
-	
-  private de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
+  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+  private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
 
   // Fachobjekte
 	private Buchung buchung 		= null;
@@ -71,7 +75,7 @@ public class BuchungControl extends AbstractControl
 	private Input belegnummer		   = null;
 	private Input betrag				   = null;
 
-  private DecimalInput steuer				    = null;
+  private SelectInput steuer				    = null;
   private DateInput datum               = null;
   private KontoInput sollKontoAuswahl   = null;
   private KontoInput habenKontoAuswahl  = null;
@@ -79,7 +83,9 @@ public class BuchungControl extends AbstractControl
   private CheckboxInput anlageVermoegen = null;
   private Input anlagevermoegenLink     = null;
   
-  private I18N i18n;
+  private AbstractView view = null;
+  
+  private Input splitbuchung     = null;
 
   /**
    * @param view
@@ -87,7 +93,7 @@ public class BuchungControl extends AbstractControl
   public BuchungControl(AbstractView view)
   {
     super(view);
-    i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
+    this.view = view;
   }
 
 	/**
@@ -155,7 +161,7 @@ public class BuchungControl extends AbstractControl
             if (betrag == null || betrag.doubleValue() == 0.0d)
               getBetrag().setValue(new Double(t.getBetrag()));
             
-            getSteuer().setValue(new Double(t.getSteuer()));
+            getSteuer().setValue(t.getSteuerObject());
             
             // Das Setzen des Focus geht zwar. Aber danach laesst sich die
             // Combo-Box nicht mehr bedienen. Scheint ein SWT-Bug zu sein.
@@ -332,6 +338,18 @@ public class BuchungControl extends AbstractControl
   }
   
   /**
+   * Liefert ein Label ob es eine Splitbuchung ist
+   * @return Label mit Splitbuchung.
+   */
+  public Input getSplitbuchung()
+  {
+    if (this.splitbuchung != null)
+      return this.splitbuchung;
+    
+    this.splitbuchung = new LabelInput("");
+    return this.splitbuchung;
+  }
+  /**
    * Hilfsklasse.
    */
   private class AVLink extends ButtonInput
@@ -434,17 +452,31 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public DecimalInput getSteuer() throws RemoteException
+  public SelectInput getSteuer() throws RemoteException
 	{
 		if (steuer != null)
 			return steuer;
 
-		steuer = new DecimalInput(getBuchung().getSteuer(),Settings.DECIMALFORMAT);
-		steuer.setComment("%");
-    SteuerListener sl = new SteuerListener();
-    steuer.addListener(sl);
-    sl.handleEvent(null);
-    steuer.setMandatory(true);
+	     DBIterator list = Settings.getDBService().createList(Steuer.class);
+	     list.setOrder("ORDER BY satz,name");
+	     Kontenrahmen kr  = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+	     list.addFilter("mandant_id is null or mandant_id = "+Settings.getActiveGeschaeftsjahr().getMandant().getID());
+	     List<Steuer> found = new ArrayList<Steuer>();
+	     while (list.hasNext())
+	     {
+	       Steuer s = (Steuer) list.next();
+	       Konto k = s.getSteuerKonto();
+	       if (k == null)
+	         continue;
+	       if (BeanUtil.equals(k.getKontenrahmen(),kr))
+	         found.add(s);
+	     }
+	     steuer = new SelectInput(found,getBuchung().getSteuerObject());
+	     steuer.setPleaseChoose("<" + i18n.tr("Keine Steuer") + ">");
+	     SteuerListener sl = new SteuerListener();
+         steuer.addListener(sl);
+         sl.handleEvent(null);
+
 		return steuer;
 	}
   
@@ -494,7 +526,8 @@ public class BuchungControl extends AbstractControl
       //////////////////////////////////////////////////////////////////////////
       // Betraege
       Math math = new Math();
-      double steuer = ((Double)getSteuer().getValue()).doubleValue();
+      Steuer steuerObj = (Steuer)getSteuer().getValue();
+      double steuer = steuerObj == null? 0.0d:steuerObj.getSatz();
       double brutto = ((Double)getBetrag().getValue()).doubleValue();
       double netto  = math.netto(brutto,steuer);
       
@@ -503,7 +536,8 @@ public class BuchungControl extends AbstractControl
       if (Double.isNaN(brutto))
         throw new ApplicationException(i18n.tr("Betrag ungültig."));
 
-  		getBuchung().setSteuer(steuer);
+  	  getBuchung().setSteuerObject(steuerObj);
+  	  getBuchung().setSteuer(steuer);
       getBuchung().setBruttoBetrag(brutto);
       getBuchung().setBetrag(netto);
       //
@@ -543,6 +577,9 @@ public class BuchungControl extends AbstractControl
       // und jetzt speichern wir.
 			getBuchung().store();
       Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Buchung Nr. {0} gespeichert.",Integer.toString(getBuchung().getBelegnummer())),StatusBarMessage.TYPE_SUCCESS));
+
+      // Damit wird die Attachment-Referenz nach dem Neu-Anlegen der Buchung aktualisiert
+      this.view.setCurrentObject(getBuchung());
 
       // BUGZILLA 245
       
@@ -612,9 +649,10 @@ public class BuchungControl extends AbstractControl
 
         if (getSteuer().isEnabled())
         {
-          Double d = (Double) getSteuer().getValue();
-          if (d != null)
+          Steuer s = (Steuer) getSteuer().getValue();
+          if (s != null)
           {
+        	Double d = (Double)s.getSatz();
             double satz = d.doubleValue();
             
             Math math = new Math();
@@ -624,7 +662,7 @@ public class BuchungControl extends AbstractControl
         }
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Settings.DECIMALFORMAT.format(netto)}));
-        getSteuer().setComment(i18n.tr("% [Betrag: {0} {1}]", new String[]{Settings.DECIMALFORMAT.format(steuer),curr}));
+        getSteuer().setComment(i18n.tr("[Betrag: {0} {1}]", new String[]{Settings.DECIMALFORMAT.format(steuer),curr}));
         
       }
       catch (RemoteException e)
@@ -700,9 +738,11 @@ public class BuchungControl extends AbstractControl
           Steuer s = (ss != null ? ss : hs);
           
           // BUGZILLA 1828 - Sicherstellen, dass kein Steuersatz mehr drin steht, wenn das Feld Steuer deaktiviert wurde.
-          Double satz = new Double(s != null ? s.getSatz() : 0);
-          getSteuer().setValue(satz);
+          getSteuer().setValue(s);
           new SteuerListener().handleEvent(null);
+          double satz = 0;
+          if(s != null)
+        	  satz = s.getSatz();
           GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
         }
         catch (Exception e)

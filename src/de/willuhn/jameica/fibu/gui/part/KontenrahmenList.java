@@ -54,7 +54,7 @@ public class KontenrahmenList extends TablePart
     this.setRememberOrder(true);
     this.setSummary(false);
     this.addColumn(i18n.tr("Bezeichnung"),"name");
-    this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant_id");
+    this.addColumn(i18n.tr("Zugeordneter Mandant"),"mandant");
     
     ContextMenu menu = new ContextMenu();
     menu.addItem(new CheckedSingleContextMenuItem(i18n.tr("Duplizieren..."),new KontenrahmenClone(),"edit-copy.png"));

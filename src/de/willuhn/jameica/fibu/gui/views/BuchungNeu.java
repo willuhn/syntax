@@ -68,6 +68,8 @@ public class BuchungNeu extends AbstractView
       group.addLabelPair(i18n.tr("Zugehöriges Anlagegut"), control.getAnlageVermoegenLink());
     else if (b.isNewObject())
       group.addCheckbox(control.getAnlageVermoegen(),i18n.tr("In Anlagevermögen übernehmen"));
+    if(b.getSplitHauptBuchung() != null)
+    	group.addLabelPair(i18n.tr("Dies ist eine Splitbuchung"),control.getSplitbuchung());
 
     // wir machen das Datums-Feld zu dem mit dem Focus.
     control.getDatum().focus();
@@ -140,9 +142,6 @@ public class BuchungNeu extends AbstractView
     },null,false,"edit-undo.png");
     reversal.setEnabled(!closed);
 
-    final Button storeNew = new Button(i18n.tr("Speichern + Neu"),x -> control.handleStore(true),null,true,"go-next.png");
-    storeNew.setEnabled(!closed);
-    
     // und noch die Abschicken-Knoepfe
     ButtonArea buttonArea = new ButtonArea();
     buttonArea.addButton(delete);
@@ -150,8 +149,32 @@ public class BuchungNeu extends AbstractView
     buttonArea.addButton(reversal);
     buttonArea.addButton(duplicate);
     buttonArea.addButton(store);
-    buttonArea.addButton(storeNew);
-    
+    if(b.getSplitHauptBuchung() == null) {
+	    Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
+	      public void handleAction(Object context) throws ApplicationException
+	      {
+	        control.handleStore(true);
+	      }
+	    },null,true,"go-next.png");
+	    storeNew.setEnabled(!closed);
+	    buttonArea.addButton(storeNew);
+	}
+    else {
+    	Button storeNew = new Button(i18n.tr("Speichern und nächste Buchung"),new Action() {
+  	      public void handleAction(Object context) throws ApplicationException
+  	      {
+  	        control.handleStore(false);
+  	        new de.willuhn.jameica.fibu.gui.action.BuchungSplitNeu().handleAction(b);
+  	      }
+  	    },null,true,"go-next.png");
+  	    storeNew.setEnabled(!closed);
+  	    buttonArea.addButton(storeNew);
+  	    
+	    //Bei Splitbuchungen Felder z.T. deaktivieren
+	    control.getBelegnummer().setEnabled(false);
+	    control.getDatum().setEnabled(false);
+    }
+
     buttonArea.paint(getParent());
     
     

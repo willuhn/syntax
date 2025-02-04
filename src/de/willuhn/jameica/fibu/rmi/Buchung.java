@@ -27,6 +27,13 @@ public interface Buchung extends BaseBuchung
   public DBIterator getHilfsBuchungen() throws RemoteException;
   
   /**
+   * Liefert eine Liste mit allen Split-Buchungen, die zu dieser gehoeren.
+   * @return Liste aller Split-Buchungen dieser Buchung.
+   * @throws RemoteException
+   */
+  public DBIterator getSplitBuchungen() throws RemoteException;
+  
+  /**
    * Liefert den Brutto-Betrag (also incl. der Hilfsbuchungen).
    * @return Brutto-Betrag.
    * @throws RemoteException
@@ -34,11 +41,25 @@ public interface Buchung extends BaseBuchung
   public double getBruttoBetrag() throws RemoteException;
   
   /**
+   * Macht die Buchung zur Splitbuchung, setzt die Hauptbuchung
+   * @param id die id der Hauptbuchung
+   * @throws RemoteException
+   */
+  public void setSplitBuchung(String id) throws RemoteException;
+  
+  /**
    * Speichert den Butto-Betrag.
    * @param d der Brutto-Betrag.
    * @throws RemoteException
    */
   public void setBruttoBetrag(double d) throws RemoteException;
+  
+  /**
+   * Holt die Hauptbuchung, falls es sich um eine Splitbuchung handelt
+   * @return Buchung die Hauptbuchung
+   * @throws RemoteException
+   */
+  public Buchung getSplitHauptBuchung() throws RemoteException;
   
   /**
    * Falls mit dieser Buchung ein Anlagegut erzeugt wurde, liefert es die Funktion.

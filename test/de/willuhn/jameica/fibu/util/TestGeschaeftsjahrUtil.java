@@ -63,6 +63,7 @@ public class TestGeschaeftsjahrUtil
   public void testMonths() throws Exception
   {
     Assert.assertEquals(12,prepareMonths("01.01.2017","31.12.2017"));
+    Assert.assertEquals(12,prepareMonths("31.10.2023","30.10.2024"));
     Assert.assertEquals(6,prepareMonths("01.07.2017","31.12.2017"));
     Assert.assertEquals(6,prepareMonths("01.07.2017","01.12.2017"));
     Assert.assertEquals(11,prepareMonths("01.01.2017","30.11.2017"));

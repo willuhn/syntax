@@ -54,7 +54,7 @@ public class SteuerList extends TablePart
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
     addColumn(i18n.tr("Name"),"name");
     addColumn(i18n.tr("Steuersatz"),"satz",new CurrencyFormatter("%",Settings.DECIMALFORMAT));
-    addColumn(i18n.tr("Steuer-Sammelkonto"),"steuerkonto_id", new Formatter() {
+    addColumn(i18n.tr("Steuer-Sammelkonto"),"steuerKonto", new Formatter() {
       public String format(Object o)
       {
         if (o == null || !(o instanceof Konto))
@@ -92,7 +92,7 @@ public class SteuerList extends TablePart
         }
       }
     });
-    setContextMenu(new SteuerListMenu());
+    setContextMenu(new SteuerListMenu(mandant));
     setRememberColWidths(true);
     setRememberOrder(true);
   }

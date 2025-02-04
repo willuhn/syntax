@@ -18,6 +18,7 @@ import de.willuhn.jameica.fibu.gui.action.BuchungImport;
 import de.willuhn.jameica.fibu.gui.action.BuchungMarkChecked;
 import de.willuhn.jameica.fibu.gui.action.BuchungNeu;
 import de.willuhn.jameica.fibu.gui.action.BuchungReversal;
+import de.willuhn.jameica.fibu.gui.action.BuchungSplitNeu;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.parts.CheckedContextMenuItem;
@@ -45,6 +46,7 @@ public class BuchungListMenu extends ContextMenu
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new SingleItem(i18n.tr("Duplizieren..."), new BuchungDuplicate(),"edit-copy.png"));
     this.addItem(new SingleItem(i18n.tr("Storno-Buchung erstellen..."), new BuchungReversal(),"view-refresh.png"));
+    this.addItem(new SingleItem(i18n.tr("Buchung aufteilen (Split)..."), new BuchungSplitNeu(),"emblem-documents.png"));
     this.addItem(ContextMenuItem.SEPARATOR);
     this.addItem(new GeprueftItem(i18n.tr("Als \"geprüft\" markieren"), new BuchungMarkChecked(true),false,"emblem-default.png"));
     this.addItem(new GeprueftItem(i18n.tr("Als \"ungeprüft\" markieren"), new BuchungMarkChecked(false),true,"edit-undo.png"));
@@ -72,7 +74,7 @@ public class BuchungListMenu extends ContextMenu
      */
     public boolean isEnabledFor(Object o)
     {
-      if (o instanceof Buchung[])
+      if (o == null || o instanceof Buchung[])
         return false;
       return super.isEnabledFor(o);
     }

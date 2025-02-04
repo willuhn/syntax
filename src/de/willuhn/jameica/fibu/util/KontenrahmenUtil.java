@@ -58,8 +58,9 @@ public class KontenrahmenUtil
       throw new ApplicationException(i18n.tr("Bitte wählen Sie einen Kontenrahmen als Vorlage aus"));
     
     // Wenn kein Mandant angegeben ist, muessen wir das Aendern des Systemkontenrahmens kurzzeitig freigeben
+    //Auch wenn ein Mandant angegeben ist, da die Konten im neuen Kontenrahemn als Systemkonten gespeichert werden
     boolean sysdataWritable = Settings.getSystemDataWritable();
-    if (mandant == null && !sysdataWritable)
+    if (!sysdataWritable)
     {
       Logger.info("activating change support for system data");
       Settings.setSystemDataWritable(true);
@@ -111,7 +112,7 @@ public class KontenrahmenUtil
         Konto k   = (Konto) service.createObject(Konto.class,null);
         k.overwrite(kt);
         k.setKontenrahmen(kr);
-        k.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
+        k.setMandant(kt.getMandant() != null ? mandant : null);
 
         // ggf. vorhandener Steuersatz
         Steuer st = kt.getSteuer();
@@ -124,7 +125,7 @@ public class KontenrahmenUtil
             // Haben wir noch nicht, also anlegen
             s = (Steuer) service.createObject(Steuer.class,null);
             s.overwrite(st);
-            s.setMandant(null); // den ggf. vorher vorhandenen Mandanten entfernen
+            s.setMandant(st.getMandant() != null ? mandant : null);
             s.store();
             steuerCache.put(st.getID(),s);
           }

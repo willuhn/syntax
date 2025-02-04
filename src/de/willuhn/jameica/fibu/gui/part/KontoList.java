@@ -26,6 +26,7 @@ import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.gui.menus.KontoListMenu;
+import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.util.KontoUtil;
@@ -53,14 +54,15 @@ public class KontoList extends TablePart implements Extendable
   private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(KontoList.class);
   
-  private String query             = null;
-  private TextInput search         = null;
-  private CheckboxInput filter     = null;
-  private DelayedListener listener = null;
+  private String query                           = null;
+  private TextInput search                       = null;
+  private CheckboxInput onlyAccountsWithBookings = null;
+  private CheckboxInput onlyAccountsWithSaldo    = null;
+  private DelayedListener listener               = null;
   
-  private List<Konto> list         = null;
+  private List<Konto> list                       = null;
 
-  private boolean filterEnabled = true;
+  private boolean filterEnabled                  = true;
 
   /**
    * @param mandant der Mandant.
@@ -154,8 +156,9 @@ public class KontoList extends TablePart implements Extendable
       TextInput text = this.getText();
       
       container.addInput(text);
-      container.addInput(this.getFilter());
-
+      container.addInput(this.getOnlyAccountsWithBookings());
+      container.addInput(this.getOnlyAccountsWithSaldo());
+      
       // Nach dem Rendern noch den delayed Listener dran haengen
       text.getControl().addKeyListener(new KeyAdapter() {
         public void keyReleased(KeyEvent e)
@@ -172,24 +175,47 @@ public class KontoList extends TablePart implements Extendable
    * Liefert eine Checkbox fuer "Nur Konten mit Buchungen anzeigen".
    * @return Checkbox.
    */
-  private CheckboxInput getFilter()
+  private CheckboxInput getOnlyAccountsWithBookings()
   {
-    if (this.filter != null)
-      return this.filter;
+    if (this.onlyAccountsWithBookings != null)
+      return this.onlyAccountsWithBookings;
     
-    this.filter = new CheckboxInput(settings.getBoolean("filter.checksaldo.enabled",false));
-    this.filter.setName(i18n.tr("Nur Konten mit Buchungen anzeigen"));
+    // Der Name des Parameters passt 
+    this.onlyAccountsWithBookings = new CheckboxInput(settings.getBoolean("filter.checkbookings.enabled",false));
+    this.onlyAccountsWithBookings.setName(i18n.tr("Nur Konten mit Buchungen anzeigen"));
     
     // Hier gibts kein Delay
-    this.filter.addListener(new Listener() {
+    this.onlyAccountsWithBookings.addListener(new Listener() {
       public void handleEvent(Event event)
       {
         reload();
       }
     });
-    return this.filter;
+    return this.onlyAccountsWithBookings;
   }
   
+  /**
+   * Liefert eine Checkbox fuer "Nur Konten mit Saldo != 0".
+   * @return Checkbox.
+   */
+  private CheckboxInput getOnlyAccountsWithSaldo()
+  {
+    if (this.onlyAccountsWithSaldo != null)
+      return this.onlyAccountsWithSaldo;
+    
+    this.onlyAccountsWithSaldo = new CheckboxInput(settings.getBoolean("filter.checksaldo.enabled",false));
+    this.onlyAccountsWithSaldo.setName(i18n.tr("Nur Konten mit Saldo ungleich 0 anzeigen"));
+    
+    // Hier gibts kein Delay
+    this.onlyAccountsWithSaldo.addListener(new Listener() {
+      public void handleEvent(Event event)
+      {
+        reload();
+      }
+    });
+    return this.onlyAccountsWithSaldo;
+  }
+
   /**
    * Liefert ein Eingabefeld fuer einen Suchbegriff.
    * @return Eingabefeld.
@@ -226,7 +252,10 @@ public class KontoList extends TablePart implements Extendable
     String text = (String) getText().getValue();
     if (text != null) text = text.toLowerCase();
 
-    boolean checkSaldo = ((Boolean)getFilter().getValue()).booleanValue();
+    boolean checkBookings = ((Boolean)getOnlyAccountsWithBookings().getValue()).booleanValue();
+    settings.setAttribute("filter.checkbookings.enabled",checkBookings);
+
+    boolean checkSaldo = ((Boolean)getOnlyAccountsWithSaldo().getValue()).booleanValue();
     settings.setAttribute("filter.checksaldo.enabled",checkSaldo);
 
     String name = null;
@@ -234,15 +263,23 @@ public class KontoList extends TablePart implements Extendable
 
     try
     {
-      final Set<String> set = checkSaldo ? KontoUtil.getKontenMitBuchungen(Settings.getActiveGeschaeftsjahr()) : null;
+      final Geschaeftsjahr gj = Settings.getActiveGeschaeftsjahr();
+      final Set<String> set = checkBookings ? KontoUtil.getKontenMitBuchungen(gj) : null;
 
       for (Konto k:this.list)
       {
         try
         {
           // BUGZILLA 128
-          if (checkSaldo && set != null && !set.contains(k.getID()))
+          if (checkBookings && set != null && !set.contains(k.getID()))
             continue;
+          
+          if (checkSaldo)
+          {
+            final Double d = k.getSaldo(gj);
+            if (Math.abs(d.doubleValue()) < 0.01d)
+              continue;
+          }
 
           // Was zum Filtern da?
           if (text == null || text.length() == 0)

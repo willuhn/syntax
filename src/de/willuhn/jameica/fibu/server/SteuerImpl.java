@@ -135,6 +135,17 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
   }
 
   /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("steuerKonto".equals(arg0))
+      return this.getSteuerKonto();
+    
+    return super.getAttribute(arg0);
+  }
+
+  /**
    * @see de.willuhn.jameica.fibu.rmi.Steuer#getSteuerKonto()
    */
   public Konto getSteuerKonto() throws RemoteException

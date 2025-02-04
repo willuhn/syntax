@@ -68,8 +68,10 @@ CREATE TABLE IF NOT EXISTS buchung (
   belegnummer int(10) NOT NULL,
   betrag double NOT NULL,
   steuer double,
+  steuer_id int(10) NULL,
   geschaeftsjahr_id int(10) NOT NULL,
   buchung_id int(10),
+  split_id INT(10) NULL,
   geprueft int(1) NULL,
   hb_umsatz_id varchar(7),
   kommentar text NULL,
@@ -87,6 +89,7 @@ CREATE TABLE IF NOT EXISTS buchungstemplate (
   kontenrahmen_id int(10) NULL,
   betrag double NULL,
   steuer double NULL,
+  steuer_id int(10) NULL,
   hb_umsatztyp_id varchar(10),
   UNIQUE (id),
   PRIMARY KEY (id)
@@ -173,6 +176,16 @@ CREATE TABLE IF NOT EXISTS abschreibung (
   PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS kontozuordnung (
+  id int(10) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  mandant_id int(10) NOT NULL,
+  konto_id int(10) NOT NULL,
+  hb_konto_id int(10) NOT NULL,
+  UNIQUE (id),
+  PRIMARY KEY (id)
+) ENGINE = InnoDB;
+  
 CREATE INDEX idx_kr_mandant           ON kontenrahmen(mandant_id);
 
 CREATE INDEX idx_steuer_steuerkonto   ON steuer(steuerkonto_id);
@@ -229,11 +242,14 @@ ALTER TABLE buchung ADD CONSTRAINT fk_buchung_sk FOREIGN KEY (sollkonto_id) REFE
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_gj FOREIGN KEY (geschaeftsjahr_id) REFERENCES geschaeftsjahr (id);
 ALTER TABLE buchung ADD CONSTRAINT fk_buchung_self FOREIGN KEY (buchung_id) REFERENCES buchung (id);
+ALTER TABLE buchung add CONSTRAINT fk_buchung_buchung FOREIGN KEY (split_id) REFERENCES buchung (id);
+ALTER TABLE buchung add CONSTRAINT fk_buchung_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_sk FOREIGN KEY (sollkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_hk FOREIGN KEY (habenkonto_id) REFERENCES konto (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);
 ALTER TABLE buchungstemplate ADD CONSTRAINT fk_buchungt_kr FOREIGN KEY (kontenrahmen_id) REFERENCES kontenrahmen (id);
+ALTER TABLE buchungstemplate add CONSTRAINT fk_buchungstemplate_steuer FOREIGN KEY (steuer_id) REFERENCES steuer (id);
 
 ALTER TABLE mandant ADD CONSTRAINT fk_mandant_fa FOREIGN KEY (finanzamt_id) REFERENCES finanzamt (id);
 
@@ -251,3 +267,6 @@ ALTER TABLE geschaeftsjahr ADD CONSTRAINT fk_gj_self FOREIGN KEY (vorjahr_id) RE
 
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_av FOREIGN KEY (av_id) REFERENCES anlagevermoegen (id);
 ALTER TABLE abschreibung ADD CONSTRAINT fk_abschreibung_buchung FOREIGN KEY (buchung_id) REFERENCES buchung (id);
+
+ALTER TABLE kontozuordnung ADD CONSTRAINT FK_kontozuordnung_konto FOREIGN KEY (konto_id) REFERENCES konto (id);
+ALTER TABLE kontozuordnung ADD CONSTRAINT FK_kontozuordnung_mandant FOREIGN KEY (mandant_id) REFERENCES mandant (id);

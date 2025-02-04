@@ -11,10 +11,16 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
+import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
+import de.willuhn.jameica.fibu.rmi.Kontoart;
+import de.willuhn.jameica.fibu.rmi.Kontotyp;
+import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -94,6 +100,63 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
 
     return 0;
   }
+  
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#getSteuerObject()
+   */
+  public Steuer getSteuerObject() throws RemoteException
+  {
+	//wenn eine steuer_id angegeben ist, diese verwenden
+	Object o = super.getAttribute("steuer_id");
+	if (o != null)
+	{
+		Cache cache = Cache.get(Steuer.class,true);
+		return (Steuer) cache.get(o);
+	}
+	
+	if(getSollKonto() == null || getHabenKonto() == null)
+		return null;
+	
+	//Das zu verwendende Steruersammelkonto anhand des Steuersatzes ermitteln
+    Steuer sSteuer = getSollKonto().getSteuer();
+    Steuer hSteuer = getHabenKonto().getSteuer();
+    Steuer steuer = null;
+    boolean erloes = false;
+    if(sSteuer != null)
+    {
+    	steuer = sSteuer;
+    	erloes = getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
+    }
+    else if(hSteuer != null)
+    {
+    	steuer = hSteuer;
+    	erloes = getHabenKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
+    }
+    //Buchungen auf Konten ohne Steuer konnten auch bisher keine Steuer haben
+    if(steuer == null)
+    	return null;
+    
+    if(steuer.getSatz() == getSteuer())
+    	return steuer;
+    
+    //Steuersatz nicht der des Kontos, wir suchen das richtige Steuerobjekt
+    DBIterator<Steuer> list = Settings.getDBService().createList(Steuer.class);
+    list.addFilter("satz = ?",new Double(getSteuer()));
+    Kontenrahmen kr = getSollKonto().getKontenrahmen();
+    while(list.hasNext())
+    {
+    	Steuer s = list.next();
+	    Konto k = s.getSteuerKonto();
+	    if (k == null)
+	      continue;
+	    
+    	if(BeanUtil.equals(k.getKontenrahmen(),kr) 
+    			&& ((s.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE && !erloes)
+    			|| (s.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME && erloes)))
+    		return s;
+    }
+	return null;
+  }
 
   /**
    * @see de.willuhn.jameica.fibu.rmi.Transfer#setSollKonto(de.willuhn.jameica.fibu.rmi.Konto)
@@ -135,6 +198,29 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     setAttribute("steuer", new Double(steuer));
   }
 
+
+  /**
+   * @see de.willuhn.jameica.fibu.rmi.Transfer#setSteuerObject(Steuer)
+   */
+  public void setSteuerObject(Steuer steuer) throws RemoteException
+  {
+    setAttribute("steuer_id",steuer == null || steuer.getID() == null ? null : new Integer(steuer.getID()));
+  }
+  
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#getAttribute(java.lang.String)
+   */
+  public Object getAttribute(String arg0) throws RemoteException
+  {
+    if ("habenKonto".equals(arg0))
+      return this.getHabenKonto();
+    
+    if ("sollKonto".equals(arg0))
+      return this.getSollKonto();
+    
+    return super.getAttribute(arg0);
+  }
+  
   /**
    * @see de.willuhn.datasource.rmi.Changeable#store()
    */

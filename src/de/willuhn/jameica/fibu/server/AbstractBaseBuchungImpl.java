@@ -59,12 +59,6 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
     if ("toString".equals(arg0))
       return i18n.tr("Buchung Nr. {0}",Integer.toString(getBelegnummer()));
     
-    if ("habenKonto".equals(arg0))
-      return this.getHabenKonto();
-    
-    if ("sollKonto".equals(arg0))
-      return this.getSollKonto();
-    
     return super.getAttribute(arg0);
   }
 
@@ -239,7 +233,7 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   public String getKommentar() throws RemoteException
   {
-    return (String) this.getAttribute("kommentar");
+   return (String) this.getAttribute("kommentar");
   }
   
   /**

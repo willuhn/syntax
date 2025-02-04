@@ -1,0 +1,10 @@
+<form>
+	<p>
+		<span color="header" font="header">Kontozuordnungen</span>
+	</p>
+
+  <p>
+    Bei der Übernahme von Umsatzbuchungen aus Hibiscus per Buchungsvorlage können hier für einzelne Hibiscus-Konten abweichende Geld-Konten in SynTAX zugeordnet werden. Das ermöglicht die Führung unterschiedlicher Bankkonten in SynTAX.
+  </p>
+  
+</form>

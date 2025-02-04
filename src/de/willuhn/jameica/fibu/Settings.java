@@ -270,6 +270,16 @@ public class Settings
     }
     return db;
   }
+  
+  /**
+   * Legt den DB-Service fest - nötig für die Java-basierten Datenbank-Updates.
+   * @param s der Service.
+   */
+  public static void setDBService(DBService s)
+  {
+    db = s;
+  }
+  
 
   /**
 	 * Liefert den Datenbank-Service.
@@ -477,6 +487,15 @@ public class Settings
   public static void setUseExistingGjOnClose(boolean b)
   {
     SETTINGS.setAttribute("gj.close.use-existing",b);
+  }
+  
+  /**
+   * Liefert den SQL-String für die Sortierung der Konten.
+   * @return SQL-String für die Sortierung der Konten.
+   */
+  public static String getAccountOrder()
+  {
+    return SETTINGS.getString("accounts.order-by","order by kontonummer");
   }
   
 }

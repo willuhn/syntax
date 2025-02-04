@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.DBSupport;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
@@ -34,6 +35,10 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSupport
 {
+  private final static String DRIVER_MARIADB   = "org.mariadb.jdbc.Driver";
+  private final static String DRIVER_MYSQL     = "com.mysql.cj.jdbc.Driver";
+  private final static String DRIVER_MYSQL_OLD = "com.mysql.jdbc.Driver";
+
   /**
    * @see de.willuhn.datasource.GenericObject#getID()
    */
@@ -96,7 +101,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
       }
       
       // Wir schauen mal, ob vielleicht schon Tabellen existieren
-      rs = conn.getMetaData().getTables(null,null,null,null);
+      rs = conn.getMetaData().getTables(dbname,null,null,null);
       if (rs.next())
       {
         Logger.warn("database seems to exist, skip database creation");
@@ -206,7 +211,12 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcUrl() throws RemoteException
   {
-    return "jdbc:mysql://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
+    final String url = Settings.SETTINGS.getString("database.jdbcurl",null);
+    if (url != null && url.length() > 0)
+      return url;
+
+    final String proto = Settings.SETTINGS.getString("database.support.mysqltype","mariadb");
+    return "jdbc:" + proto + "://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&useUnicode=true&characterEncoding=ISO8859_1";
   }
 
   /**
@@ -214,7 +224,43 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcDriver() throws RemoteException
   {
-    return "com.mysql.jdbc.Driver";
+    // Checken, ob explizit ein Treiber angegeben ist:
+    String s = Settings.SETTINGS.getString("database.support.driver",null);
+    if (s != null && s.length() > 0)
+    {
+      Logger.info("using user-configured JDBC driver: " + s);
+      return s;
+    }
+
+    Logger.info("try to determine JDBC driver");
+    
+    // Wir versuchen, den passenden Treiber automatisch zu ermitteln.
+    final String url = this.getJdbcUrl();
+    String driver = null;
+    if (url.startsWith("jdbc:mariadb"))
+    {
+      driver = DRIVER_MARIADB;
+    }
+    else
+    {
+      // Checken, welchen von beiden Treibern wir haben
+      try
+      {
+        // Können wir den neuen laden?
+        Class.forName(DRIVER_MYSQL);
+        driver = DRIVER_MYSQL;
+      }
+      catch (Throwable t)
+      {
+        // OK, dann den alten Treiber
+        driver = DRIVER_MYSQL_OLD;
+      }
+    }
+    
+    Logger.info("auto-detected JDBC driver: " + driver);
+    return driver;
+
+    
   }
 
   /**
