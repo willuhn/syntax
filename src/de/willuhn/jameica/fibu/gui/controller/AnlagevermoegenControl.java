@@ -439,7 +439,7 @@ public class AnlagevermoegenControl extends AbstractControl
         {
           if (((Boolean)d.open()).booleanValue())
           {
-            getLaufzeit().setValue(new Integer(1));
+            getLaufzeit().setValue(Integer.valueOf(1));
             nutzungsdauer = 1;
  
             if (ka != null && !ka.equals(abschreibung))
@@ -568,105 +568,3 @@ public class AnlagevermoegenControl extends AbstractControl
     }
   }
 }
-
-
-/*********************************************************************
- * $Log: AnlagevermoegenControl.java,v $
- * Revision 1.26  2012/01/29 22:09:14  willuhn
- * @N Neues DateInput verwenden statt manuellen CalendarDialog (mit DialogInput)
- *
- * Revision 1.25  2011-05-12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.24  2010-09-20 10:27:36  willuhn
- * @N Neuer Status fuer Anlagevermoegen - damit kann ein Anlagegut auch dann noch in der Auswertung erscheinen, wenn es zwar abgeschrieben ist aber sich noch im Bestand befindet. Siehe http://www.onlinebanking-forum.de/phpBB2/viewtopic.php?p=69910#69910
- *
- * Revision 1.23  2010-09-20 09:19:06  willuhn
- * @B minor gui fixes
- *
- * Revision 1.22  2010-06-04 00:33:56  willuhn
- * @B Debugging
- * @N Mehr Icons
- * @C GUI-Cleanup
- *
- * Revision 1.21  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.20  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.19.2.1  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
- *
- * Revision 1.19  2006/05/30 23:22:55  willuhn
- * @C Redsign beim Laden der Buchungen. Jahresabschluss nun korrekt
- *
- * Revision 1.18  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.17  2006/01/06 15:17:08  willuhn
- * @C Abschreibungskonto
- *
- * Revision 1.16  2006/01/06 00:05:51  willuhn
- * @N MySQL Support
- *
- * Revision 1.15  2006/01/04 00:53:48  willuhn
- * @B bug 166 Ausserplanmaessige Abschreibungen
- *
- * Revision 1.14  2006/01/03 23:58:35  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.13  2006/01/03 17:55:53  willuhn
- * @N a lot more checks
- * @B NPEs
- * @N BuchungsTemplates pro Mandant/Kontenrahmen
- * @N Default-Geschaeftsjahr in init.sql verschoben
- * @N Handling von Eingabe von Altbestaenden im AV
- *
- * Revision 1.12  2006/01/02 23:50:58  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2005/10/06 22:27:16  willuhn
- * @N KontoInput
- *
- * Revision 1.10  2005/10/06 17:27:59  willuhn
- * @N KontoInput
- * @N Einstellungen
- *
- * Revision 1.9  2005/09/26 23:52:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2005/09/02 17:35:07  willuhn
- * @N Kontotyp
- * @N Betriebsergebnis
- *
- * Revision 1.7  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.6  2005/09/01 21:18:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2005/08/29 22:26:19  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.4  2005/08/29 21:37:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2005/08/29 15:20:51  willuhn
- * @B bugfixing
- *
- * Revision 1.2  2005/08/29 14:54:28  willuhn
- * @B bugfixing
- *
- * Revision 1.1  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- **********************************************************************/

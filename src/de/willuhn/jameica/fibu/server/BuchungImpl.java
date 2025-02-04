@@ -188,12 +188,12 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
   public Object getAttribute(String arg0) throws RemoteException
   {
     if ("bruttoBetrag".equals(arg0) || "brutto".equals(arg0))
-      return new Double(getBruttoBetrag());
+      return Double.valueOf(getBruttoBetrag());
     return super.getAttribute(arg0);
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Buchung#setSplitBuchung()
+   * @see de.willuhn.jameica.fibu.rmi.Buchung#setSplitBuchung(java.lang.String)
    */
   public void setSplitBuchung(String id) throws RemoteException{
 	    setAttribute("split_id",id);
@@ -352,97 +352,3 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
     setAttribute("hb_umsatz_id",id);
   }
 }
-
-
-/*********************************************************************
- * $Log: BuchungImpl.java,v $
- * Revision 1.56  2011/05/12 09:10:32  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.55  2010-10-24 22:29:37  willuhn
- * @C Brutto-Betrag bei Buchungen mit exportieren
- *
- * Revision 1.54  2010-10-22 14:31:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.53  2010-10-22 11:47:30  willuhn
- * @B Keine Doppelberechnung mehr in der Buchungserfassung (brutto->netto->brutto)
- *
- * Revision 1.52  2009-07-03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.51.2.1  2008/06/25 09:40:02  willuhn
- * @B Buchungsnummer wurde unter Umstaenden nicht korrekt angezeigt
- *
- * Revision 1.51  2006/10/23 22:33:20  willuhn
- * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
- *
- * Revision 1.50  2006/10/09 23:48:41  willuhn
- * @B bug 140
- *
- * Revision 1.49  2006/05/29 17:30:26  willuhn
- * @N a lot of debugging
- *
- * Revision 1.48  2006/05/08 22:44:18  willuhn
- * @N Debugging
- *
- * Revision 1.47  2006/05/08 15:41:57  willuhn
- * @N Buchungen als geprueft/ungeprueft markieren
- * @N Link Anlagevermoegen -> Buchung
- *
- * Revision 1.46  2006/01/08 15:28:40  willuhn
- * @N Loeschen von Sonderabschreibungen
- *
- * Revision 1.45  2006/01/03 23:58:35  willuhn
- * @N Afa- und GWG-Handling
- *
- * Revision 1.44  2005/10/06 14:48:40  willuhn
- * @N Sonderregelung fuer Abschreibunsgbuchungen
- *
- * Revision 1.43  2005/09/25 22:05:09  willuhn
- * @B bug 121
- *
- * Revision 1.42  2005/09/24 13:00:13  willuhn
- * @B bugfixes according to bugzilla
- *
- * Revision 1.41  2005/09/05 15:00:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.40  2005/09/05 13:47:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.39  2005/09/02 13:27:35  willuhn
- * @C transaction behavior
- *
- * Revision 1.38  2005/09/02 11:26:41  willuhn
- * *** empty log message ***
- *
- * Revision 1.37  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.36  2005/08/30 22:51:31  willuhn
- * @B bugfixing
- *
- * Revision 1.35  2005/08/29 14:26:56  willuhn
- * @N Anlagevermoegen, Abschreibungen
- *
- * Revision 1.34  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.33  2005/08/24 23:02:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.32  2005/08/22 23:13:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.31  2005/08/22 21:44:09  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.30  2005/08/15 23:38:27  willuhn
- * *** empty log message ***
- *
- * Revision 1.29  2005/08/12 00:10:59  willuhn
- * @B bugfixing
- *
- **********************************************************************/

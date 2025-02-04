@@ -57,7 +57,7 @@ public class KontoUtil
           }
         };
         
-        service.execute(sql, new Object[] {new Integer(jahr.getID())},rs);
+        service.execute(sql, new Object[] {Integer.valueOf(jahr.getID())},rs);
       }
     }
     catch (Exception e)

@@ -169,7 +169,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public double getBetrag() throws RemoteException
   {
-    Double d = (Double) getAttribute("betrag");
+    Number d = (Number) getAttribute("betrag");
     return d == null ? 0.0d : d.doubleValue();
   }
 
@@ -178,7 +178,7 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   public void setBetrag(double betrag) throws RemoteException
   {
-    setAttribute("betrag",new Double(betrag));
+    setAttribute("betrag",Double.valueOf(betrag));
   }
 
   /**
@@ -193,59 +193,3 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
     return super.getForeignObject(arg0);
   }
 }
-
-
-/*********************************************************************
- * $Log: AnfangsbestandImpl.java,v $
- * Revision 1.18  2011/12/08 22:12:41  willuhn
- * @N BUGZILLA 1153
- *
- * Revision 1.17  2009-07-03 10:52:19  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.15  2007/02/27 18:40:14  willuhn
- * @B fehlender updateCheck Aufruf
- *
- * Revision 1.14  2007/02/27 18:30:23  willuhn
- * @R removed debug output
- *
- * Revision 1.13  2007/02/27 18:28:33  willuhn
- * @B fehlender updateCheck Aufruf
- *
- * Revision 1.12  2007/02/27 18:17:32  willuhn
- * @B Anfangsbestaende nur von Anlage- und Geldkonten erzeugen
- *
- * Revision 1.11  2005/10/18 23:28:55  willuhn
- * @N client/server tauglichkeit
- *
- * Revision 1.10  2005/09/26 23:51:59  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2005/09/01 23:07:17  willuhn
- * @B bugfixing
- *
- * Revision 1.8  2005/08/30 22:51:31  willuhn
- * @B bugfixing
- *
- * Revision 1.7  2005/08/29 17:46:14  willuhn
- * @N Jahresabschluss
- *
- * Revision 1.6  2005/08/29 14:54:28  willuhn
- * @B bugfixing
- *
- * Revision 1.5  2005/08/29 12:17:29  willuhn
- * @N Geschaeftsjahr
- *
- * Revision 1.4  2005/08/28 01:08:03  willuhn
- * @N buchungsjournal
- *
- * Revision 1.3  2005/08/22 23:13:26  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2005/08/22 21:44:08  willuhn
- * @N Anfangsbestaende
- *
- * Revision 1.1  2005/08/22 16:37:22  willuhn
- * @N Anfangsbestaende
- *
- **********************************************************************/
