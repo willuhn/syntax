@@ -1,5 +1,8 @@
 HEAD 2.11 (nightly)
 
+2025-02-04 Version 2.10.5
+
+  * NEW: Passenden MariaDB/MySQL-Treiber automatisch ermitteln
   * BUG: Berechnung der Anzahl von Monaten im Geschäftsjahr falsch, wenn Startdatum Ultimo ist
   * NEW: Unterstützung von Split-Buchungen - siehe https://github.com/willuhn/syntax/pull/5
   * NEW: Effizienteres Laden der Buchungen - für Ermittlung der Bruttobeträge nicht mehr für jede Hauptbuchung die Hilfsbuchungen einzeln ermitteln

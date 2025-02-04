@@ -35,6 +35,10 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSupport
 {
+  private final static String DRIVER_MARIADB   = "org.mariadb.jdbc.Driver";
+  private final static String DRIVER_MYSQL     = "com.mysql.cj.jdbc.Driver";
+  private final static String DRIVER_MYSQL_OLD = "com.mysql.jdbc.Driver";
+
   /**
    * @see de.willuhn.datasource.GenericObject#getID()
    */
@@ -212,7 +216,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
       return url;
 
     final String proto = Settings.SETTINGS.getString("database.support.mysqltype","mariadb");
-    return "jdbc:" + proto + "://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&amp;useUnicode=true&amp;characterEncoding=ISO8859_1";
+    return "jdbc:" + proto + "://" + getHostname() + ":" + getTcpPort() + "/" + getDatabaseName() + "?dumpQueriesOnException=true&useUnicode=true&characterEncoding=ISO8859_1";
   }
 
   /**
@@ -220,7 +224,43 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl implements DBSuppo
    */
   public String getJdbcDriver() throws RemoteException
   {
-    return Settings.SETTINGS.getString("database.support.driver","org.mariadb.jdbc.Driver");
+    // Checken, ob explizit ein Treiber angegeben ist:
+    String s = Settings.SETTINGS.getString("database.support.driver",null);
+    if (s != null && s.length() > 0)
+    {
+      Logger.info("using user-configured JDBC driver: " + s);
+      return s;
+    }
+
+    Logger.info("try to determine JDBC driver");
+    
+    // Wir versuchen, den passenden Treiber automatisch zu ermitteln.
+    final String url = this.getJdbcUrl();
+    String driver = null;
+    if (url.startsWith("jdbc:mariadb"))
+    {
+      driver = DRIVER_MARIADB;
+    }
+    else
+    {
+      // Checken, welchen von beiden Treibern wir haben
+      try
+      {
+        // Können wir den neuen laden?
+        Class.forName(DRIVER_MYSQL);
+        driver = DRIVER_MYSQL;
+      }
+      catch (Throwable t)
+      {
+        // OK, dann den alten Treiber
+        driver = DRIVER_MYSQL_OLD;
+      }
+    }
+    
+    Logger.info("auto-detected JDBC driver: " + driver);
+    return driver;
+
+    
   }
 
   /**
