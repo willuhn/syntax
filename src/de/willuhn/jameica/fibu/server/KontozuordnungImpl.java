@@ -3,18 +3,22 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontozuordnung;
 import de.willuhn.jameica.fibu.rmi.Mandant;
-import de.willuhn.jameica.hbci.Settings;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
+/**
+ * Konto-Zuordnungen.
+ */
 public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuordnung
 {
 
   /**
    * Erzeugt eine neue Kontozuordnung
+   * @throws RemoteException
    */
   public KontozuordnungImpl() throws RemoteException
   {
@@ -46,7 +50,7 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setName()
+   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setName(java.lang.String)
    */
   public void setName(String name) throws RemoteException
   {
@@ -63,7 +67,7 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setKonto(de.willuhn.jameica.fibu.rmi.Konto)
    */
   public void setKonto(Konto konto) throws RemoteException
   {
@@ -80,31 +84,38 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
   }
 
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setMandant()
+   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setMandant(de.willuhn.jameica.fibu.rmi.Mandant)
    */
   public void setMandant(Mandant mandant) throws RemoteException
   {
     setAttribute("mandant_id", mandant);
 
   }
-
+  
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#getHbKonto()
+   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#getHibiscusKontoId()
    */
-  public de.willuhn.jameica.hbci.rmi.Konto getHbKonto() throws RemoteException
+  @Override
+  public String getHibiscusKontoId() throws RemoteException
   {
-    String s = null;
-    if (getAttribute("hb_konto_id") != null)
-      s = getAttribute("hb_konto_id").toString();
-    return (de.willuhn.jameica.hbci.rmi.Konto) Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class, s);
+    Integer id = (Integer) getAttribute("hb_konto_id");
+    return id == null ? null : id.toString();
   }
-
+  
   /**
-   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setHbKonto(de.willuhn.jameica.hbci.rmi.Konto)
+   * @see de.willuhn.jameica.fibu.rmi.Kontozuordnung#setHibiscusKontoId(java.lang.String)
    */
-  public void setHbKonto(de.willuhn.jameica.hbci.rmi.Konto hbKonto_id) throws RemoteException
+  @Override
+  public void setHibiscusKontoId(String id) throws RemoteException
   {
-    setAttribute("hb_konto_id", hbKonto_id.getID());
+    try
+    {
+      setAttribute("hb_konto_id",id != null ? Integer.parseInt(id) : null);
+    }
+    catch (Exception e)
+    {
+      Logger.error("invalid hb_konto_id",e);
+    }
   }
 
   /**
@@ -112,6 +123,9 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try
     {
       if (getName() == null || getName().length() == 0)
@@ -119,17 +133,19 @@ public class KontozuordnungImpl extends AbstractTransferImpl implements Kontozuo
 
       // Falls eine Konto-Kategorie zugeordnet ist, checken wir, ob
       // nicht schon eine andere Vorlage dieser zugeordnet ist.
-      if (this.getHbKonto() != null)
+      final String hid = this.getHibiscusKontoId();
+      if (hid != null)
       {
         DBIterator list = this.getService().createList(Kontozuordnung.class);
-        list.addFilter("hb_konto_id = " + this.getHbKonto().getID());
-        list.addFilter("mandant_id = " + this.getMandant().getID());
+        list.addFilter("hb_konto_id = ?",hid);
+        list.addFilter("mandant_id = ?",this.getMandant().getID());
         if (!this.isNewObject())
-          list.addFilter("id != " + this.getID()); // Natuerlich duerfen wir uns selbst nicht finden ;)
+          list.addFilter("id != ?,",this.getID()); // Natuerlich duerfen wir uns selbst nicht finden ;)
+        
         if (list.hasNext())
         {
-          Kontozuordnung t = (Kontozuordnung) list.next();
-          throw new ApplicationException(i18n.tr("Dem Hibiscus-Konto ist bereits die Vorlage \"{0}\" zugeordnet", t.getName()));
+          final Kontozuordnung t = (Kontozuordnung) list.next();
+          throw new ApplicationException(i18n.tr("Dem Hibiscus-Konto ist bereits \"{0}\" zugeordnet", t.getName()));
         }
       }
     } catch (RemoteException e)

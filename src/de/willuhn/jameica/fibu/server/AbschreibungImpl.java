@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
@@ -107,6 +108,9 @@ public class AbschreibungImpl extends AbstractDBObject implements Abschreibung
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+      
     try
     {
       Geschaeftsjahr jahr = ((DBService)getService()).getActiveGeschaeftsjahr();

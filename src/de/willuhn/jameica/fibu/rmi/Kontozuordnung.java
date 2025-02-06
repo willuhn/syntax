@@ -2,12 +2,13 @@ package de.willuhn.jameica.fibu.rmi;
 
 import java.rmi.RemoteException;
 
-/*
+/**
  * Zuordnung der Hibiscus Konten zu Syntax Konten.
  * Bei der Verwendung von Buchungstemplates wird 
  * die Buchung dem Richtigen Geldkonto zugeordnet
  */
-public interface Kontozuordnung extends Transfer{
+public interface Kontozuordnung extends Transfer
+{
 	 /**
 	   * Liefert einen sprechenden Namen fuer die Kontozuordnung.
 	   * @return Name.
@@ -17,7 +18,7 @@ public interface Kontozuordnung extends Transfer{
 	  
 	  /**
 	   * Setzt den sprechenden Namen fuer die Kontozuordnung.
-	   * @param Name.
+	   * @param name Name.
 	   * @throws RemoteException
 	   */
 	  public void setName(String name) throws RemoteException;
@@ -30,11 +31,11 @@ public interface Kontozuordnung extends Transfer{
 	  public Konto getKonto() throws RemoteException;
 	  
 	  /**
-	   * Setzt den Mandanten.
-	   * @param Mandant.
+	   * Setzt das Konto.
+	   * @param konto das Konto.
 	   * @throws RemoteException
 	   */
-	  public void setKonto(Konto name) throws RemoteException;
+	  public void setKonto(Konto konto) throws RemoteException;
 	  
 	  /**
 	   * Liefert den Mandanten.
@@ -45,22 +46,22 @@ public interface Kontozuordnung extends Transfer{
 	  
 	  /**
 	   * Setzt den Mandanten.
-	   * @param Mandant.
+	   * @param mandant Mandant.
 	   * @throws RemoteException
 	   */
 	  public void setMandant(Mandant mandant) throws RemoteException;
 	  
 	  /**
-	   * Liefert das Hibiscus Konto.
-	   * @return Konto.
+	   * Liefert die ID des Hibscus-Konto.
+	   * @return die ID des Hibiscus-Kontos.
 	   * @throws RemoteException
 	   */
-	  public de.willuhn.jameica.hbci.rmi.Konto getHbKonto() throws RemoteException;
+	  public String getHibiscusKontoId() throws RemoteException;
 	  
 	  /**
-	   * Setzt dase Hibiscus Konto.
-	   * @param Konto.
+	   * Speichert die ID des Hibiscus Kontos.
+	   * @param id die ID des Hibiscus-Kontos.
 	   * @throws RemoteException
 	   */
-	  public void setHbKonto(de.willuhn.jameica.hbci.rmi.Konto hbKonto_id) throws RemoteException;
+	  public void setHibiscusKontoId(String id) throws RemoteException;
 }

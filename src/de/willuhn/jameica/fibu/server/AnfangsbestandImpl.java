@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -61,6 +62,9 @@ public class AnfangsbestandImpl extends AbstractDBObject implements
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
     updateCheck();

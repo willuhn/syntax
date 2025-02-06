@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * BUG: H2-Migration gefixt
+
 2025-02-04 Version 2.10.5
 
   * NEW: Passenden MariaDB/MySQL-Treiber automatisch ermitteln

@@ -163,6 +163,9 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try {
       String name = getName();
       if (name == null || "".equals(name)) {
@@ -177,48 +180,3 @@ public class FinanzamtImpl extends AbstractDBObject implements Finanzamt
   }
 
 }
-
-/*********************************************************************
- * $Log: FinanzamtImpl.java,v $
- * Revision 1.13  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.12  2005-09-26 15:15:39  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2005/08/10 17:48:02  willuhn
- * @C refactoring
- *
- * Revision 1.10  2005/08/08 22:54:16  willuhn
- * @N massive refactoring
- *
- * Revision 1.9  2005/08/08 21:35:46  willuhn
- * @N massive refactoring
- *
- * Revision 1.8  2004/01/25 19:44:03  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/12/15 19:08:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2003/12/12 21:11:27  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.5  2003/12/11 21:00:34  willuhn
- * @C refactoring
- *
- * Revision 1.4  2003/12/01 20:29:00  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
- * Revision 1.3  2003/11/30 16:23:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/11/27 00:21:05  willuhn
- * @N Checks via insertCheck(), deleteCheck() updateCheck() in Business-Logik verlagert
- *
- * Revision 1.1  2003/11/25 00:22:17  willuhn
- * @N added Finanzamt
- *
- **********************************************************************/

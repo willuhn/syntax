@@ -7,8 +7,9 @@ import de.willuhn.util.ApplicationException;
 /**
  * Action zum Anlegen einer neuen Kontozuordnung.
  */
-public class KontozuordnungNeu implements Action{
-	/**
+public class KontozuordnungNeu implements Action
+{
+	  /**
 	   * @see de.willuhn.jameica.gui.Action#handleAction(java.lang.Object)
 	   */
 	  public void handleAction(Object context) throws ApplicationException

@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import de.willuhn.datasource.rmi.ResultSetExtractor;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
@@ -147,6 +148,9 @@ public abstract class AbstractBaseBuchungImpl extends AbstractTransferImpl imple
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+    
     try {
       Geschaeftsjahr jahr = getGeschaeftsjahr();
 

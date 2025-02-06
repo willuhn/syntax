@@ -30,7 +30,7 @@ public class KontozuordnungControl extends AbstractControl
 {
 	  private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 
-		private Kontozuordnung buchung 		= null;
+		private Kontozuordnung zuordnung 		= null;
 
 	  private Input bezeichnung         = null;
 	  private KontoInput kontoAuswahl   = null;
@@ -45,28 +45,28 @@ public class KontozuordnungControl extends AbstractControl
 	  }
 
 		/**
-		 * Liefert die Buchung.
-	   * @return die Buchung.
+		 * Liefert die Kontozuordnung.
+	   * @return die Kontozuordnung.
 	   * @throws RemoteException
 	   */
-	  public Kontozuordnung getBuchung() throws RemoteException
+	  public Kontozuordnung getKontozuordnung() throws RemoteException
 		{
-			if (this.buchung != null)
-				return this.buchung;
+			if (this.zuordnung != null)
+				return this.zuordnung;
 			
 			if(getCurrentObject() instanceof Kontozuordnung)
-				this.buchung = (Kontozuordnung) getCurrentObject();
+				this.zuordnung = (Kontozuordnung) getCurrentObject();
 			
-			if (this.buchung != null)
-				return this.buchung;
+			if (this.zuordnung != null)
+				return this.zuordnung;
 			
-			this.buchung = (Kontozuordnung) Settings.getDBService().createObject(Kontozuordnung.class,null);
+			this.zuordnung = (Kontozuordnung) Settings.getDBService().createObject(Kontozuordnung.class,null);
 	    
 	    // Den Parameter geben wir automatisch vor.
 		if(getCurrentObject() instanceof Mandant)
-			this.buchung.setMandant((Mandant) getCurrentObject());
+			this.zuordnung.setMandant((Mandant) getCurrentObject());
 
-		return this.buchung;
+		return this.zuordnung;
 		}
 
 	  /**
@@ -81,7 +81,7 @@ public class KontozuordnungControl extends AbstractControl
 	    Geschaeftsjahr jahr = Settings.getActiveGeschaeftsjahr();
 	    DBIterator list = jahr.getKontenrahmen().getKonten();
 	    list.addFilter("(kontoart_id = " + Kontoart.KONTOART_GELD +" OR kontoart_id = " + Kontoart.KONTOART_PRIVAT+")");
-	    this.kontoAuswahl = new KontoInput(list, getBuchung().getKonto());
+	    this.kontoAuswahl = new KontoInput(list, getKontozuordnung().getKonto());
 	    this.kontoAuswahl.setName(i18n.tr("SynTAX-Geldkonto"));
 	    return this.kontoAuswahl;
 	  }
@@ -96,7 +96,23 @@ public class KontozuordnungControl extends AbstractControl
 			if (this.HbKontoAuswahl != null)
 				return this.HbKontoAuswahl;
 
-	    this.HbKontoAuswahl = new de.willuhn.jameica.hbci.gui.input.KontoInput(getBuchung().getHbKonto(), null);
+			de.willuhn.jameica.hbci.rmi.Konto hk = null;
+			
+      final String hid = this.getKontozuordnung().getHibiscusKontoId();
+      if (hid != null)
+      {
+        try
+        {
+            hk = de.willuhn.jameica.hbci.Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,hid);
+        }
+        catch (Exception e)
+        {
+          // Kann passieren, wenn das Konto gelöscht wurde, in SynTAX aber noch referenziert ist
+          Logger.warn("hibiscus konto no longer exists - ignoring [id: " + hid + "]");
+        }
+      }
+			
+	    this.HbKontoAuswahl = new de.willuhn.jameica.hbci.gui.input.KontoInput(hk, null);
 	    this.HbKontoAuswahl.setName(i18n.tr("Hibiscus-Konto"));
 	    return this.HbKontoAuswahl;
 	  }
@@ -111,7 +127,7 @@ public class KontozuordnungControl extends AbstractControl
 	    if (this.bezeichnung != null)
 	      return this.bezeichnung;
 	    
-	    this.bezeichnung = new TextInput(getBuchung().getName());
+	    this.bezeichnung = new TextInput(getKontozuordnung().getName());
 	    this.bezeichnung.setName(i18n.tr("Bezeichnung der Zuordnung"));
 	    this.bezeichnung.setMandatory(true);
 	    return this.bezeichnung;
@@ -125,7 +141,9 @@ public class KontozuordnungControl extends AbstractControl
 	  {
 	    try
 	    {
-        getBuchung().setName(StringUtils.trimToNull((String)getBezeichnung().getValue()));
+	      final Kontozuordnung o = this.getKontozuordnung();
+	      
+        o.setName(StringUtils.trimToNull((String)getBezeichnung().getValue()));
 
         Konto k = (Konto) getKontoAuswahl().getValue();
     	  if (k == null)
@@ -134,15 +152,15 @@ public class KontozuordnungControl extends AbstractControl
         if(k.getKontoArt().getKontoArt() != Kontoart.KONTOART_GELD && k.getKontoArt().getKontoArt() != Kontoart.KONTOART_PRIVAT)
           throw new ApplicationException(i18n.tr("Das Konto muss ein Geldkonto sein!"));
 
-        getBuchung().setKonto(k);
+        o.setKonto(k);
 	      
 	      final de.willuhn.jameica.hbci.rmi.Konto hk = (de.willuhn.jameica.hbci.rmi.Konto) this.getHbKontoAuswahl().getValue();
         if (hk == null)
           throw new ApplicationException(i18n.tr("Bitte wählen Sie ein Hibiscus-Konto aus."));
 
-        getBuchung().setHbKonto(hk);
+        o.setHibiscusKontoId(hk.getID());
 	      
-				getBuchung().store();
+				o.store();
 				Application.getMessagingFactory().sendMessage(new StatusBarMessage(i18n.tr("Kontozuordnung gespeichert"),StatusBarMessage.TYPE_SUCCESS));
 	    }
 	    catch (ApplicationException ae)

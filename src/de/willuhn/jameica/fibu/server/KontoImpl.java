@@ -371,6 +371,9 @@ public class KontoImpl extends AbstractUserObjectImpl implements Konto
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     super.insertCheck();
     try {
       Kontenrahmen kr = getKontenrahmen();

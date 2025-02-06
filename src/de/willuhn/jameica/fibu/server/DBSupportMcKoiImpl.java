@@ -36,7 +36,34 @@ import de.willuhn.util.ProgressMonitor;
  */
 public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSupport
 {
-  
+  /**
+   * ct.
+   */
+  public DBSupportMcKoiImpl()
+  {
+    this(false, null);
+  }
+
+  /**
+   * ct.
+   * 
+   * @param create
+   * @param monitor
+   */
+  public DBSupportMcKoiImpl(boolean create, ProgressMonitor monitor)
+  {
+    if (create)
+    {
+      try
+      {
+        create(monitor,false);
+      } catch (Throwable e)
+      {
+        Logger.warn("unable to create mckoi database");
+      }
+    }
+  }
+
   /**
    * @see de.willuhn.datasource.GenericObject#getID()
    */
@@ -49,6 +76,17 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
    * @see de.willuhn.jameica.fibu.rmi.DBSupport#create(de.willuhn.util.ProgressMonitor)
    */
   public void create(ProgressMonitor monitor) throws RemoteException, ApplicationException
+  {
+    this.create(monitor,true);
+  }
+
+  /**
+   * @param monitor
+   * @param fill
+   * @throws RemoteException
+   * @throws ApplicationException
+   */
+  public void create(ProgressMonitor monitor,boolean fill) throws RemoteException, ApplicationException
   {
     String workdir = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getWorkPath();
     String appdir  = Application.getPluginLoader().getManifest(Fibu.class).getPluginDir();
@@ -121,12 +159,15 @@ public class DBSupportMcKoiImpl extends AbstractDBSupportImpl implements DBSuppo
         monitor.setStatusText(i18n.tr("Erstelle Datenbank"));
         ScriptExecutor.execute(r,conn, monitor);
         
-        // Monitor zurueckgesetzt
-        monitor.setPercentComplete(0);
+        if (fill)
+        {
+          // Monitor zurueckgesetzt
+          monitor.setPercentComplete(0);
 
-        r = new InputStreamReader(new FileInputStream(init),ENCODING_SQL);
-        monitor.setStatusText(i18n.tr("Erstelle Kontenrahmen"));
-        ScriptExecutor.execute(r,conn, monitor);
+          r = new InputStreamReader(new FileInputStream(init),ENCODING_SQL);
+          monitor.setStatusText(i18n.tr("Erstelle Kontenrahmen"));
+          ScriptExecutor.execute(r,conn, monitor);
+        }
         monitor.setStatusText(i18n.tr("Datenbank erfolgreich eingerichtet"));
       }
 

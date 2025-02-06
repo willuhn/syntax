@@ -13,6 +13,7 @@ package de.willuhn.jameica.fibu.server;
 import java.rmi.RemoteException;
 
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchungstemplate;
 import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Mandant;
@@ -62,6 +63,9 @@ public class BuchungstemplateImpl extends AbstractTransferImpl implements Buchun
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try
     {
       if (getName() == null || getName().length() == 0)

@@ -5,12 +5,16 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.fibu.rmi.Version;
 
-public class VersionImpl extends AbstractDBObject implements Version{
+/**
+ * Tabelle für den Zugriff auf die Versionen.
+ */
+public class VersionImpl extends AbstractDBObject implements Version
+{
 
 	/**
-	   * Erzeugt eine neue Version.
-	   * @throws RemoteException
-	   */
+   * Erzeugt eine neue Version.
+   * @throws RemoteException
+   */
 	public VersionImpl() throws RemoteException {
 		super();
 	}

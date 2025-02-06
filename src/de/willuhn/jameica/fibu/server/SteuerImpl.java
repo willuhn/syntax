@@ -116,6 +116,9 @@ public class SteuerImpl extends AbstractUserObjectImpl implements Steuer
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     super.insertCheck();
     try {
       if (getName() == null || "".equals(getName()))

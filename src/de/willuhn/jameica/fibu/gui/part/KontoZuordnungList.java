@@ -16,8 +16,8 @@ import de.willuhn.jameica.fibu.gui.menus.KontozuordnungListMenu;
 import de.willuhn.jameica.fibu.messaging.ObjectImportedMessage;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.fibu.rmi.Kontozuordnung;
+import de.willuhn.jameica.fibu.rmi.Mandant;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.formatter.Formatter;
 import de.willuhn.jameica.gui.parts.TablePart;
@@ -29,7 +29,11 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.I18N;
 
-public class KontoZuordnungList extends TablePart {
+/**
+ * Tabelle mit den Konto-Zuordnungen.
+ */
+public class KontoZuordnungList extends TablePart
+{
 	private final static I18N i18n = Application.getPluginLoader().getPlugin(Fibu.class).getResources().getI18N();
 	  
 	  private MessageConsumer mc = new MyMessageConsumer();
@@ -52,8 +56,6 @@ public class KontoZuordnungList extends TablePart {
 	        try
 	        {
 	          de.willuhn.jameica.hbci.rmi.Konto k =  (de.willuhn.jameica.hbci.rmi.Konto) de.willuhn.jameica.hbci.Settings.getDBService().createObject(de.willuhn.jameica.hbci.rmi.Konto.class,o.toString());
-	        	
-	          //de.willuhn.jameica.hbci.rmi.Konto k = (de.willuhn.jameica.hbci.rmi.Konto) o;
 	          return k.getBezeichnung() + " [" + k.getKontonummer() + "]";
 	        }
 	        catch (RemoteException e)

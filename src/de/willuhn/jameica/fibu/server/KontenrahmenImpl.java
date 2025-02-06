@@ -60,6 +60,9 @@ public class KontenrahmenImpl extends AbstractUserObjectImpl implements Kontenra
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     super.insertCheck();
     try {
       String name = (String) getAttribute("name");

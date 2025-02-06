@@ -206,6 +206,9 @@ public class MandantImpl extends AbstractDBObject implements Mandant
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try {
       String firma = getFirma();
       if (firma == null || "".equals(firma))
