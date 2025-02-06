@@ -19,6 +19,7 @@ import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Abschreibung;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Anlagevermoegen;
@@ -271,6 +272,9 @@ public class AnlagevermoegenImpl extends AbstractDBObject implements Anlagevermo
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try
     {
       Date datum = getAnschaffungsdatum();

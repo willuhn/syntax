@@ -12,6 +12,7 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.AbschreibungsBuchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 import de.willuhn.logging.Logger;
@@ -35,6 +36,9 @@ public class AbschreibungsBuchungImpl extends AbstractBaseBuchungImpl implements
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     super.insertCheck();
     try
     {

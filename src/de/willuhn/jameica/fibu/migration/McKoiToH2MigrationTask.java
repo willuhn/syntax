@@ -27,13 +27,24 @@ public class McKoiToH2MigrationTask extends AbstractDatabaseMigrationTask
     // Checken, ob die Migration schon lief
     if (Settings.SETTINGS.getString("migration.mckoi-to-h2",null) != null)
       throw new ApplicationException(i18n.tr("Datenmigration bereits durchgeführt"));
-    
+
+    DBService target = null;
     try
     {
       final DBService source = Settings.getDBService();
-      
-      final DBService target = new H2DBServiceImpl(monitor);
+      target = new H2DBServiceImpl(monitor);
       target.start();
+      
+      // Foreign Key check vorübergehen abschalten
+      try
+      {
+        Logger.info("deactivating foreign_key_checks");
+        target.executeUpdate("SET REFERENTIAL_INTEGRITY FALSE", null);
+      }
+      catch (Exception e)
+      {
+        Logger.error("unable to disable foreign key checks",e);
+      }
 
       this.copy(source,target,monitor);
 
@@ -44,11 +55,24 @@ public class McKoiToH2MigrationTask extends AbstractDatabaseMigrationTask
       Settings.SETTINGS.setAttribute("database.support.class",DBSupportH2Impl.class.getName());
     
     }
-    catch (RemoteException re)
+    catch (Exception e)
     {
-      monitor.setStatusText(re.getMessage());
+      monitor.setStatusText(e.getMessage());
       monitor.setStatus(ProgressMonitor.STATUS_ERROR);
-      throw new ApplicationException(re);
+      throw new ApplicationException(e);
+    }
+    finally
+    {
+      Logger.info("re-activating foreign_key_checks");
+      try
+      {
+        if (target != null)
+          target.executeUpdate("SET REFERENTIAL_INTEGRITY TRUE", null);
+      }
+      catch (Exception e)
+      {
+        Logger.error("error while re-activating foreign_key_checks",e);
+      }
     }
     
     

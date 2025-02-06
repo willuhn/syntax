@@ -419,7 +419,7 @@ public class Settings
    * Legt fest, ob sich die Anwendung gerade im Update-Prozess befindet.
    * @param b true, wenn sie sich im Update befindet.
    */
-  static void setInUpdate(boolean b)
+  public static void setInUpdate(boolean b)
   {
     inUpdate = b;
   }

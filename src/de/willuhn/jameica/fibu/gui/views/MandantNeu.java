@@ -157,8 +157,7 @@ public class MandantNeu extends AbstractView
     TablePart t4 = new BuchungstemplateList(mandant, vorlagenList, new BuchungstemplateNeu());
     t4.paint(vorlagen.getComposite());
     
-    if (Application.getPluginLoader()
-        .getPlugin("de.willuhn.jameica.hbci.HBCI") != null)
+    if (Application.getPluginLoader().getPlugin("de.willuhn.jameica.hbci.HBCI") != null)
     {
 	    TabGroup kontenZuordnungen = new TabGroup(this.tabs,i18n.tr("Zuordnung Bankkonten"));
 	    DBIterator kontoZuordnungList = Settings.getDBService().createList(de.willuhn.jameica.fibu.rmi.Kontozuordnung.class);

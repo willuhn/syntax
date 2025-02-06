@@ -295,6 +295,9 @@ public class BuchungImpl extends AbstractBaseBuchungImpl implements Buchung, Cus
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     super.insertCheck();
     try
     {

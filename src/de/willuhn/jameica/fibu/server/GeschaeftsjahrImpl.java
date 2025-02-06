@@ -193,6 +193,9 @@ public class GeschaeftsjahrImpl extends AbstractDBObject implements Geschaeftsja
    */
   protected void insertCheck() throws ApplicationException
   {
+    if (Settings.inUpdate())
+      return;
+
     try
     {
       if (getMandant() == null)
