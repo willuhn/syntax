@@ -51,6 +51,7 @@ import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.MultiInput;
 import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.parts.Column;
 import de.willuhn.jameica.gui.parts.TablePart;
 import de.willuhn.jameica.gui.util.Color;
 import de.willuhn.jameica.gui.util.Container;
@@ -124,7 +125,7 @@ public class BuchungList extends TablePart implements Extendable
     addColumn(i18n.tr("Text"),"buchungstext");
     addColumn(i18n.tr("Brutto-Betrag"),null);
     addColumn(i18n.tr("Netto-Betrag"),"betrag",cf);
-    addColumn(i18n.tr("Steuer"),"steuer");
+    addColumn(i18n.tr("Steuer"),"steuer",o -> (o + " %"),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());
     addColumn(i18n.tr("Haben-Konto"),"habenKonto", new KontoFormatter());
     addColumn(i18n.tr("Art"),"sollKonto", new Formatter()
@@ -185,7 +186,7 @@ public class BuchungList extends TablePart implements Extendable
 
         try
         {
-          //Bei Splitbuchungen keine Konten anzeigen, da die teilbuchungen andere Konten haben können
+          // Bei Splitbuchungen keine Konten anzeigen, da die teilbuchungen andere Konten haben können
           if(splitSums.get(b.getID()) != null) {
               item.setText(5,cf.format(null));
               item.setText(6,cf.format(null));
