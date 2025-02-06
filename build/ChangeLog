@@ -1,5 +1,3 @@
-HEAD 2.11 (nightly)
-
 2025-02-06 Version 2.10.6
 
   * BUG: Auswahl des Steuersatzes in der Buchung war falsch, Neuberechnung nach Änderung auch nicht korrekt
