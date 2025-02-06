@@ -83,6 +83,8 @@ public class BuchungControl extends AbstractControl
   private CheckboxInput anlageVermoegen = null;
   private Input anlagevermoegenLink     = null;
   
+  private SteuerListener steuerListener = new SteuerListener();
+  
   private AbstractView view = null;
   
   private Input splitbuchung     = null;
@@ -448,8 +450,8 @@ public class BuchungControl extends AbstractControl
 	}
 
 	/**
-	 * Liefert das Eingabe-Feld fuer die Steuer.
-   * @return Eingabe-Feld.
+	 * Liefert das Auswahl-Feld fuer die Steuer.
+   * @return Auswahl-Feld.
    * @throws RemoteException
    */
   public SelectInput getSteuer() throws RemoteException
@@ -457,25 +459,31 @@ public class BuchungControl extends AbstractControl
 		if (steuer != null)
 			return steuer;
 
-	     DBIterator list = Settings.getDBService().createList(Steuer.class);
-	     list.setOrder("ORDER BY satz,name");
-	     Kontenrahmen kr  = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
-	     list.addFilter("mandant_id is null or mandant_id = "+Settings.getActiveGeschaeftsjahr().getMandant().getID());
-	     List<Steuer> found = new ArrayList<Steuer>();
-	     while (list.hasNext())
-	     {
-	       Steuer s = (Steuer) list.next();
-	       Konto k = s.getSteuerKonto();
-	       if (k == null)
-	         continue;
-	       if (BeanUtil.equals(k.getKontenrahmen(),kr))
-	         found.add(s);
-	     }
-	     steuer = new SelectInput(found,getBuchung().getSteuerObject());
-	     steuer.setPleaseChoose("<" + i18n.tr("Keine Steuer") + ">");
-	     SteuerListener sl = new SteuerListener();
-         steuer.addListener(sl);
-         sl.handleEvent(null);
+    final DBIterator list = Settings.getDBService().createList(Steuer.class);
+    list.addFilter("mandant_id is null or mandant_id = ?",Settings.getActiveGeschaeftsjahr().getMandant().getID());
+    list.setOrder("ORDER BY satz,name");
+    
+    final Kontenrahmen kr = Settings.getActiveGeschaeftsjahr().getKontenrahmen();
+    final List<Steuer> found = new ArrayList<Steuer>();
+    while (list.hasNext())
+    {
+      Steuer s = (Steuer) list.next();
+      Konto k = s.getSteuerKonto();
+      if (k == null)
+        continue;
+      
+      if (BeanUtil.equals(k.getKontenrahmen(),kr))
+        found.add(s);
+    }
+    steuer = new SelectInput(found,getBuchung().getSteuerObject());
+    steuer.setEnabled(getBuchung().getGeschaeftsjahr().isClosed());
+    steuer.setPleaseChoose("<" + i18n.tr("Keine Steuer") + ">");
+     
+    final SteuerListener sl = new SteuerListener();
+    steuer.addListener(sl);
+    
+    // Einmal initial auslösen
+    sl.handleEvent(null);
 
 		return steuer;
 	}
@@ -527,7 +535,7 @@ public class BuchungControl extends AbstractControl
       // Betraege
       Math math = new Math();
       Steuer steuerObj = (Steuer)getSteuer().getValue();
-      double steuer = steuerObj == null? 0.0d:steuerObj.getSatz();
+      double steuer = steuerObj == null ? 0.0d : steuerObj.getSatz();
       double brutto = ((Double)getBetrag().getValue()).doubleValue();
       double netto  = math.netto(brutto,steuer);
       
@@ -627,14 +635,16 @@ public class BuchungControl extends AbstractControl
     {
       try
       {
+        Steuer s = (Steuer) getSteuer().getValue();
+        
         try
         {
+          // Steuer-Auswahl deaktivieren, wenn keines der Konten ein Steuerkonto vorsieht
           Konto sk = (Konto) getSollKontoAuswahl().getValue();
           Konto hk = (Konto) getHabenKontoAuswahl().getValue();
           Steuer ss = sk == null ? null : sk.getSteuer();
           Steuer hs = hk == null ? null : hk.getSteuer();
-          Steuer s = (ss != null ? ss : hs);
-          getSteuer().setEnabled(s != null && !getBuchung().getGeschaeftsjahr().isClosed());
+          getSteuer().setEnabled((ss != null || hs != null) && !getBuchung().getGeschaeftsjahr().isClosed());
         }
         catch (Exception e)
         {
@@ -647,17 +657,14 @@ public class BuchungControl extends AbstractControl
         double steuer = 0d;
         double netto  = brutto;
 
-        if (getSteuer().isEnabled())
+        // Steuerbetrag neu berechnen basierend auf der aktuellen Auswahl
+        if (s != null)
         {
-          Steuer s = (Steuer) getSteuer().getValue();
-          if (s != null)
-          {
-            double satz = s.getSatz();
-            
-            Math math = new Math();
-            netto  = math.netto(brutto,satz);
-            steuer = math.steuer(brutto,satz);
-          }
+          double satz = s.getSatz();
+          
+          Math math = new Math();
+          netto  = math.netto(brutto,satz);
+          steuer = math.steuer(brutto,satz);
         }
         String curr = Settings.getActiveGeschaeftsjahr().getMandant().getWaehrung();
         getBetrag().setComment(i18n.tr("{0} [Netto: {1} {0}]", new String[]{curr,Settings.DECIMALFORMAT.format(netto)}));
@@ -700,7 +707,8 @@ public class BuchungControl extends AbstractControl
         return;
       
       // Texte und Kommentare ergaenzen
-      try {
+      try
+      {
 
         Konto sk = (Konto) getSollKontoAuswahl().getValue();
         Konto hk = (Konto) getHabenKontoAuswahl().getValue();
@@ -736,12 +744,13 @@ public class BuchungControl extends AbstractControl
           Steuer hs = hk == null ? null : hk.getSteuer();
           Steuer s = (ss != null ? ss : hs);
           
-          // BUGZILLA 1828 - Sicherstellen, dass kein Steuersatz mehr drin steht, wenn das Feld Steuer deaktiviert wurde.
           getSteuer().setValue(s);
-          new SteuerListener().handleEvent(null);
+          steuerListener.handleEvent(null);
+          
           double satz = 0;
-          if(s != null)
+          if (s != null)
         	  satz = s.getSatz();
+          
           GUI.getView().setSuccessText(i18n.tr("Steuersatz wurde auf {0}% geändert", Settings.DECIMALFORMAT.format(satz)));
         }
         catch (Exception e)

@@ -1,5 +1,6 @@
 HEAD 2.11 (nightly)
 
+  * BUG: Auswahl des Steuersatzes in der Buchung war falsch, Neuberechnung nach Änderung auch nicht korrekt
   * BUG: H2-Migration gefixt
 
 2025-02-04 Version 2.10.5
