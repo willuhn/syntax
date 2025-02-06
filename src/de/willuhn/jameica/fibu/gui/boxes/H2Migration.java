@@ -123,7 +123,7 @@ public class H2Migration extends AbstractBox
    */
   public int getHeight()
   {
-    return 120;
+    return 150;
   }
 
 }
