@@ -81,7 +81,7 @@ public class H2Migration extends AbstractBox
   private boolean migrationRequired()
   {
     // Generell deaktiviert?
-    if (!Settings.SETTINGS.getBoolean("migration.h2",true))
+    if (!Settings.SETTINGS.getBoolean("migration.h2",false))
       return false;
     
     // Checken, ob Migration schon lief
