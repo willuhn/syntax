@@ -1,3 +1,7 @@
+2025-02-07 Version 2.10.7
+
+  * BUG: Die Steuerbuchungen wurden bei der H2-Migration nicht korrekt übernommen
+
 2025-02-06 Version 2.10.6
 
   * BUG: Auswahl des Steuersatzes in der Buchung war falsch, Neuberechnung nach Änderung auch nicht korrekt
