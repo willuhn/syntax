@@ -1,3 +1,4 @@
-#Wed Jun 20 07:49:52 CEST 2012
 eclipse.preferences.version=1
+encoding//lib/velocity/template.vm=ISO-8859-15
+encoding//sql/init.sql=ISO-8859-15
 encoding/<project>=ISO-8859-15
