@@ -14,9 +14,12 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,10 +27,12 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.io.IOUtil;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.server.Math;
 import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.services.VelocityService;
@@ -160,62 +165,65 @@ public abstract class AbstractVelocityReport extends AbstractReport
       catch (Exception e) {}
     }
   }
+  
+  /**
+   * Liefert die Liste der Konten basierend auf den Report-Daten.
+   * @param data die Report-Daten.
+   * @return die Liste der Konten.
+   * @throws RemoteException
+   */
+  protected List<Konto> getKonten(ReportData data) throws RemoteException
+  {
+    final Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+    DBIterator<Konto> konten   = jahr.getKontenrahmen().getKonten();
+    konten.setOrder(Settings.getAccountOrder());
+    final Integer start = parse(data.getStartKonto() != null ? data.getStartKonto().getKontonummer() : null);
+    final Integer end   = parse(data.getEndKonto() != null ? data.getEndKonto().getKontonummer() : null);
+
+    final List<Konto> result = new ArrayList<>();
+
+    while (konten.hasNext())
+    {
+      final Konto k = konten.next();
+      final Integer i = parse(k.getKontonummer());
+      if (i == null)
+      {
+        // Keine numerische Kontonummer
+        result.add(k);
+        continue;
+      }
+      
+      if (start != null && i.intValue() < start.intValue())
+        continue;
+      
+      if (end != null && i.intValue() > end.intValue())
+        continue;
+      
+      result.add(k);
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Parst den Text fehlertolerant als Zahl.
+   * @param s der Text.
+   * @return die Zahl oder NULL, wenn es nicht als Zahl lesbar war.
+   */
+  private Integer parse(String s)
+  {
+    if (s == null)
+      return null;
+    
+    try
+    {
+      return Integer.parseInt(s);
+    }
+    catch (Exception e)
+    {
+      // Ist zulässig bei alphanumerischen Kontonummern.
+    }
+    
+    return null;
+  }
 }
-
-
-/**********************************************************************
- * $Log: AbstractVelocityReport.java,v $
- * Revision 1.2  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.1  2010-08-27 10:18:14  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.6  2010/07/19 09:08:08  willuhn
- * @N Versionsnummern mit in Auswertung schreiben
- *
- * Revision 1.5  2010/06/01 16:37:22  willuhn
- * @C Konstanten von Fibu zu Settings verschoben
- * @N Systemkontenrahmen nach expliziter Freigabe in den Einstellungen aenderbar
- * @C Unterscheidung zwischen canChange und isUserObject in UserObject
- * @C Code-Cleanup
- * @R alte CVS-Logs entfernt
- *
- * Revision 1.4  2010/02/05 09:58:25  willuhn
- * @B Name der Auswertung wurde nicht angezeigt
- *
- * Revision 1.3  2009/08/24 11:56:47  willuhn
- * @N Umstellung auf neuen VelocityService - damit funktioniert SynTAX jetzt nur noch mit Jameica 1.9
- *
- * Revision 1.2  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.4  2009/06/25 15:21:18  willuhn
- * @N weiterer Code fuer IDEA-Export
- *
- * Revision 1.1.2.3  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.1.2.2  2009/06/23 17:22:28  willuhn
- * *** empty log message ***
- *
- * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- * Revision 1.8.2.4  2009/03/03 23:28:39  willuhn
- * @B Fehlende Encoding-Angabe im HTML-Export
- * @N HTML-Title mit Name des Exports
- *
- * Revision 1.8.2.3  2009/03/01 23:37:55  willuhn
- * @C Templates sollten explizit mit Latin1-Encoding gelesen werden, da sie von mir in diesem Encoding erstellt wurden
- *
- * Revision 1.8.2.2  2009/02/16 10:19:55  willuhn
- * @B Abfrage der Versionsnummer fuehrte zu einer Inkompatibilitaet zwischen Jameica 1.7 und Jameica 1.8 - Versionsnummer aus Report entfernt
- *
- * Revision 1.8.2.1  2008/08/03 23:02:47  willuhn
- * @N UST-Voranmeldung
- * @B Typos
- * @B Altes 16%-VST-Konto war nicht korrekt registriert. War aber nicht weiter schlimm, weil es ohnehin nirgends als Steuerkonto registriert war.
- **********************************************************************/

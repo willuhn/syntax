@@ -19,9 +19,9 @@ import java.util.Vector;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Anfangsbestand;
+import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
 
 /**
@@ -57,16 +57,10 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
 
     //////////////////////////////////////////////////////////////////////////
     // Konten
-    DBIterator konten   = jahr.getKontenrahmen().getKonten();
-    Konto start = data.getStartKonto();
-    Konto end   = data.getEndKonto();
-    if (start != null) konten.addFilter("kontonummer >= ?", start.getKontonummer());
-    if (end != null) konten.addFilter("kontonummer <= ?",   end.getKontonummer());
-
-    List<Konto> l = new LinkedList<Konto>();
-    while (konten.hasNext())
+    final List<Konto> konten = this.getKonten(data);
+    final List<Konto> l = new LinkedList<Konto>();
+    for (Konto k1:konten)
     {
-      Konto k1 = (Konto) konten.next();
       Anfangsbestand ab = k1.getAnfangsbestand(jahr);
       if (!data.isLeereKonten() && k1.getNumBuchungen(jahr,startDate,endDate) == 0 && (ab == null || ab.getBetrag() == 0.0d))
         continue;
@@ -125,34 +119,3 @@ public class VelocityReportKontoAuszug extends AbstractVelocityReport
     return i18n.tr("Konten: Auszug");
   }
 }
-
-
-/*********************************************************************
- * $Log: VelocityReportKontoAuszug.java,v $
- * Revision 1.5  2011/08/08 10:44:35  willuhn
- * @C compiler warnings
- *
- * Revision 1.4  2011-03-10 16:10:49  willuhn
- * @B Auswertung Kontoauszug erlaubt die Auswahl eines Zeitraumes innerhalb des Jahres - das muss in getNumBuchungen() auch beachtet werden
- *
- * Revision 1.3  2011-03-10 13:42:26  willuhn
- * @B BUGZILLA 1001
- *
- * Revision 1.2  2010-11-30 23:32:18  willuhn
- * @B BUGZILLA 953
- * @C Velocity kann inzwischen mit java.util.List-Objekten umgehen. Das Erzeugen der Arrays ist daher nicht mehr noetig
- *
- * Revision 1.1  2010-08-27 10:18:14  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.2  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- **********************************************************************/

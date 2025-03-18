@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
 import de.willuhn.jameica.fibu.rmi.Konto;
 
@@ -30,20 +29,11 @@ public class VelocityReportSaldenListe extends AbstractVelocityReport
   protected VelocityReportData getData(ReportData data) throws Exception
   {
     Geschaeftsjahr jahr = data.getGeschaeftsjahr();
-
-    // Liste der Konten ermitteln
-    DBIterator i = jahr.getKontenrahmen().getKonten();
+    final List<Konto> konten = this.getKonten(data);
     
-    Konto start = data.getStartKonto();
-    Konto end   = data.getEndKonto();
-    
-    if (start != null) i.addFilter("kontonummer >= ?",new Object[]{start.getKontonummer()});
-    if (end != null) i.addFilter("kontonummer <= ?",new Object[]{end.getKontonummer()});
-
-    List<Konto> list = new LinkedList<Konto>();
-    while (i.hasNext())
+    final List<Konto> list = new LinkedList<Konto>();
+    for (Konto k:konten)
     {
-      Konto k = (Konto) i.next();
       if (!data.isLeereKonten() && k.getNumBuchungen(jahr,null,null) == 0)
         continue; // hier gibts nichts anzuzeigen
       list.add(k);
