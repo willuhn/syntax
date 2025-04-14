@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+2025-04-14 Version 2.10.8
+
   * BUG: DB-Update 0012 für McKoi: Explizite Angabe der ID entfernt - siehe https://github.com/willuhn/syntax/pull/15
   * NEW: Auswertungen (Kontoauszug, Saldenliste): Alphanumerische Kontonummern sowie unterschiedlich lange Kontonummern beim Filtern der Konten berücksichtigen
 
