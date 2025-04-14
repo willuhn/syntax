@@ -348,7 +348,7 @@ public class UmsatzListMenu implements Extension
     // Wir werfen alle Verwendungszwecke zusammen
     String text  = StringUtils.trimToNull((String) u.getAttribute(Tag.SVWZ.name()));
     String name  = StringUtils.trimToNull(u.getGegenkontoName());
-    if (name != null )
+    if (name != null)
     {
       // Kontoinhaber noch anhaengen, falls vorhanden
       if (text != null)
@@ -367,7 +367,7 @@ public class UmsatzListMenu implements Extension
     
     if (text != null)
     {
-      text = buchung.getText() + " " + text;
+      text = (buchung.getText() != null ? (buchung.getText() + " ") : "") + text;
       
       // Noch abschneiden, falls er zu lang ist
       if (text.length() > 255)
