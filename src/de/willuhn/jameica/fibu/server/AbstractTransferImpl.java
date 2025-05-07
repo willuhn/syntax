@@ -106,44 +106,50 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Steuer getSteuerObject() throws RemoteException
   {
-	//wenn eine steuer_id angegeben ist, diese verwenden
-	Object o = super.getAttribute("steuer_id");
-	if (o != null)
-	{
-		Cache cache = Cache.get(Steuer.class,true);
-		return (Steuer) cache.get(o);
-	}
-	
-	if(getSollKonto() == null || getHabenKonto() == null)
-		return null;
-	
-	//Das zu verwendende Steruersammelkonto anhand des Steuersatzes ermitteln
-    Steuer sSteuer = getSollKonto().getSteuer();
-    Steuer hSteuer = getHabenKonto().getSteuer();
+  	// wenn eine steuer_id angegeben ist, diese verwenden
+  	final Object o = super.getAttribute("steuer_id");
+  	if (o != null)
+  	{
+  		Cache cache = Cache.get(Steuer.class,true);
+  		return (Steuer) cache.get(o);
+  	}
+  	
+  	final Konto kh = this.getSollKonto();
+  	final Konto ks = this.getSollKonto();
+  	
+  	// Ohne Konten, keine Steuersätze ermittelbar
+  	if (kh == null || ks == null)
+  		return null;
+  	
+  	// Das zu verwendende Steruersammelkonto anhand des Steuersatzes ermitteln
+    final Steuer sSteuer = ks.getSteuer();
+    final Steuer hSteuer = kh.getSteuer();
+    
     Steuer steuer = null;
     boolean erloes = false;
-    if(sSteuer != null)
+    if (sSteuer != null)
     {
     	steuer = sSteuer;
-    	erloes = getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
+    	erloes = ks.getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
     }
     else if(hSteuer != null)
     {
     	steuer = hSteuer;
-    	erloes = getHabenKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
+    	erloes = kh.getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
     }
-    //Buchungen auf Konten ohne Steuer konnten auch bisher keine Steuer haben
-    if(steuer == null)
+    
+    // Buchungen auf Konten ohne Steuer konnten auch bisher keine Steuer haben
+    if (steuer == null)
     	return null;
     
-    if(steuer.getSatz() == getSteuer())
+    if (steuer.getSatz() == this.getSteuer())
     	return steuer;
     
     //Steuersatz nicht der des Kontos, wir suchen das richtige Steuerobjekt
-    DBIterator<Steuer> list = Settings.getDBService().createList(Steuer.class);
+    final DBIterator<Steuer> list = Settings.getDBService().createList(Steuer.class);
     list.addFilter("satz = ?",Double.valueOf(getSteuer()));
-    Kontenrahmen kr = getSollKonto().getKontenrahmen();
-    while(list.hasNext())
+    final Kontenrahmen kr = ks.getKontenrahmen();
+    while (list.hasNext())
     {
     	Steuer s = list.next();
 	    Konto k = s.getSteuerKonto();
@@ -155,7 +161,7 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
     			|| (s.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME && erloes)))
     		return s;
     }
-	return null;
+  	return null;
   }
 
   /**
