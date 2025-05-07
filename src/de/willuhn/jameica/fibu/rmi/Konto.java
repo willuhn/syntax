@@ -86,8 +86,7 @@ public interface Konto extends UserObject
    * @return Umsatz.
    * @throws RemoteException
    */
-  public double getUmsatz(Geschaeftsjahr jahr, Date von, Date bis)
-      throws RemoteException;
+  public double getUmsatz(Geschaeftsjahr jahr, Date von, Date bis) throws RemoteException;
 
   /**
    * Liefert den Namen des Kontos.
@@ -173,12 +172,12 @@ public interface Konto extends UserObject
   /**
    * Liefert eine Liste der Haupt-Buchungen auf dem Konto.
    * @param jahr das Geschaeftsjahr.
-   * @param SplitHauptbuchungen. true wenn SplitHauptbuhungen mit geholt werden sollen
+   * @param splitHauptbuchungen true wenn SplitHauptbuhungen mit geholt werden sollen
    * @return Liste der Buchungen.
    * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Boolean SplitHauptbuchungen) throws RemoteException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, boolean splitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert eine Liste der Haupt-Buchungen auf dem Konto begrenzt auf einen Zeitraum.
@@ -196,12 +195,12 @@ public interface Konto extends UserObject
    * @param jahr das Geschaeftsjahr.
    * @param von Start-Datum. Kann auch weggelassen werden.
    * @param bis End-Datum. Kann auch weggelassen werden.
-   * @param SplitHauptbuchungen. true wenn SplitHauptbuhungen mit geholt werden sollen
+   * @param splitHauptbuchungen true wenn SplitHauptbuhungen mit geholt werden sollen
    * @return Liste der Haupt-Buchungen.
    * Die Objekte sind vom Typ <code>Buchung</code>.
    * @throws RemoteException
    */
-  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, Boolean SplitHauptbuchungen) throws RemoteException;
+  public DBIterator getHauptBuchungen(Geschaeftsjahr jahr, Date von, Date bis, boolean splitHauptbuchungen) throws RemoteException;
 
   /**
    * Liefert eine Liste aller Hilfsbuchungen auf dem Konto.
