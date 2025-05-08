@@ -11,6 +11,7 @@
 package de.willuhn.jameica.fibu.io;
 
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.jameica.fibu.Settings;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 
 /**
@@ -31,6 +32,9 @@ public class XMLBuchungImporter extends XMLImporter
       // die Buchungsnummer der Hauptbuchung mit
       Buchung b = (Buchung) o;
       b.setBelegnummer(b.getBelegnummer());
+      
+      // Wir importieren immer im aktuellen Geschäftsjahr - nicht in dem, aus dem der Export stammt
+      b.setGeschaeftsjahr(Settings.getActiveGeschaeftsjahr());
     }
     super.prePersist(o);
   }
