@@ -71,6 +71,8 @@ public class SteuerList extends TablePart
         }
       }
     });
+    addColumn(i18n.tr("UST Kennzeichen Bemessung"),"ust_nr_bemessung");
+    addColumn(i18n.tr("UST Kennzeichen Steuerbetrag"),"ust_nr_steuer");
     setFormatter(new TableFormatter()
     {
       /**
