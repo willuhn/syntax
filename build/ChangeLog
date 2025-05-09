@@ -1,5 +1,9 @@
 HEAD 2.11 (nightly)
 
+  * BUG: Berechnungsfehler in der UST-Voranmeldung - Logik aus 2.10.4 wiederhergestellt
+  * CHG: Beim Import von Buchungen im SynTAX-Format nicht das Geschäftsjahr des Exports verwenden sondern das aktive Geschäftsjahr - es ist sonst keine Übertragung von Buchungen möglich
+  * BUG: Auto-Logik bei Ermittlung des Steuer-Objekts Buchung entfernt. Verhalten wieder so hergestellt, wie es bis 2.10.4 war
+
 2025-04-14 Version 2.10.8
 
   * BUG: DB-Update 0012 für McKoi: Explizite Angabe der ID entfernt - siehe https://github.com/willuhn/syntax/pull/15
