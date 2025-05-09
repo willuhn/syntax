@@ -11,15 +11,10 @@ package de.willuhn.jameica.fibu.server;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.BeanUtil;
 import de.willuhn.datasource.db.AbstractDBObject;
-import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.Fibu;
 import de.willuhn.jameica.fibu.Settings;
-import de.willuhn.jameica.fibu.rmi.Kontenrahmen;
 import de.willuhn.jameica.fibu.rmi.Konto;
-import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
 import de.willuhn.jameica.fibu.rmi.Transfer;
 import de.willuhn.jameica.system.Application;
@@ -106,56 +101,22 @@ public abstract class AbstractTransferImpl extends AbstractDBObject implements T
    */
   public Steuer getSteuerObject() throws RemoteException
   {
-	//wenn eine steuer_id angegeben ist, diese verwenden
-	Object o = super.getAttribute("steuer_id");
-	if (o != null)
-	{
-		Cache cache = Cache.get(Steuer.class,true);
-		return (Steuer) cache.get(o);
-	}
-	
-	if(getSollKonto() == null || getHabenKonto() == null)
-		return null;
-	
-	//Das zu verwendende Steruersammelkonto anhand des Steuersatzes ermitteln
-    Steuer sSteuer = getSollKonto().getSteuer();
-    Steuer hSteuer = getHabenKonto().getSteuer();
-    Steuer steuer = null;
-    boolean erloes = false;
-    if(sSteuer != null)
-    {
-    	steuer = sSteuer;
-    	erloes = getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
-    }
-    else if(hSteuer != null)
-    {
-    	steuer = hSteuer;
-    	erloes = getHabenKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
-    }
-    //Buchungen auf Konten ohne Steuer konnten auch bisher keine Steuer haben
-    if(steuer == null)
-    	return null;
-    
-    if(steuer.getSatz() == getSteuer())
-    	return steuer;
-    
-    //Steuersatz nicht der des Kontos, wir suchen das richtige Steuerobjekt
-    DBIterator<Steuer> list = Settings.getDBService().createList(Steuer.class);
-    list.addFilter("satz = ?",Double.valueOf(getSteuer()));
-    Kontenrahmen kr = getSollKonto().getKontenrahmen();
-    while(list.hasNext())
-    {
-    	Steuer s = list.next();
-	    Konto k = s.getSteuerKonto();
-	    if (k == null)
-	      continue;
-	    
-    	if(BeanUtil.equals(k.getKontenrahmen(),kr) 
-    			&& ((s.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE && !erloes)
-    			|| (s.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_EINNAHME && erloes)))
-    		return s;
-    }
-	return null;
+  	// wenn eine steuer_id angegeben ist, diese verwenden
+  	final Object o = super.getAttribute("steuer_id");
+  	if (o != null)
+  	{
+  		Cache cache = Cache.get(Steuer.class,true);
+  		return (Steuer) cache.get(o);
+  	}
+
+  	// Wenn in der Buchung kein Steuersatz direkt angegeben ist, dann verwenden wir die alte
+  	// Logik - nämlich den Steueuersatz von dem Soll-/oder Habenkonto verwenden, bei dem eines angegeben ist
+    final Konto sk = this.getSollKonto();
+    final Konto hk = this.getHabenKonto();
+
+  	Steuer ss = sk == null ? null : sk.getSteuer();
+    Steuer hs = hk == null ? null : hk.getSteuer();
+    return (ss != null ? ss : hs);
   }
 
   /**

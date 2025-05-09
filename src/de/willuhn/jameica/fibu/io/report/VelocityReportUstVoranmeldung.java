@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * Copyright (c) 2004 Olaf Willuhn
+ * Copyright (c) 2025 Olaf Willuhn
  * All rights reserved.
  * 
  * This software is copyrighted work licensed under the terms of the
@@ -14,14 +14,16 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.fibu.rmi.BaseBuchung;
 import de.willuhn.jameica.fibu.rmi.Buchung;
 import de.willuhn.jameica.fibu.rmi.Geschaeftsjahr;
+import de.willuhn.jameica.fibu.rmi.Konto;
 import de.willuhn.jameica.fibu.rmi.Kontoart;
-import de.willuhn.jameica.fibu.rmi.Kontotyp;
 import de.willuhn.jameica.fibu.rmi.Steuer;
+import de.willuhn.logging.Logger;
 
 /**
  * Report fuer die Auswertung zur UST-Voranmeldung.
@@ -33,55 +35,30 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
    */
   protected VelocityReportData getData(ReportData data) throws Exception
   {
-    Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+    final Map<String,Position> positions = new HashMap<String,Position>();
     
-    Map<String,Position> positions = new HashMap<String,Position>();
-    
-    DBIterator buchungen = jahr.getHauptBuchungen(data.getStartDatum(),data.getEndDatum());
-    while (buchungen.hasNext())
+    final Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+    final DBIterator<Konto> konten = jahr.getKontenrahmen().getKonten();
+    while (konten.hasNext())
     {
-      Buchung b = (Buchung) buchungen.next();
-      
-      Steuer st = b.getSteuerObject();
+      final Konto kt = konten.next();
+      final Steuer st = kt.getSteuer();
       if (st == null)
         continue;
-
-      String bemessung = st.getUstNrBemessung();
-      if (bemessung != null && bemessung.length() > 0)
-      {
-        Position pos = positions.get(bemessung);
-        if (pos == null)
-        {
-          pos = new Position();
-          positions.put(bemessung,pos);
-        }
-        pos.add(data,b,false);
-      }
       
-      String steuer = st.getUstNrSteuer();
-      if (steuer != null && steuer.length() > 0)
-      {
-        Position pos = positions.get(steuer);
-        if (pos == null)
-        {
-          pos = new Position();
-          positions.put(steuer,pos);
-        }
-        pos.add(data,b,true);
-      }
-
+      this.process(data,st,kt,null,positions);
     }
     
     // Wir werfen jetzt noch die Zeilen raus, wo keine Betraege vorhanden sind
-    String[] keys = positions.keySet().toArray(new String[positions.size()]);
+    final String[] keys = positions.keySet().toArray(new String[positions.size()]);
     for (String key:keys)
     {
-      Position p = positions.get(key);
+      final Position p = positions.get(key);
       if (Math.abs(p.getBemessung()) < 0.01d && Math.abs(p.getSteuer()) < 0.01d)
         positions.remove(key);
     }
     
-    VelocityReportData export = new VelocityReportData();
+    final VelocityReportData export = new VelocityReportData();
     export.addObject("positions",positions);
     export.setTemplate("ustva.vm");
     return export;
@@ -100,10 +77,36 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
    */
   public ReportData createPreset()
   {
-    ReportData data = super.createPreset();
+    final ReportData data = super.createPreset();
     data.setNeedKonto(false);
     data.setTarget(i18n.tr("syntax-{0}-ustva.html",DATEFORMAT.format(new Date())));
     return data;
+  }
+  
+  /**
+   * Führt die Verarbeitung durch.
+   * @param data die Report-Daten.
+   * @param st Die Steuer.
+   * @param k das Konto.
+   * @param b optionale Angabe der Buchung.
+   * @param positions Map mit den Positionen.
+   * @throws RemoteException
+   */
+  private void process(ReportData data, Steuer st, Konto k, Buchung b, Map<String,Position> positions) throws RemoteException
+  {
+    final String bemessung = st.getUstNrBemessung();
+    if (bemessung != null && !bemessung.isBlank())
+    {
+      final Position pos = positions.computeIfAbsent(bemessung, x -> new Position());
+      pos.add(data,k,b,false,positions);
+    }
+    
+    final String s = st.getUstNrSteuer();
+    if (s != null && !s.isBlank())
+    {
+      final Position pos = positions.computeIfAbsent(s, x -> new Position());
+      pos.add(data,k,b,true,positions);
+    }
   }
   
   /**
@@ -121,44 +124,82 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
      * @param data die Basis-Daten des Exports. 
      * @param konto das Konto.
      * @param steuer true, wenn es sich um das Steuerkennzeichen handelt.
+     * @param positions die Map mit den Positionen.
      * @throws RemoteException
      */
-    private void add(ReportData data, Buchung b, boolean steuer) throws RemoteException
+    private void add(ReportData data, Konto konto, Buchung b, boolean steuer, Map<String,Position> positions) throws RemoteException
     {
-      Steuer st = b.getSteuerObject();
+      Steuer st = konto.getSteuer();
+      
       if (st != null && !steuer)
       {
         double s = st.getSatz();
         if (this.satz == -1d)
-          this.satz = st.getSatz();
+          this.satz = s;
         else if (this.satz != s) // wir haben offensichtlich unterschiedliche Steuersaetze
           this.satz = -1;
       }
-        boolean soll     = st.getSteuerKonto().getKontoTyp().getKontoTyp() == Kontotyp.KONTOTYP_AUSGABE;
-        boolean aufwand  = b.getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND;
-        boolean erstattung  = b.getSollKonto().getKontoArt().getKontoArt() == Kontoart.KONTOART_ERLOES;
-        
-        // Wir runden auf 2 Stellen hinterm Komma. Sonst stimmt ggf. die Summe der Einzelwerte nicht
-        // mit der Summe ueberein.
-        double betrag = math.round(b.getBetrag());
-        if (aufwand) betrag = -betrag;
-        if (erstattung) betrag = -betrag;
 
-        if (soll) this.bemessung -= betrag;
-        else      this.bemessung += betrag;
+      // Wenn die Buchung direkt angegeben ist, dann diese übernehmen.
+      if (b != null)
+      {
+        this.add(konto,b);
+        return;
+      }
+
+      // Andernfalls über alle Buchungen des Kontos iterieren
+      final Geschaeftsjahr jahr = data.getGeschaeftsjahr();
+      final Date start          = data.getStartDatum();
+      final Date end            = data.getEndDatum();
+
+      final DBIterator<Buchung> buchungen = konto.getHauptBuchungen(jahr,start,end);
+      while (buchungen.hasNext())
+      {
+        final Buchung buchung = buchungen.next();
         
-        DBIterator hilfsbuchungen = b.getHilfsBuchungen();
-        while (hilfsbuchungen.hasNext())
+        // Checken, ob die Buchung ein abweichendes Steuerkonto hat
+        final Steuer stb = buchung.getSteuerObject();
+        if (stb != null && !Objects.equals(st.getID(),stb.getID()))
         {
-          BaseBuchung hb = (BaseBuchung) hilfsbuchungen.next();
-          double steuerBetrag = math.round(hb.getBetrag());
-          if (aufwand) steuerBetrag = -steuerBetrag;
-          if (erstattung) steuerBetrag = -steuerBetrag;
-          if (soll)
-            this.steuer -= steuerBetrag;
-          else
-            this.steuer += steuerBetrag;
+          Logger.info(String.format("have booking with different tax than account [id: %s, #: %s, st-id account: %s, st-id booking: %s]",buchung.getID(),buchung.getBelegnummer(),st.getID(),stb.getID()));
+          // Ja, dann muss diese Buchung in einer separaten Position verarbeitet werden
+          process(data,stb,konto,buchung,positions);
+          continue;
         }
+        
+        this.add(konto,buchung);
+      }
+    }
+    
+    /**
+     * Übernimmt das eigentliche Hinzufügen der Buchung.
+     * @param k das Konto.
+     * @param b die Buchung.
+     * @throws RemoteException
+     */
+    private void add(Konto k, Buchung b) throws RemoteException
+    {
+      boolean soll     = b.getSollKonto().equals(k);
+      boolean aufwand  = k.getKontoArt().getKontoArt() == Kontoart.KONTOART_AUFWAND;
+
+      // Wir runden auf 2 Stellen hinterm Komma. Sonst stimmt ggf. die Summe der Einzelwerte nicht
+      // mit der Summe ueberein.
+      double betrag = math.round(b.getBetrag());
+      if (aufwand) betrag = -betrag;
+
+      if (soll) this.bemessung += betrag;
+      else      this.bemessung -= betrag;
+      
+      DBIterator hilfsbuchungen = b.getHilfsBuchungen();
+      while (hilfsbuchungen.hasNext())
+      {
+        BaseBuchung hb = (BaseBuchung) hilfsbuchungen.next();
+        double steuerBetrag = math.round(hb.getBetrag());
+        if (soll)
+          this.steuer += steuerBetrag;
+        else
+          this.steuer -= steuerBetrag;
+      }
     }
     
     /**
@@ -167,7 +208,7 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
      */
     public double getBemessung()
     {
-      return (int)this.bemessung; // auf ganze Euro
+      return java.lang.Math.abs((int)this.bemessung); // auf ganze Euro
     }
 
     /**
@@ -201,46 +242,3 @@ public class VelocityReportUstVoranmeldung extends AbstractVelocityReport
 
   }
 }
-
-
-/*********************************************************************
- * $Log: VelocityReportUstVoranmeldung.java,v $
- * Revision 1.3  2011/05/12 09:10:31  willuhn
- * @R Back-Buttons entfernt
- * @C GUI-Cleanup
- *
- * Revision 1.2  2010-08-30 15:49:45  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2010/08/27 10:18:14  willuhn
- * @C Export umbenannt in Report
- *
- * Revision 1.8  2010/07/20 10:31:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2010/07/20 10:24:46  willuhn
- * @B Soll- und Haben-Seite beruecksichtigen. Fuer den Fall, dass auf einem Erloes- oder Aufwands-Konto auch Storno-Buchungen vorgenommen werden
- *
- * Revision 1.6  2010/06/08 16:08:12  willuhn
- * @N UST-Voranmeldung nochmal ueberarbeitet und die errechneten Werte geprueft
- *
- * Revision 1.5  2010/06/07 15:45:15  willuhn
- * @N Erste Version der neuen UST-Voranmeldung mit Kennziffern aus der DB
- *
- * Revision 1.4  2010/06/01 23:51:56  willuhn
- * @N Neue Icons - erster Teil
- *
- * Revision 1.3  2010/02/08 16:30:45  willuhn
- * @N Bei Steuerkonten auch die Hauptbuchungen beruecksichtigen. Andernfalls werden explizite Buchungen auf die Steuerkonten ignoriert (siehe Lars' Mail vom 08.02.2010)
- *
- * Revision 1.2  2009/07/03 10:52:18  willuhn
- * @N Merged SYNTAX_1_3_BRANCH into HEAD
- *
- * Revision 1.1.2.2  2009/06/24 10:35:55  willuhn
- * @N Jameica 1.7 Kompatibilitaet
- * @N Neue Auswertungen funktionieren - werden jetzt im Hintergrund ausgefuehrt
- *
- * Revision 1.1.2.1  2009/06/23 16:53:22  willuhn
- * @N Velocity-Export komplett ueberarbeitet
- *
- **********************************************************************/
