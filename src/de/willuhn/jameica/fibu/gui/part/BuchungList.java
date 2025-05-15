@@ -123,7 +123,7 @@ public class BuchungList extends TablePart implements Extendable
     addColumn(i18n.tr("Datum"),"datum", new DateFormatter(Settings.DATEFORMAT));
     addColumn(i18n.tr("Beleg"),"belegnummer");
     addColumn(i18n.tr("Text"),"buchungstext");
-    addColumn(i18n.tr("Brutto-Betrag"),null);
+    addColumn(i18n.tr("Brutto-Betrag"),null,cf,false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Netto-Betrag"),"betrag",cf);
     addColumn(i18n.tr("Steuer"),"steuer",o -> (o + " %"),false,Column.ALIGN_RIGHT);
     addColumn(i18n.tr("Soll-Konto"),"sollKonto", new KontoFormatter());

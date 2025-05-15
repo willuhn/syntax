@@ -1,5 +1,7 @@
 HEAD 2.11 (nightly)
 
+  * BUG: Buchungsliste: Brutto-Betrag war nichts rechtsbündig formatiert
+  
 2025-05-09 Version 2.10.9
 
   * BUG: Berechnungsfehler in der UST-Voranmeldung - Logik aus 2.10.4 wiederhergestellt
