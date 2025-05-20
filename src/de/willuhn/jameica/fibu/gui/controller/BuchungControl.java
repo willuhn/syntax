@@ -50,7 +50,7 @@ import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
 import de.willuhn.jameica.gui.input.SelectInput;
-import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.messaging.StatusBarMessage;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -66,14 +66,14 @@ public class BuchungControl extends AbstractControl
   private final static de.willuhn.jameica.system.Settings settings = new de.willuhn.jameica.system.Settings(BuchungControl.class);
 
   // Fachobjekte
-	private Buchung buchung 		= null;
+	private Buchung buchung 	            = null;
 
 	// Eingabe-Felder
-  private Input template         = null;
-	private Input	text					   = null;
-	private Input kommentar        = null;
-	private Input belegnummer		   = null;
-	private Input betrag				   = null;
+  private Input template                = null;
+	private TextAreaInput	text		        = null;
+	private TextAreaInput kommentar       = null;
+	private Input belegnummer		          = null;
+	private Input betrag				          = null;
 
   private SelectInput steuer				    = null;
   private DateInput datum               = null;
@@ -286,14 +286,15 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getText() throws RemoteException
+  public TextAreaInput getText() throws RemoteException
 	{
 		if (text != null)
 			return text;
 		
-		text = new TextInput(getBuchung().getText());
+		text = new TextAreaInput(getBuchung().getText());
 		text.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
     text.setMandatory(true);
+    text.setHeight(80);
 		return text;
 	}
 
@@ -302,13 +303,14 @@ public class BuchungControl extends AbstractControl
    * @return Eingabe-Feld.
    * @throws RemoteException
    */
-  public Input getKommentar() throws RemoteException
+  public TextAreaInput getKommentar() throws RemoteException
   {
     if (kommentar != null)
       return kommentar;
     
-    kommentar = new TextInput(getBuchung().getKommentar(),1000);
+    kommentar = new TextAreaInput(getBuchung().getKommentar(),1000);
     kommentar.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
+    kommentar.setHeight(80);
     return kommentar;
   }
 

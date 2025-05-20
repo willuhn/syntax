@@ -20,7 +20,7 @@ import de.willuhn.jameica.gui.input.DecimalInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.IntegerInput;
 import de.willuhn.jameica.gui.input.LabelInput;
-import de.willuhn.jameica.gui.input.TextInput;
+import de.willuhn.jameica.gui.input.TextAreaInput;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -40,14 +40,14 @@ public class BuchungSplitControl extends AbstractControl
 		private Buchung buchung 		= null;
 
 		// Eingabe-Felder
-		private Input	text					   = null;
+		private TextAreaInput	text  = null;
 		private Input betrag        = null;
-		private Input belegnummer		   = null;
+		private Input belegnummer   = null;
 
-	  private LabelInput summe				    = null;
-	  
-	  private DateInput datum               = null;
-	  
+	  private LabelInput summe    = null;
+
+	  private DateInput datum     = null;
+
 	  private I18N i18n;
 
 	  /**
@@ -83,14 +83,15 @@ public class BuchungSplitControl extends AbstractControl
 	   * @return Eingabe-Feld.
 	   * @throws RemoteException
 	   */
-	  public Input getText() throws RemoteException
+	  public TextAreaInput getText() throws RemoteException
 		{
 			if (text != null)
 				return text;
 			
-			text = new TextInput(getBuchung().getText());
+			text = new TextAreaInput(getBuchung().getText());
 			text.setEnabled(!getBuchung().getGeschaeftsjahr().isClosed());
 	    text.setMandatory(true);
+	    text.setHeight(80);
 			return text;
 		}
 
