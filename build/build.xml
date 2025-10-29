@@ -153,7 +153,6 @@
         <include name="LICENSE" />
         <include name="COPYING" />
         <include name="${build.dir}/**" />
-        <exclude name="${build.dir}/BUILD" />
       </fileset>
     </copy>
     <zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
